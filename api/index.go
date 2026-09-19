@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	
-	"jadwal-api/internal/database"
-	"jadwal-api/internal/router"
+	"jadwal-api/core/database"
+	"jadwal-api/core/router"
 )
 
 var app *gin.Engine

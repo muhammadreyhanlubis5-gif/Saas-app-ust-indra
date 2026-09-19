@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"jadwal-api/internal/handlers"
+	"jadwal-api/core/handlers"
 )
 
 func SetupRoutes(r *gin.Engine) {
