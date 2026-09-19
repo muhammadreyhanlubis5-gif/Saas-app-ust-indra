@@ -49,99 +49,110 @@
 
     <!-- Main Content Area -->
     <main class="flex-1 overflow-y-auto bg-gray-50 p-8">
-      <!-- Jika tidak ada child route, tampilkan Dashboard Home 16 Langkah -->
+      <!-- Dashboard Welcome (Professional UI) -->
       <div v-if="$route.path === '/admin-sekolah'">
         
-        <!-- Header Mirip Excel -->
-        <div class="bg-red-600 text-white text-center py-2 px-4 rounded-t-lg shadow-md mb-0 border-b-4 border-black">
-          <h1 class="text-xl font-bold tracking-widest uppercase">IKUTI ALUR PENGISIAN JADWAL DARI URUTAN NO 1 SAMPAI NO 16</h1>
-        </div>
-        <div class="bg-black text-white text-center py-1 px-4 shadow-md mb-6 rounded-b-lg">
-          <h2 class="text-lg font-bold tracking-widest">WORKSPACE SEKOLAH</h2>
-        </div>
-
-        <!-- 16 Tombol Navigasi (Grid) -->
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
-          
-          <button class="bg-gray-900 hover:bg-black text-white font-bold py-4 px-2 rounded-xl shadow-md border-2 border-transparent hover:border-gray-500 transition-all flex items-center justify-center text-center text-sm">
-            1. VALIDASI NAMA<br>LEMBAGA
-          </button>
-          <button class="bg-[#7cb342] hover:bg-[#689f38] text-white font-bold py-4 px-2 rounded-xl shadow-md border-2 border-transparent hover:border-white transition-all flex items-center justify-center text-center text-sm">
-            2. SESI<br>KBM
-          </button>
-          <button class="bg-[#7cb342] hover:bg-[#689f38] text-white font-bold py-4 px-2 rounded-xl shadow-md border-2 border-transparent hover:border-white transition-all flex items-center justify-center text-center text-sm">
-            3. ALOKASI<br>JAM/KELAS
-          </button>
-          <button class="bg-[#7cb342] hover:bg-[#689f38] text-white font-bold py-4 px-2 rounded-xl shadow-md border-2 border-transparent hover:border-white transition-all flex items-center justify-center text-center text-sm">
-            4. PENGAMPU<br>MAPEL
-          </button>
-          <button class="bg-[#7cb342] hover:bg-[#689f38] text-white font-bold py-4 px-2 rounded-xl shadow-md border-2 border-transparent hover:border-white transition-all flex items-center justify-center text-center text-sm">
-            5. PERMINTAAN<br>JAM KOSONG
-          </button>
-          <button class="bg-[#7cb342] hover:bg-[#689f38] text-white font-bold py-4 px-2 rounded-xl shadow-md border-2 border-transparent hover:border-white transition-all flex items-center justify-center text-center text-sm">
-            6. TUGAS<br>TAMBAHAN
-          </button>
-          <button class="bg-[#7cb342] hover:bg-[#689f38] text-white font-bold py-4 px-2 rounded-xl shadow-md border-2 border-transparent hover:border-white transition-all flex items-center justify-center text-center text-sm">
-            7. INPUT<br>JADWAL
-          </button>
-          <button class="bg-[#7cb342] hover:bg-[#689f38] text-white font-bold py-4 px-2 rounded-xl shadow-md border-2 border-transparent hover:border-white transition-all flex items-center justify-center text-center text-sm">
-            8. ANALISIS<br>SEBARAN GURU
-          </button>
-          <button class="bg-[#7cb342] hover:bg-[#689f38] text-white font-bold py-4 px-2 rounded-xl shadow-md border-2 border-transparent hover:border-white transition-all flex items-center justify-center text-center text-sm">
-            9. JADWAL<br>GURU
-          </button>
-          <button class="bg-[#7cb342] hover:bg-[#689f38] text-white font-bold py-4 px-2 rounded-xl shadow-md border-2 border-transparent hover:border-white transition-all flex items-center justify-center text-center text-sm">
-            10. JADWAL<br>KELAS
-          </button>
-        </div>
-
-        <!-- Validasi Sinkronisasi Box -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 items-center mb-8 bg-white p-4 rounded-xl border border-yellow-400 shadow-sm">
-          <div class="col-span-1 border-r border-gray-200 pr-4">
-             <div class="flex justify-between items-center mb-1"><span class="text-xs font-bold text-gray-600">TOTAL ALOKASI JAM (KLIK MENU NO. 5)</span> <span class="font-bold">726 JP</span></div>
-             <div class="flex justify-between items-center"><span class="text-xs font-bold text-gray-600">TOTAL JAM TERDISTRIBUSI KE GURU (MENU 7)</span> <span class="font-bold">726 JP</span></div>
+        <!-- Header Section -->
+        <div class="mb-8 bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+          <div>
+            <h1 class="text-3xl font-extrabold tracking-tight mb-2">Selamat Datang di Workspace Anda</h1>
+            <p class="text-blue-100 font-medium">Sistem Penjadwalan Cerdas. Silakan lengkapi master data untuk memulai.</p>
           </div>
-          <div class="col-span-1 text-center font-bold text-sm text-gray-700 px-4 flex flex-col items-center">
-             <svg class="w-8 h-8 text-blue-500 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
-             JUMLAH KEDUANYA HARUS SAMA
-          </div>
-          <div class="col-span-1 border-l border-gray-200 pl-4 text-xs font-bold text-blue-800">
-             JAM GURU TELAH SESUAI DENGAN ALOKASI KURIKULUM YANG DITETAPKAN, LANJUTKAN KE INPUT JADWAL (MENU NO. 10)
+          <div class="hidden md:block bg-white/20 px-6 py-3 rounded-xl backdrop-blur-sm border border-white/30 text-center">
+            <p class="text-xs text-blue-100 font-bold uppercase tracking-wider mb-1">Status Lisensi</p>
+            <p class="text-xl font-bold">Aktif & Resmi</p>
           </div>
         </div>
 
-        <!-- Bagian Bawah: Cek Kode & Sertifikasi -->
-        <div class="flex flex-col md:flex-row gap-6 mb-8 justify-between">
-          <div class="flex-1 bg-white border border-yellow-400 rounded-xl p-4 text-center shadow-sm">
-            <p class="text-xs font-bold text-gray-600 mb-2">KODE GURU YANG BELUM DIINPUT (CEK MENU NO. 12)</p>
-            <p class="text-xl font-black text-red-600 mb-2">0</p>
-            <p class="text-xs font-bold text-gray-600 mb-1">KODE GURU YANG SUDAH DIINPUT KE JADWAL</p>
-            <p class="text-lg font-bold text-green-600">100,00%</p>
+        <!-- Statistik Utama -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center">
+            <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Total Guru</p>
+            <h3 class="text-4xl font-black text-gray-800">0<span class="text-lg font-medium text-gray-400 ml-1">Orang</span></h3>
           </div>
-
-          <div class="flex flex-col items-center justify-center">
-            <div class="bg-black text-yellow-500 text-[10px] px-4 py-1 font-bold border-b-4 border-yellow-600 -mb-2 z-10 relative">JIKA SUDAH LELAH KLIK TOMBOL INI</div>
-            <button class="bg-black hover:bg-gray-900 text-white font-bold py-3 px-6 rounded-lg shadow-xl border border-gray-700 transition-all text-sm w-48 text-center pt-4">
-              16. CEK TUNJANGAN SERTIFIKASI
-            </button>
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center">
+            <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Total Kelas</p>
+            <h3 class="text-4xl font-black text-gray-800">0<span class="text-lg font-medium text-gray-400 ml-1">Rombel</span></h3>
           </div>
-
-          <div class="flex-1 bg-white border border-yellow-400 rounded-xl p-4 text-center shadow-sm">
-            <p class="text-xs font-bold text-gray-600 mb-2">KODE MAPEL YANG BELUM DIINPUT (CEK MENU NO. 13)</p>
-            <p class="text-xl font-black text-red-600 mb-2">0</p>
-            <p class="text-xs font-bold text-gray-600 mb-1">KODE MAPEL YANG SUDAH DIINPUT KE JADWAL</p>
-            <p class="text-lg font-bold text-green-600">100,00%</p>
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center">
+            <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Mata Pelajaran</p>
+            <h3 class="text-4xl font-black text-gray-800">0<span class="text-lg font-medium text-gray-400 ml-1">Mapel</span></h3>
+          </div>
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center bg-blue-50/50">
+            <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Jam Mengajar</p>
+            <h3 class="text-4xl font-black text-blue-600">0<span class="text-lg font-medium text-blue-400 ml-1">JP</span></h3>
           </div>
         </div>
 
-        <!-- Footer Statistik -->
-        <div class="bg-black text-white text-center py-2 text-xs font-bold tracking-widest rounded-t-lg">
-          JADWAL PELAJARAN SEMESTER GENAP TAHUN PELAJARAN 2026-2027
+        <!-- Alur Penjadwalan (Modern Wizard View) -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-8">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-xl font-bold text-gray-800">Alur Penyusunan Jadwal</h2>
+              <p class="text-sm text-gray-500 mt-1">Ikuti 16 langkah berurutan di menu sebelah kiri untuk hasil yang bebas bentrok.</p>
+            </div>
+            <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full border border-yellow-200">
+              Progres: 0%
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Tahap 1 -->
+            <div class="border border-gray-100 rounded-xl p-5 hover:shadow-md transition-shadow bg-gray-50">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm">1</span>
+                <h3 class="font-bold text-gray-800">Persiapan Master Data</h3>
+              </div>
+              <p class="text-sm text-gray-500 mb-4">Validasi identitas sekolah, sesi jam mengajar (KBM), dan data alokasi kelas.</p>
+              <button class="text-sm font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1">
+                Mulai Tahap 1 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+              </button>
+            </div>
+
+            <!-- Tahap 2 -->
+            <div class="border border-gray-100 rounded-xl p-5 hover:shadow-md transition-shadow opacity-60">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="w-8 h-8 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-sm">2</span>
+                <h3 class="font-bold text-gray-800">Distribusi Beban Guru</h3>
+              </div>
+              <p class="text-sm text-gray-500 mb-4">Pemetaan guru ke mata pelajaran, permintaan hari libur (jam kosong), & tugas tambahan.</p>
+              <button class="text-sm font-bold text-gray-400 cursor-not-allowed flex items-center gap-1">
+                Terkunci <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+              </button>
+            </div>
+
+            <!-- Tahap 3 -->
+            <div class="border border-gray-100 rounded-xl p-5 hover:shadow-md transition-shadow opacity-60">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="w-8 h-8 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-sm">3</span>
+                <h3 class="font-bold text-gray-800">Generasi Jadwal</h3>
+              </div>
+              <p class="text-sm text-gray-500 mb-4">Input jadwal otomatis, analisis sebaran bentrok, dan cetak laporan hasil akhir.</p>
+              <button class="text-sm font-bold text-gray-400 cursor-not-allowed flex items-center gap-1">
+                Terkunci <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+              </button>
+            </div>
+
+          </div>
         </div>
-        <div class="bg-red-600 text-white flex justify-between px-6 py-3 rounded-b-lg shadow-md font-bold text-sm">
-          <span>JUMLAH GURU = 44</span>
-          <span>JUMLAH KELAS = 18</span>
-          <span>JUMLAH MAPEL = 45</span>
+
+        <!-- Validasi Sistem (Cek Mapel & Guru) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white border-l-4 border-red-500 p-5 rounded-r-xl shadow-sm flex justify-between items-center">
+            <div>
+              <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Guru Belum Terjadwal</p>
+              <h4 class="text-xl font-bold text-gray-800">0 Guru</h4>
+            </div>
+            <div class="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-bold text-sm">Validasi (No. 12)</div>
+          </div>
+          <div class="bg-white border-l-4 border-red-500 p-5 rounded-r-xl shadow-sm flex justify-between items-center">
+            <div>
+              <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Mapel Belum Terjadwal</p>
+              <h4 class="text-xl font-bold text-gray-800">0 Mapel</h4>
+            </div>
+            <div class="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-bold text-sm">Validasi (No. 13)</div>
+          </div>
         </div>
 
       </div>
