@@ -57,7 +57,7 @@
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-xl font-bold text-gray-800">Daftar Klien Sekolah (Tenants)</h2>
-          <button class="bg-indigo-600 text-white px-5 py-2.5 rounded-lg shadow-sm hover:bg-indigo-700 font-semibold transition-colors flex items-center gap-2">
+          <button @click="showModal = true" class="bg-indigo-600 text-white px-5 py-2.5 rounded-lg shadow-sm hover:bg-indigo-700 font-semibold transition-colors flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
             Tambah Klien Baru
           </button>
@@ -68,30 +68,38 @@
             <thead>
               <tr class="bg-gray-50 text-left border-y border-gray-200">
                 <th class="py-4 px-5 uppercase font-bold text-xs text-gray-500 tracking-wider">Nama Sekolah</th>
-                <th class="py-4 px-5 uppercase font-bold text-xs text-gray-500 tracking-wider">Status Kontrak</th>
-                <th class="py-4 px-5 uppercase font-bold text-xs text-gray-500 tracking-wider">Batas Waktu (Valid Until)</th>
-                <th class="py-4 px-5 uppercase font-bold text-xs text-gray-500 tracking-wider">Jumlah Guru</th>
+                <th class="py-4 px-5 uppercase font-bold text-xs text-gray-500 tracking-wider">Kontak & Asal</th>
+                <th class="py-4 px-5 uppercase font-bold text-xs text-gray-500 tracking-wider">Username Admin</th>
+                <th class="py-4 px-5 uppercase font-bold text-xs text-gray-500 tracking-wider">Status & Batas Waktu</th>
+                <th class="py-4 px-5 uppercase font-bold text-xs text-gray-500 tracking-wider">Jumlah Guru / Mapel</th>
                 <th class="py-4 px-5 uppercase font-bold text-xs text-gray-500 tracking-wider text-right">Aksi</th>
               </tr>
             </thead>
             <tbody class="text-gray-700 divide-y divide-gray-100">
-              <tr class="hover:bg-gray-50 transition-colors">
-                <td class="py-4 px-5 font-bold text-gray-800">SMA Negeri 1 Jakarta</td>
-                <td class="py-4 px-5"><span class="bg-green-100 text-green-700 border border-green-200 px-3 py-1 rounded-full text-xs font-bold uppercase">Aktif</span></td>
-                <td class="py-4 px-5 font-medium text-gray-600">31 Des 2026</td>
-                <td class="py-4 px-5 font-medium text-gray-600">44 Guru</td>
+              <tr v-if="loading"><td colspan="6" class="text-center py-4">Memuat data...</td></tr>
+              <tr v-else-if="schools.length === 0"><td colspan="6" class="text-center py-4">Belum ada klien sekolah terdaftar.</td></tr>
+              <tr v-for="school in schools" :key="school.id" :class="{'bg-red-50/30': isExpired(school.valid_until)}" class="hover:bg-gray-50 transition-colors">
+                <td class="py-4 px-5">
+                  <div class="font-bold text-gray-800">{{ school.name }}</div>
+                  <div class="text-xs text-gray-500 font-semibold mt-1">Metode: {{ school.payment_method || '-' }} (Rp {{ school.payment_amount || 0 }})</div>
+                </td>
+                <td class="py-4 px-5">
+                  <div class="font-medium text-gray-800 text-sm">{{ school.contact_number || '-' }}</div>
+                  <div class="text-xs text-gray-500 mt-1">{{ school.address || '-' }}</div>
+                </td>
+                <td class="py-4 px-5 font-bold text-indigo-600 text-sm">{{ school.admin_username }}</td>
+                <td class="py-4 px-5">
+                  <span v-if="!isExpired(school.valid_until)" class="bg-green-100 text-green-700 border border-green-200 px-3 py-1 rounded-full text-[10px] font-bold uppercase mb-1 inline-block">Aktif</span>
+                  <span v-else class="bg-red-100 text-red-700 border border-red-200 px-3 py-1 rounded-full text-[10px] font-bold uppercase mb-1 inline-block">Expired</span>
+                  <div class="font-medium text-gray-600 text-xs">{{ formatDate(school.valid_until) }}</div>
+                </td>
+                <td class="py-4 px-5 text-sm">
+                  <div class="font-bold text-gray-700">{{ school.teacher_count }} Guru</div>
+                  <div class="font-medium text-gray-500 text-xs">{{ school.subject_count }} Bidang Studi</div>
+                </td>
                 <td class="py-4 px-5 text-right">
                   <button class="text-indigo-600 hover:text-indigo-800 font-bold text-sm mr-4 transition-colors">Edit</button>
-                  <button class="text-red-600 hover:text-red-800 font-bold text-sm transition-colors">Blokir</button>
-                </td>
-              </tr>
-              <tr class="hover:bg-gray-50 transition-colors bg-red-50/30">
-                <td class="py-4 px-5 font-bold text-gray-800">SMP Harapan Bangsa</td>
-                <td class="py-4 px-5"><span class="bg-red-100 text-red-700 border border-red-200 px-3 py-1 rounded-full text-xs font-bold uppercase">Expired</span></td>
-                <td class="py-4 px-5 font-bold text-red-600">01 Jan 2026</td>
-                <td class="py-4 px-5 font-medium text-gray-600">20 Guru</td>
-                <td class="py-4 px-5 text-right">
-                  <button class="text-indigo-600 hover:text-indigo-800 font-bold text-sm transition-colors">Perpanjang</button>
+                  <button @click="blockSchool(school.id)" class="text-red-600 hover:text-red-800 font-bold text-sm transition-colors">Blokir</button>
                 </td>
               </tr>
             </tbody>
@@ -99,13 +107,188 @@
         </div>
       </div>
     </main>
+
+    <!-- Modal Tambah Klien -->
+    <div v-if="showModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white">
+          <h2 class="text-xl font-bold text-gray-800">Tambah Klien Sekolah Baru</h2>
+          <button @click="showModal = false" class="text-gray-400 hover:text-gray-700">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        
+        <form @submit.prevent="submitKlien" class="p-6 space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Info Sekolah -->
+            <div class="space-y-4">
+              <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Informasi Instansi</h3>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lembaga / Sekolah *</label>
+                <input v-model="form.name" type="text" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Contoh: SMA Negeri 1 Jakarta">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Asal Sekolah (Alamat)</label>
+                <input v-model="form.address" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Jalan, Kota, Provinsi">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Aktif Klien (Kontak)</label>
+                <input v-model="form.contact_number" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="0812-xxxx-xxxx">
+              </div>
+            </div>
+
+            <!-- Detail Kontrak & Akun -->
+            <div class="space-y-4">
+               <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Detail Kontrak & Kredensial</h3>
+               
+               <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Masa Aktif Kontrak *</label>
+                <input v-model="form.valid_until" type="date" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+               </div>
+
+               <div class="flex gap-2">
+                 <div class="w-1/2">
+                   <label class="block text-sm font-medium text-gray-700 mb-1">Metode Bayar</label>
+                   <select v-model="form.payment_method" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+                     <option value="BCA">Transfer BCA</option>
+                     <option value="Mandiri">Transfer Mandiri</option>
+                     <option value="Tunai">Tunai</option>
+                     <option value="Lainnya">Lainnya</option>
+                   </select>
+                 </div>
+                 <div class="w-1/2">
+                   <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah (Rp)</label>
+                   <input v-model="form.payment_amount" type="number" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="1000000">
+                 </div>
+               </div>
+
+               <div class="pt-2 border-t border-gray-100">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Username Klien (Isolasi Data) *</label>
+                  <input v-model="form.username" type="text" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none bg-indigo-50 font-mono text-indigo-700" placeholder="username_unik">
+                  <p class="text-[10px] text-gray-500 mt-1">Username ini tidak boleh sama dengan klien lain.</p>
+               </div>
+
+               <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Password Klien *</label>
+                  <input v-model="form.password" type="text" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Masukkan password kuat">
+               </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-gray-100 flex justify-end gap-3">
+             <button type="button" @click="showModal = false" class="px-5 py-2.5 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors">Batal</button>
+             <button type="submit" :disabled="saving" class="px-5 py-2.5 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 shadow-sm transition-colors flex items-center gap-2">
+               <span v-if="saving">Menyimpan...</span>
+               <span v-else>Simpan Klien & Buat Akun</span>
+             </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const showModal = ref(false)
+const loading = ref(true)
+const saving = ref(false)
+const schools = ref([])
+
+const form = ref({
+  name: '',
+  valid_until: '',
+  payment_method: 'BCA',
+  payment_amount: '',
+  address: '',
+  contact_number: '',
+  username: '',
+  password: ''
+})
+
+const fetchSchools = async () => {
+  loading.value = true
+  try {
+    const res = await fetch('/api/v1/super/schools')
+    if (res.ok) {
+      schools.value = await res.json() || []
+    }
+  } catch (error) {
+    console.error("Gagal memuat data sekolah", error)
+  } finally {
+    loading.value = false
+  }
+}
+
+const submitKlien = async () => {
+  saving.value = true
+  try {
+    const res = await fetch('/api/v1/super/schools', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: form.value.name,
+        valid_until: new Date(form.value.valid_until).toISOString(),
+        payment_method: form.value.payment_method,
+        payment_amount: parseFloat(form.value.payment_amount) || 0,
+        address: form.value.address,
+        contact_number: form.value.contact_number,
+        username: form.value.username,
+        password: form.value.password
+      })
+    })
+
+    if (res.ok) {
+      alert("Klien baru berhasil ditambahkan!")
+      showModal.value = false
+      // Reset form
+      form.value = { name: '', valid_until: '', payment_method: 'BCA', payment_amount: '', address: '', contact_number: '', username: '', password: '' }
+      fetchSchools() // Refresh data realtime
+    } else {
+      const data = await res.json()
+      alert("Gagal: " + (data.error || "Terjadi kesalahan"))
+    }
+  } catch (err) {
+    alert("Terjadi kesalahan jaringan")
+  } finally {
+    saving.value = false
+  }
+}
+
+const blockSchool = async (id) => {
+  if (confirm("Yakin ingin memblokir klien ini? (Status akan menjadi Expired)")) {
+    try {
+      const res = await fetch(`/api/v1/super/schools/${id}/block`, { method: 'PUT' })
+      if (res.ok) {
+        fetchSchools()
+      } else {
+        alert("Gagal memblokir klien.")
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan jaringan.")
+    }
+  }
+}
+
+const isExpired = (dateString) => {
+  if (!dateString) return true
+  return new Date(dateString) < new Date()
+}
+
+const formatDate = (dateString) => {
+  if (!dateString) return '-'
+  return new Date(dateString).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })
+}
+
+onMounted(() => {
+  fetchSchools()
+})
 
 const handleLogout = () => {
   localStorage.clear()
