@@ -102,18 +102,19 @@
 
       <div class="flex justify-end pt-4 pb-12">
         <button @click="saveSessions" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all flex items-center gap-2">
-          <span>Simpan & Lanjut (Tahap 3)</span>
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+          <span>Simpan</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
         </button>
       </div>
-
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const loading = ref(true)
 const activeDays = ref([])
 const schoolId = localStorage.getItem('school_id')
@@ -205,8 +206,7 @@ const saveSessions = async () => {
     
     if (res.ok) {
       alert("Sesi KBM berhasil disimpan!")
-      // Lanjut ke tahap 3: Alokasi Jam & Kelas
-      // Nanti akan redirect ke '/admin-sekolah/alokasi-jam'
+      router.push('/admin-sekolah/pengampu')
     } else {
       alert("Gagal menyimpan Sesi KBM")
     }
