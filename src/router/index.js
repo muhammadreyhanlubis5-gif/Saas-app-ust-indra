@@ -4,9 +4,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 const Login = () => import('../components/HelloWorld.vue') 
 
 // Dashboard sesuai Role
-const SuperAdminDashboard = () => import('../views/DashboardValidation.vue') 
-const SchoolAdminDashboard = () => import('../views/DashboardValidation.vue') 
-const TeacherDashboard = () => import('../views/DashboardValidation.vue')
+const SuperAdminDashboard = () => import('../views/SuperAdminDashboard.vue') 
+const SchoolAdminDashboard = () => import('../views/SchoolAdminDashboard.vue') 
+const TeacherDashboard = () => import('../views/TeacherDashboard.vue')
+const DashboardValidation = () => import('../views/DashboardValidation.vue')
 
 const routes = [
   {
@@ -38,7 +39,7 @@ const routes = [
       { path: '', name: 'SchoolAdminHome', component: SchoolAdminDashboard },
       { path: 'guru', name: 'ManageTeachers', component: SchoolAdminDashboard }, // CRUD Guru
       { path: 'jadwal', name: 'ManageSchedules', component: SchoolAdminDashboard }, // Input Jadwal
-      { path: 'validasi', name: 'DashboardValidation', component: SchoolAdminDashboard }, // Halaman Balance
+      { path: 'validasi', name: 'DashboardValidation', component: DashboardValidation }, // Halaman Balance
     ]
   },
   // ==========================================
@@ -63,23 +64,17 @@ const router = createRouter({
 // Navigation Guard (RBAC Logic di Frontend)
 router.beforeEach((to, from, next) => {
   // Ambil token dan role dari localStorage (Simulasi)
-  const isAuthenticated = localStorage.getItem('token') !== null
-  const userRole = localStorage.getItem('user_role') // 'super_admin', 'school_admin', 'teacher'
+  // UNTUK PREVIEW UI: Kita izinkan semua akses secara default tanpa login
+  // const isAuthenticated = localStorage.getItem('token') !== null
+  const isAuthenticated = true 
+  const userRole = localStorage.getItem('user_role') || 'super_admin'
 
   if (to.meta.requiresAuth) {
     if (!isAuthenticated) {
       // Belum login, tendang ke halaman login
       next({ name: 'Login' })
-    } else if (to.meta.role && to.meta.role !== userRole) {
-      // Role tidak sesuai, jangan beri akses
-      console.warn("Akses ditolak: Anda tidak memiliki permission ke halaman ini.")
-      // Redirect ke dashboard masing-masing sesuai role
-      if (userRole === 'super_admin') next({ name: 'SuperAdminHome' })
-      else if (userRole === 'school_admin') next({ name: 'SchoolAdminHome' })
-      else if (userRole === 'teacher') next({ name: 'TeacherHome' })
-      else next({ name: 'Login' })
     } else {
-      // Diizinkan lewat
+      // PREVIEW MODE: Bebaskan role checking agar bisa melihat semua halaman
       next()
     }
   } else {
