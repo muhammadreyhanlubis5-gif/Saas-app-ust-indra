@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 // Views
-const Login = () => import('../components/HelloWorld.vue') 
+const Login = () => import('../views/LoginView.vue') 
 const SuperAdminDashboard = () => import('../views/SuperAdminDashboard.vue') 
 const SchoolAdminDashboard = () => import('../views/SchoolAdminDashboard.vue') 
 const TeacherDashboard = () => import('../views/TeacherDashboard.vue')
