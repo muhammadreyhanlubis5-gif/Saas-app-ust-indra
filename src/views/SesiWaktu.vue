@@ -44,14 +44,14 @@
         
         <!-- Loop for each active day -->
         <div v-for="day in activeDays" :key="day" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-          <div class="bg-gray-800 px-4 py-3 flex justify-between items-center gap-2">
-            <h3 class="font-bold text-white uppercase tracking-wider">{{ day }}</h3>
+          <div class="bg-white border-b border-gray-100 px-4 py-3 flex justify-between items-center gap-2">
+            <h3 class="font-bold text-gray-800 uppercase tracking-wider">{{ day }}</h3>
             <div class="flex gap-2">
-              <button @click="addSession(day, 'KBM')" class="text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded transition-colors flex items-center gap-1">
+              <button @click="addSession(day, 'KBM')" class="text-[11px] font-bold bg-blue-50 hover:bg-blue-100 text-blue-700 px-2 py-1.5 rounded transition-colors flex items-center gap-1 border border-blue-200">
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
                 Jam
               </button>
-              <button @click="addSession(day, 'ISTIRAHAT')" class="text-xs font-bold bg-yellow-600 hover:bg-yellow-500 text-white px-3 py-1.5 rounded transition-colors flex items-center gap-1">
+              <button @click="addSession(day, 'ISTIRAHAT')" class="text-[11px] font-bold bg-yellow-50 hover:bg-yellow-100 text-yellow-700 px-2 py-1.5 rounded transition-colors flex items-center gap-1 border border-yellow-200">
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
                 Istirahat
               </button>
