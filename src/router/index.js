@@ -4,9 +4,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 const Login = () => import('../components/HelloWorld.vue') 
 
 // Dashboard sesuai Role
-const SuperAdminDashboard = () => import('../App.vue') // Ganti dengan view aslinya
-const SchoolAdminDashboard = () => import('../App.vue') 
-const TeacherDashboard = () => import('../App.vue')
+const SuperAdminDashboard = () => import('../views/DashboardValidation.vue') 
+const SchoolAdminDashboard = () => import('../views/DashboardValidation.vue') 
+const TeacherDashboard = () => import('../views/DashboardValidation.vue')
 
 const routes = [
   {
