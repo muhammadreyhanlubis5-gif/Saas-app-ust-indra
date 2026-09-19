@@ -17,6 +17,7 @@ func SetupRoutes(r *gin.Engine) {
 		super.GET("/schools", handlers.GetSchools)
 		super.POST("/schools", handlers.CreateSchool)
 		super.PUT("/schools/:id/block", handlers.BlockSchool)
+		super.DELETE("/schools/:id", handlers.DeleteSchool)
 	}
 
 	school := api.Group("/school")

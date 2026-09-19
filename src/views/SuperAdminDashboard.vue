@@ -99,7 +99,8 @@
                 </td>
                 <td class="py-4 px-5 text-right">
                   <button class="text-indigo-600 hover:text-indigo-800 font-bold text-sm mr-4 transition-colors">Edit</button>
-                  <button @click="blockSchool(school.id)" class="text-red-600 hover:text-red-800 font-bold text-sm transition-colors">Blokir</button>
+                  <button @click="blockSchool(school.id)" class="text-yellow-600 hover:text-yellow-800 font-bold text-sm mr-4 transition-colors">Blokir</button>
+                  <button @click="deleteSchool(school.id, school.name)" class="text-red-600 hover:text-red-800 font-bold text-sm transition-colors">Hapus</button>
                 </td>
               </tr>
             </tbody>
@@ -376,6 +377,21 @@ const blockSchool = async (id) => {
       }
     } catch (err) {
       alert("Terjadi kesalahan jaringan.")
+    }
+  }
+}
+
+const deleteSchool = async (id, name) => {
+  if (confirm(`Peringatan Keras!\nApakah Anda benar-benar yakin ingin menghapus klien "${name}" secara PERMANEN?\n\nSemua data milik klien ini (profil, guru, mata pelajaran, jadwal, dll) akan lenyap dan tidak bisa dikembalikan.`)) {
+    try {
+      const res = await fetch(`/api/v1/super/schools/${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        fetchSchools()
+      } else {
+        alert("Gagal menghapus klien.")
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan jaringan saat menghapus klien.")
     }
   }
 }

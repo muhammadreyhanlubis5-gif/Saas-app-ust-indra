@@ -139,3 +139,19 @@ func BlockSchool(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Klien berhasil diblokir (status expired)"})
 }
+
+func DeleteSchool(c *gin.Context) {
+	schoolID := c.Param("id")
+	
+	// Hapus sekolah (data user & subject akan otomatis terhapus karena ON DELETE CASCADE)
+	_, err := database.DB.Exec(`
+		DELETE FROM schools WHERE id = $1
+	`, schoolID)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menghapus klien"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Klien beserta seluruh data terkait berhasil dihapus permanen"})
+}
