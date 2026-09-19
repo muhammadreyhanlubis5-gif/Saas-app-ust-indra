@@ -133,8 +133,8 @@ func GetSchoolSessions(c *gin.Context) {
 
 	rows, err := database.DB.Query(`
 		SELECT day_of_week, session_index, type, 
-		       to_char(start_time, 'HH24:MI') as start_time, 
-		       to_char(end_time, 'HH24:MI') as end_time 
+		       start_time, 
+		       end_time 
 		FROM school_sessions 
 		WHERE school_id = $1 
 		ORDER BY day_of_week, session_index ASC
