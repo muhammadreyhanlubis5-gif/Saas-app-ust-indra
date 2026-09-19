@@ -1,29 +1,27 @@
 package middleware
 
 import (
-	"database/sql"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	// "github.com/golang-jwt/jwt/v5" // Membutuhkan library jwt-go
-	"jadwal-api/core/database"
+	"github.com/golang-jwt/jwt/v5" // Pastikan sudah di-go get
 )
 
-// Struktur rahasia JWT (Sebagai contoh, di production harus pakai env variable)
-var jwtSecretKey = []byte("super-secret-saas-key")
+var JwtSecretKey = []byte("super-secret-saas-key")
 
-// Claims struct untuk JWT
-// type Claims struct {
-// 	UserID   string `json:"user_id"`
-// 	SchoolID string `json:"school_id"`
-// 	Role     string `json:"role"`
-// 	jwt.RegisteredClaims
-// }
+// Claims JWT Sesuai Kebutuhan
+type CustomClaims struct {
+	UserID     string `json:"user_id"`
+	SchoolID   string `json:"school_id"`
+	Role       string `json:"role"`
+	ValidUntil string `json:"valid_until"` // Disimpan dalam format ISO8601
+	jwt.RegisteredClaims
+}
 
-// AuthMiddleware adalah middleware untuk JWT dan pengecekan Multi-Tenant
-func AuthMiddleware(requiredRoles ...string) gin.HandlerFunc {
+func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
@@ -32,80 +30,54 @@ func AuthMiddleware(requiredRoles ...string) gin.HandlerFunc {
 			return
 		}
 
-		// tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 		
-		// 1. Validasi JWT Token (Simulasi)
-		// token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		// 	return jwtSecretKey, nil
-		// })
-		
-		// MOCKING HASIL PARSING JWT UNTUK CONTOH:
-		mockRole := "school_admin" 
-		mockSchoolID := "123e4567-e89b-12d3-a456-426614174000" // ID Tenant
-
-		// 2. Cek Role Access (RBAC)
-		roleAllowed := false
-		if len(requiredRoles) == 0 {
-			roleAllowed = true // Jika tidak dispesifikasikan, bebas akses asal login
-		} else {
-			for _, role := range requiredRoles {
-				if role == mockRole {
-					roleAllowed = true
-					break
-				}
+		// Parsing Token
+		token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method")
 			}
-		}
+			return JwtSecretKey, nil
+		})
 
-		if !roleAllowed {
-			c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden: You don't have permission to access this resource"})
+		if err != nil || !token.Valid {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized: Invalid token"})
 			c.Abort()
 			return
 		}
 
-		// 3. Validasi Kontrak Tenant (SaaS Subscription)
-		if mockRole != "super_admin" {
-			var validUntil time.Time
-			var isActive bool
+		claims, ok := token.Claims.(*CustomClaims)
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized: Invalid claims format"})
+			c.Abort()
+			return
+		}
 
-			// Query ke database untuk mengecek masa aktif sekolah/tenant ini
-			err := database.DB.QueryRow(`
-				SELECT valid_until, is_active 
-				FROM schools 
-				WHERE id = $1
-			`, mockSchoolID).Scan(&validUntil, &isActive)
-
-			if err != nil {
-				if err == sql.ErrNoRows {
-					c.JSON(http.StatusUnauthorized, gin.H{"error": "Tenant / School not found"})
-				} else {
-					c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error checking tenant status"})
-				}
+		// VALIDASI KONTRAK SAAS JIKA BUKAN SUPER ADMIN
+		if claims.Role != "SUPER_ADMIN" {
+			// Parsing string ValidUntil ke tipe Time
+			validUntil, parseErr := time.Parse(time.RFC3339, claims.ValidUntil)
+			if parseErr != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid valid_until date format in token"})
 				c.Abort()
 				return
 			}
 
-			// Cek apakah akun sekolah di-nonaktifkan manual oleh Super Admin
-			if !isActive {
-				c.JSON(http.StatusForbidden, gin.H{"error": "School account has been deactivated by Super Admin"})
-				c.Abort()
-				return
-			}
-
-			// Cek apakah kontrak (valid_until) sudah kedaluwarsa
+			// Cek apakah sudah kedaluwarsa
 			if time.Now().After(validUntil) {
-				c.JSON(http.StatusPaymentRequired, gin.H{
-					"error": "Subscription Expired",
-					"message": "Masa kontrak sekolah Anda telah habis. Silakan hubungi Super Admin untuk perpanjangan layanan.",
+				c.JSON(http.StatusForbidden, gin.H{
+					"error": "Forbidden",
+					"message": "Masa aktif kontrak sekolah habis. Akses diblokir.",
 				})
 				c.Abort()
 				return
 			}
 		}
 
-		// 4. Set Context Variables (Agar handler selanjutnya tahu siapa user yang request)
-		c.Set("user_role", mockRole)
-		c.Set("school_id", mockSchoolID)
-		
+		// Lolos validasi, teruskan data ke handler berikutnya
+		c.Set("user_id", claims.UserID)
+		c.Set("school_id", claims.SchoolID)
+		c.Set("role", claims.Role)
 		c.Next()
 	}
 }

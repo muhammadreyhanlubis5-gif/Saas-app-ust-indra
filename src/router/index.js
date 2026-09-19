@@ -1,57 +1,45 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// Simulasi halaman Login (Bisa dibuat komponen aslinya nanti)
+// Views
 const Login = () => import('../components/HelloWorld.vue') 
-
-// Dashboard sesuai Role
 const SuperAdminDashboard = () => import('../views/SuperAdminDashboard.vue') 
 const SchoolAdminDashboard = () => import('../views/SchoolAdminDashboard.vue') 
 const TeacherDashboard = () => import('../views/TeacherDashboard.vue')
 const DashboardValidation = () => import('../views/DashboardValidation.vue')
+const ExpiredView = () => import('../views/ExpiredView.vue') // Halaman Kontrak Habis
 
 const routes = [
-  {
-    path: '/',
-    name: 'Login',
-    component: Login,
-    meta: { requiresAuth: false }
-  },
-  // ==========================================
-  // 1. ROUTER SUPER ADMIN
-  // ==========================================
+  { path: '/', name: 'Login', component: Login, meta: { requiresAuth: false } },
+  { path: '/expired', name: 'Expired', component: ExpiredView, meta: { requiresAuth: false } },
+  
+  // SUPER ADMIN
   {
     path: '/super-admin',
     component: SuperAdminDashboard,
-    meta: { requiresAuth: true, role: 'super_admin' },
+    meta: { requiresAuth: true, role: 'SUPER_ADMIN' },
     children: [
       { path: '', name: 'SuperAdminHome', component: SuperAdminDashboard },
-      { path: 'tenants', name: 'ManageTenants', component: SuperAdminDashboard }, // CRUD Sekolah
     ]
   },
-  // ==========================================
-  // 2. ROUTER SCHOOL ADMIN (TENANT)
-  // ==========================================
+  
+  // SCHOOL ADMIN (TENANT)
   {
     path: '/admin-sekolah',
     component: SchoolAdminDashboard,
-    meta: { requiresAuth: true, role: 'school_admin' },
+    meta: { requiresAuth: true, role: 'SCHOOL_ADMIN' },
     children: [
       { path: '', name: 'SchoolAdminHome', component: SchoolAdminDashboard },
-      { path: 'guru', name: 'ManageTeachers', component: SchoolAdminDashboard }, // CRUD Guru
-      { path: 'jadwal', name: 'ManageSchedules', component: SchoolAdminDashboard }, // Input Jadwal
-      { path: 'validasi', name: 'DashboardValidation', component: DashboardValidation }, // Halaman Balance
+      { path: 'validasi', name: 'DashboardValidation', component: DashboardValidation },
     ]
   },
-  // ==========================================
-  // 3. ROUTER GURU (TEACHER)
-  // ==========================================
+  
+  // GURU (TEACHER)
   {
     path: '/guru',
     component: TeacherDashboard,
-    meta: { requiresAuth: true, role: 'teacher' },
+    meta: { requiresAuth: true, role: 'TEACHER' },
     children: [
       { path: '', name: 'TeacherHome', component: TeacherDashboard },
-      { path: 'jadwal-saya', name: 'MySchedule', component: TeacherDashboard }, // View only
     ]
   }
 ]
@@ -61,32 +49,43 @@ const router = createRouter({
   routes
 })
 
-// Navigation Guard (RBAC Logic di Frontend)
+// GLOBAL BEFORE GUARD
 router.beforeEach((to, from, next) => {
-  // Ambil token dan role dari localStorage (Simulasi)
-  // UNTUK PREVIEW UI: Kita izinkan semua akses secara default tanpa login
-  // const isAuthenticated = localStorage.getItem('token') !== null
-  const isAuthenticated = true 
-  const userRole = localStorage.getItem('user_role') || 'super_admin'
-
   if (to.meta.requiresAuth) {
-    if (!isAuthenticated) {
-      // Belum login, tendang ke halaman login
-      next({ name: 'Login' })
-    } else {
-      // PREVIEW MODE: Bebaskan role checking agar bisa melihat semua halaman
-      next()
+    // 1. Ambil data dari localStorage
+    const token = localStorage.getItem('token')
+    const userRole = localStorage.getItem('user_role')
+    const validUntil = localStorage.getItem('valid_until') // Disimpan saat login
+
+    // 2. Cek apakah sudah login
+    if (!token) {
+      return next({ name: 'Login' })
     }
+
+    // 3. Cek apakah Role sesuai (RBAC)
+    if (to.meta.role && to.meta.role !== userRole) {
+      console.warn("Akses Ditolak: Role tidak sesuai.")
+      return next({ name: 'Login' })
+    }
+
+    // 4. Validasi Masa Kontrak (Khusus Klien: School Admin & Teacher)
+    if (userRole === 'SCHOOL_ADMIN' || userRole === 'TEACHER') {
+      if (validUntil) {
+        const expiryDate = new Date(validUntil)
+        const today = new Date()
+        
+        // Jika tanggal hari ini sudah melewati batas valid_until
+        if (today > expiryDate) {
+          console.error("Masa kontrak habis. Redirecting to /expired")
+          return next({ name: 'Expired' })
+        }
+      }
+    }
+
+    // Lolos semua pengecekan
+    next()
   } else {
-    // Halaman publik (seperti Login)
-    if (isAuthenticated && to.name === 'Login') {
-      // Jika sudah login tapi buka '/' arahkan ke dashboardnya
-      if (userRole === 'super_admin') next({ name: 'SuperAdminHome' })
-      else if (userRole === 'school_admin') next({ name: 'SchoolAdminHome' })
-      else if (userRole === 'teacher') next({ name: 'TeacherHome' })
-    } else {
-      next()
-    }
+    next()
   }
 })
 
