@@ -44,35 +44,51 @@
         
         <!-- Loop for each active day -->
         <div v-for="day in activeDays" :key="day" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-          <div class="bg-gray-800 px-4 py-3 flex justify-between items-center">
+          <div class="bg-gray-800 px-4 py-3 flex justify-between items-center gap-2">
             <h3 class="font-bold text-white uppercase tracking-wider">{{ day }}</h3>
-            <button class="text-xs bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded transition-colors">
-              + Tambah Jam / Sesi
-            </button>
+            <div class="flex gap-2">
+              <button @click="addSession(day, 'KBM')" class="text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded transition-colors flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
+                Jam
+              </button>
+              <button @click="addSession(day, 'ISTIRAHAT')" class="text-xs font-bold bg-yellow-600 hover:bg-yellow-500 text-white px-3 py-1.5 rounded transition-colors flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
+                Istirahat
+              </button>
+            </div>
           </div>
           
           <div class="p-0">
             <table class="w-full text-sm text-left">
               <thead class="bg-gray-50 text-gray-500 text-xs uppercase border-b border-gray-100">
                 <tr>
-                  <th class="px-4 py-3 font-bold text-center w-20">Jam Ke</th>
+                  <th class="px-4 py-3 font-bold text-center w-24">Jam Ke</th>
                   <th class="px-4 py-3 font-bold">Waktu Mulai - Selesai</th>
                   <th class="px-4 py-3 font-bold text-right w-16">Aksi</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-100">
-                <!-- Placeholder for sessions (we will build this dynamically in the next step) -->
-                <tr class="hover:bg-gray-50">
-                  <td class="px-4 py-3 text-center font-bold text-gray-700">1</td>
+                <tr v-if="!daySessions[day] || daySessions[day].length === 0">
+                  <td colspan="3" class="text-center py-4 text-gray-400 italic text-xs">Belum ada sesi di hari ini.</td>
+                </tr>
+                <tr v-for="(session, index) in daySessions[day]" :key="index" :class="{'bg-yellow-50/50': session.type === 'ISTIRAHAT', 'hover:bg-gray-50': true}">
+                  <td class="px-4 py-3 text-center">
+                    <span v-if="session.type === 'ISTIRAHAT'" class="font-black text-[10px] text-yellow-700 bg-yellow-100 px-2 py-1 rounded tracking-widest uppercase">
+                      Istirahat
+                    </span>
+                    <span v-else class="font-black text-gray-700 text-base">
+                      {{ getKbmIndex(day, index) }}
+                    </span>
+                  </td>
                   <td class="px-4 py-3">
                     <div class="flex items-center gap-2">
-                      <input type="time" class="border border-gray-300 rounded px-2 py-1 text-xs w-24">
-                      <span>-</span>
-                      <input type="time" class="border border-gray-300 rounded px-2 py-1 text-xs w-24">
+                      <input v-model="session.start" type="time" class="bg-white text-gray-900 border border-gray-300 rounded-md px-2 py-1.5 text-xs w-28 focus:ring-2 focus:ring-blue-500 outline-none font-mono">
+                      <span class="text-gray-400 font-bold">-</span>
+                      <input v-model="session.end" type="time" class="bg-white text-gray-900 border border-gray-300 rounded-md px-2 py-1.5 text-xs w-28 focus:ring-2 focus:ring-blue-500 outline-none font-mono">
                     </div>
                   </td>
                   <td class="px-4 py-3 text-right">
-                    <button class="text-red-500 hover:text-red-700">
+                    <button @click="removeSession(day, index)" class="text-red-500 hover:text-red-700 bg-red-50 p-1.5 rounded-md transition-colors">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     </button>
                   </td>
@@ -85,7 +101,7 @@
       </div>
 
       <div class="flex justify-end pt-4 pb-12">
-        <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all flex items-center gap-2">
+        <button @click="saveSessions" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all flex items-center gap-2">
           <span>Simpan & Lanjut (Tahap 3)</span>
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
         </button>
@@ -102,6 +118,37 @@ const loading = ref(true)
 const activeDays = ref([])
 const schoolId = localStorage.getItem('school_id')
 
+// State untuk menyimpan sesi per hari
+const daySessions = ref({})
+
+const addSession = (day, type) => {
+  if (!daySessions.value[day]) {
+    daySessions.value[day] = []
+  }
+  daySessions.value[day].push({
+    type: type, // 'KBM' or 'ISTIRAHAT'
+    start: '',
+    end: ''
+  })
+}
+
+const removeSession = (day, index) => {
+  if (confirm("Hapus sesi ini?")) {
+    daySessions.value[day].splice(index, 1)
+  }
+}
+
+// Menghitung "Jam Ke-X" yang mengabaikan Istirahat
+const getKbmIndex = (day, currentIndex) => {
+  let count = 0
+  for (let i = 0; i <= currentIndex; i++) {
+    if (daySessions.value[day] && daySessions.value[day][i] && daySessions.value[day][i].type === 'KBM') {
+      count++
+    }
+  }
+  return count
+}
+
 const fetchProfile = async () => {
   loading.value = true
   try {
@@ -110,14 +157,61 @@ const fetchProfile = async () => {
     })
     if (res.ok) {
       const data = await res.json()
-      // Urutkan hari berdasarkan urutan kalender
       const dayOrder = { 'Senin': 1, 'Selasa': 2, 'Rabu': 3, 'Kamis': 4, 'Jumat': 5, 'Sabtu': 6, 'Minggu': 7 }
       activeDays.value = (data.active_days || []).sort((a, b) => dayOrder[a] - dayOrder[b])
+      
+      // Setelah load hari aktif, load sessions
+      await loadSessions()
     }
   } catch (err) {
     console.error("Gagal memuat profil", err)
+    loading.value = false
+  }
+}
+
+const loadSessions = async () => {
+  try {
+    const res = await fetch('/api/v1/school/sessions', {
+      headers: { 'X-School-ID': schoolId || '' }
+    })
+    if (res.ok) {
+      const savedSessions = await res.json()
+      // Merge saved sessions, jika kosong, inisialisasi default
+      activeDays.value.forEach(day => {
+        if (savedSessions[day] && savedSessions[day].length > 0) {
+          daySessions.value[day] = savedSessions[day]
+        } else {
+          daySessions.value[day] = []
+        }
+      })
+    }
+  } catch (err) {
+    console.error("Gagal memuat sesi", err)
   } finally {
     loading.value = false
+  }
+}
+
+const saveSessions = async () => {
+  try {
+    const res = await fetch('/api/v1/school/sessions', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-School-ID': schoolId || ''
+      },
+      body: JSON.stringify({ sessions: daySessions.value })
+    })
+    
+    if (res.ok) {
+      alert("Sesi KBM berhasil disimpan!")
+      // Lanjut ke tahap 3: Alokasi Jam & Kelas
+      // Nanti akan redirect ke '/admin-sekolah/alokasi-jam'
+    } else {
+      alert("Gagal menyimpan Sesi KBM")
+    }
+  } catch (err) {
+    alert("Terjadi kesalahan jaringan")
   }
 }
 

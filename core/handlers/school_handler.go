@@ -110,5 +110,103 @@ func UpdateMySchoolProfile(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Validasi lembaga berhasil disimpan!"})
+	c.JSON(http.StatusOK, gin.H{"message": "Profil sekolah berhasil diperbarui"})
+}
+
+type SessionPayload struct {
+	Type      string `json:"type"`
+	StartTime string `json:"start_time"`
+	EndTime   string `json:"end_time"`
+}
+
+type UpdateSessionsRequest struct {
+	Sessions map[string][]SessionPayload `json:"sessions"` // Key: day_of_week
+}
+
+func GetSchoolSessions(c *gin.Context) {
+	schoolID := c.GetHeader("X-School-ID")
+	if schoolID == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Akses Ditolak: X-School-ID kosong"})
+		return
+	}
+
+	rows, err := database.DB.Query(`
+		SELECT day_of_week, session_index, type, 
+		       to_char(start_time, 'HH24:MI') as start_time, 
+		       to_char(end_time, 'HH24:MI') as end_time 
+		FROM school_sessions 
+		WHERE school_id = $1 
+		ORDER BY day_of_week, session_index ASC
+	`, schoolID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil sesi KBM"})
+		return
+	}
+	defer rows.Close()
+
+	sessionsByDay := make(map[string][]SessionPayload)
+	for rows.Next() {
+		var day, t, start, end string
+		var idx int
+		if err := rows.Scan(&day, &idx, &t, &start, &end); err == nil {
+			sessionsByDay[day] = append(sessionsByDay[day], SessionPayload{
+				Type:      t,
+				StartTime: start,
+				EndTime:   end,
+			})
+		}
+	}
+
+	c.JSON(http.StatusOK, sessionsByDay)
+}
+
+func UpdateSchoolSessions(c *gin.Context) {
+	schoolID := c.GetHeader("X-School-ID")
+	if schoolID == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Akses Ditolak: X-School-ID kosong"})
+		return
+	}
+
+	var req UpdateSessionsRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Data sesi tidak valid"})
+		return
+	}
+
+	tx, err := database.DB.Begin()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal memulai transaksi"})
+		return
+	}
+
+	// Hapus semua sesi lama untuk klien ini
+	_, err = tx.Exec("DELETE FROM school_sessions WHERE school_id = $1", schoolID)
+	if err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menghapus sesi lama"})
+		return
+	}
+
+	// Insert sesi baru
+	for day, sessions := range req.Sessions {
+		for i, sess := range sessions {
+			_, err = tx.Exec(`
+				INSERT INTO school_sessions (school_id, day_of_week, session_index, type, start_time, end_time)
+				VALUES ($1, $2, $3, $4, $5, $6)
+			`, schoolID, day, i+1, sess.Type, sess.StartTime, sess.EndTime)
+			if err != nil {
+				tx.Rollback()
+				log.Println("Insert session error:", err)
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan sesi baru"})
+				return
+			}
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal commit transaksi"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Sesi KBM berhasil disimpan!"})
 }
