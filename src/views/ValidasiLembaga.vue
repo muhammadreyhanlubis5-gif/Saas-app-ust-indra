@@ -26,7 +26,7 @@
           </h2>
         </div>
         
-        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 relative">
           
           <div class="md:col-span-2">
             <label class="block text-sm font-bold text-gray-700 mb-1">NAMA SEKOLAH/MADRASAH</label>
@@ -36,17 +36,39 @@
 
           <div>
             <label class="block text-sm font-bold text-gray-700 mb-1">Nama Kepala Sekolah</label>
-            <input v-model="profile.headmaster_name" type="text" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Contoh: Marwan Halim, M.Ag.">
+            <input v-model="profile.headmaster_name" type="text" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Masukkan Nama Lengkap beserta Gelar">
           </div>
 
           <div>
             <label class="block text-sm font-bold text-gray-700 mb-1">Nama Wakasek Bid. Kurikulum</label>
-            <input v-model="profile.vice_headmaster_name" type="text" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Contoh: Prasilo Heri Yudanto, Lc. M.Ag">
+            <input v-model="profile.vice_headmaster_name" type="text" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Masukkan Nama Lengkap beserta Gelar">
           </div>
 
-          <div class="md:col-span-2">
+          <div class="md:col-span-2 relative">
             <label class="block text-sm font-bold text-gray-700 mb-1">Lokasi Sekolah / Alamat</label>
-            <input v-model="profile.address" type="text" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Contoh: Lau Bakeri">
+            <input 
+              v-model="profile.address" 
+              @input="searchAddress"
+              @focus="showAddressSuggestions = true"
+              type="text" 
+              class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none" 
+              placeholder="Ketik nama sekolah atau jalan untuk mencari alamat otomatis..."
+            >
+            <!-- Dropdown Sugesti -->
+            <ul v-if="showAddressSuggestions && addressSuggestions.length > 0" class="absolute z-50 w-full mt-1 bg-white border border-gray-200 shadow-xl rounded-lg max-h-60 overflow-y-auto divide-y divide-gray-100">
+              <li 
+                v-for="(sug, index) in addressSuggestions" 
+                :key="index"
+                @click="selectAddress(sug)"
+                class="px-4 py-3 hover:bg-blue-50 cursor-pointer transition-colors"
+              >
+                <p class="text-sm font-bold text-gray-800">{{ extractSchoolName(sug.display_name) }}</p>
+                <p class="text-xs text-gray-500 mt-0.5">{{ sug.display_name }}</p>
+              </li>
+            </ul>
+            <div v-if="isSearchingAddress" class="absolute right-3 top-9">
+              <svg class="animate-spin h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            </div>
           </div>
 
           <div>
@@ -109,7 +131,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const loading = ref(true)
 const saving = ref(false)
@@ -127,7 +149,64 @@ const profile = ref({
   active_days: []
 })
 
-const schoolId = localStorage.getItem('school_id') // We need to make sure we saved this during login! Or the backend extracts it from token. We will send it in header.
+const schoolId = localStorage.getItem('school_id')
+
+// Fitur Pencarian Alamat Otomatis
+const showAddressSuggestions = ref(false)
+const addressSuggestions = ref([])
+const isSearchingAddress = ref(false)
+let searchTimeout = null
+
+const searchAddress = () => {
+  if (profile.value.address.length < 3) {
+    addressSuggestions.value = []
+    showAddressSuggestions.value = false
+    return
+  }
+  
+  isSearchingAddress.value = true
+  showAddressSuggestions.value = true
+  
+  if (searchTimeout) clearTimeout(searchTimeout)
+  
+  searchTimeout = setTimeout(async () => {
+    try {
+      // Menggunakan Nominatim OpenStreetMap (Gratis & Terbuka, tanpa API Key)
+      // Ditambahkan keyword 'sekolah' agar lebih spesifik
+      const query = encodeURIComponent(profile.value.address + ' sekolah')
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json&countrycodes=id&limit=5`, {
+        headers: {
+          'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7'
+        }
+      })
+      if (res.ok) {
+        addressSuggestions.value = await res.json()
+      }
+    } catch (e) {
+      console.error("Gagal mencari alamat", e)
+    } finally {
+      isSearchingAddress.value = false
+    }
+  }, 600) // 600ms debounce
+}
+
+const selectAddress = (suggestion) => {
+  profile.value.address = suggestion.display_name
+  showAddressSuggestions.value = false
+}
+
+// Fungsi bantu untuk memisahkan nama sekolah utama dari alamat panjang
+const extractSchoolName = (displayName) => {
+  const parts = displayName.split(',')
+  return parts[0]
+}
+
+// Tutup dropdown jika klik di luar form
+const handleClickOutside = (e) => {
+  if (showAddressSuggestions.value && !e.target.closest('.md\\:col-span-2.relative')) {
+    showAddressSuggestions.value = false
+  }
+}
 
 const fetchProfile = async () => {
   loading.value = true
@@ -193,5 +272,10 @@ const saveProfile = async () => {
 
 onMounted(() => {
   fetchProfile()
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
 })
 </script>
