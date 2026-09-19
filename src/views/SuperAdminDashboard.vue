@@ -126,17 +126,17 @@
               
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lembaga / Sekolah *</label>
-                <input v-model="form.name" type="text" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Contoh: SMA Negeri 1 Jakarta">
+                <input v-model="form.name" type="text" required class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Contoh: SMA Negeri 1 Jakarta">
               </div>
               
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Asal Sekolah (Alamat)</label>
-                <input v-model="form.address" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Jalan, Kota, Provinsi">
+                <input v-model="form.address" type="text" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Jalan, Kota, Provinsi">
               </div>
               
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Aktif Klien (Kontak)</label>
-                <input v-model="form.contact_number" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="0812-xxxx-xxxx">
+                <input v-model="form.contact_number" type="text" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="0812-xxxx-xxxx">
               </div>
             </div>
 
@@ -146,13 +146,13 @@
                
                <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Masa Aktif Kontrak *</label>
-                <input v-model="form.valid_until" type="date" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+                <input v-model="form.valid_until" type="date" required class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
                </div>
 
                <div class="flex gap-2">
                  <div class="w-1/2">
                    <label class="block text-sm font-medium text-gray-700 mb-1">Metode Bayar</label>
-                   <select v-model="form.payment_method" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
+                   <select v-model="form.payment_method" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
                      <option value="BCA">Transfer BCA</option>
                      <option value="Mandiri">Transfer Mandiri</option>
                      <option value="Tunai">Tunai</option>
@@ -161,19 +161,19 @@
                  </div>
                  <div class="w-1/2">
                    <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah (Rp)</label>
-                   <input v-model="form.payment_amount" type="number" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="1000000">
+                   <input v-model="form.payment_amount" type="number" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="1000000">
                  </div>
                </div>
 
                <div class="pt-2 border-t border-gray-100">
                   <label class="block text-sm font-medium text-gray-700 mb-1">Username Klien (Isolasi Data) *</label>
-                  <input v-model="form.username" type="text" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none bg-indigo-50 font-mono text-indigo-700" placeholder="username_unik">
+                  <input v-model="form.username" type="text" required class="w-full bg-indigo-50 text-indigo-900 border border-indigo-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none font-mono" placeholder="username_unik">
                   <p class="text-[10px] text-gray-500 mt-1">Username ini tidak boleh sama dengan klien lain.</p>
                </div>
 
                <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">Password Klien *</label>
-                  <input v-model="form.password" type="text" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Masukkan password kuat">
+                  <input v-model="form.password" type="text" required class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Masukkan password kuat">
                </div>
             </div>
           </div>
