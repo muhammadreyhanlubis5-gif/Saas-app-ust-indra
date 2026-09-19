@@ -31,6 +31,7 @@ const routes = [
       { path: 'validasi-lembaga', name: 'ValidasiLembaga', component: () => import('../views/ValidasiLembaga.vue') },
       { path: 'sesi-kbm', name: 'SesiWaktu', component: () => import('../views/SesiWaktu.vue') },
       { path: 'pengampu', name: 'PengampuMapel', component: () => import('../views/PengampuMapel.vue') },
+      { path: 'jam-kosong', name: 'JamKosong', component: () => import('../views/JamKosong.vue') },
     ]
   },
   
