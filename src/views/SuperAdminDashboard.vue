@@ -124,9 +124,32 @@
             <div class="space-y-4">
               <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Informasi Instansi</h3>
               
-              <div>
+              <div class="relative">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lembaga / Sekolah *</label>
-                <input v-model="form.name" type="text" required class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Contoh: SMA Negeri 1 Jakarta">
+                <input 
+                  v-model="form.name" 
+                  @input="searchSchool"
+                  @focus="showSchoolSuggestions = true"
+                  type="text" 
+                  required 
+                  class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" 
+                  placeholder="Ketik nama sekolah... (Contoh: SMA Negeri 1)"
+                >
+                <!-- Dropdown Sugesti -->
+                <ul v-if="showSchoolSuggestions && schoolSuggestions.length > 0" class="absolute z-50 w-full mt-1 bg-white border border-gray-200 shadow-xl rounded-lg max-h-60 overflow-y-auto divide-y divide-gray-100">
+                  <li 
+                    v-for="(sug, index) in schoolSuggestions" 
+                    :key="index"
+                    @click="selectSchool(sug)"
+                    class="px-4 py-3 hover:bg-indigo-50 cursor-pointer transition-colors"
+                  >
+                    <p class="text-sm font-bold text-gray-800">{{ extractSchoolName(sug.display_name) }}</p>
+                    <p class="text-xs text-gray-500 mt-0.5">{{ sug.display_name }}</p>
+                  </li>
+                </ul>
+                <div v-if="isSearchingSchool" class="absolute right-3 top-9">
+                  <svg class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                </div>
               </div>
               
               <div>
@@ -192,7 +215,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -211,6 +234,58 @@ const form = ref({
   username: '',
   password: ''
 })
+
+// Autocomplete Logic
+const showSchoolSuggestions = ref(false)
+const schoolSuggestions = ref([])
+const isSearchingSchool = ref(false)
+let searchTimeout = null
+
+const searchSchool = () => {
+  if (form.value.name.length < 3) {
+    schoolSuggestions.value = []
+    showSchoolSuggestions.value = false
+    return
+  }
+  
+  isSearchingSchool.value = true
+  showSchoolSuggestions.value = true
+  
+  if (searchTimeout) clearTimeout(searchTimeout)
+  
+  searchTimeout = setTimeout(async () => {
+    try {
+      const query = encodeURIComponent(form.value.name)
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json&countrycodes=id&limit=5`, {
+        headers: { 'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7' }
+      })
+      if (res.ok) {
+        schoolSuggestions.value = await res.json()
+      }
+    } catch (e) {
+      console.error("Gagal mencari sekolah", e)
+    } finally {
+      isSearchingSchool.value = false
+    }
+  }, 600)
+}
+
+const selectSchool = (suggestion) => {
+  form.value.name = extractSchoolName(suggestion.display_name)
+  form.value.address = suggestion.display_name
+  showSchoolSuggestions.value = false
+}
+
+const extractSchoolName = (displayName) => {
+  const parts = displayName.split(',')
+  return parts[0]
+}
+
+const handleClickOutside = (e) => {
+  if (showSchoolSuggestions.value && !e.target.closest('.relative')) {
+    showSchoolSuggestions.value = false
+  }
+}
 
 const fetchSchools = async () => {
   loading.value = true
@@ -288,6 +363,11 @@ const formatDate = (dateString) => {
 
 onMounted(() => {
   fetchSchools()
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
 })
 
 const handleLogout = () => {
