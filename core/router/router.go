@@ -24,6 +24,8 @@ func SetupRoutes(r *gin.Engine) {
 	{
 		school.GET("/profile", handlers.GetMySchoolProfile)
 		school.PUT("/profile", handlers.UpdateMySchoolProfile)
+		school.GET("/sessions", handlers.GetSchoolSessions)
+		school.PUT("/sessions", handlers.UpdateSchoolSessions)
 	}
 	
 	dashboard := api.Group("/dashboard")
