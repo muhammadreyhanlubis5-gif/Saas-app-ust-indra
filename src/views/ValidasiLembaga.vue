@@ -157,8 +157,17 @@ const addressSuggestions = ref([])
 const isSearchingAddress = ref(false)
 let searchTimeout = null
 
+// Custom hardcoded database for client-specific schools
+const customSchools = [
+  { name: 'SMP Swasta Galih Agung', display_name: 'SMP Swasta Galih Agung, Jl. Berdikari No.1A, Desa Lau Bakeri, Kec. Kutalimbaru, Kab. Deli Serdang, Sumatera Utara 20354' },
+  { name: 'SMA SWASTA GALIH AGUNG', display_name: 'SMA SWASTA GALIH AGUNG, Jl. Berdikari No.1A, Desa Lau Bakeri, Kec. Kutalimbaru, Kab. Deli Serdang, Sumatera Utara 20354' },
+  { name: 'MTS Darularafah', display_name: 'MTS Darularafah, Jl. Berdikari No.1A, Desa Lau Bakeri, Kec. Kutalimbaru, Kab. Deli Serdang, Sumatera Utara 20354' },
+  { name: 'MAS Darularafah', display_name: 'MAS Darularafah, Jl. Berdikari No.1A, Desa Lau Bakeri, Kec. Kutalimbaru, Kab. Deli Serdang, Sumatera Utara 20354' }
+]
+
 const searchAddress = () => {
-  if (profile.value.address.length < 3) {
+  const queryText = profile.value.address.toLowerCase()
+  if (queryText.length < 2) {
     addressSuggestions.value = []
     showAddressSuggestions.value = false
     return
@@ -171,17 +180,30 @@ const searchAddress = () => {
   
   searchTimeout = setTimeout(async () => {
     try {
-      // Menggunakan Nominatim OpenStreetMap (Gratis & Terbuka, tanpa API Key)
-      // Ditambahkan keyword 'sekolah' agar lebih spesifik
+      // 1. Cek Custom Database lokal
+      const localMatches = customSchools.filter(s => 
+        s.name.toLowerCase().includes(queryText) || 
+        s.display_name.toLowerCase().includes(queryText)
+      ).map(s => ({
+        display_name: s.display_name
+      }))
+
+      // 2. Fetch Nominatim OpenStreetMap
       const query = encodeURIComponent(profile.value.address + ' sekolah')
       const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json&countrycodes=id&limit=5`, {
         headers: {
           'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7'
         }
       })
+      
+      let apiResults = []
       if (res.ok) {
-        addressSuggestions.value = await res.json()
+        apiResults = await res.json()
       }
+
+      // Gabungkan hasil
+      addressSuggestions.value = [...localMatches, ...apiResults].slice(0, 7)
+
     } catch (e) {
       console.error("Gagal mencari alamat", e)
     } finally {

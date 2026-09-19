@@ -133,7 +133,7 @@
                   type="text" 
                   required 
                   class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" 
-                  placeholder="Ketik nama sekolah... (Contoh: SMA Negeri 1)"
+                  placeholder="Ketik nama sekolah untuk mencari otomatis..."
                 >
                 <!-- Dropdown Sugesti -->
                 <ul v-if="showSchoolSuggestions && schoolSuggestions.length > 0" class="absolute z-50 w-full mt-1 bg-white border border-gray-200 shadow-xl rounded-lg max-h-60 overflow-y-auto divide-y divide-gray-100">
@@ -154,12 +154,12 @@
               
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Asal Sekolah (Alamat)</label>
-                <input v-model="form.address" type="text" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Jalan, Kota, Provinsi">
+                <input v-model="form.address" type="text" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Masukkan alamat lengkap sekolah">
               </div>
               
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Aktif Klien (Kontak)</label>
-                <input v-model="form.contact_number" type="text" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="0812-xxxx-xxxx">
+                <input v-model="form.contact_number" type="text" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Masukkan nomor yang bisa dihubungi">
               </div>
             </div>
 
@@ -241,8 +241,17 @@ const schoolSuggestions = ref([])
 const isSearchingSchool = ref(false)
 let searchTimeout = null
 
+// Custom hardcoded database for client-specific schools
+const customSchools = [
+  { name: 'SMP Swasta Galih Agung', display_name: 'SMP Swasta Galih Agung, Jl. Berdikari No.1A, Desa Lau Bakeri, Kec. Kutalimbaru, Kab. Deli Serdang, Sumatera Utara 20354' },
+  { name: 'SMA SWASTA GALIH AGUNG', display_name: 'SMA SWASTA GALIH AGUNG, Jl. Berdikari No.1A, Desa Lau Bakeri, Kec. Kutalimbaru, Kab. Deli Serdang, Sumatera Utara 20354' },
+  { name: 'MTS Darularafah', display_name: 'MTS Darularafah, Jl. Berdikari No.1A, Desa Lau Bakeri, Kec. Kutalimbaru, Kab. Deli Serdang, Sumatera Utara 20354' },
+  { name: 'MAS Darularafah', display_name: 'MAS Darularafah, Jl. Berdikari No.1A, Desa Lau Bakeri, Kec. Kutalimbaru, Kab. Deli Serdang, Sumatera Utara 20354' }
+]
+
 const searchSchool = () => {
-  if (form.value.name.length < 3) {
+  const queryText = form.value.name.toLowerCase()
+  if (queryText.length < 2) {
     schoolSuggestions.value = []
     showSchoolSuggestions.value = false
     return
@@ -255,23 +264,43 @@ const searchSchool = () => {
   
   searchTimeout = setTimeout(async () => {
     try {
+      // 1. Cek dari Custom Database lokal terlebih dahulu
+      const localMatches = customSchools.filter(s => 
+        s.name.toLowerCase().includes(queryText) || 
+        s.display_name.toLowerCase().includes(queryText)
+      ).map(s => ({
+        display_name: s.display_name,
+        customName: s.name // Penanda custom name
+      }))
+
+      // 2. Fetch dari Nominatim OpenStreetMap
       const query = encodeURIComponent(form.value.name)
       const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json&countrycodes=id&limit=5`, {
         headers: { 'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7' }
       })
+      
+      let apiResults = []
       if (res.ok) {
-        schoolSuggestions.value = await res.json()
+        apiResults = await res.json()
       }
+
+      // Gabungkan hasil lokal dan API
+      schoolSuggestions.value = [...localMatches, ...apiResults].slice(0, 7)
+      
     } catch (e) {
       console.error("Gagal mencari sekolah", e)
     } finally {
       isSearchingSchool.value = false
     }
-  }, 600)
+  }, 500)
 }
 
 const selectSchool = (suggestion) => {
-  form.value.name = extractSchoolName(suggestion.display_name)
+  if (suggestion.customName) {
+    form.value.name = suggestion.customName
+  } else {
+    form.value.name = extractSchoolName(suggestion.display_name)
+  }
   form.value.address = suggestion.display_name
   showSchoolSuggestions.value = false
 }
