@@ -114,6 +114,9 @@ const handleLogin = async () => {
       const decodedPayload = JSON.parse(atob(payloadBase64))
       
       localStorage.setItem('user_role', decodedPayload.role)
+      if (decodedPayload.school_id) {
+        localStorage.setItem('school_id', decodedPayload.school_id)
+      }
       if (decodedPayload.valid_until) {
         localStorage.setItem('valid_until', decodedPayload.valid_until)
       }

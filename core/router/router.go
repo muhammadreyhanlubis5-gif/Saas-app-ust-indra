@@ -18,6 +18,12 @@ func SetupRoutes(r *gin.Engine) {
 		super.POST("/schools", handlers.CreateSchool)
 		super.PUT("/schools/:id/block", handlers.BlockSchool)
 	}
+
+	school := api.Group("/school")
+	{
+		school.GET("/profile", handlers.GetMySchoolProfile)
+		school.PUT("/profile", handlers.UpdateMySchoolProfile)
+	}
 	
 	dashboard := api.Group("/dashboard")
 	{

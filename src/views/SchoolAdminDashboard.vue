@@ -28,10 +28,10 @@
           <p class="text-xs font-extrabold text-gray-400 uppercase tracking-wider mb-2 px-3">{{ group.title }}</p>
           <div class="space-y-1">
             <template v-for="menu in group.items" :key="menu.title">
-              <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+              <router-link :to="menu.path" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors" exact-active-class="bg-gray-100 text-gray-900 font-bold border-l-2 border-gray-400">
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="menu.icon"></path></svg>
                 <span class="truncate">{{ menu.title }}</span>
-              </a>
+              </router-link>
             </template>
           </div>
         </div>
@@ -55,7 +55,9 @@
         <!-- Header Section -->
         <div class="mb-8 bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
           <div>
-            <h1 class="text-3xl font-extrabold tracking-tight mb-2">Selamat Datang di Workspace Anda</h1>
+            <h1 class="text-3xl font-extrabold tracking-tight mb-2">
+              Selamat Datang di Workspace Anda{{ profileName ? ', ' + profileName : '' }}
+            </h1>
             <p class="text-blue-100 font-medium">Sistem Penjadwalan Cerdas. Silakan lengkapi master data untuk memulai.</p>
           </div>
           <div class="hidden md:block bg-white/20 px-6 py-3 rounded-xl backdrop-blur-sm border border-white/30 text-center shadow-inner">
@@ -107,7 +109,7 @@
                 <h3 class="font-bold text-gray-800 text-lg">Persiapan Data</h3>
               </div>
               <p class="text-sm text-gray-600 mb-5 leading-relaxed">Validasi identitas sekolah, tentukan sesi mengajar, dan atur alokasi jam kelas.</p>
-              <button class="w-full py-2 bg-blue-600 text-white rounded-lg text-sm font-bold shadow-sm hover:bg-blue-700 transition-colors group-hover:shadow-md">
+              <button @click="$router.push('/admin-sekolah/validasi-lembaga')" class="w-full py-2 bg-blue-600 text-white rounded-lg text-sm font-bold shadow-sm hover:bg-blue-700 transition-colors group-hover:shadow-md">
                 Kelola Master Data
               </button>
             </div>
@@ -175,9 +177,31 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const profileName = ref('')
+
+const fetchProfileName = async () => {
+  const schoolId = localStorage.getItem('school_id')
+  if (!schoolId) return
+  try {
+    const res = await fetch('/api/v1/school/profile', {
+      headers: { 'X-School-ID': schoolId }
+    })
+    if (res.ok) {
+      const data = await res.json()
+      profileName.value = data.name
+    }
+  } catch (e) {
+    // ignore
+  }
+}
+
+onMounted(() => {
+  fetchProfileName()
+})
 
 const iconDb = "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
 const iconClock = "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
@@ -193,36 +217,36 @@ const menuGroups = [
   {
     title: 'Master Data',
     items: [
-      { title: 'Validasi Lembaga', icon: iconDb },
-      { title: 'Sesi & Waktu KBM', icon: iconClock },
-      { title: 'Alokasi Jam & Kelas', icon: iconBook },
+      { title: 'Validasi Lembaga', icon: iconDb, path: '/admin-sekolah/validasi-lembaga' },
+      { title: 'Sesi & Waktu KBM', icon: iconClock, path: '/admin-sekolah/sesi-kbm' },
+      { title: 'Alokasi Jam & Kelas', icon: iconBook, path: '/admin-sekolah/alokasi-jam' },
     ]
   },
   {
     title: 'Distribusi Beban',
     items: [
-      { title: 'Pengampu Mapel', icon: iconUsers },
-      { title: 'Permintaan Jam Kosong', icon: iconCalendar },
-      { title: 'Tugas Tambahan', icon: iconBadge },
+      { title: 'Pengampu Mapel', icon: iconUsers, path: '/admin-sekolah/pengampu' },
+      { title: 'Permintaan Jam Kosong', icon: iconCalendar, path: '/admin-sekolah/jam-kosong' },
+      { title: 'Tugas Tambahan', icon: iconBadge, path: '/admin-sekolah/tugas-tambahan' },
     ]
   },
   {
     title: 'Penjadwalan',
     items: [
-      { title: 'Input & Susun Jadwal', icon: iconCalendar },
-      { title: 'Jadwal Guru', icon: iconUsers },
-      { title: 'Jadwal Kelas', icon: iconBook },
+      { title: 'Input & Susun Jadwal', icon: iconCalendar, path: '/admin-sekolah/input-jadwal' },
+      { title: 'Jadwal Guru', icon: iconUsers, path: '/admin-sekolah/jadwal-guru' },
+      { title: 'Jadwal Kelas', icon: iconBook, path: '/admin-sekolah/jadwal-kelas' },
     ]
   },
   {
     title: 'Analisis & Laporan',
     items: [
-      { title: 'Analisis Sebaran Guru', icon: iconChart },
-      { title: 'Analisis Mata Pelajaran', icon: iconChart },
-      { title: 'Validasi Kode Guru', icon: iconReport },
-      { title: 'Validasi Kode Mapel', icon: iconReport },
-      { title: 'Master Jadwal', icon: iconReport },
-      { title: 'Tunjangan Sertifikasi', icon: iconBadge },
+      { title: 'Analisis Sebaran Guru', icon: iconChart, path: '/admin-sekolah/analisis-guru' },
+      { title: 'Analisis Mata Pelajaran', icon: iconChart, path: '/admin-sekolah/analisis-mapel' },
+      { title: 'Validasi Kode Guru', icon: iconReport, path: '/admin-sekolah/validasi-kode-guru' },
+      { title: 'Validasi Kode Mapel', icon: iconReport, path: '/admin-sekolah/validasi-kode-mapel' },
+      { title: 'Master Jadwal', icon: iconReport, path: '/admin-sekolah/master-jadwal' },
+      { title: 'Tunjangan Sertifikasi', icon: iconBadge, path: '/admin-sekolah/sertifikasi' },
     ]
   }
 ]

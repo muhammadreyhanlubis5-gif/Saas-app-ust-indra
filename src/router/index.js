@@ -28,8 +28,7 @@ const routes = [
     component: SchoolAdminDashboard,
     meta: { requiresAuth: true, role: 'SCHOOL_ADMIN' },
     children: [
-      { path: '', name: 'SchoolAdminHome', component: SchoolAdminDashboard },
-      { path: 'validasi', name: 'DashboardValidation', component: DashboardValidation },
+      { path: 'validasi-lembaga', name: 'ValidasiLembaga', component: () => import('../views/ValidasiLembaga.vue') },
     ]
   },
   
