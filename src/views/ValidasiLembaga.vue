@@ -73,12 +73,18 @@
 
           <div>
             <label class="block text-sm font-bold text-gray-700 mb-1">Tahun Pelajaran</label>
-            <select v-model="profile.academic_year" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none">
-              <option value="">Pilih Tahun Pelajaran</option>
-              <option value="2024-2025">2024 - 2025</option>
-              <option value="2025-2026">2025 - 2026</option>
-              <option value="2026-2027">2026 - 2027</option>
-            </select>
+            <input 
+              v-model="profile.academic_year" 
+              list="tahun-ajaran-list"
+              class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none" 
+              placeholder="Pilih atau ketik (Contoh: 2026-2027)"
+            >
+            <datalist id="tahun-ajaran-list">
+              <option value="2024-2025"></option>
+              <option value="2025-2026"></option>
+              <option value="2026-2027"></option>
+              <option value="2027-2028"></option>
+            </datalist>
           </div>
 
           <div>
@@ -132,7 +138,9 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const loading = ref(true)
 const saving = ref(false)
 
@@ -282,6 +290,7 @@ const saveProfile = async () => {
     
     if (res.ok) {
       alert("Validasi Lembaga berhasil disimpan!")
+      router.push('/admin-sekolah/sesi-kbm')
     } else {
       alert("Gagal menyimpan data")
     }

@@ -97,9 +97,9 @@
                   <div class="font-bold text-gray-700">{{ school.teacher_count }} Guru</div>
                   <div class="font-medium text-gray-500 text-xs">{{ school.subject_count }} Bidang Studi</div>
                 </td>
-                <td class="py-4 px-5 text-right">
-                  <button class="text-indigo-600 hover:text-indigo-800 font-bold text-sm mr-4 transition-colors">Edit</button>
-                  <button @click="blockSchool(school.id)" class="text-yellow-600 hover:text-yellow-800 font-bold text-sm mr-4 transition-colors">Blokir</button>
+                <td class="py-4 px-5 text-right whitespace-nowrap">
+                  <button class="text-indigo-600 hover:text-indigo-800 font-bold text-sm mr-3 transition-colors">Edit</button>
+                  <button @click="blockSchool(school.id)" class="text-yellow-600 hover:text-yellow-800 font-bold text-sm mr-3 transition-colors">Blokir</button>
                   <button @click="deleteSchool(school.id, school.name)" class="text-red-600 hover:text-red-800 font-bold text-sm transition-colors">Hapus</button>
                 </td>
               </tr>

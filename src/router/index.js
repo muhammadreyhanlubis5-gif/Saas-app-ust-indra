@@ -29,6 +29,7 @@ const routes = [
     meta: { requiresAuth: true, role: 'SCHOOL_ADMIN' },
     children: [
       { path: 'validasi-lembaga', name: 'ValidasiLembaga', component: () => import('../views/ValidasiLembaga.vue') },
+      { path: 'sesi-kbm', name: 'SesiWaktu', component: () => import('../views/SesiWaktu.vue') },
     ]
   },
   
