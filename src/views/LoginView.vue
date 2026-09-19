@@ -94,31 +94,42 @@ const router = useRouter()
 const username = ref('')
 const password = ref('')
 
-const handleLogin = () => {
-  const user = username.value.toLowerCase()
-  if (user === 'admin') {
-    localStorage.setItem('token', 'dummy-token')
-    localStorage.setItem('user_role', 'SUPER_ADMIN')
-    router.push('/super-admin')
-  } 
-  else if (user === 'sekolah') {
-    localStorage.setItem('token', 'dummy-token')
-    localStorage.setItem('user_role', 'SCHOOL_ADMIN')
-    router.push('/admin-sekolah')
-  } 
-  else if (user === 'guru') {
-    localStorage.setItem('token', 'dummy-token')
-    localStorage.setItem('user_role', 'TEACHER')
-    router.push('/guru')
-  }
-  else if (user === 'expired') {
-    localStorage.setItem('token', 'dummy-token')
-    localStorage.setItem('user_role', 'SCHOOL_ADMIN')
-    localStorage.setItem('valid_until', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()) 
-    router.push('/admin-sekolah') 
-  }
-  else {
-    alert("Coba ketik 'admin', 'sekolah', atau 'guru' untuk login sementara.")
+const handleLogin = async () => {
+  try {
+    const response = await fetch('/api/v1/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: username.value, password: password.value })
+    })
+    
+    const data = await response.json()
+    
+    if (response.ok) {
+      // Decode JWT token untuk mendapatkan role
+      const token = data.token
+      localStorage.setItem('token', token)
+      
+      // Ambil payload dari JWT
+      const payloadBase64 = token.split('.')[1]
+      const decodedPayload = JSON.parse(atob(payloadBase64))
+      
+      localStorage.setItem('user_role', decodedPayload.role)
+      if (decodedPayload.valid_until) {
+        localStorage.setItem('valid_until', decodedPayload.valid_until)
+      }
+
+      if (decodedPayload.role === 'SUPER_ADMIN') {
+        router.push('/super-admin')
+      } else if (decodedPayload.role === 'SCHOOL_ADMIN') {
+        router.push('/admin-sekolah')
+      } else {
+        router.push('/guru')
+      }
+    } else {
+      alert("Login Gagal: " + (data.error || "Password salah atau user tidak ditemukan"))
+    }
+  } catch (error) {
+    alert("Terjadi kesalahan jaringan saat login.")
   }
 }
 </script>

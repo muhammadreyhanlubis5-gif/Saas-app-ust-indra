@@ -6,7 +6,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"jadwal-api/core/database"
 	"jadwal-api/core/middleware"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginRequest struct {
@@ -22,28 +24,51 @@ func GenerateJWTLogin(c *gin.Context) {
 		return
 	}
 
-	// Di sini harusnya ada query database untuk cek username & password
-	// dan mengambil data user beserta valid_until milik school_id nya.
-	// Contoh MOCK DATA:
+	// Cari user di database berdasarkan username
+	var user struct {
+		ID         string
+		SchoolID   *string
+		Password   string
+		Role       string
+		ValidUntil *time.Time
+	}
+
+	err := database.DB.QueryRow(`
+		SELECT u.id, u.school_id, u.password, u.role, s.valid_until
+		FROM users u
+		LEFT JOIN schools s ON u.school_id = s.id
+		WHERE u.username = $1
+	`, req.Username).Scan(&user.ID, &user.SchoolID, &user.Password, &user.Role, &user.ValidUntil)
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Username tidak ditemukan"})
+		return
+	}
+
+	// Verifikasi Password menggunakan bcrypt
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Password salah"})
+		return
+	}
+
+	schoolIDStr := ""
+	if user.SchoolID != nil {
+		schoolIDStr = *user.SchoolID
+	}
 	
-	mockUserID := "user-123"
-	mockSchoolID := "school-456"
-	mockRole := "SCHOOL_ADMIN"
-	mockValidUntil := time.Now().AddDate(0, 1, 0).Format(time.RFC3339) // Aktif 1 bulan dari sekarang
-	
-	// Khusus untuk test expired: 
-	if req.Username == "expired" {
-		mockValidUntil = time.Now().AddDate(0, -1, 0).Format(time.RFC3339) // Expired 1 bulan lalu
+	validUntilStr := ""
+	if user.ValidUntil != nil {
+		validUntilStr = user.ValidUntil.Format(time.RFC3339)
 	}
 
 	// Buat Claims Token
 	claims := middleware.CustomClaims{
-		UserID:     mockUserID,
-		SchoolID:   mockSchoolID,
-		Role:       mockRole,
-		ValidUntil: mockValidUntil,
+		UserID:     user.ID,
+		SchoolID:   schoolIDStr,
+		Role:       user.Role,
+		ValidUntil: validUntilStr,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)), // Token login expired 1 hari
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}

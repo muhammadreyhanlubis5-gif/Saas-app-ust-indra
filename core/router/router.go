@@ -8,6 +8,9 @@ import (
 func SetupRoutes(r *gin.Engine) {
 	api := r.Group("/api/v1")
 	
+	// Authentication
+	api.POST("/login", handlers.GenerateJWTLogin)
+	
 	dashboard := api.Group("/dashboard")
 	{
 		dashboard.GET("/validation", handlers.GetDashboardValidation)

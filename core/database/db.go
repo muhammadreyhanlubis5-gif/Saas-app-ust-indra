@@ -6,6 +6,7 @@ import (
 	"os"
 
 	_ "github.com/lib/pq"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var DB *sql.DB
@@ -28,4 +29,27 @@ func Connect() {
 	}
 
 	log.Println("Successfully connected to Neon Serverless Postgres!")
+	
+	// Otomatis Seed Super Admin jika belum ada
+	seedSuperAdmin()
+}
+
+func seedSuperAdmin() {
+	var count int
+	err := DB.QueryRow("SELECT COUNT(*) FROM users WHERE role = 'SUPER_ADMIN' AND username = 'admin'").Scan(&count)
+	if err != nil {
+		log.Println("Gagal mengecek super admin:", err)
+		return
+	}
+
+	if count == 0 {
+		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
+		_, err = DB.Exec(`
+			INSERT INTO users (name, username, password, role) 
+			VALUES ('Master Admin', 'admin', $1, 'SUPER_ADMIN')
+		`, string(hashedPassword))
+		if err == nil {
+			log.Println("Super Admin (admin / admin123) berhasil dibuat!")
+		}
+	}
 }
