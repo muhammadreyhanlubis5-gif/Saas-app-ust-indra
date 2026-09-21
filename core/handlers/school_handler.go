@@ -226,6 +226,11 @@ func GetPengampuMapel(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil data pengampu"})
 		return
 	}
+	
+	if len(pengampuData) == 0 {
+		c.Data(http.StatusOK, "application/json", []byte("{}"))
+		return
+	}
 
 	c.Data(http.StatusOK, "application/json", pengampuData)
 }
@@ -267,6 +272,11 @@ func GetTugasTambahan(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil data tugas tambahan"})
 		return
 	}
+	
+	if len(data) == 0 {
+		c.Data(http.StatusOK, "application/json", []byte("{}"))
+		return
+	}
 
 	c.Data(http.StatusOK, "application/json", data)
 }
@@ -306,6 +316,11 @@ func GetJamKosong(c *gin.Context) {
 	err := database.DB.QueryRow("SELECT jam_kosong_data FROM schools WHERE id = $1", schoolID).Scan(&data)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil data jam kosong"})
+		return
+	}
+
+	if len(data) == 0 {
+		c.Data(http.StatusOK, "application/json", []byte("{}"))
 		return
 	}
 
