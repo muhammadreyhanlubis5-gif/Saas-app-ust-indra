@@ -1,129 +1,210 @@
 <template>
-  <div class="max-w-[1600px] mx-auto p-2">
-    <div class="flex items-center justify-between mb-4">
+  <div class="max-w-[1400px] mx-auto p-4">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
       <div>
-        <h1 class="text-2xl font-bold text-gray-800">Input & Susun Jadwal (Live Validation)</h1>
-        <p class="text-gray-500 text-sm">Jadwal yang Anda masukkan akan divalidasi secara real-time terhadap jam kosong dan bentrok.</p>
+        <h1 class="text-3xl font-black text-gray-900 tracking-tight">Input & Susun Jadwal</h1>
+        <p class="text-gray-500 text-sm mt-1">Smart Scheduling Engine dengan deteksi bentrok real-time.</p>
       </div>
-      <button @click="saveData" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl shadow-md transition-all flex items-center gap-2">
-        <span>Simpan Jadwal</span>
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-      </button>
-    </div>
-
-    <!-- Live Validation Dashboard -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      <div class="bg-white border-l-4 border-red-500 p-4 rounded-r-lg shadow-sm">
-        <h3 class="text-sm font-bold text-red-700 flex items-center gap-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-          Deteksi Bentrok Guru
-        </h3>
-        <p class="text-xs text-red-600 mt-1">
-          <span class="font-bold text-lg">{{ Object.keys(clashingTeachers).length }}</span> guru terdeteksi mengajar di lebih dari satu kelas pada jam yang sama. Sel akan berwarna <span class="bg-red-200 px-1 rounded text-red-800 font-bold">MERAH</span>.
-        </p>
-      </div>
-      <div class="bg-white border-l-4 border-orange-500 p-4 rounded-r-lg shadow-sm">
-        <h3 class="text-sm font-bold text-orange-700 flex items-center gap-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          Peringatan Jam Kosong
-        </h3>
-        <p class="text-xs text-orange-600 mt-1">
-          Sel akan berwarna <span class="bg-orange-200 px-1 rounded text-orange-800 font-bold">ORANYE</span> jika guru dijadwalkan pada waktu "Permintaan Jam Kosong".
-        </p>
+      <div class="flex items-center gap-3">
+        <button @click="autoGenerate" class="bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 font-bold py-2.5 px-6 rounded-xl shadow-sm transition-all flex items-center gap-2">
+          <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+          <span>Auto-Generate</span>
+        </button>
+        <button @click="saveData" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition-all flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          <span>Simpan Jadwal</span>
+        </button>
       </div>
     </div>
 
-    <div v-if="loading" class="flex justify-center py-12">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+    <!-- Status Alerts -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+      <div class="bg-white border border-red-100 p-4 rounded-2xl shadow-sm flex items-start gap-4">
+        <div class="bg-red-50 p-2 rounded-lg">
+          <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        </div>
+        <div>
+          <h3 class="text-sm font-bold text-gray-900">Deteksi Bentrok Guru</h3>
+          <p class="text-xs text-gray-500 mt-1">Kartu jadwal akan berdenyut merah (Bentrok) jika guru mengajar di lebih dari satu kelas pada jam yang sama.</p>
+        </div>
+      </div>
+      <div class="bg-white border border-orange-100 p-4 rounded-2xl shadow-sm flex items-start gap-4">
+        <div class="bg-orange-50 p-2 rounded-lg">
+          <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+        <div>
+          <h3 class="text-sm font-bold text-gray-900">Peringatan Jam Kosong</h3>
+          <p class="text-xs text-gray-500 mt-1">Kartu jadwal akan berwarna oranye jika guru ditempatkan pada hari dan jam yang mereka minta untuk dikosongkan.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Class Selector (Pills) -->
+    <div class="mb-8 relative">
+      <div class="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-gray-50 to-transparent pointer-events-none"></div>
+      <div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-gray-50 to-transparent pointer-events-none"></div>
+      
+      <div class="flex gap-2 overflow-x-auto pb-4 custom-scrollbar px-2 snap-x">
+        <button v-for="cls in classes" :key="cls" 
+                @click="activeClass = cls"
+                :class="activeClass === cls ? 'bg-gray-900 text-white shadow-lg scale-105' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'"
+                class="px-6 py-3 rounded-2xl font-black text-sm whitespace-nowrap transition-all snap-center flex-shrink-0">
+          KELAS {{ cls }}
+        </button>
+      </div>
+    </div>
+
+    <div v-if="loading" class="flex justify-center py-20">
+      <div class="animate-spin rounded-full h-10 w-10 border-b-4 border-gray-900"></div>
     </div>
     
-    <div v-else class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-12">
-      <div class="overflow-x-auto relative custom-scrollbar max-h-[70vh]">
-        <table class="w-full text-sm text-left whitespace-nowrap min-w-max border-collapse">
-          <thead class="bg-white text-gray-900 text-xs font-bold sticky top-0 z-20">
-            <tr>
-              <th class="px-4 py-3 border border-black text-center w-24 sticky left-0 bg-white z-30 tracking-wider">HARI</th>
-              <th class="px-4 py-3 border border-black text-center w-32 sticky left-[96px] bg-white z-30 tracking-wider">WAKTU</th>
-              <th class="px-2 py-3 border border-black text-center w-12 sticky left-[224px] bg-white z-30">
-                <div class="writing-vertical -rotate-180 flex items-center justify-center h-12 tracking-widest">JAM</div>
-              </th>
+    <!-- Modern Kanban/Card Layout -->
+    <div v-else-if="activeClass" class="space-y-8">
+      <div v-for="day in activeDays" :key="day" class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+        
+        <!-- Day Header -->
+        <div class="bg-gray-900 px-6 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-2 h-8 bg-blue-500 rounded-full"></div>
+            <h2 class="text-xl font-black text-white uppercase tracking-widest">{{ day }}</h2>
+          </div>
+          <span class="text-xs font-medium text-gray-400">{{ daySessions[day].filter(s => s.type === 'KBM').length }} Sesi Aktif</span>
+        </div>
+        
+        <!-- Day Sessions Grid -->
+        <div class="p-6">
+          <div class="flex flex-wrap gap-4">
+            
+            <template v-for="session in daySessions[day]" :key="session.label">
               
-              <th v-for="cls in classes" :key="cls" class="px-2 py-3 border border-black text-center min-w-[60px]">
-                <div class="writing-vertical -rotate-180 flex items-center justify-center h-24 text-gray-900">
-                  {{ cls }}
+              <!-- Istirahat Block -->
+              <div v-if="session.type === 'ISTIRAHAT'" 
+                   class="w-full md:w-32 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiAvPgo8cGF0aCBkPSJNMCAwTDggOFpNOCAwTDAgOFoiIHN0cm9rZT0iI2YxZjVmOSIgc3Ryb2tlLXdpZHRoPSIxIiAvPgo8L3N2Zz4=')] border border-gray-100 rounded-2xl flex flex-col items-center justify-center opacity-60 h-28">
+                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ session.start_time }} - {{ session.end_time }}</span>
+                <span class="text-sm font-bold text-gray-500 mt-2">ISTIRAHAT</span>
+              </div>
+              
+              <!-- KBM Block -->
+              <div v-else @click="openModal(day, session.label, activeClass)"
+                   :class="getCardClass(day, session.label, activeClass)"
+                   class="w-full sm:w-40 md:w-48 h-28 rounded-2xl border-2 cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative group flex flex-col overflow-hidden">
+                
+                <!-- Time Ribbon -->
+                <div class="bg-gray-50/80 px-3 py-1.5 border-b border-gray-100 flex justify-between items-center">
+                  <span class="text-[10px] font-black text-gray-500">SESI {{ session.label }}</span>
+                  <span class="text-[10px] font-bold text-gray-400">{{ session.start_time }} - {{ session.end_time }}</span>
                 </div>
-              </th>
-            </tr>
-          </thead>
-          <tbody class="text-gray-900 divide-y divide-black">
-            <template v-for="day in activeDays" :key="day">
-              <!-- Baris Pemisah Hari -->
-              <tr class="bg-gray-200">
-                <td :colspan="3 + classes.length" class="h-1 border border-black"></td>
-              </tr>
+                
+                <!-- Content Area -->
+                <div class="flex-1 flex flex-col items-center justify-center p-3 relative bg-white">
+                  
+                  <!-- Empty State -->
+                  <template v-if="!hasJadwal(day, session.label, activeClass)">
+                    <div class="w-8 h-8 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-300 group-hover:border-blue-400 group-hover:text-blue-500 transition-colors">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    </div>
+                    <span class="text-[10px] font-bold text-gray-400 mt-2 group-hover:text-blue-500 transition-colors">Isi Jadwal</span>
+                  </template>
+                  
+                  <!-- Filled State -->
+                  <template v-else>
+                    
+                    <!-- Alert Badges (Absolute) -->
+                    <div v-if="getValidationType(day, session.label, activeClass) === 'clash'" class="absolute -top-3 -right-3 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg animate-bounce">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </div>
+                    <div v-else-if="getValidationType(day, session.label, activeClass) === 'kosong'" class="absolute top-1 right-1 w-2 h-2 bg-orange-500 rounded-full animate-ping"></div>
+
+                    <!-- Mapel -->
+                    <h4 class="text-sm font-black text-gray-900 truncate w-full text-center">{{ getJadwal(day, session.label, activeClass).mapel }}</h4>
+                    
+                    <!-- Guru Pill -->
+                    <div class="mt-2 bg-gray-900 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-sm flex items-center gap-1.5">
+                      <div class="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
+                      {{ getJadwal(day, session.label, activeClass).guru }}
+                    </div>
+                    
+                  </template>
+                  
+                </div>
+              </div>
               
-              <tr v-for="(session, sIdx) in daySessions[day]" :key="`${day}-${sIdx}`" class="hover:bg-blue-50/20 transition-colors">
-                
-                <!-- Day Cell -->
-                <td v-if="sIdx === 0" :rowspan="daySessions[day].length" class="px-4 py-2 border border-black font-black text-center uppercase tracking-wider sticky left-0 bg-white z-10" :class="getDayColor(day)">
-                  {{ day }}
-                </td>
-                
-                <!-- Waktu Cell -->
-                <td class="px-2 py-2 border border-black text-center font-bold text-gray-800 text-xs sticky left-[96px] bg-white z-10">
-                  {{ session.start_time }} - {{ session.end_time }}
-                </td>
-
-                <!-- Session/Jam Cell -->
-                <td class="px-2 py-2 border border-black text-center font-black sticky left-[224px] bg-white z-10" :class="session.type === 'ISTIRAHAT' ? 'text-gray-900 bg-gray-200' : 'text-gray-900'">
-                  {{ session.label }}
-                </td>
-                
-                <!-- Cells untuk Kelas -->
-                <td v-for="cls in classes" :key="cls" class="border border-black p-0 text-center align-middle" :class="[session.type === 'ISTIRAHAT' ? 'bg-gray-200' : 'bg-white', getValidationClass(day, session.label, getJadwal(day, session.label, cls).guru)]">
-                  
-                  <div v-if="session.type === 'ISTIRAHAT'" class="w-full h-full min-h-[48px]">
-                  </div>
-                  <div v-else class="flex flex-col h-full min-h-[52px]">
-                    <!-- Input Guru (Atas) -->
-                    <input 
-                      type="text" 
-                      v-model="getJadwal(day, session.label, cls).guru"
-                      :list="`guru-list-${cls}`"
-                      title="Ketik Kode Guru"
-                      class="w-full flex-1 bg-transparent border-b border-black px-1 py-1 text-center font-bold text-gray-900 focus:outline-none focus:bg-yellow-100 focus:border-blue-600 uppercase text-xs"
-                    >
-                    <!-- Input Mapel (Bawah) -->
-                    <input 
-                      type="text" 
-                      v-model="getJadwal(day, session.label, cls).mapel"
-                      :list="`mapel-list-${cls}`"
-                      title="Ketik Kode Mapel"
-                      class="w-full flex-1 bg-transparent px-1 py-1 text-center font-bold text-blue-900 focus:outline-none focus:bg-yellow-100 focus:border-blue-600 uppercase text-xs"
-                    >
-                  </div>
-                  
-                </td>
-                
-              </tr>
             </template>
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
-      
-      <!-- Smart Datalists per class based on Tahap 3 Pengampu Mapel -->
-      <div class="hidden">
-        <template v-for="cls in classes" :key="`dl-${cls}`">
-          <datalist :id="`guru-list-${cls}`">
-            <option v-for="guru in getTeachersForClass(cls)" :key="guru" :value="guru"></option>
-          </datalist>
-          <datalist :id="`mapel-list-${cls}`">
-            <option v-for="mapel in getSubjectsForClass(cls)" :key="mapel" :value="mapel"></option>
-          </datalist>
-        </template>
-      </div>
-
     </div>
+    
+    <div v-else class="text-center py-20">
+      <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-800">Pilih Kelas</h3>
+      <p class="text-sm text-gray-500 mt-2">Silakan pilih kelas pada menu di atas untuk mulai menyusun jadwal.</p>
+    </div>
+
+    <!-- Edit Modal (Sleek Drawer/Modal) -->
+    <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm transition-opacity">
+      <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100 opacity-100">
+        
+        <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+          <div>
+            <h3 class="text-lg font-black text-gray-900">Assign Jadwal</h3>
+            <p class="text-xs text-gray-500 font-medium mt-1">{{ editing.day }} • Sesi {{ editing.session }} • KELAS {{ activeClass }}</p>
+          </div>
+          <button @click="closeModal" class="text-gray-400 hover:text-gray-600 bg-white hover:bg-gray-100 p-2 rounded-full transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        
+        <div class="p-6 space-y-5">
+          <!-- Guru Input -->
+          <div>
+            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Pilih Kode Guru</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              </div>
+              <input type="text" v-model="tempEdit.guru" :list="`modal-guru-${activeClass}`" 
+                     class="pl-11 w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-3 font-bold uppercase transition-colors" placeholder="Ketik/Pilih Kode Guru">
+            </div>
+          </div>
+          
+          <!-- Mapel Input -->
+          <div>
+            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Pilih Kode Mapel</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+              </div>
+              <input type="text" v-model="tempEdit.mapel" :list="`modal-mapel-${activeClass}`" 
+                     class="pl-11 w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-3 font-bold uppercase transition-colors" placeholder="Ketik/Pilih Kode Mapel">
+            </div>
+          </div>
+        </div>
+        
+        <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 bg-gray-50">
+          <button @click="clearCell" class="px-5 py-2.5 text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition-colors">
+            Kosongkan
+          </button>
+          <button @click="applyEdit" class="px-6 py-2.5 text-sm font-bold text-white bg-gray-900 hover:bg-black rounded-xl shadow-md transition-all">
+            Simpan Slot
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal Datalists -->
+    <div class="hidden" v-if="activeClass">
+      <datalist :id="`modal-guru-${activeClass}`">
+        <option v-for="guru in getTeachersForClass(activeClass)" :key="guru" :value="guru"></option>
+      </datalist>
+      <datalist :id="`modal-mapel-${activeClass}`">
+        <option v-for="mapel in getSubjectsForClass(activeClass)" :key="mapel" :value="mapel"></option>
+      </datalist>
+    </div>
+
   </div>
 </template>
 
@@ -136,26 +217,18 @@ const schoolId = localStorage.getItem('school_id')
 const activeDays = ref([])
 const daySessions = ref({})
 const classes = ref([])
+const activeClass = ref('')
 const pengampuRows = ref([])
 const jamKosongData = ref({})
 
-// State penyimpanan jadwal
+// Format: { "SENIN-1-4 TM": { guru: "", mapel: "" }, ... }
 const jadwalData = ref({})
 
-const getDayColor = (day) => {
-  const colors = {
-    'Senin': 'text-blue-600',
-    'Selasa': 'text-indigo-600',
-    'Rabu': 'text-cyan-600',
-    'Kamis': 'text-teal-600',
-    'Jumat': 'text-emerald-600',
-    'Sabtu': 'text-gray-800',
-    'Minggu': 'text-red-600'
-  }
-  return colors[day] || 'text-gray-800'
-}
+// Modal State
+const showModal = ref(false)
+const editing = ref({ day: '', session: '' })
+const tempEdit = ref({ guru: '', mapel: '' })
 
-// Fungsi bantu agar v-model bisa membaca/membuat object secara reaktif
 const getJadwal = (day, sessionLabel, cls) => {
   const key = `${day.toUpperCase()}-${sessionLabel}-${cls}`
   if (!jadwalData.value[key]) {
@@ -164,7 +237,91 @@ const getJadwal = (day, sessionLabel, cls) => {
   return jadwalData.value[key]
 }
 
-// Smart Datalist Helpers
+const hasJadwal = (day, sessionLabel, cls) => {
+  const cell = getJadwal(day, sessionLabel, cls)
+  return cell.guru || cell.mapel
+}
+
+// Validation Engine
+const clashingTeachers = computed(() => {
+  const map = {}
+  for (const key in jadwalData.value) {
+    const cell = jadwalData.value[key]
+    const guru = cell.guru?.trim().toUpperCase()
+    if (!guru) continue
+    
+    const parts = key.split('-')
+    const day = parts[0]
+    const session = parts[1]
+    
+    const timeKey = `${day}-${session}-${guru}`
+    if (!map[timeKey]) map[timeKey] = 0
+    map[timeKey]++
+  }
+  
+  const clashes = {}
+  for (const key in map) {
+    if (map[key] > 1) clashes[key] = map[key]
+  }
+  return clashes
+})
+
+const getValidationType = (day, sessionLabel, cls) => {
+  const cell = getJadwal(day, sessionLabel, cls)
+  const guru = cell.guru?.trim().toUpperCase()
+  if (!guru) return null
+  
+  // Deteksi Bentrok
+  const timeKey = `${day.toUpperCase()}-${sessionLabel}-${guru}`
+  if (clashingTeachers.value[timeKey]) {
+    return 'clash'
+  }
+  
+  // Deteksi Jam Kosong
+  const dayCapitalized = day.charAt(0).toUpperCase() + day.slice(1).toLowerCase()
+  const kosongKey = `${dayCapitalized}-${sessionLabel}-${guru}`
+  if (jamKosongData.value[kosongKey]) {
+    return 'kosong'
+  }
+  
+  return null
+}
+
+const getCardClass = (day, sessionLabel, cls) => {
+  const vType = getValidationType(day, sessionLabel, cls)
+  if (vType === 'clash') return 'border-red-400 bg-red-50/50 shadow-[0_0_15px_rgba(239,68,68,0.2)] animate-pulse'
+  if (vType === 'kosong') return 'border-orange-400 bg-orange-50/50 shadow-[0_0_15px_rgba(249,115,22,0.2)]'
+  if (hasJadwal(day, sessionLabel, cls)) return 'border-blue-200 bg-blue-50/30 border-2'
+  return 'border-gray-200 border-dashed hover:border-solid hover:border-gray-300'
+}
+
+// Modal Actions
+const openModal = (day, sessionLabel, cls) => {
+  editing.value = { day, session: sessionLabel }
+  const cell = getJadwal(day, sessionLabel, cls)
+  tempEdit.value = { guru: cell.guru, mapel: cell.mapel }
+  showModal.value = true
+}
+
+const closeModal = () => {
+  showModal.value = false
+}
+
+const applyEdit = () => {
+  const key = `${editing.value.day.toUpperCase()}-${editing.value.session}-${activeClass.value}`
+  jadwalData.value[key] = {
+    guru: tempEdit.value.guru.trim().toUpperCase(),
+    mapel: tempEdit.value.mapel.trim().toUpperCase()
+  }
+  closeModal()
+}
+
+const clearCell = () => {
+  tempEdit.value = { guru: '', mapel: '' }
+  applyEdit()
+}
+
+// Data Fetching
 const getTeachersForClass = (cls) => {
   const clsIdx = classes.value.indexOf(cls)
   if (clsIdx === -1) return []
@@ -189,71 +346,20 @@ const getSubjectsForClass = (cls) => {
   return Array.from(subjects)
 }
 
-// Live Validation Engine
-const clashingTeachers = computed(() => {
-  const map = {}
-  for (const key in jadwalData.value) {
-    const cell = jadwalData.value[key]
-    const guru = cell.guru?.trim().toUpperCase()
-    if (!guru) continue
-    
-    // key is "SENIN-1-4 TM"
-    const parts = key.split('-')
-    const day = parts[0] // SENIN
-    const session = parts[1] // 1
-    
-    const timeKey = `${day}-${session}-${guru}`
-    if (!map[timeKey]) map[timeKey] = 0
-    map[timeKey]++
-  }
-  
-  const clashes = {}
-  for (const key in map) {
-    if (map[key] > 1) clashes[key] = map[key]
-  }
-  return clashes
-})
-
-const getValidationClass = (day, sessionLabel, guru) => {
-  if (!guru) return ''
-  const g = guru.trim().toUpperCase()
-  if (!g) return ''
-  
-  const timeKey = `${day.toUpperCase()}-${sessionLabel}-${g}`
-  
-  // Deteksi Bentrok
-  if (clashingTeachers.value[timeKey]) {
-    return 'bg-red-200' // Merah jika bentrok
-  }
-  
-  // Deteksi Jam Kosong
-  // Jam Kosong disave dengan key: "Senin-1-MF" (Perhatikan huruf besar kecil hari dari frontend)
-  const dayCapitalized = day.charAt(0).toUpperCase() + day.slice(1).toLowerCase()
-  const kosongKey = `${dayCapitalized}-${sessionLabel}-${g}`
-  if (jamKosongData.value[kosongKey]) {
-    return 'bg-orange-200' // Oranye jika melanggar jam kosong
-  }
-  
-  return ''
-}
-
 const fetchAllData = async () => {
   loading.value = true
   try {
-    // 1. Fetch Classes dari Pengampu Mapel
-    const pengampuRes = await fetch('/api/v1/school/pengampu', {
-      headers: { 'X-School-ID': schoolId || '' }
-    })
+    const pengampuRes = await fetch('/api/v1/school/pengampu', { headers: { 'X-School-ID': schoolId || '' } })
     if (pengampuRes.ok) {
       const data = await pengampuRes.json()
-      if (data && data.classes) classes.value = data.classes
+      if (data && data.classes) {
+        classes.value = data.classes
+        if (classes.value.length > 0) activeClass.value = classes.value[0]
+      }
       if (data && data.rows) pengampuRows.value = data.rows
     }
 
-    // 2. Fetch Sessions dari Sesi KBM
-    const sessionRes = await fetch('/api/v1/school/sessions', {
-      headers: { 'X-School-ID': schoolId || '' }
-    })
+    const sessionRes = await fetch('/api/v1/school/sessions', { headers: { 'X-School-ID': schoolId || '' } })
     if (sessionRes.ok) {
       const data = await sessionRes.json()
       const dayOrder = { 'Senin': 1, 'Selasa': 2, 'Rabu': 3, 'Kamis': 4, 'Jumat': 5, 'Sabtu': 6, 'Minggu': 7 }
@@ -273,19 +379,13 @@ const fetchAllData = async () => {
       })
     }
     
-    // 3. Fetch Jam Kosong
-    const kosRes = await fetch('/api/v1/school/jam-kosong', {
-      headers: { 'X-School-ID': schoolId || '' }
-    })
+    const kosRes = await fetch('/api/v1/school/jam-kosong', { headers: { 'X-School-ID': schoolId || '' } })
     if (kosRes.ok) {
       const data = await kosRes.json()
       if (data) jamKosongData.value = data
     }
 
-    // 4. Fetch Data Jadwal yang sudah tersimpan
-    const jadwalRes = await fetch('/api/v1/school/jadwal', {
-      headers: { 'X-School-ID': schoolId || '' }
-    })
+    const jadwalRes = await fetch('/api/v1/school/jadwal', { headers: { 'X-School-ID': schoolId || '' } })
     if (jadwalRes.ok) {
       const data = await jadwalRes.json()
       if (data && Object.keys(data).length > 0) {
@@ -302,7 +402,6 @@ const fetchAllData = async () => {
 
 const saveData = async () => {
   try {
-    // Bersihkan key yang kosong sebelum save
     const cleanData = {}
     for (const key in jadwalData.value) {
       const cell = jadwalData.value[key]
@@ -316,21 +415,19 @@ const saveData = async () => {
 
     const res = await fetch('/api/v1/school/jadwal', {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-School-ID': schoolId || ''
-      },
+      headers: { 'Content-Type': 'application/json', 'X-School-ID': schoolId || '' },
       body: JSON.stringify(cleanData)
     })
     
-    if (res.ok) {
-      alert("Jadwal KBM berhasil disimpan!")
-    } else {
-      alert("Gagal menyimpan jadwal")
-    }
+    if (res.ok) alert("Jadwal KBM berhasil disimpan!")
+    else alert("Gagal menyimpan jadwal")
   } catch (err) {
     alert("Terjadi kesalahan jaringan")
   }
+}
+
+const autoGenerate = () => {
+  alert("Fitur AI Auto-Generate sedang dalam tahap pengembangan khusus algoritma genetika. Stay tuned!")
 }
 
 onMounted(() => {
@@ -339,21 +436,8 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.custom-scrollbar::-webkit-scrollbar { height: 10px; width: 10px; }
-.custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; border: 2px solid #f1f5f9; }
+.custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
-
-.writing-vertical {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-}
-
-/* Transisi merah/oranye untuk sel yang divalidasi */
-td {
-  transition: background-color 0.3s ease;
-}
-input {
-  transition: background-color 0.3s ease;
-}
 </style>
