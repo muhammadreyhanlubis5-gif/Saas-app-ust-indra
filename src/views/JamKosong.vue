@@ -46,9 +46,9 @@
               <th class="px-4 py-3 border border-gray-700 font-bold text-center w-24 sticky left-[96px] bg-black z-30">Jam/Sesi</th>
               
               <!-- Teacher Columns -->
-              <th v-for="teacher in teachers" :key="teacher" class="px-2 py-3 border border-gray-700 font-bold text-center w-12 cursor-pointer hover:bg-gray-800 transition-colors" title="Kode Guru">
+              <th v-for="teacher in teachers" :key="teacher.code" class="px-2 py-3 border border-gray-700 font-bold text-center w-12 cursor-pointer hover:bg-gray-800 transition-colors" :title="`${teacher.name} (${teacher.criteria === 'true' ? 'Linier' : 'Tidak Linier'})`">
                 <div class="writing-vertical -rotate-180 flex items-center justify-center h-20">
-                  {{ teacher }}
+                  {{ teacher.code }}
                 </div>
               </th>
             </tr>
@@ -68,13 +68,13 @@
                 </td>
                 
                 <!-- Teacher Checkboxes (Cells) -->
-                <td v-for="teacher in teachers" :key="teacher" @click="toggleKosong(day, session.label, teacher, session.type)" class="px-1 py-1 border border-gray-700 text-center cursor-pointer select-none">
+                <td v-for="teacher in teachers" :key="teacher.code" @click="toggleKosong(day, session.label, teacher.code, session.type)" class="px-1 py-1 border border-gray-700 text-center cursor-pointer select-none">
                   <!-- Don't allow marking 'X' on Istirahat, they are already free -->
                   <div v-if="session.type === 'ISTIRAHAT'" class="w-full h-full bg-gray-800/50 flex items-center justify-center">
                     <span class="text-gray-600">-</span>
                   </div>
-                  <div v-else class="w-full h-full min-h-[28px] flex items-center justify-center rounded hover:bg-gray-700 transition-colors" :class="isKosong(day, session.label, teacher) ? 'bg-red-900/40 text-red-500' : ''">
-                    <span v-if="isKosong(day, session.label, teacher)" class="font-black text-lg">X</span>
+                  <div v-else class="w-full h-full min-h-[28px] flex items-center justify-center rounded hover:bg-gray-700 transition-colors" :class="isKosong(day, session.label, teacher.code) ? 'bg-red-900/40 text-red-500' : ''">
+                    <span v-if="isKosong(day, session.label, teacher.code)" class="font-black text-lg">X</span>
                   </div>
                 </td>
                 
@@ -95,11 +95,7 @@ const activeDays = ref([])
 const daySessions = ref({})
 const schoolId = localStorage.getItem('school_id')
 
-// Dummy teachers mapped from Excel image headers
-const teachers = ref([
-  'MH', 'PHY', 'IS', 'MF', 'AGR', 'AUL', 'AR', 'AM', 'FA', 'DF', 'MM', 'RAP', 'KK', 'RS', 'SHA', 
-  'SA', 'MUF', 'IB', 'SD', 'SB', 'FEB', 'PIS', 'DAF', 'AKB', 'FW', 'SU', 'FH', 'SUA', 'BUD', 'SUS', 'YUL', 'SAF', 'NN', 'WA', 'HOT', 'AF', 'FI'
-])
+const teachers = ref([])
 
 // Menyimpan data jam kosong: { 'Senin-1-MH': true, 'Senin-2-IS': true }
 const jamKosongData = ref({})
@@ -131,21 +127,42 @@ const getDayColor = (day) => {
   return colors[day] || 'text-white'
 }
 
-const fetchSessions = async () => {
+const fetchAllData = async () => {
   loading.value = true
   try {
-    const res = await fetch('/api/v1/school/sessions', {
+    // 1. Fetch Teachers from Pengampu Mapel
+    const pengampuRes = await fetch('/api/v1/school/pengampu', {
       headers: { 'X-School-ID': schoolId || '' }
     })
-    if (res.ok) {
-      const data = await res.json()
+    if (pengampuRes.ok) {
+      const data = await pengampuRes.json()
+      if (data && data.rows) {
+        // Extract unique teacher objects
+        const teacherMap = new Map()
+        data.rows.forEach(r => {
+          if (r.teacher_code && !teacherMap.has(r.teacher_code)) {
+            teacherMap.set(r.teacher_code, {
+              code: r.teacher_code.toUpperCase(),
+              name: r.teacher_name || r.teacher_code,
+              criteria: r.is_linear || 'true'
+            })
+          }
+        })
+        teachers.value = Array.from(teacherMap.values()).sort((a, b) => a.code.localeCompare(b.code))
+      }
+    }
+
+    // 2. Fetch Sessions
+    const sessionRes = await fetch('/api/v1/school/sessions', {
+      headers: { 'X-School-ID': schoolId || '' }
+    })
+    if (sessionRes.ok) {
+      const data = await sessionRes.json()
       
       const dayOrder = { 'Senin': 1, 'Selasa': 2, 'Rabu': 3, 'Kamis': 4, 'Jumat': 5, 'Sabtu': 6, 'Minggu': 7 }
-      // Get active days from the keys of the sessions returned
       const days = Object.keys(data)
       activeDays.value = days.sort((a, b) => dayOrder[a] - dayOrder[b])
       
-      // Process sessions to add proper labels
       activeDays.value.forEach(day => {
         let kbmCount = 0
         daySessions.value[day] = data[day].map(s => {
@@ -159,14 +176,14 @@ const fetchSessions = async () => {
       })
     }
   } catch (err) {
-    console.error("Gagal sinkronisasi sesi KBM", err)
+    console.error("Gagal sinkronisasi data", err)
   } finally {
     loading.value = false
   }
 }
 
 onMounted(() => {
-  fetchSessions()
+  fetchAllData()
 })
 </script>
 

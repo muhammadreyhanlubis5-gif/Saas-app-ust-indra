@@ -134,7 +134,7 @@
     </div>
     
     <div class="flex justify-end pt-2 pb-12">
-      <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all flex items-center gap-2">
+      <button @click="saveData" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all flex items-center gap-2">
         <span>Simpan & Verifikasi Distribusi</span>
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
       </button>
@@ -144,8 +144,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
+const schoolId = localStorage.getItem('school_id')
 const classes = ref(['Kelas Contoh'])
 const rows = ref([
   {
@@ -156,6 +157,51 @@ const rows = ref([
     hours: [0] 
   }
 ])
+
+const loadData = async () => {
+  try {
+    const res = await fetch('/api/v1/school/pengampu', {
+      headers: { 'X-School-ID': schoolId || '' }
+    })
+    if (res.ok) {
+      const data = await res.json()
+      if (data && data.classes && data.rows) {
+        classes.value = data.classes
+        rows.value = data.rows
+      }
+    }
+  } catch (err) {
+    console.error("Gagal load pengampu", err)
+  }
+}
+
+const saveData = async () => {
+  try {
+    const payload = {
+      classes: classes.value,
+      rows: rows.value
+    }
+    const res = await fetch('/api/v1/school/pengampu', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-School-ID': schoolId || ''
+      },
+      body: JSON.stringify(payload)
+    })
+    if (res.ok) {
+      alert("Data Pengampu Mapel berhasil disimpan!")
+    } else {
+      alert("Gagal menyimpan data pengampu")
+    }
+  } catch (err) {
+    alert("Terjadi kesalahan jaringan")
+  }
+}
+
+onMounted(() => {
+  loadData()
+})
 
 const addClassColumn = () => {
   const newClass = prompt("Masukkan Nama Kelas (Misal: 5 IPA-A)")

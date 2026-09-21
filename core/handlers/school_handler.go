@@ -209,5 +209,46 @@ func UpdateSchoolSessions(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Sesi KBM berhasil disimpan!"})
+	c.JSON(http.StatusOK, gin.H{"message": "Sesi KBM berhasil diperbarui"})
+}
+
+// GetPengampuMapel mengambil data pengampu jsonb
+func GetPengampuMapel(c *gin.Context) {
+	schoolID := c.GetHeader("X-School-ID")
+	if schoolID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing X-School-ID"})
+		return
+	}
+
+	var pengampuData []byte
+	err := database.DB.QueryRow("SELECT pengampu_data FROM schools WHERE id = $1", schoolID).Scan(&pengampuData)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil data pengampu"})
+		return
+	}
+
+	c.Data(http.StatusOK, "application/json", pengampuData)
+}
+
+// UpdatePengampuMapel menyimpan data pengampu jsonb
+func UpdatePengampuMapel(c *gin.Context) {
+	schoolID := c.GetHeader("X-School-ID")
+	if schoolID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing X-School-ID"})
+		return
+	}
+
+	rawData, err := c.GetRawData()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	_, err = database.DB.Exec("UPDATE schools SET pengampu_data = $1 WHERE id = $2", string(rawData), schoolID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan data pengampu"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Data pengampu berhasil disimpan"})
 }
