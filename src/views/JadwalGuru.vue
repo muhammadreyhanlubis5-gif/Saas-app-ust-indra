@@ -152,11 +152,24 @@ const loadAllData = async () => {
     }
 
     // 2. Sesi Waktu
-    const resSesi = await fetch('/api/v1/school/sesi', { headers })
+    const resSesi = await fetch('/api/v1/school/sessions', { headers })
     if (resSesi.ok) {
-      const dataSesi = await resSesi.json()
-      if (dataSesi.active_days) activeDays.value = dataSesi.active_days
-      if (dataSesi.day_sessions) daySessions.value = dataSesi.day_sessions
+      const data = await resSesi.json()
+      const dayOrder = { 'Senin': 1, 'Selasa': 2, 'Rabu': 3, 'Kamis': 4, 'Jumat': 5, 'Sabtu': 6, 'Minggu': 7 }
+      const days = Object.keys(data).filter(d => data[d] && data[d].length > 0)
+      activeDays.value = days.sort((a, b) => dayOrder[a] - dayOrder[b])
+      
+      activeDays.value.forEach(day => {
+        let kbmCount = 0
+        daySessions.value[day] = data[day].map(s => {
+          if (s.type === 'KBM') {
+            kbmCount++
+            return { ...s, label: kbmCount.toString(), waktu: `${s.start} - ${s.end}` }
+          } else {
+            return { ...s, label: 'ISTIRAHAT', waktu: `${s.start} - ${s.end}` }
+          }
+        })
+      })
     }
 
     // 3. Pengampu (Untuk list guru unik & classes)
