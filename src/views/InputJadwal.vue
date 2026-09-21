@@ -33,48 +33,48 @@
     <div v-else class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-12">
       <div class="overflow-x-auto relative custom-scrollbar max-h-[70vh]">
         <table class="w-full text-sm text-left whitespace-nowrap min-w-max border-collapse">
-          <thead class="bg-black text-gray-100 text-xs font-bold sticky top-0 z-20">
+          <thead class="bg-white text-gray-900 text-xs font-bold sticky top-0 z-20">
             <tr>
-              <th class="px-4 py-3 border border-gray-700 text-center w-24 sticky left-0 bg-black z-30 tracking-wider">HARI</th>
-              <th class="px-4 py-3 border border-gray-700 text-center w-32 sticky left-[96px] bg-black z-30 tracking-wider">WAKTU</th>
-              <th class="px-2 py-3 border border-gray-700 text-center w-12 sticky left-[224px] bg-black z-30">
+              <th class="px-4 py-3 border border-black text-center w-24 sticky left-0 bg-white z-30 tracking-wider">HARI</th>
+              <th class="px-4 py-3 border border-black text-center w-32 sticky left-[96px] bg-white z-30 tracking-wider">WAKTU</th>
+              <th class="px-2 py-3 border border-black text-center w-12 sticky left-[224px] bg-white z-30">
                 <div class="writing-vertical -rotate-180 flex items-center justify-center h-12 tracking-widest">JAM</div>
               </th>
               
               <!-- Kelas Kolom tersinkronisasi -->
-              <th v-for="cls in classes" :key="cls" class="px-2 py-3 border border-gray-700 text-center min-w-[60px]">
-                <div class="writing-vertical -rotate-180 flex items-center justify-center h-24 text-yellow-300">
+              <th v-for="cls in classes" :key="cls" class="px-2 py-3 border border-black text-center min-w-[60px]">
+                <div class="writing-vertical -rotate-180 flex items-center justify-center h-24 text-gray-900">
                   {{ cls }}
                 </div>
               </th>
             </tr>
           </thead>
-          <tbody class="text-gray-800 divide-y divide-gray-300">
+          <tbody class="text-gray-900 divide-y divide-black">
             <template v-for="day in activeDays" :key="day">
               <!-- Baris Pemisah Hari -->
-              <tr class="bg-gray-100">
-                <td :colspan="3 + classes.length" class="h-1 border border-gray-300"></td>
+              <tr class="bg-gray-200">
+                <td :colspan="3 + classes.length" class="h-1 border border-black"></td>
               </tr>
               
               <tr v-for="(session, sIdx) in daySessions[day]" :key="`${day}-${sIdx}`" class="hover:bg-blue-50/20 transition-colors">
                 
                 <!-- Day Cell (Hanya tampil di baris pertama tiap hari) -->
-                <td v-if="sIdx === 0" :rowspan="daySessions[day].length" class="px-4 py-2 border border-gray-300 font-black text-center uppercase tracking-wider sticky left-0 bg-gray-50 z-10" :class="getDayColor(day)">
+                <td v-if="sIdx === 0" :rowspan="daySessions[day].length" class="px-4 py-2 border border-black font-black text-center uppercase tracking-wider sticky left-0 bg-white z-10" :class="getDayColor(day)">
                   {{ day }}
                 </td>
                 
                 <!-- Waktu Cell -->
-                <td class="px-2 py-2 border border-gray-300 text-center font-bold text-gray-600 text-xs sticky left-[96px] bg-white z-10">
+                <td class="px-2 py-2 border border-black text-center font-bold text-gray-800 text-xs sticky left-[96px] bg-white z-10">
                   {{ session.start_time }} - {{ session.end_time }}
                 </td>
 
                 <!-- Session/Jam Cell -->
-                <td class="px-2 py-2 border border-gray-300 text-center font-black sticky left-[224px] bg-white z-10" :class="session.type === 'ISTIRAHAT' ? 'text-white bg-gray-900' : 'text-gray-800'">
+                <td class="px-2 py-2 border border-black text-center font-black sticky left-[224px] bg-white z-10" :class="session.type === 'ISTIRAHAT' ? 'text-gray-900 bg-gray-200' : 'text-gray-900'">
                   {{ session.label }}
                 </td>
                 
                 <!-- Cells untuk Kelas -->
-                <td v-for="cls in classes" :key="cls" class="border border-gray-300 p-0 text-center align-middle" :class="session.type === 'ISTIRAHAT' ? 'bg-gray-900' : 'bg-white'">
+                <td v-for="cls in classes" :key="cls" class="border border-black p-0 text-center align-middle" :class="session.type === 'ISTIRAHAT' ? 'bg-gray-200' : 'bg-white'">
                   
                   <div v-if="session.type === 'ISTIRAHAT'" class="w-full h-full min-h-[48px]">
                     <!-- Blocked -->
@@ -84,13 +84,13 @@
                     <input 
                       type="text" 
                       v-model="getJadwal(day, session.label, cls).guru"
-                      class="w-full flex-1 border-b border-gray-200 px-1 py-1 text-center font-bold text-gray-900 focus:outline-none focus:bg-yellow-50 focus:border-blue-500 uppercase text-xs"
+                      class="w-full flex-1 bg-transparent border-b border-black px-1 py-1 text-center font-bold text-gray-900 focus:outline-none focus:bg-yellow-100 focus:border-blue-600 uppercase text-xs"
                     >
                     <!-- Input Mapel (Bawah) -->
                     <input 
                       type="text" 
                       v-model="getJadwal(day, session.label, cls).mapel"
-                      class="w-full flex-1 px-1 py-1 text-center font-semibold text-gray-500 focus:outline-none focus:bg-yellow-50 focus:border-blue-500 uppercase text-xs"
+                      class="w-full flex-1 bg-transparent px-1 py-1 text-center font-bold text-blue-900 focus:outline-none focus:bg-yellow-100 focus:border-blue-600 uppercase text-xs"
                     >
                   </div>
                   
