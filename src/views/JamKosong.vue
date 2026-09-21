@@ -10,12 +10,10 @@
           <p class="text-gray-500 text-sm">Berikan tanda silang (X) pada jam dimana guru tidak dapat mengajar.</p>
         </div>
       </div>
-      <div>
-        <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg shadow-sm transition-colors flex items-center gap-2">
-          <span>Simpan Jadwal Kosong</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-        </button>
-      </div>
+      <button @click="saveData" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl shadow-md transition-all flex items-center gap-2">
+        <span>Simpan Jadwal Kosong</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      </button>
     </div>
 
     <!-- Alert Instruksi -->
@@ -175,10 +173,40 @@ const fetchAllData = async () => {
         })
       })
     }
+    // 3. Fetch Jam Kosong Data
+    const kosRes = await fetch('/api/v1/school/jam-kosong', {
+      headers: { 'X-School-ID': schoolId || '' }
+    })
+    if (kosRes.ok) {
+      const data = await kosRes.json()
+      if (data) {
+        jamKosongData.value = data
+      }
+    }
   } catch (err) {
     console.error("Gagal sinkronisasi data", err)
   } finally {
     loading.value = false
+  }
+}
+
+const saveData = async () => {
+  try {
+    const res = await fetch('/api/v1/school/jam-kosong', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-School-ID': schoolId || ''
+      },
+      body: JSON.stringify(jamKosongData.value)
+    })
+    if (res.ok) {
+      alert("Jadwal kosong berhasil disimpan!")
+    } else {
+      alert("Gagal menyimpan jadwal kosong")
+    }
+  } catch (err) {
+    alert("Terjadi kesalahan jaringan saat menyimpan")
   }
 }
 
