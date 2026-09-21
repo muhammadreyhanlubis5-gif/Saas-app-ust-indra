@@ -1,4 +1,18 @@
 <template>
+  <!-- Loading Animation Overlay -->
+  <div v-if="showAnimation" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900/95 backdrop-blur-sm transition-opacity">
+    <div class="relative flex flex-col items-center">
+      <!-- Glow effect behind image -->
+      <div class="absolute inset-0 bg-blue-500 rounded-full blur-[80px] opacity-20 animate-pulse"></div>
+      
+      <!-- The uploaded animation image -->
+      <img :src="animasiImg" alt="Loading..." class="w-48 h-48 object-contain animate-bounce z-10 drop-shadow-2xl" />
+      
+      <h2 class="mt-8 text-2xl font-bold text-white tracking-wide animate-pulse z-10">Menyiapkan Workspace Anda...</h2>
+      <p class="mt-2 text-blue-300 text-sm z-10">Sinkronisasi data berhasil</p>
+    </div>
+  </div>
+
   <div class="min-h-screen flex items-center justify-center bg-gray-50 font-sans p-4">
     
     <!-- Login Card (Lightweight) -->
@@ -89,10 +103,12 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import animasiImg from '../assets/animasi.png'
 
 const router = useRouter()
 const username = ref('')
 const password = ref('')
+const showAnimation = ref(false)
 
 const handleLogin = async () => {
   try {
@@ -105,6 +121,8 @@ const handleLogin = async () => {
     const data = await response.json()
     
     if (response.ok) {
+      showAnimation.value = true
+      
       // Decode JWT token untuk mendapatkan role
       const token = data.token
       localStorage.setItem('token', token)
@@ -121,13 +139,17 @@ const handleLogin = async () => {
         localStorage.setItem('valid_until', decodedPayload.valid_until)
       }
 
-      if (decodedPayload.role === 'SUPER_ADMIN') {
-        router.push('/super-admin')
-      } else if (decodedPayload.role === 'SCHOOL_ADMIN') {
-        router.push('/admin-sekolah')
-      } else {
-        router.push('/guru')
-      }
+      // Tunda redirect agar animasi terlihat
+      setTimeout(() => {
+        if (decodedPayload.role === 'SUPER_ADMIN') {
+          router.push('/super-admin')
+        } else if (decodedPayload.role === 'SCHOOL_ADMIN') {
+          router.push('/admin-sekolah')
+        } else {
+          router.push('/guru')
+        }
+      }, 2500)
+      
     } else {
       alert("Login Gagal: " + (data.error || "Password salah atau user tidak ditemukan"))
     }
