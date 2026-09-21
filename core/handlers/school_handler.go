@@ -349,3 +349,49 @@ func UpdateJamKosong(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Data jam kosong berhasil disimpan"})
 }
+
+// GetJadwal mengambil data jadwal jsonb
+func GetJadwal(c *gin.Context) {
+	schoolID := c.GetHeader("X-School-ID")
+	if schoolID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing X-School-ID"})
+		return
+	}
+
+	var data []byte
+	err := database.DB.QueryRow("SELECT jadwal_data FROM schools WHERE id = $1", schoolID).Scan(&data)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil data jadwal"})
+		return
+	}
+
+	if len(data) == 0 {
+		c.Data(http.StatusOK, "application/json", []byte("{}"))
+		return
+	}
+
+	c.Data(http.StatusOK, "application/json", data)
+}
+
+// UpdateJadwal menyimpan data jadwal jsonb
+func UpdateJadwal(c *gin.Context) {
+	schoolID := c.GetHeader("X-School-ID")
+	if schoolID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing X-School-ID"})
+		return
+	}
+
+	rawData, err := c.GetRawData()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	_, err = database.DB.Exec("UPDATE schools SET jadwal_data = $1 WHERE id = $2", string(rawData), schoolID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan data jadwal"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Data jadwal berhasil disimpan"})
+}

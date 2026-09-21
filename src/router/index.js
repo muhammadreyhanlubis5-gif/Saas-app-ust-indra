@@ -33,6 +33,7 @@ const routes = [
       { path: 'pengampu', name: 'PengampuMapel', component: () => import('../views/PengampuMapel.vue') },
       { path: 'jam-kosong', name: 'JamKosong', component: () => import('../views/JamKosong.vue') },
       { path: 'tugas-tambahan', name: 'TugasTambahan', component: () => import('../views/TugasTambahan.vue') },
+      { path: 'input-jadwal', name: 'InputJadwal', component: () => import('../views/InputJadwal.vue') },
     ]
   },
   
