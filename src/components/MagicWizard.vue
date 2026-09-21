@@ -191,7 +191,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const props = defineProps({
@@ -204,11 +204,39 @@ const step = ref(1)
 const schoolId = localStorage.getItem('school_id')
 const isGenerating = ref(false)
 
+// Data Asli untuk Mencegah Timpa (Overwrite)
+const originalProfile = ref({})
+
 // Step 1
 const profile = ref({
   headmaster_name: '',
   vice_headmaster_name: '',
   secretary_name: ''
+})
+
+const fetchProfile = async () => {
+  try {
+    const res = await fetch('/api/v1/school/profile', {
+      headers: { 'X-School-ID': schoolId || '' }
+    })
+    if (res.ok) {
+      const data = await res.json()
+      originalProfile.value = data
+      profile.value.headmaster_name = data.headmaster_name || ''
+      profile.value.vice_headmaster_name = data.vice_headmaster_name || ''
+      if (data.active_days && data.active_days.length > 0) {
+        timeConfig.value.activeDays = data.active_days
+      }
+    }
+  } catch (err) {
+    console.error("Gagal memuat profil awal:", err)
+  }
+}
+
+watch(() => props.show, (newVal) => {
+  if (newVal) {
+    fetchProfile()
+  }
 })
 
 // Step 2
@@ -407,9 +435,11 @@ const generateMagic = async () => {
       method: 'PUT',
       headers,
       body: JSON.stringify({
+        ...originalProfile.value,
         headmaster_name: profile.value.headmaster_name,
         vice_headmaster_name: profile.value.vice_headmaster_name,
-        secretary_name: profile.value.secretary_name
+        secretary_name: profile.value.secretary_name,
+        active_days: timeConfig.value.activeDays // Penting untuk Sesi Waktu KBM!
       })
     })
 

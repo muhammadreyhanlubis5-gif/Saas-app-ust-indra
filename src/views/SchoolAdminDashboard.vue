@@ -7,9 +7,7 @@
       <!-- Logo & Profile -->
       <div class="p-6 border-b border-gray-100 bg-white sticky top-0 z-10">
         <div class="flex items-center gap-4">
-          <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-md shadow-blue-200">
-            S
-          </div>
+          <img src="../assets/logo.png" alt="Logo" class="w-12 h-12 object-contain rounded-xl shadow-sm">
           <div>
             <h1 class="font-black text-gray-900 leading-tight">Admin Sekolah</h1>
             <p class="text-xs text-blue-600 font-bold tracking-wide">Workspace Penjadwalan</p>
@@ -295,9 +293,9 @@ const menuGroups = [
   {
     title: 'Penjadwalan',
     items: [
-      { title: 'Input & Susun Jadwal', icon: iconCalendar, path: '/admin-sekolah/input-jadwal' },
-      { title: 'Jadwal Guru', icon: iconUsers, path: '/admin-sekolah/jadwal-guru' },
-      { title: 'Jadwal Kelas', icon: iconBook, path: '/admin-sekolah/jadwal-kelas' },
+      { title: 'Input & Susun Jadwal', path: '/admin-sekolah/input-jadwal', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
+      { title: 'Jadwal Guru', path: '/admin-sekolah/jadwal-guru', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
+      { title: 'Jadwal Kelas', path: '/admin-sekolah/jadwal-kelas', icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4' }
     ]
   },
   {

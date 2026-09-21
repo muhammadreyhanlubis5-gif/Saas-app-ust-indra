@@ -35,6 +35,7 @@ const routes = [
       { path: 'tugas-tambahan', name: 'TugasTambahan', component: () => import('../views/TugasTambahan.vue') },
       { path: 'input-jadwal', name: 'InputJadwal', component: () => import('../views/InputJadwal.vue') },
       { path: 'jadwal-guru', name: 'JadwalGuru', component: () => import('../views/JadwalGuru.vue') },
+      { path: 'jadwal-kelas', name: 'JadwalKelas', component: () => import('../views/JadwalKelas.vue') },
     ]
   },
   
