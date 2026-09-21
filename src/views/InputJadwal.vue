@@ -550,9 +550,9 @@ const autoGenerate = () => {
   if (bestSchedule) {
     jadwalData.value = bestSchedule
     if (minUnassigned === 0) {
-      alert("✅ Auto-Generate Sukses!\nJadwal berhasil disusun dengan rapi tanpa bentrok dan tersebar merata (menghindari kelelahan guru).")
+      alert("Auto-Generate Sukses!\nJadwal berhasil disusun dengan rapi tanpa bentrok dan tersebar merata (menghindari kelelahan guru).")
     } else {
-      alert(`⚠️ Auto-Generate Selesai.\nNamun, ada ${minUnassigned} Jam Pelajaran yang terpaksa tidak dimasukkan karena keterbatasan slot atau terkunci oleh bentrok/jam kosong. Silakan isi sisanya secara manual.`)
+      alert(`Peringatan: Auto-Generate Selesai.\nNamun, ada ${minUnassigned} Jam Pelajaran yang terpaksa tidak dimasukkan karena keterbatasan slot atau terkunci oleh bentrok/jam kosong. Silakan isi sisanya secara manual.`)
     }
   }
 }
