@@ -101,7 +101,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import animasiImg from '../assets/animasi.png'
 
@@ -148,7 +148,7 @@ const handleLogin = async () => {
         } else {
           router.push('/guru')
         }
-      }, 2500)
+      }, 1200)
       
     } else {
       alert("Login Gagal: " + (data.error || "Password salah atau user tidak ditemukan"))
@@ -157,4 +157,10 @@ const handleLogin = async () => {
     alert("Terjadi kesalahan jaringan saat login.")
   }
 }
+
+onMounted(() => {
+  // Preload gambar animasi agar langsung muncul tanpa jeda loading (jaringan)
+  const img = new Image()
+  img.src = animasiImg
+})
 </script>
