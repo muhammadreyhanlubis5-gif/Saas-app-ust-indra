@@ -1,15 +1,12 @@
 <template>
   <!-- Loading Animation Overlay -->
-  <div v-if="showAnimation" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900/95 backdrop-blur-sm transition-opacity">
+  <div v-if="showAnimation" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900/95 backdrop-blur-sm transition-opacity duration-300">
     <div class="relative flex flex-col items-center">
-      <!-- Glow effect behind image -->
-      <div class="absolute inset-0 bg-blue-500 rounded-full blur-[80px] opacity-20 animate-pulse"></div>
       
       <!-- The uploaded animation image -->
-      <img :src="animasiImg" alt="Loading..." class="w-48 h-48 object-contain animate-bounce z-10 drop-shadow-2xl" />
+      <img :src="animasiImg" alt="Loading..." class="w-48 h-48 object-contain z-10" />
       
-      <h2 class="mt-8 text-2xl font-bold text-white tracking-wide animate-pulse z-10">Menyiapkan Workspace Anda...</h2>
-      <p class="mt-2 text-blue-300 text-sm z-10">Sinkronisasi data berhasil</p>
+      <h2 class="mt-8 text-2xl font-semibold text-white tracking-wide z-10">Menyiapkan Workspace Anda...</h2>
     </div>
   </div>
 
@@ -139,7 +136,7 @@ const handleLogin = async () => {
         localStorage.setItem('valid_until', decodedPayload.valid_until)
       }
 
-      // Tunda redirect agar animasi terlihat
+      // Tunda redirect agar animasi terlihat sebentar (600ms = super cepat)
       setTimeout(() => {
         if (decodedPayload.role === 'SUPER_ADMIN') {
           router.push('/super-admin')
@@ -148,7 +145,7 @@ const handleLogin = async () => {
         } else {
           router.push('/guru')
         }
-      }, 1200)
+      }, 600)
       
     } else {
       alert("Login Gagal: " + (data.error || "Password salah atau user tidak ditemukan"))
