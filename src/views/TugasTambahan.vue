@@ -2,7 +2,7 @@
   <div class="max-w-[1400px] mx-auto p-2">
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-800">Tahap 4: Tugas Tambahan Guru</h1>
+        <h1 class="text-2xl font-bold text-gray-800">Tugas Tambahan Guru</h1>
         <p class="text-gray-500 text-sm">Alokasi tugas tambahan dan perhitungan ekuivalen jam sertifikasi.</p>
       </div>
       <button @click="saveData" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl shadow-md transition-all flex items-center gap-2">
@@ -35,7 +35,7 @@
             <tbody class="divide-y divide-gray-200">
               <tr v-if="teachers.length === 0">
                 <td colspan="9" class="px-6 py-8 text-center text-gray-500 italic bg-gray-50">
-                  Data pengampu mapel masih kosong. Silakan isi Tahap 3 terlebih dahulu.
+                  Data pengampu mapel masih kosong. Silakan isi Distribusi Pengampu terlebih dahulu.
                 </td>
               </tr>
               <tr v-for="(teacher, idx) in teachers" :key="teacher.code" class="hover:bg-blue-50/30 transition-colors">

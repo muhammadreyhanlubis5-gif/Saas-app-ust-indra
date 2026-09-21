@@ -25,7 +25,7 @@
         <div class="ml-3">
           <h3 class="text-sm font-bold text-yellow-800">Catatan Sistem</h3>
           <p class="text-sm text-yellow-700 mt-1">
-            Klik pada kotak untuk menandai jam kosong guru. Kolom sesi (waktu KBM) di sebelah kiri secara otomatis tersinkronisasi dengan pengaturan <b>Tahap 2: Sesi & Waktu KBM</b>.
+            Klik pada kotak untuk menandai jam kosong guru. Kolom sesi (waktu KBM) di sebelah kiri secara otomatis tersinkronisasi dengan pengaturan <b>Sesi & Waktu KBM</b>.
           </p>
         </div>
       </div>

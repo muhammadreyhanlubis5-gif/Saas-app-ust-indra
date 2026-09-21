@@ -90,7 +90,7 @@
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-8">
           <div class="flex items-center justify-between mb-6">
             <div>
-              <h2 class="text-xl font-bold text-gray-800">Tahapan Penyusunan Jadwal</h2>
+              <h2 class="text-xl font-bold text-gray-800">Alur Penyusunan Jadwal</h2>
               <p class="text-sm text-gray-500 mt-1">Ikuti panduan berikut untuk menghasilkan jadwal yang optimal dan bebas bentrok.</p>
             </div>
             <span class="bg-blue-100 text-blue-800 text-xs font-bold px-4 py-1.5 rounded-full border border-blue-200">

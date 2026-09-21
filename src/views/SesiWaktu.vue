@@ -1,12 +1,12 @@
 <template>
   <div class="max-w-6xl mx-auto">
-    <div class="flex items-center gap-4 mb-8">
+    <div class="flex items-center gap-4 mb-6">
       <router-link to="/admin-sekolah/validasi-lembaga" class="p-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 border border-gray-100 transition-colors">
         <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
       </router-link>
       <div>
-        <h1 class="text-2xl font-bold text-gray-800">Tahap 2: Sesi & Waktu KBM</h1>
-        <p class="text-gray-500 text-sm">Atur jam pelajaran dan waktu istirahat untuk setiap hari aktif KBM.</p>
+        <h1 class="text-2xl font-bold text-gray-800">Sesi & Waktu KBM</h1>
+        <p class="text-gray-500 text-sm">Pengaturan urutan jam pelajaran dan waktu untuk setiap harinya.</p>
       </div>
     </div>
 
@@ -206,7 +206,6 @@ const saveSessions = async () => {
     
     if (res.ok) {
       alert("Sesi KBM berhasil disimpan!")
-      router.push('/admin-sekolah/pengampu')
     } else {
       alert("Gagal menyimpan Sesi KBM")
     }

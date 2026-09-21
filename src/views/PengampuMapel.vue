@@ -6,7 +6,7 @@
           <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
         </router-link>
         <div>
-          <h1 class="text-2xl font-bold text-gray-800">Tahap 3: Distribusi Pengampu Mapel</h1>
+          <h1 class="text-2xl font-bold text-gray-800">Distribusi Pengampu Mapel</h1>
           <p class="text-gray-500 text-sm">Alokasi jam pelajaran untuk setiap guru, mata pelajaran, dan kelas.</p>
         </div>
       </div>
