@@ -1,12 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// Views
-const Login = () => import('../views/LoginView.vue') 
-const SuperAdminDashboard = () => import('../views/SuperAdminDashboard.vue') 
-const SchoolAdminDashboard = () => import('../views/SchoolAdminDashboard.vue') 
-const TeacherDashboard = () => import('../views/TeacherDashboard.vue')
-const DashboardValidation = () => import('../views/DashboardValidation.vue')
-const ExpiredView = () => import('../views/ExpiredView.vue') // Halaman Kontrak Habis
+// Views - Static Imports for Faster UX
+import Login from '../views/LoginView.vue'
+import SuperAdminDashboard from '../views/SuperAdminDashboard.vue'
+import SchoolAdminDashboard from '../views/SchoolAdminDashboard.vue'
+import TeacherDashboard from '../views/TeacherDashboard.vue'
+import ExpiredView from '../views/ExpiredView.vue'
+import ValidasiLembaga from '../views/ValidasiLembaga.vue'
+import SesiWaktu from '../views/SesiWaktu.vue'
+import PengampuMapel from '../views/PengampuMapel.vue'
+import JamKosong from '../views/JamKosong.vue'
+import TugasTambahan from '../views/TugasTambahan.vue'
+import InputJadwal from '../views/InputJadwal.vue'
+import JadwalGuru from '../views/JadwalGuru.vue'
+import JadwalKelas from '../views/JadwalKelas.vue'
+import ComingSoon from '../views/ComingSoon.vue'
 
 const routes = [
   { path: '/', name: 'Login', component: Login, meta: { requiresAuth: false } },
@@ -28,14 +36,16 @@ const routes = [
     component: SchoolAdminDashboard,
     meta: { requiresAuth: true, role: 'SCHOOL_ADMIN' },
     children: [
-      { path: 'validasi-lembaga', name: 'ValidasiLembaga', component: () => import('../views/ValidasiLembaga.vue') },
-      { path: 'sesi-kbm', name: 'SesiWaktu', component: () => import('../views/SesiWaktu.vue') },
-      { path: 'pengampu', name: 'PengampuMapel', component: () => import('../views/PengampuMapel.vue') },
-      { path: 'jam-kosong', name: 'JamKosong', component: () => import('../views/JamKosong.vue') },
-      { path: 'tugas-tambahan', name: 'TugasTambahan', component: () => import('../views/TugasTambahan.vue') },
-      { path: 'input-jadwal', name: 'InputJadwal', component: () => import('../views/InputJadwal.vue') },
-      { path: 'jadwal-guru', name: 'JadwalGuru', component: () => import('../views/JadwalGuru.vue') },
-      { path: 'jadwal-kelas', name: 'JadwalKelas', component: () => import('../views/JadwalKelas.vue') },
+      { path: 'validasi-lembaga', name: 'ValidasiLembaga', component: ValidasiLembaga },
+      { path: 'sesi-kbm', name: 'SesiWaktu', component: SesiWaktu },
+      { path: 'pengampu', name: 'PengampuMapel', component: PengampuMapel },
+      { path: 'jam-kosong', name: 'JamKosong', component: JamKosong },
+      { path: 'tugas-tambahan', name: 'TugasTambahan', component: TugasTambahan },
+      { path: 'input-jadwal', name: 'InputJadwal', component: InputJadwal },
+      { path: 'jadwal-guru', name: 'JadwalGuru', component: JadwalGuru },
+      { path: 'jadwal-kelas', name: 'JadwalKelas', component: JadwalKelas },
+      { path: 'alokasi-jam', name: 'AlokasiJam', component: ComingSoon },
+      { path: ':pathMatch(.*)*', name: 'AdminNotFound', component: ComingSoon }
     ]
   },
   
