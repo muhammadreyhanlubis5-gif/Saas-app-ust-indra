@@ -7,6 +7,7 @@
       <img :src="animasiImg" alt="Loading..." class="w-48 h-48 object-contain z-10" />
       
       <h2 class="mt-8 text-2xl font-semibold text-white tracking-wide z-10">Menyiapkan Workspace Anda...</h2>
+      <p class="mt-3 text-blue-300 text-sm font-medium z-10 animate-pulse transition-all duration-300">{{ loadingText }}</p>
     </div>
   </div>
 
@@ -106,6 +107,7 @@ const router = useRouter()
 const username = ref('')
 const password = ref('')
 const showAnimation = ref(false)
+const loadingText = ref('Sinkronisasi dengan admin...')
 
 const handleLogin = async () => {
   try {
@@ -124,7 +126,6 @@ const handleLogin = async () => {
       const token = data.token
       localStorage.setItem('token', token)
       
-      // Ambil payload dari JWT
       const payloadBase64 = token.split('.')[1]
       const decodedPayload = JSON.parse(atob(payloadBase64))
       
@@ -136,7 +137,32 @@ const handleLogin = async () => {
         localStorage.setItem('valid_until', decodedPayload.valid_until)
       }
 
-      // Tunda redirect agar animasi terlihat sebentar (600ms = super cepat)
+      // Ambil nama sekolah khusus untuk teks animasi (jika bukan super admin)
+      let schoolName = "sekolah yang tervalidasi"
+      if (decodedPayload.school_id) {
+        try {
+           const profileRes = await fetch('/api/v1/school/profile', {
+             headers: { 'X-School-ID': decodedPayload.school_id }
+           })
+           if (profileRes.ok) {
+             const profileData = await profileRes.json()
+             if (profileData.name) {
+               schoolName = profileData.name
+             }
+           }
+        } catch(e) {}
+      }
+
+      // Animasi pergantian teks
+      setTimeout(() => {
+        loadingText.value = 'Data berhasil tervalidasi...'
+      }, 1500)
+      
+      setTimeout(() => {
+        loadingText.value = `Siap mengunggah data (${schoolName})...`
+      }, 3000)
+
+      // Redirect setelah semua teks selesai terbaca (total 4.5 detik)
       setTimeout(() => {
         if (decodedPayload.role === 'SUPER_ADMIN') {
           router.push('/super-admin')
@@ -145,7 +171,7 @@ const handleLogin = async () => {
         } else {
           router.push('/guru')
         }
-      }, 600)
+      }, 4500)
       
     } else {
       alert("Login Gagal: " + (data.error || "Password salah atau user tidak ditemukan"))
