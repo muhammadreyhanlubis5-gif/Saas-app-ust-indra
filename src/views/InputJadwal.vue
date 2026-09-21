@@ -339,8 +339,8 @@ const getSubjectsForClass = (cls) => {
   if (clsIdx === -1) return []
   const subjects = new Set()
   pengampuRows.value.forEach(row => {
-    if (row.hours && row.hours[clsIdx] > 0 && row.subjects && row.subjects[clsIdx]) {
-      subjects.add(row.subjects[clsIdx].toUpperCase())
+    if (row.hours && row.hours[clsIdx] > 0 && row.subject_code) {
+      subjects.add(row.subject_code.toUpperCase())
     }
   })
   return Array.from(subjects)
