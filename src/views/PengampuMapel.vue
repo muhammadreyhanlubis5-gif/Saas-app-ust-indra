@@ -146,28 +146,14 @@
 <script setup>
 import { ref, computed } from 'vue'
 
-const classes = ref(['4 TM', '4 MAPK', '4 SAINS'])
+const classes = ref(['Kelas Contoh'])
 const rows = ref([
   {
-    teacher_code: 'IS',
-    teacher_name: 'Indra Syah Putra, M.A',
+    teacher_code: '',
+    teacher_name: '',
     is_linear: 'true',
-    subject_code: 'IN',
-    hours: [2, 0, 0] // Sesuai index classes
-  },
-  {
-    teacher_code: 'IS',
-    teacher_name: 'Indra Syah Putra, M.A',
-    is_linear: 'true',
-    subject_code: 'UF',
-    hours: [0, 2, 2] 
-  },
-  {
-    teacher_code: 'MF',
-    teacher_name: 'Muhammad Fahmi, S.Pd',
-    is_linear: 'true',
-    subject_code: 'BA',
-    hours: [11, 0, 0] 
+    subject_code: '',
+    hours: [0] 
   }
 ])
 
