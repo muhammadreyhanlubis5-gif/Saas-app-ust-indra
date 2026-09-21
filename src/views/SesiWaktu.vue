@@ -82,9 +82,9 @@
                   </td>
                   <td class="px-4 py-3">
                     <div class="flex items-center gap-2">
-                      <input v-model="session.start" type="time" class="bg-white text-gray-900 border border-gray-300 rounded-md px-2 py-1.5 text-xs w-28 focus:ring-2 focus:ring-blue-500 outline-none font-mono">
+                      <input v-model="session.start_time" type="time" class="bg-white text-gray-900 border border-gray-300 rounded-md px-2 py-1.5 text-xs w-28 focus:ring-2 focus:ring-blue-500 outline-none font-mono">
                       <span class="text-gray-400 font-bold">-</span>
-                      <input v-model="session.end" type="time" class="bg-white text-gray-900 border border-gray-300 rounded-md px-2 py-1.5 text-xs w-28 focus:ring-2 focus:ring-blue-500 outline-none font-mono">
+                      <input v-model="session.end_time" type="time" class="bg-white text-gray-900 border border-gray-300 rounded-md px-2 py-1.5 text-xs w-28 focus:ring-2 focus:ring-blue-500 outline-none font-mono">
                     </div>
                   </td>
                   <td class="px-4 py-3 text-right">
@@ -128,8 +128,8 @@ const addSession = (day, type) => {
   }
   daySessions.value[day].push({
     type: type, // 'KBM' or 'ISTIRAHAT'
-    start: '',
-    end: ''
+    start_time: '',
+    end_time: ''
   })
 }
 

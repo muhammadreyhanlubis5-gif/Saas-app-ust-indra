@@ -164,9 +164,9 @@ const loadAllData = async () => {
         daySessions.value[day] = data[day].map(s => {
           if (s.type === 'KBM') {
             kbmCount++
-            return { ...s, label: kbmCount.toString(), waktu: `${s.start} - ${s.end}` }
+            return { ...s, label: kbmCount.toString(), waktu: `${s.start_time || ''} - ${s.end_time || ''}` }
           } else {
-            return { ...s, label: 'ISTIRAHAT', waktu: `${s.start} - ${s.end}` }
+            return { ...s, label: 'ISTIRAHAT', waktu: `${s.start_time || ''} - ${s.end_time || ''}` }
           }
         })
       })
