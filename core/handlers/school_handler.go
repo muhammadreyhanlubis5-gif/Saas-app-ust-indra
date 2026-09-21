@@ -252,3 +252,44 @@ func UpdatePengampuMapel(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Data pengampu berhasil disimpan"})
 }
+
+// GetTugasTambahan mengambil data tugas tambahan jsonb
+func GetTugasTambahan(c *gin.Context) {
+	schoolID := c.GetHeader("X-School-ID")
+	if schoolID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing X-School-ID"})
+		return
+	}
+
+	var data []byte
+	err := database.DB.QueryRow("SELECT tugas_tambahan FROM schools WHERE id = $1", schoolID).Scan(&data)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil data tugas tambahan"})
+		return
+	}
+
+	c.Data(http.StatusOK, "application/json", data)
+}
+
+// UpdateTugasTambahan menyimpan data tugas tambahan jsonb
+func UpdateTugasTambahan(c *gin.Context) {
+	schoolID := c.GetHeader("X-School-ID")
+	if schoolID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing X-School-ID"})
+		return
+	}
+
+	rawData, err := c.GetRawData()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	_, err = database.DB.Exec("UPDATE schools SET tugas_tambahan = $1 WHERE id = $2", string(rawData), schoolID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan data tugas tambahan"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Data tugas tambahan berhasil disimpan"})
+}

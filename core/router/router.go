@@ -28,6 +28,8 @@ func SetupRoutes(r *gin.Engine) {
 		school.PUT("/sessions", handlers.UpdateSchoolSessions)
 		school.GET("/pengampu", handlers.GetPengampuMapel)
 		school.PUT("/pengampu", handlers.UpdatePengampuMapel)
+		school.GET("/tugas-tambahan", handlers.GetTugasTambahan)
+		school.PUT("/tugas-tambahan", handlers.UpdateTugasTambahan)
 	}
 	
 	dashboard := api.Group("/dashboard")
