@@ -427,7 +427,134 @@ const saveData = async () => {
 }
 
 const autoGenerate = () => {
-  alert("Fitur AI Auto-Generate sedang dalam tahap pengembangan khusus algoritma genetika. Stay tuned!")
+  // Kumpulkan semua kebutuhan jam mengajar dari PengampuMapel
+  let requirements = []
+  classes.value.forEach((cls, cIdx) => {
+    pengampuRows.value.forEach(row => {
+      let hrs = row.hours[cIdx] || 0
+      if (hrs > 0 && row.teacher_code && row.subject_code) {
+        requirements.push({
+          cls: cls,
+          guru: row.teacher_code.toUpperCase(),
+          mapel: row.subject_code.toUpperCase(),
+          remaining: hrs
+        })
+      }
+    })
+  })
+
+  if (requirements.length === 0) {
+    alert("Data Distribusi Pengampu masih kosong. Silakan isi di Tahap 2 terlebih dahulu.")
+    return
+  }
+
+  // Kumpulkan semua slot kosong (sel grid KBM)
+  let allCells = []
+  activeDays.value.forEach(day => {
+    let kbmSessions = daySessions.value[day].filter(s => s.type === 'KBM')
+    kbmSessions.forEach(s => {
+      classes.value.forEach(cls => {
+        allCells.push({ day, session: s.label, cls })
+      })
+    })
+  })
+
+  // Algoritma Greedy dengan 50 iterasi untuk mencari konfigurasi terbaik (paling sedikit gagal assign)
+  let bestSchedule = null
+  let minUnassigned = Infinity
+
+  const isJamKosong = (day, sessionLabel, guru) => {
+    const dayCap = day.charAt(0).toUpperCase() + day.slice(1).toLowerCase()
+    return jamKosongData.value[`${dayCap}-${sessionLabel}-${guru}`] === true
+  }
+
+  const countTeacherHoursOnDay = (schedule, guru, day) => {
+    let count = 0
+    for (const key in schedule) {
+      if (key.startsWith(day.toUpperCase() + '-') && schedule[key].guru === guru) {
+        count++
+      }
+    }
+    return count
+  }
+
+  // Start Retries
+  for (let attempt = 0; attempt < 50; attempt++) {
+    let currentSchedule = {}
+    let reqs = JSON.parse(JSON.stringify(requirements))
+    // Acak urutan proses mapel (supaya hasil bervariasi tiap kali klik generate)
+    reqs.sort(() => Math.random() - 0.5)
+    
+    let unassigned = 0
+
+    reqs.forEach(r => {
+      let placed = 0
+      while (placed < r.remaining) {
+        // Cari cell yang valid untuk mata pelajaran & guru ini
+        let validCells = allCells.filter(cell => {
+          if (cell.cls !== r.cls) return false
+          
+          let cellKey = `${cell.day.toUpperCase()}-${cell.session}-${cell.cls}`
+          if (currentSchedule[cellKey]) return false // Cell sudah terisi
+          
+          // Cek bentrok: Apakah guru sudah mengajar di kelas lain pada hari & sesi yang sama?
+          let isClashing = false
+          for (let otherCls of classes.value) {
+            let otherKey = `${cell.day.toUpperCase()}-${cell.session}-${otherCls}`
+            if (currentSchedule[otherKey] && currentSchedule[otherKey].guru === r.guru) {
+              isClashing = true
+              break
+            }
+          }
+          if (isClashing) return false
+          
+          // Cek Peringatan Jam Kosong
+          if (isJamKosong(cell.day, cell.session, r.guru)) return false
+          
+          return true
+        })
+
+        if (validCells.length === 0) {
+          break // Slot habis atau terblokir bentrok
+        }
+
+        // Heuristik Pemerataan: Prioritaskan hari yang beban mengajar gurunya masih paling sedikit (mencegah kelelahan)
+        validCells.sort((a, b) => {
+          let countA = countTeacherHoursOnDay(currentSchedule, r.guru, a.day)
+          let countB = countTeacherHoursOnDay(currentSchedule, r.guru, b.day)
+          if (countA !== countB) return countA - countB
+          return Math.random() - 0.5 // Jika sama, acak (tie breaker)
+        })
+
+        let chosen = validCells[0]
+        let key = `${chosen.day.toUpperCase()}-${chosen.session}-${chosen.cls}`
+        currentSchedule[key] = { guru: r.guru, mapel: r.mapel }
+        placed++
+      }
+      unassigned += (r.remaining - placed)
+    })
+
+    if (unassigned === 0) {
+      bestSchedule = currentSchedule
+      minUnassigned = 0
+      break // Sempurna (100% tersetel)
+    }
+    
+    if (unassigned < minUnassigned) {
+      minUnassigned = unassigned
+      bestSchedule = currentSchedule
+    }
+  }
+
+  // Terapkan jadwal terbaik yang ditemukan
+  if (bestSchedule) {
+    jadwalData.value = bestSchedule
+    if (minUnassigned === 0) {
+      alert("✅ Auto-Generate Sukses!\nJadwal berhasil disusun dengan rapi tanpa bentrok dan tersebar merata (menghindari kelelahan guru).")
+    } else {
+      alert(`⚠️ Auto-Generate Selesai.\nNamun, ada ${minUnassigned} Jam Pelajaran yang terpaksa tidak dimasukkan karena keterbatasan slot atau terkunci oleh bentrok/jam kosong. Silakan isi sisanya secara manual.`)
+    }
+  }
 }
 
 onMounted(() => {
