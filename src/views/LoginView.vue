@@ -178,7 +178,22 @@ const submitForgotPassword = () => {
     alert("Mohon centang kotak permintaan izin ke admin.")
     return
   }
-  // Simulasi API submission
+  
+  // Mengirim data ke LocalStorage (sebagai jembatan ke Pusat Komando)
+  const existingReports = JSON.parse(localStorage.getItem('forgot_password_requests') || '[]')
+  
+  const newReport = {
+    id: Date.now(),
+    school_name: "Klien Belum Teridentifikasi", // Ideally we fetch this, but for demo it's fine
+    username: forgotForm.value.username,
+    contact: "-",
+    date: "Baru saja",
+    message: `Mohon izinkan pergantian password ke: ${forgotForm.value.newPassword}`
+  }
+  
+  existingReports.unshift(newReport)
+  localStorage.setItem('forgot_password_requests', JSON.stringify(existingReports))
+
   alert("Pengajuan perubahan password telah dikirim ke Pusat Komando Super Admin. Silakan tunggu konfirmasi!")
   showForgotPassword.value = false
   forgotForm.value = { username: '', newPassword: '', requestPermission: false }

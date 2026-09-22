@@ -438,24 +438,14 @@ const formatRupiah = (angka) => {
 // Data & Methods for Pengaturan Sistem
 const passForm = ref({ old: '', new: '', confirm: '' })
 
-const forgotPasswordReports = ref([
-  {
-    id: 1,
-    school_name: 'SMP Negeri 1 Medan',
-    username: 'smpn1medan',
-    contact: '081234567890',
-    date: '10 Menit lalu',
-    message: 'Admin kami lupa password setelah login terakhir bulan lalu. Mohon reset segera.'
-  },
-  {
-    id: 2,
-    school_name: 'SMA Swasta Galih Agung',
-    username: 'smagalih',
-    contact: '082199887766',
-    date: '2 Jam lalu',
-    message: 'Tidak bisa login, password selalu salah padahal merasa sudah benar.'
+const loadForgotPasswordReports = () => {
+  const data = localStorage.getItem('forgot_password_requests')
+  if (data) {
+    forgotPasswordReports.value = JSON.parse(data)
   }
-])
+}
+
+const forgotPasswordReports = ref([])
 
 const changeSuperAdminPassword = () => {
   if (passForm.value.new !== passForm.value.confirm) {
@@ -473,6 +463,7 @@ const changeSuperAdminPassword = () => {
 
 const resolveReport = (id) => {
   forgotPasswordReports.value = forgotPasswordReports.value.filter(r => r.id !== id)
+  localStorage.setItem('forgot_password_requests', JSON.stringify(forgotPasswordReports.value))
   localStorage.setItem('password_approved', 'true')
   alert("Izin telah diberikan! Password klien berhasil diperbarui sesuai pengajuan mereka.")
 }
@@ -664,11 +655,20 @@ const formatDate = (dateString) => {
 
 onMounted(() => {
   fetchSchools()
+  loadForgotPasswordReports()
   document.addEventListener('click', handleClickOutside)
+  
+  // Dengarkan perubahan localStorage dari tab lain secara real-time
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'forgot_password_requests') {
+      loadForgotPasswordReports()
+    }
+  })
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
+  window.removeEventListener('storage', loadForgotPasswordReports)
 })
 
 const handleLogout = () => {
