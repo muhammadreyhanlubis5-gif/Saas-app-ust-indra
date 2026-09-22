@@ -158,7 +158,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import animasiImg from '../assets/animasi.png'
 
@@ -271,12 +271,9 @@ const handleLogin = async () => {
   }
 }
 
-onMounted(() => {
-  // Preload gambar animasi agar langsung muncul tanpa jeda loading (jaringan)
-  const img = new Image()
-  img.src = animasiImg
+let approvalInterval = null
 
-  // Cek apakah ada notifikasi persetujuan password dari admin
+const checkApproval = () => {
   if (localStorage.getItem('password_approved') === 'true') {
     approvedNotification.value = true
     localStorage.removeItem('password_approved')
@@ -286,5 +283,23 @@ onMounted(() => {
       approvedNotification.value = false
     }, 10000)
   }
+}
+
+onMounted(() => {
+  // Preload gambar animasi agar langsung muncul tanpa jeda loading (jaringan)
+  const img = new Image()
+  img.src = animasiImg
+
+  // Cek langsung saat pertama kali render
+  checkApproval()
+  
+  // Polling tiap detik kalau-kalau pengguna membuka tab tanpa reload
+  approvalInterval = setInterval(() => {
+    checkApproval()
+  }, 1000)
+})
+
+onUnmounted(() => {
+  if (approvalInterval) clearInterval(approvalInterval)
 })
 </script>

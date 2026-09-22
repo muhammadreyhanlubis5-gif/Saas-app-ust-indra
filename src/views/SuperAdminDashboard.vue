@@ -438,10 +438,15 @@ const formatRupiah = (angka) => {
 // Data & Methods for Pengaturan Sistem
 const passForm = ref({ old: '', new: '', confirm: '' })
 
+let lastReportsString = ''
 const loadForgotPasswordReports = () => {
   const data = localStorage.getItem('forgot_password_requests')
-  if (data) {
+  if (data && data !== lastReportsString) {
     forgotPasswordReports.value = JSON.parse(data)
+    lastReportsString = data
+  } else if (!data && lastReportsString !== '') {
+    forgotPasswordReports.value = []
+    lastReportsString = ''
   }
 }
 
@@ -653,6 +658,8 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })
 }
 
+let reportInterval = null
+
 onMounted(() => {
   fetchSchools()
   loadForgotPasswordReports()
@@ -664,11 +671,17 @@ onMounted(() => {
       loadForgotPasswordReports()
     }
   })
+
+  // Fallback Polling (1 detik) memastikan UI selalu up-to-date meski tanpa reload
+  reportInterval = setInterval(() => {
+    loadForgotPasswordReports()
+  }, 1000)
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
   window.removeEventListener('storage', loadForgotPasswordReports)
+  if (reportInterval) clearInterval(reportInterval)
 })
 
 const handleLogout = () => {
