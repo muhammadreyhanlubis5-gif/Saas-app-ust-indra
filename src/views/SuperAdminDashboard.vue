@@ -228,81 +228,101 @@
     </main>
 
     <!-- Modal Tambah Klien -->
-                  required 
-                  class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" 
-                  placeholder="Ketik nama sekolah untuk mencari otomatis..."
-                >
-                <!-- Dropdown Sugesti -->
-                <ul v-if="showSchoolSuggestions && schoolSuggestions.length > 0" class="absolute z-50 w-full mt-1 bg-white border border-gray-200 shadow-xl rounded-lg max-h-60 overflow-y-auto divide-y divide-gray-100">
-                  <li 
-                    v-for="(sug, index) in schoolSuggestions" 
-                    :key="index"
-                    @click="selectSchool(sug)"
-                    class="px-4 py-3 hover:bg-indigo-50 cursor-pointer transition-colors"
-                  >
-                    <p class="text-sm font-bold text-gray-800">{{ extractSchoolName(sug.display_name) }}</p>
-                    <p class="text-xs text-gray-500 mt-0.5">{{ sug.display_name }}</p>
-                  </li>
-                </ul>
-                <div v-if="isSearchingSchool" class="absolute right-3 top-9">
-                  <svg class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+    <div v-if="showModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center p-4">
+      <div class="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl animate-fade-in flex flex-col">
+        <div class="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50/50">
+          <div>
+            <h2 class="text-xl font-black text-gray-800">Registrasi Klien SaaS</h2>
+            <p class="text-xs text-gray-500 font-medium mt-1">Buat tenant sekolah baru beserta akun Admin-nya.</p>
+          </div>
+          <button @click="showModal = false" class="text-gray-400 hover:text-gray-700 bg-white hover:bg-gray-100 rounded-full p-2 transition-colors border border-gray-200 shadow-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        
+        <form @submit.prevent="submitKlien" class="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-6">
+          
+          <!-- Detail Klien -->
+          <div class="space-y-4">
+            <h3 class="text-xs font-black text-indigo-600 uppercase tracking-widest border-b border-indigo-100 pb-2">Informasi Sekolah</h3>
+            
+            <div class="relative">
+              <label class="block text-sm font-bold text-gray-700 mb-1">Nama Sekolah/Madrasah *</label>
+              <input v-model="form.name" @input="searchSchool" type="text" required class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm" placeholder="Ketik nama sekolah...">
+              
+              <!-- Dropdown Saran Autocomplete -->
+              <div v-if="showSchoolSuggestions && schoolSuggestions.length > 0" class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-xl max-h-60 overflow-y-auto custom-scrollbar">
+                <div v-for="(suggestion, idx) in schoolSuggestions" :key="idx" 
+                     @click="selectSchool(suggestion)"
+                     class="px-4 py-3 hover:bg-indigo-50 cursor-pointer border-b border-gray-50 last:border-0 transition-colors">
+                  <p class="text-sm font-bold text-gray-800">{{ suggestion.customName ? suggestion.customName : extractSchoolName(suggestion.display_name) }}</p>
+                  <p class="text-[10px] text-gray-500 mt-1 truncate">{{ suggestion.display_name }}</p>
                 </div>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Asal Sekolah (Alamat)</label>
-                <input v-model="form.address" type="text" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Masukkan alamat lengkap sekolah">
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Aktif Klien (Kontak)</label>
-                <input v-model="form.contact_number" type="text" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Masukkan nomor yang bisa dihubungi">
               </div>
             </div>
 
-            <!-- Detail Kontrak & Akun -->
-            <div class="space-y-4">
-               <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Detail Kontrak & Kredensial</h3>
-               
+            <div>
+              <label class="block text-sm font-bold text-gray-700 mb-1">Alamat Lengkap</label>
+              <textarea v-model="form.address" rows="2" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm" placeholder="Alamat otomatis terisi jika memilih dari saran..."></textarea>
+            </div>
+            
+            <div>
+               <label class="block text-sm font-bold text-gray-700 mb-1">Nomor Kontak (WA/Telp)</label>
+               <input v-model="form.contact_number" type="text" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm" placeholder="Contoh: 08123456789">
+            </div>
+          </div>
+          
+          <!-- Pembayaran & Kontrak -->
+          <div class="space-y-4">
+            <h3 class="text-xs font-black text-green-600 uppercase tracking-widest border-b border-green-100 pb-2 pt-2">Kontrak & Pembayaran</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                 <label class="block text-sm font-bold text-gray-700 mb-1">Batas Waktu Kontrak *</label>
+                 <input v-model="form.valid_until" type="date" required class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none transition-all shadow-sm">
+              </div>
+              <div>
+                 <label class="block text-sm font-bold text-gray-700 mb-1">Metode Pembayaran</label>
+                 <select v-model="form.payment_method" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none transition-all shadow-sm">
+                    <option value="BCA">Transfer BCA</option>
+                    <option value="MANDIRI">Transfer Mandiri</option>
+                    <option value="BRI">Transfer BRI</option>
+                    <option value="CASH">Tunai (Cash)</option>
+                    <option value="OTHER">Lainnya</option>
+                 </select>
+              </div>
+            </div>
+            
+            <div>
+               <label class="block text-sm font-bold text-gray-700 mb-1">Nominal Pembayaran (Rp) *</label>
+               <input v-model="form.payment_amount" type="number" required class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 outline-none transition-all shadow-sm" placeholder="Contoh: 1500000">
+            </div>
+          </div>
+          
+          <!-- Akun Akses -->
+          <div class="space-y-4 bg-gray-50 p-4 rounded-2xl border border-gray-200">
+            <h3 class="text-xs font-black text-gray-600 uppercase tracking-widest border-b border-gray-200 pb-2">Kredensial Akses Admin Sekolah</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Masa Aktif Kontrak *</label>
-                <input v-model="form.valid_until" type="date" required class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
-               </div>
-
-               <div class="flex gap-2">
-                 <div class="w-1/2">
-                   <label class="block text-sm font-medium text-gray-700 mb-1">Metode Bayar</label>
-                   <select v-model="form.payment_method" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none">
-                     <option value="BCA">Transfer BCA</option>
-                     <option value="Mandiri">Transfer Mandiri</option>
-                     <option value="Tunai">Tunai</option>
-                     <option value="Lainnya">Lainnya</option>
-                   </select>
-                 </div>
-                 <div class="w-1/2">
-                   <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah (Rp)</label>
-                   <input v-model="form.payment_amount" type="number" class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="1000000">
-                 </div>
-               </div>
-
-               <div class="pt-2 border-t border-gray-100">
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Username Klien (Isolasi Data) *</label>
-                  <input v-model="form.username" type="text" required class="w-full bg-indigo-50 text-indigo-900 border border-indigo-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none font-mono" placeholder="username_unik">
-                  <p class="text-[10px] text-gray-500 mt-1">Username ini tidak boleh sama dengan klien lain.</p>
+                  <label class="block text-sm font-bold text-gray-700 mb-1">Username Klien *</label>
+                  <input v-model="form.username" type="text" required class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm" placeholder="Contoh: smpn1medan">
+                  <p class="text-[10px] text-gray-500 mt-1 font-medium">Username unik untuk login.</p>
                </div>
 
                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Password Klien *</label>
-                  <input v-model="form.password" type="text" required class="w-full bg-white text-gray-900 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Masukkan password kuat">
+                  <label class="block text-sm font-bold text-gray-700 mb-1">Password Sementara *</label>
+                  <input v-model="form.password" type="text" required class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm" placeholder="Berikan password kuat">
                </div>
             </div>
           </div>
 
-          <div class="mt-6 pt-4 border-t border-gray-100 flex justify-end gap-3">
-             <button type="button" @click="showModal = false" class="px-5 py-2.5 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors">Batal</button>
-             <button type="submit" :disabled="saving" class="px-5 py-2.5 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 shadow-sm transition-colors flex items-center gap-2">
-               <span v-if="saving">Menyimpan...</span>
-               <span v-else>Simpan Klien & Buat Akun</span>
+          <div class="pt-4 flex justify-end gap-3 sticky bottom-0 bg-white">
+             <button type="button" @click="showModal = false" class="px-6 py-3 text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 rounded-xl font-bold transition-colors">Batal</button>
+             <button type="submit" :disabled="saving" class="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black hover:bg-indigo-700 shadow-lg shadow-indigo-500/30 transition-all flex items-center gap-2 transform hover:-translate-y-1">
+               <svg v-if="saving" class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+               <span v-if="saving">Memproses...</span>
+               <span v-else>Simpan & Buat Tenant</span>
              </button>
           </div>
         </form>
