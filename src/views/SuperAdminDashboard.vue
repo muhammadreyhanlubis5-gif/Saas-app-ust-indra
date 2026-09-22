@@ -287,7 +287,13 @@
                   </div>
                   <p class="text-sm text-gray-600 my-3 italic">"{{ report.message }}"</p>
                   <div class="flex gap-2 mt-3 pt-3 border-t border-gray-100">
-                    <button @click="resolveReport(report.id)" class="flex-1 bg-green-50 hover:bg-green-100 text-green-700 text-xs font-bold py-2 rounded-lg transition-colors border border-green-200">Berikan Izin Ubah Password</button>
+                    <button 
+                      @click="resolveReport(report.id)" 
+                      :disabled="processingIds.has(report.id)"
+                      :class="['flex-1 text-xs font-bold py-2 rounded-lg transition-colors border', processingIds.has(report.id) ? 'bg-gray-100 text-gray-500 border-gray-200 cursor-not-allowed' : 'bg-green-50 hover:bg-green-100 text-green-700 border-green-200']"
+                    >
+                      {{ processingIds.has(report.id) ? 'Memproses...' : 'Berikan Izin' }}
+                    </button>
                     <button @click="contactClient(report.contact)" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold py-2 rounded-lg transition-colors border border-blue-200">Hubungi Klien</button>
                   </div>
                 </div>
@@ -468,7 +474,12 @@ const changeSuperAdminPassword = () => {
   passForm.value = { old: '', new: '', confirm: '' }
 }
 
+const processingIds = ref(new Set())
+
 const resolveReport = async (id) => {
+  if (processingIds.value.has(id)) return
+  processingIds.value.add(id)
+
   try {
     const token = localStorage.getItem('token')
     const res = await fetch(`/api/v1/super/forgot-password-requests/${id}/approve`, {
@@ -481,10 +492,15 @@ const resolveReport = async (id) => {
       alert("Izin telah diberikan! Password klien berhasil diperbarui secara permanen di database.")
     } else {
       const data = await res.json()
-      alert("Gagal memberikan izin: " + data.error)
+      // Hanya tampilkan error jika memang belum berhasil
+      if (data.error !== "Laporan tidak ditemukan") {
+        alert("Gagal memberikan izin: " + data.error)
+      }
     }
   } catch(e) {
     alert("Terjadi kesalahan jaringan")
+  } finally {
+    processingIds.value.delete(id)
   }
 }
 
