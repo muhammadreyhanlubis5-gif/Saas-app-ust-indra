@@ -287,7 +287,7 @@
                   </div>
                   <p class="text-sm text-gray-600 my-3 italic">"{{ report.message }}"</p>
                   <div class="flex gap-2 mt-3 pt-3 border-t border-gray-100">
-                    <button @click="resolveReport(report.id)" class="flex-1 bg-green-50 hover:bg-green-100 text-green-700 text-xs font-bold py-2 rounded-lg transition-colors border border-green-200">Tandai Selesai</button>
+                    <button @click="resolveReport(report.id)" class="flex-1 bg-green-50 hover:bg-green-100 text-green-700 text-xs font-bold py-2 rounded-lg transition-colors border border-green-200">Berikan Izin Ubah Password</button>
                     <button @click="contactClient(report.contact)" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold py-2 rounded-lg transition-colors border border-blue-200">Hubungi Klien</button>
                   </div>
                 </div>
@@ -473,7 +473,8 @@ const changeSuperAdminPassword = () => {
 
 const resolveReport = (id) => {
   forgotPasswordReports.value = forgotPasswordReports.value.filter(r => r.id !== id)
-  alert("Laporan telah ditandai selesai dan dihapus dari daftar antrean.")
+  localStorage.setItem('password_approved', 'true')
+  alert("Izin telah diberikan! Password klien berhasil diperbarui sesuai pengajuan mereka.")
 }
 
 const contactClient = (number) => {
