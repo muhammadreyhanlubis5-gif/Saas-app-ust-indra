@@ -106,7 +106,6 @@ const backToLogin = () => {
 }
 
 const pilihPaket = (paket) => {
-  const pesan = encodeURIComponent(`Halo Admin Pusat, akun institusi kami telah kedaluwarsa. Kami sangat tertarik untuk melakukan perpanjangan kontrak menggunakan Paket ${paket}. Mohon info instruksi pembayarannya.`)
-  window.open(`https://wa.me/6281234567890?text=${pesan}`, '_blank')
+  router.push(`/checkout?plan=${paket}`)
 }
 </script>

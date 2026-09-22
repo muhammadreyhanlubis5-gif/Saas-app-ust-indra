@@ -19,6 +19,7 @@ import ComingSoon from '../views/ComingSoon.vue'
 const routes = [
   { path: '/', name: 'Login', component: Login, meta: { requiresAuth: false } },
   { path: '/expired', name: 'Expired', component: ExpiredView, meta: { requiresAuth: false } },
+  { path: '/checkout', name: 'Checkout', component: () => import('../views/CheckoutView.vue'), meta: { requiresAuth: false } },
   
   // SUPER ADMIN
   {
