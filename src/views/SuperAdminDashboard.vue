@@ -27,7 +27,8 @@
           Laporan Pendapatan
         </button>
 
-        <button class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white font-bold transition-all cursor-not-allowed opacity-50" title="Tahap Pengembangan">
+        <button @click="activeTab = 'pengaturan'" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all"
+          :class="activeTab === 'pengaturan' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-gray-400 hover:bg-gray-800 hover:text-white'">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
           Pengaturan Sistem
         </button>
@@ -225,6 +226,78 @@
 
       </div>
 
+      <!-- PENGATURAN SISTEM TAB -->
+      <div v-else-if="activeTab === 'pengaturan'" class="animate-fade-in space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Ubah Password Super Admin -->
+          <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 h-max">
+            <div class="flex items-center gap-4 mb-6">
+              <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+              </div>
+              <div>
+                <h2 class="text-xl font-black text-gray-800">Ubah Password Master</h2>
+                <p class="text-xs font-medium text-gray-500">Khusus akses level Super Admin.</p>
+              </div>
+            </div>
+
+            <form @submit.prevent="changeSuperAdminPassword" class="space-y-4">
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">Password Saat Ini</label>
+                <input v-model="passForm.old" type="password" required class="w-full bg-white text-gray-900 border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm">
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">Password Baru</label>
+                <input v-model="passForm.new" type="password" required class="w-full bg-white text-gray-900 border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm">
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">Konfirmasi Password Baru</label>
+                <input v-model="passForm.confirm" type="password" required class="w-full bg-white text-gray-900 border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm">
+              </div>
+              <button type="submit" class="w-full bg-gray-900 hover:bg-black text-white font-bold py-3 rounded-xl transition-colors mt-2">Update Password</button>
+            </form>
+          </div>
+
+          <!-- Laporan Lupa Password -->
+          <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[500px]">
+            <div class="p-6 border-b border-gray-100 flex items-center justify-between bg-red-50/30">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h2 class="text-lg font-black text-gray-800">Laporan Lupa Password</h2>
+              </div>
+              <span class="bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">{{ forgotPasswordReports.length }} Laporan</span>
+            </div>
+            
+            <div class="flex-1 p-6 overflow-y-auto custom-scrollbar bg-gray-50/30">
+              <div v-if="forgotPasswordReports.length === 0" class="text-center text-gray-400 py-10 font-medium">
+                <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Belum ada laporan lupa password dari klien.
+              </div>
+              <div v-else class="space-y-4">
+                <div v-for="report in forgotPasswordReports" :key="report.id" class="bg-white border border-red-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
+                  <div class="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 class="font-bold text-gray-800">{{ report.school_name }}</h4>
+                      <p class="text-xs font-bold text-indigo-600 mt-0.5">@{{ report.username }}</p>
+                    </div>
+                    <span class="text-[10px] text-gray-400 font-bold">{{ report.date }}</span>
+                  </div>
+                  <p class="text-sm text-gray-600 my-3 italic">"{{ report.message }}"</p>
+                  <div class="flex gap-2 mt-3 pt-3 border-t border-gray-100">
+                    <button @click="resolveReport(report.id)" class="flex-1 bg-green-50 hover:bg-green-100 text-green-700 text-xs font-bold py-2 rounded-lg transition-colors border border-green-200">Tandai Selesai</button>
+                    <button @click="contactClient(report.contact)" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold py-2 rounded-lg transition-colors border border-blue-200">Hubungi Klien</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+
     </main>
 
     <!-- Modal Tambah Klien -->
@@ -360,6 +433,51 @@ const formatRupiah = (angka) => {
     currency: 'IDR',
     minimumFractionDigits: 0
   }).format(angka || 0)
+}
+
+// Data & Methods for Pengaturan Sistem
+const passForm = ref({ old: '', new: '', confirm: '' })
+
+const forgotPasswordReports = ref([
+  {
+    id: 1,
+    school_name: 'SMP Negeri 1 Medan',
+    username: 'smpn1medan',
+    contact: '081234567890',
+    date: '10 Menit lalu',
+    message: 'Admin kami lupa password setelah login terakhir bulan lalu. Mohon reset segera.'
+  },
+  {
+    id: 2,
+    school_name: 'SMA Swasta Galih Agung',
+    username: 'smagalih',
+    contact: '082199887766',
+    date: '2 Jam lalu',
+    message: 'Tidak bisa login, password selalu salah padahal merasa sudah benar.'
+  }
+])
+
+const changeSuperAdminPassword = () => {
+  if (passForm.value.new !== passForm.value.confirm) {
+    alert("Konfirmasi password baru tidak cocok!")
+    return
+  }
+  if (passForm.value.new.length < 6) {
+    alert("Password baru minimal 6 karakter!")
+    return
+  }
+  // Simulasi API Call
+  alert("Password Master berhasil diperbarui secara sistem!")
+  passForm.value = { old: '', new: '', confirm: '' }
+}
+
+const resolveReport = (id) => {
+  forgotPasswordReports.value = forgotPasswordReports.value.filter(r => r.id !== id)
+  alert("Laporan telah ditandai selesai dan dihapus dari daftar antrean.")
+}
+
+const contactClient = (number) => {
+  window.open(`https://wa.me/62${number.substring(1)}`, '_blank')
 }
 
 const form = ref({
