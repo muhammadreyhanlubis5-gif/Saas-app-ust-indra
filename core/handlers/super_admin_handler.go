@@ -223,3 +223,15 @@ func ApproveForgotPassword(c *gin.Context) {
 	tx.Commit()
 	c.JSON(http.StatusOK, gin.H{"message": "Izin diberikan, password diupdate"})
 }
+
+func RejectForgotPassword(c *gin.Context) {
+	id := c.Param("id")
+	
+	_, err := database.DB.Exec("UPDATE forgot_password_requests SET status = 'REJECTED' WHERE id = $1 AND status = 'PENDING'", id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menghapus laporan"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Laporan berhasil dihapus / ditolak"})
+}

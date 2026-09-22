@@ -295,6 +295,14 @@
                       {{ processingIds.has(report.id) ? 'Memproses...' : 'Berikan Izin' }}
                     </button>
                     <button @click="contactClient(report.contact)" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold py-2 rounded-lg transition-colors border border-blue-200">Hubungi Klien</button>
+                    <button 
+                      @click="rejectReport(report.id)" 
+                      :disabled="processingIds.has(report.id)"
+                      class="px-4 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold py-2 rounded-lg transition-colors border border-red-200"
+                      title="Hapus Laporan Spam/Kedaluwarsa"
+                    >
+                      Hapus
+                    </button>
                   </div>
                 </div>
               </div>
@@ -475,6 +483,32 @@ const changeSuperAdminPassword = () => {
 }
 
 const processingIds = ref(new Set())
+
+const rejectReport = async (id) => {
+  if (!confirm("Apakah Anda yakin ingin menghapus laporan ini secara permanen?")) return
+  
+  if (processingIds.value.has(id)) return
+  processingIds.value.add(id)
+
+  try {
+    const token = localStorage.getItem('token')
+    const res = await fetch(`/api/v1/super/forgot-password-requests/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+    
+    if (res.ok) {
+      forgotPasswordReports.value = forgotPasswordReports.value.filter(r => r.id !== id)
+    } else {
+      const data = await res.json()
+      alert("Gagal menghapus laporan: " + data.error)
+    }
+  } catch(e) {
+    alert("Terjadi kesalahan jaringan")
+  } finally {
+    processingIds.value.delete(id)
+  }
+}
 
 const resolveReport = async (id) => {
   if (processingIds.value.has(id)) return

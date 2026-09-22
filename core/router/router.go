@@ -22,6 +22,7 @@ func SetupRoutes(r *gin.Engine) {
 		super.DELETE("/schools/:id", handlers.DeleteSchool)
 		super.GET("/forgot-password-requests", handlers.GetForgotPasswordRequests)
 		super.PUT("/forgot-password-requests/:id/approve", handlers.ApproveForgotPassword)
+		super.DELETE("/forgot-password-requests/:id", handlers.RejectForgotPassword)
 	}
 
 	school := api.Group("/school")
