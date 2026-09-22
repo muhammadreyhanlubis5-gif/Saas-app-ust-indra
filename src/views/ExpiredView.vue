@@ -6,9 +6,14 @@
       <p class="text-gray-600 mb-6">
         Masa aktif kontrak sekolah Anda telah habis. Seluruh fitur sistem dinonaktifkan sementara.
       </p>
-      <button @click="backToLogin" class="bg-blue-600 text-white px-6 py-2 rounded-full font-medium hover:bg-blue-700">
-        Kembali ke Login
-      </button>
+      <div class="flex flex-col sm:flex-row justify-center gap-3">
+        <button @click="backToLogin" class="bg-gray-100 text-gray-700 px-6 py-2 rounded-full font-medium hover:bg-gray-200 border border-gray-300 transition-colors">
+          Kembali ke Login
+        </button>
+        <button @click="handleUpgrade" class="bg-blue-600 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700 shadow-md transition-colors">
+          Upgrade Akses
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -21,5 +26,11 @@ const router = useRouter()
 const backToLogin = () => {
   localStorage.clear()
   router.push('/')
+}
+
+const handleUpgrade = () => {
+  // Arahkan ke WhatsApp Super Admin atau halaman pembayaran
+  const pesan = encodeURIComponent("Halo Admin Pusat, akun institusi kami telah kedaluwarsa. Kami ingin melakukan Upgrade / Perpanjangan masa aktif kontrak.")
+  window.open(`https://wa.me/6281234567890?text=${pesan}`, '_blank')
 }
 </script>
