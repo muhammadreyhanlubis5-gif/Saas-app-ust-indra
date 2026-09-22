@@ -287,6 +287,13 @@ const checkApproval = async () => {
     const data = await res.json()
     if (res.ok && data.status === 'APPROVED') {
       approvedNotification.value = true
+      
+      // Stop polling karena sudah disetujui
+      if (approvalInterval) {
+        clearInterval(approvalInterval)
+        approvalInterval = null
+      }
+
       // Auto-hilangkan notifikasi setelah 10 detik
       setTimeout(() => {
         approvedNotification.value = false

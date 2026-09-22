@@ -48,17 +48,23 @@ func CheckForgotPasswordStatus(c *gin.Context) {
 		return
 	}
 
+	var id int
 	var status string
 	err := database.DB.QueryRow(`
-		SELECT f.status FROM forgot_password_requests f
+		SELECT f.id, f.status FROM forgot_password_requests f
 		JOIN users u ON f.user_id = u.id
 		WHERE u.username = $1
 		ORDER BY f.created_at DESC LIMIT 1
-	`, username).Scan(&status)
+	`, username).Scan(&id, &status)
 
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"status": "NOT_FOUND"})
 		return
+	}
+
+	// Jika statusnya APPROVED, tandai sebagai NOTIFIED agar tidak muncul terus-terusan di client
+	if status == "APPROVED" {
+		database.DB.Exec("UPDATE forgot_password_requests SET status = 'NOTIFIED' WHERE id = $1", id)
 	}
 
 	c.JSON(http.StatusOK, gin.H{"status": status})
