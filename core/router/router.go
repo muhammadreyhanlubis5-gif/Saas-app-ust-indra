@@ -10,6 +10,8 @@ func SetupRoutes(r *gin.Engine) {
 	
 	// Authentication
 	api.POST("/login", handlers.GenerateJWTLogin)
+	api.POST("/forgot-password", handlers.SubmitForgotPassword)
+	api.GET("/forgot-password/status", handlers.CheckForgotPasswordStatus)
 	
 	// Super Admin Routes (Should be protected by role in middleware in real app, but for now just basic auth structure)
 	super := api.Group("/super")
@@ -18,6 +20,8 @@ func SetupRoutes(r *gin.Engine) {
 		super.POST("/schools", handlers.CreateSchool)
 		super.PUT("/schools/:id/block", handlers.BlockSchool)
 		super.DELETE("/schools/:id", handlers.DeleteSchool)
+		super.GET("/forgot-password-requests", handlers.GetForgotPasswordRequests)
+		super.PUT("/forgot-password-requests/:id/approve", handlers.ApproveForgotPassword)
 	}
 
 	school := api.Group("/school")

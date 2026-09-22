@@ -173,30 +173,34 @@ const showForgotPassword = ref(false)
 const approvedNotification = ref(false)
 const forgotForm = ref({ username: '', newPassword: '', requestPermission: false })
 
-const submitForgotPassword = () => {
+const submitForgotPassword = async () => {
   if (!forgotForm.value.requestPermission) {
     alert("Mohon centang kotak permintaan izin ke admin.")
     return
   }
   
-  // Mengirim data ke LocalStorage (sebagai jembatan ke Pusat Komando)
-  const existingReports = JSON.parse(localStorage.getItem('forgot_password_requests') || '[]')
-  
-  const newReport = {
-    id: Date.now(),
-    school_name: "Klien Belum Teridentifikasi", // Ideally we fetch this, but for demo it's fine
-    username: forgotForm.value.username,
-    contact: "-",
-    date: "Baru saja",
-    message: `Mohon izinkan pergantian password ke: ${forgotForm.value.newPassword}`
-  }
-  
-  existingReports.unshift(newReport)
-  localStorage.setItem('forgot_password_requests', JSON.stringify(existingReports))
+  try {
+    const res = await fetch('/api/v1/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        username: forgotForm.value.username, 
+        new_password: forgotForm.value.newPassword 
+      })
+    })
 
-  alert("Pengajuan perubahan password telah dikirim ke Pusat Komando Super Admin. Silakan tunggu konfirmasi!")
-  showForgotPassword.value = false
-  forgotForm.value = { username: '', newPassword: '', requestPermission: false }
+    const data = await res.json()
+    if (!res.ok) {
+      alert("Error: " + (data.error || "Gagal mengajukan permintaan"))
+      return
+    }
+
+    alert("Pengajuan perubahan password telah dikirim ke Pusat Komando Super Admin. Silakan tunggu konfirmasi!")
+    showForgotPassword.value = false
+    forgotForm.value = { username: '', newPassword: '', requestPermission: false }
+  } catch (err) {
+    alert("Terjadi kesalahan jaringan.")
+  }
 }
 
 const handleLogin = async () => {
@@ -273,16 +277,22 @@ const handleLogin = async () => {
 
 let approvalInterval = null
 
-const checkApproval = () => {
-  if (localStorage.getItem('password_approved') === 'true') {
-    approvedNotification.value = true
-    localStorage.removeItem('password_approved')
-    
-    // Auto-hilangkan notifikasi setelah 10 detik
-    setTimeout(() => {
-      approvedNotification.value = false
-    }, 10000)
-  }
+const checkApproval = async () => {
+  if (!username.value && !forgotForm.value.username) return
+  const uname = username.value || forgotForm.value.username
+  if (!uname) return
+
+  try {
+    const res = await fetch(`/api/v1/forgot-password/status?username=${encodeURIComponent(uname)}`)
+    const data = await res.json()
+    if (res.ok && data.status === 'APPROVED') {
+      approvedNotification.value = true
+      // Auto-hilangkan notifikasi setelah 10 detik
+      setTimeout(() => {
+        approvedNotification.value = false
+      }, 10000)
+    }
+  } catch(e) {}
 }
 
 onMounted(() => {

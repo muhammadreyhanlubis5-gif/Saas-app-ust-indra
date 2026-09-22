@@ -438,15 +438,17 @@ const formatRupiah = (angka) => {
 // Data & Methods for Pengaturan Sistem
 const passForm = ref({ old: '', new: '', confirm: '' })
 
-let lastReportsString = ''
-const loadForgotPasswordReports = () => {
-  const data = localStorage.getItem('forgot_password_requests')
-  if (data && data !== lastReportsString) {
-    forgotPasswordReports.value = JSON.parse(data)
-    lastReportsString = data
-  } else if (!data && lastReportsString !== '') {
-    forgotPasswordReports.value = []
-    lastReportsString = ''
+const loadForgotPasswordReports = async () => {
+  try {
+    const token = localStorage.getItem('token')
+    const res = await fetch('/api/v1/super/forgot-password-requests', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+    if (res.ok) {
+      forgotPasswordReports.value = await res.json()
+    }
+  } catch (err) {
+    console.error(err)
   }
 }
 
@@ -466,11 +468,24 @@ const changeSuperAdminPassword = () => {
   passForm.value = { old: '', new: '', confirm: '' }
 }
 
-const resolveReport = (id) => {
-  forgotPasswordReports.value = forgotPasswordReports.value.filter(r => r.id !== id)
-  localStorage.setItem('forgot_password_requests', JSON.stringify(forgotPasswordReports.value))
-  localStorage.setItem('password_approved', 'true')
-  alert("Izin telah diberikan! Password klien berhasil diperbarui sesuai pengajuan mereka.")
+const resolveReport = async (id) => {
+  try {
+    const token = localStorage.getItem('token')
+    const res = await fetch(`/api/v1/super/forgot-password-requests/${id}/approve`, {
+      method: 'PUT',
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+    
+    if (res.ok) {
+      forgotPasswordReports.value = forgotPasswordReports.value.filter(r => r.id !== id)
+      alert("Izin telah diberikan! Password klien berhasil diperbarui secara permanen di database.")
+    } else {
+      const data = await res.json()
+      alert("Gagal memberikan izin: " + data.error)
+    }
+  } catch(e) {
+    alert("Terjadi kesalahan jaringan")
+  }
 }
 
 const contactClient = (number) => {
@@ -665,22 +680,14 @@ onMounted(() => {
   loadForgotPasswordReports()
   document.addEventListener('click', handleClickOutside)
   
-  // Dengarkan perubahan localStorage dari tab lain secara real-time
-  window.addEventListener('storage', (e) => {
-    if (e.key === 'forgot_password_requests') {
-      loadForgotPasswordReports()
-    }
-  })
-
-  // Fallback Polling (1 detik) memastikan UI selalu up-to-date meski tanpa reload
+  // Fallback Polling (3 detik) agar real-time tersinkron dengan database
   reportInterval = setInterval(() => {
     loadForgotPasswordReports()
-  }, 1000)
+  }, 3000)
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
-  window.removeEventListener('storage', loadForgotPasswordReports)
   if (reportInterval) clearInterval(reportInterval)
 })
 

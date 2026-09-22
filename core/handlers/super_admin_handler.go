@@ -74,14 +74,12 @@ func CreateSchool(c *gin.Context) {
 		return
 	}
 
-	// Mulai Transaction agar jika gagal satu, semua di-rollback
 	tx, err := database.DB.Begin()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal memulai transaksi"})
 		return
 	}
 
-	// 1. Insert School
 	var schoolID string
 	err = tx.QueryRow(`
 		INSERT INTO schools (name, valid_until, payment_method, payment_amount, address, contact_number)
@@ -95,7 +93,6 @@ func CreateSchool(c *gin.Context) {
 		return
 	}
 
-	// 2. Hash Password & Insert User (School Admin)
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		tx.Rollback()
@@ -110,7 +107,6 @@ func CreateSchool(c *gin.Context) {
 
 	if err != nil {
 		tx.Rollback()
-		// Kemungkinan username duplikat (UNIQUE constraint)
 		c.JSON(http.StatusConflict, gin.H{"error": "Username sudah dipakai oleh lembaga lain. Gunakan username unik."})
 		return
 	}
@@ -126,32 +122,104 @@ func CreateSchool(c *gin.Context) {
 
 func BlockSchool(c *gin.Context) {
 	schoolID := c.Param("id")
-	
-	// Blokir = set valid_until ke waktu masa lalu (kemarin)
-	_, err := database.DB.Exec(`
-		UPDATE schools SET valid_until = NOW() - INTERVAL '1 day' WHERE id = $1
-	`, schoolID)
-
+	_, err := database.DB.Exec("UPDATE schools SET valid_until = NOW() - INTERVAL '1 day' WHERE id = $1", schoolID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal memblokir klien"})
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{"message": "Klien berhasil diblokir (status expired)"})
 }
 
 func DeleteSchool(c *gin.Context) {
 	schoolID := c.Param("id")
-	
-	// Hapus sekolah (data user & subject akan otomatis terhapus karena ON DELETE CASCADE)
-	_, err := database.DB.Exec(`
-		DELETE FROM schools WHERE id = $1
-	`, schoolID)
-
+	_, err := database.DB.Exec("DELETE FROM schools WHERE id = $1", schoolID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menghapus klien"})
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{"message": "Klien beserta seluruh data terkait berhasil dihapus permanen"})
+}
+
+type ForgotPasswordReport struct {
+	ID         int    `json:"id"`
+	SchoolName string `json:"school_name"`
+	Username   string `json:"username"`
+	Contact    string `json:"contact"`
+	Date       string `json:"date"`
+	Message    string `json:"message"`
+}
+
+func GetForgotPasswordRequests(c *gin.Context) {
+	rows, err := database.DB.Query(`
+		SELECT f.id, COALESCE(s.name, 'Tanpa Lembaga'), u.username, COALESCE(s.contact_number, '-'), f.created_at, f.new_password
+		FROM forgot_password_requests f
+		JOIN users u ON f.user_id = u.id
+		LEFT JOIN schools s ON u.school_id = s.id
+		WHERE f.status = 'PENDING'
+		ORDER BY f.created_at DESC
+	`)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil data laporan"})
+		return
+	}
+	defer rows.Close()
+
+	var reports []ForgotPasswordReport
+	for rows.Next() {
+		var r ForgotPasswordReport
+		var t time.Time
+		var newPass string
+		if err := rows.Scan(&r.ID, &r.SchoolName, &r.Username, &r.Contact, &t, &newPass); err != nil {
+			continue
+		}
+		r.Date = t.Format("02 Jan 15:04")
+		r.Message = "Mohon izinkan pergantian password ke: " + newPass
+		reports = append(reports, r)
+	}
+
+	if reports == nil {
+		reports = []ForgotPasswordReport{}
+	}
+	c.JSON(http.StatusOK, reports)
+}
+
+func ApproveForgotPassword(c *gin.Context) {
+	id := c.Param("id")
+	
+	var userID string
+	var newPassword string
+	err := database.DB.QueryRow("SELECT user_id, new_password FROM forgot_password_requests WHERE id = $1 AND status = 'PENDING'", id).Scan(&userID, &newPassword)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Laporan tidak ditemukan"})
+		return
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal enkripsi password"})
+		return
+	}
+
+	tx, err := database.DB.Begin()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal memulai transaksi"})
+		return
+	}
+
+	_, err = tx.Exec("UPDATE users SET password = $1 WHERE id = $2", string(hashedPassword), userID)
+	if err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal update password user"})
+		return
+	}
+
+	_, err = tx.Exec("UPDATE forgot_password_requests SET status = 'APPROVED' WHERE id = $1", id)
+	if err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal update status laporan"})
+		return
+	}
+
+	tx.Commit()
+	c.JSON(http.StatusOK, gin.H{"message": "Izin diberikan, password diupdate"})
 }
