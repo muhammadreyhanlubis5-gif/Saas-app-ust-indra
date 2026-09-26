@@ -50,7 +50,7 @@
               <input 
                 type="text" 
                 id="username" 
-                v-model="username"
+                v-model.trim="username"
                 placeholder="Masukkan username Anda"
                 class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-800"
                 required

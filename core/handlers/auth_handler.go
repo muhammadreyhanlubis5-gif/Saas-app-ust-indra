@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -33,12 +34,14 @@ func GenerateJWTLogin(c *gin.Context) {
 		ValidUntil *time.Time
 	}
 
+	cleanUsername := strings.TrimSpace(req.Username)
+
 	err := database.DB.QueryRow(`
 		SELECT u.id, u.school_id, u.password, u.role, s.valid_until
 		FROM users u
 		LEFT JOIN schools s ON u.school_id = s.id
 		WHERE u.username = $1
-	`, req.Username).Scan(&user.ID, &user.SchoolID, &user.Password, &user.Role, &user.ValidUntil)
+	`, cleanUsername).Scan(&user.ID, &user.SchoolID, &user.Password, &user.Role, &user.ValidUntil)
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Username tidak ditemukan"})
