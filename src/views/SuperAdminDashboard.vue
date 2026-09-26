@@ -421,6 +421,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { SafeFlow } from '../core/SafeFlow.js'
 
 const router = useRouter()
 const activeTab = ref('manajemen')
@@ -455,7 +456,7 @@ const passForm = ref({ old: '', new: '', confirm: '' })
 const loadForgotPasswordReports = async () => {
   try {
     const token = localStorage.getItem('token')
-    const res = await fetch('/api/v1/super/forgot-password-requests', {
+    const res = await SafeFlow.fetch('/api/v1/super/forgot-password-requests', {
       headers: { 'Authorization': `Bearer ${token}` }
     })
     if (res.ok) {
@@ -492,7 +493,7 @@ const rejectReport = async (id) => {
 
   try {
     const token = localStorage.getItem('token')
-    const res = await fetch(`/api/v1/super/forgot-password-requests/${id}`, {
+    const res = await SafeFlow.fetch(`/api/v1/super/forgot-password-requests/${id}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${token}` }
     })
@@ -516,7 +517,7 @@ const resolveReport = async (id) => {
 
   try {
     const token = localStorage.getItem('token')
-    const res = await fetch(`/api/v1/super/forgot-password-requests/${id}/approve`, {
+    const res = await SafeFlow.fetch(`/api/v1/super/forgot-password-requests/${id}/approve`, {
       method: 'PUT',
       headers: { 'Authorization': `Bearer ${token}` }
     })
@@ -593,7 +594,7 @@ const searchSchool = () => {
 
       // 2. Fetch dari Nominatim OpenStreetMap
       const query = encodeURIComponent(form.value.name)
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json&countrycodes=id&limit=5`, {
+      const res = await SafeFlow.fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json&countrycodes=id&limit=5`, {
         headers: { 'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7' }
       })
       
@@ -637,7 +638,7 @@ const handleClickOutside = (e) => {
 const fetchSchools = async () => {
   loading.value = true
   try {
-    const res = await fetch('/api/v1/super/schools')
+    const res = await SafeFlow.fetch('/api/v1/super/schools')
     if (res.ok) {
       schools.value = await res.json() || []
     }
@@ -651,7 +652,7 @@ const fetchSchools = async () => {
 const submitKlien = async () => {
   saving.value = true
   try {
-    const res = await fetch('/api/v1/super/schools', {
+    const res = await SafeFlow.fetch('/api/v1/super/schools', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -686,14 +687,15 @@ const submitKlien = async () => {
 const blockSchool = async (id) => {
   if (confirm("Yakin ingin memblokir klien ini? (Status akan menjadi Expired)")) {
     try {
-      const res = await fetch(`/api/v1/super/schools/${id}/block`, { method: 'PUT' })
-      if (res.ok) {
-        fetchSchools()
-      } else {
-        alert("Gagal memblokir klien.")
+      // Optimistic UI
+      const target = schools.value.find(s => s.id === id)
+      if (target) {
+        target.valid_until = new Date(Date.now() - 86400000).toISOString()
       }
+      const res = await SafeFlow.fetch(`/api/v1/super/schools/${id}/block`, { method: 'PUT' })
     } catch (err) {
       alert("Terjadi kesalahan jaringan.")
+      fetchSchools() // Rollback
     }
   }
 }
@@ -701,14 +703,14 @@ const blockSchool = async (id) => {
 const deleteSchool = async (id, name) => {
   if (confirm(`Peringatan Keras!\nApakah Anda benar-benar yakin ingin menghapus klien "${name}" secara PERMANEN?\n\nSemua data milik klien ini (profil, guru, mata pelajaran, jadwal, dll) akan lenyap dan tidak bisa dikembalikan.`)) {
     try {
-      const res = await fetch(`/api/v1/super/schools/${id}`, { method: 'DELETE' })
-      if (res.ok) {
-        fetchSchools()
-      } else {
-        alert("Gagal menghapus klien.")
-      }
+      // OPTIMISTIC UI: Hapus dari memori lokal (instant ms)
+      schools.value = schools.value.filter(s => s.id !== id)
+      
+      const res = await SafeFlow.fetch(`/api/v1/super/schools/${id}`, { method: 'DELETE' })
+      // Jangan panggil fetchSchools() agar tidak menimpa state optimistic jika koneksi lambat
     } catch (err) {
       alert("Terjadi kesalahan jaringan saat menghapus klien.")
+      fetchSchools() // Rollback jika error parah
     }
   }
 }
