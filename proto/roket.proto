@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package roket;
+
+option go_package = "roket-gateway/proto";
+
+// =============================================================
+// Super Roket — Protocol Buffer Contract v1
+// Kontrak komunikasi gRPC antara Go API Gateway dan C++ Worker
+// =============================================================
+
+// Menggunakan bytes untuk payload mentah.
+// Di C++ ini menjadi std::string (zero-copy move semantic),
+// menghindari overhead validasi UTF-8 yang terjadi pada tipe string.
+
+message RoketRequest {
+  bytes   payload    = 1;  // Data mentah dari klien (JSON/binary/apapun)
+  int32   op_code    = 2;  // Kode operasi: 1=GENERATE, 2=VALIDATE, 3=COMPUTE
+  int64   request_id = 3;  // ID unik per request untuk tracing & dedup
+}
+
+message RoketResponse {
+  bytes   result      = 1;  // Hasil komputasi mentah
+  int32   status_code = 2;  // 200=OK, 400=BAD_INPUT, 500=INTERNAL
+  int64   latency_ns  = 3;  // Waktu eksekusi aktual di C++ (nanosecond)
+}
+
+service DataProcessor {
+  // Unary RPC — satu request, satu response
+  rpc ProcessData (RoketRequest) returns (RoketResponse);
+
+  // Server-streaming RPC — untuk batch processing besar
+  // Satu request masuk, C++ mengirim potongan hasil secara bertahap
+  rpc StreamProcess (RoketRequest) returns (stream RoketResponse);
+}
