@@ -323,10 +323,6 @@ const menuGroups = [
     title: 'Analisis & Laporan',
     items: [
       { title: 'Analisis Sebaran Guru', icon: iconChart, path: '/admin-sekolah/analisis-guru' },
-      { title: 'Analisis Mata Pelajaran', icon: iconChart, path: '/admin-sekolah/analisis-mapel' },
-      { title: 'Validasi Kode Guru', icon: iconReport, path: '/admin-sekolah/validasi-kode-guru' },
-      { title: 'Validasi Kode Mapel', icon: iconReport, path: '/admin-sekolah/validasi-kode-mapel' },
-      { title: 'Master Jadwal', icon: iconReport, path: '/admin-sekolah/master-jadwal' },
       { title: 'Tunjangan Sertifikasi', icon: iconBadge, path: '/admin-sekolah/sertifikasi' },
     ]
   }
