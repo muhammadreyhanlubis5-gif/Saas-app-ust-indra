@@ -135,6 +135,29 @@
 
     </form>
 
+        <!-- Error Modal -->
+    <div v-if="showErrorModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
+      <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative animate-bounce-in text-center border-t-8 border-red-500">
+        <!-- Close X -->
+        <button @click="showErrorModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        
+        <!-- Icon Gagal -->
+        <div class="w-24 h-24 bg-red-100 text-red-500 rounded-full mx-auto flex items-center justify-center mb-6 shadow-inner relative">
+          <div class="absolute inset-0 bg-red-400 rounded-full animate-ping opacity-20"></div>
+          <svg class="w-12 h-12 animate-shake" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </div>
+        
+        <h2 class="text-3xl font-black text-gray-800 mb-2">Gagal!</h2>
+        <p class="text-gray-500 mb-8 font-medium leading-relaxed">{{ errorMessage }}</p>
+        
+        <button @click="showErrorModal = false" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-transform transform hover:-translate-y-1">
+          Coba Lagi
+        </button>
+      </div>
+    </div>
+
     <!-- Success Modal -->
     <div v-if="showSuccessModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
       <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative animate-bounce-in text-center border-t-8 border-emerald-500">
@@ -169,6 +192,8 @@ const router = useRouter()
 const loading = ref(true)
 const saving = ref(false)
 const showSuccessModal = ref(false)
+const showErrorModal = ref(false)
+const errorMessage = ref('')
 
 const availableDays = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']
 
@@ -317,10 +342,10 @@ const saveProfile = async () => {
     if (res.ok) {
       showSuccessModal.value = true
     } else {
-      alert("Gagal menyimpan data")
+      errorMessage.value = "Terjadi kegagalan saat menyimpan data. Periksa kembali isian Anda."; showErrorModal.value = true
     }
   } catch (err) {
-    alert("Terjadi kesalahan jaringan")
+    errorMessage.value = "Koneksi jaringan terputus. Pastikan Anda terhubung ke internet."; showErrorModal.value = true
   } finally {
     saving.value = false
   }
@@ -355,4 +380,16 @@ onUnmounted(() => {
   stroke-dasharray: 50;
   stroke-dashoffset: 50;
 }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
 </style>
+
+
+
+
