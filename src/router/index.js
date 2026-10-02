@@ -16,6 +16,7 @@ import JadwalGuru from '../views/JadwalGuru.vue'
 import JadwalKelas from '../views/JadwalKelas.vue'
 import AlokasiJam from '../views/AlokasiJam.vue'
 import AnalisisGuru from '../views/AnalisisGuru.vue'
+import TunjanganSertifikasi from '../views/TunjanganSertifikasi.vue'
 import ComingSoon from '../views/ComingSoon.vue'
 
 const routes = [
@@ -49,6 +50,7 @@ const routes = [
       { path: 'jadwal-kelas', name: 'JadwalKelas', component: JadwalKelas },
       { path: 'alokasi-jam', name: 'AlokasiJam', component: AlokasiJam },
       { path: 'analisis-guru', name: 'AnalisisGuru', component: AnalisisGuru },
+      { path: 'sertifikasi', name: 'TunjanganSertifikasi', component: TunjanganSertifikasi },
       { path: ':pathMatch(.*)*', name: 'AdminNotFound', component: ComingSoon }
     ]
   },
