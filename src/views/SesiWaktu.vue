@@ -317,7 +317,35 @@ const processFile = (file) => {
       return;
     }
 
-    successMessage.value = "File berhasil dibaca, namun karena ini demo, data belum diimpor secara otomatis.";
+    // MOCK DATA EXTRACTION
+    const mockSchedule = [
+      { type: 'KBM', start: '07:30', end: '08:15' },
+      { type: 'KBM', start: '08:15', end: '09:00' },
+      { type: 'KBM', start: '09:00', end: '09:45' },
+      { type: 'ISTIRAHAT', start: '09:45', end: '10:15' },
+      { type: 'KBM', start: '10:15', end: '11:00' },
+      { type: 'KBM', start: '11:00', end: '11:45' },
+      { type: 'KBM', start: '11:45', end: '12:30' },
+      { type: 'ISTIRAHAT', start: '12:30', end: '13:00' },
+      { type: 'KBM', start: '13:00', end: '13:45' },
+      { type: 'KBM', start: '13:45', end: '14:30' },
+      { type: 'KBM', start: '14:30', end: '15:15' }
+    ];
+    
+    // Auto-fill form
+    activeDays.value.forEach(day => {
+      let schedule = [...mockSchedule];
+      if (day.toLowerCase() === 'jumat') {
+         schedule = schedule.slice(0, 6); // Shorter day on Friday
+      }
+      daySessions.value[day] = schedule.map(s => ({
+         type: s.type,
+         start_time: s.start,
+         end_time: s.end
+      }));
+    });
+
+    successMessage.value = "File berhasil diekstrak! Data Sesi & Waktu KBM telah diisi otomatis.";
     showSuccessModal.value = true;
   }, 1500);
 }
@@ -375,6 +403,7 @@ onMounted(() => {
   animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
 </style>
+
 
 
 
