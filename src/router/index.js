@@ -7,6 +7,7 @@ import SchoolAdminDashboard from '../views/SchoolAdminDashboard.vue'
 import TeacherDashboard from '../views/TeacherDashboard.vue'
 import ExpiredView from '../views/ExpiredView.vue'
 import ValidasiLembaga from '../views/ValidasiLembaga.vue'
+import DaftarKelas from '../views/DaftarKelas.vue'
 import SesiWaktu from '../views/SesiWaktu.vue'
 import PengampuMapel from '../views/PengampuMapel.vue'
 import JamKosong from '../views/JamKosong.vue'
@@ -41,6 +42,7 @@ const routes = [
     meta: { requiresAuth: true, role: 'SCHOOL_ADMIN' },
     children: [
       { path: 'validasi-lembaga', name: 'ValidasiLembaga', component: ValidasiLembaga },
+        { path: 'daftar-kelas', name: 'DaftarKelas', component: DaftarKelas },
       { path: 'sesi-kbm', name: 'SesiWaktu', component: SesiWaktu },
       { path: 'pengampu', name: 'PengampuMapel', component: PengampuMapel },
       { path: 'jam-kosong', name: 'JamKosong', component: JamKosong },
@@ -112,5 +114,6 @@ router.beforeEach((to, from, next) => {
 })
 
 export default router
+
 
 

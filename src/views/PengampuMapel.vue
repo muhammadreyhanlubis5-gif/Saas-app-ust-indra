@@ -25,19 +25,12 @@
             <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
             Daftar Kelas (Rombel)
           </h2>
-          <button @click="addClass" class="text-sm font-bold text-blue-600 hover:text-blue-800 bg-blue-50 px-4 py-2 rounded-xl transition-colors">
-            + Tambah Kelas
-          </button>
+          <router-link to="/admin-sekolah/daftar-kelas" class="text-sm font-bold text-blue-600 hover:text-blue-800 bg-blue-50 px-4 py-2 rounded-xl transition-colors inline-flex items-center gap-1">Kelola Kelas <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></router-link>
         </div>
         
         <div class="flex flex-wrap gap-3">
           <div v-if="classes.length === 0" class="text-sm text-gray-400 italic py-2">Belum ada kelas terdaftar.</div>
-          <div v-for="(cls, idx) in classes" :key="idx" class="group bg-gray-50 border border-gray-200 rounded-xl pl-4 pr-1 py-1.5 flex items-center gap-3 hover:border-indigo-300 transition-colors">
-            <span class="font-black text-gray-700">{{ cls }}</span>
-            <button @click="removeClass(idx)" class="w-7 h-7 rounded-lg text-gray-400 hover:bg-red-100 hover:text-red-600 flex items-center justify-center transition-colors">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-          </div>
+          <div v-for="(cls, idx) in classes" :key="idx" class="group bg-blue-50 border border-blue-200 rounded-xl px-4 py-2 flex items-center gap-3 hover:border-blue-400 transition-colors cursor-default"><span class="font-black text-blue-800">{{ cls }}</span></div>
         </div>
       </div>
 
@@ -156,22 +149,31 @@ const classes = ref([])
 const rows = ref([])
 
 const loadData = async () => {
-  loading.value = true
-  try {
-    const res = await fetch('/api/v1/school/pengampu', {
-      headers: { 'X-School-ID': schoolId || '' }
-    })
-    if (res.ok) {
-      const data = await res.json()
-      if (data && data.classes) classes.value = data.classes
-      if (data && data.rows) rows.value = data.rows
+    loading.value = true
+    try {
+      const res = await fetch('/api/v1/school/pengampu', {
+        headers: { 'X-School-ID': schoolId || '' }
+      })
+      if (res.ok) {
+        const data = await res.json()
+        if (data && data.rows) rows.value = data.rows
+      }
+      
+      // Sinkronasi dari localStorage Daftar Kelas
+      const savedClasses = localStorage.getItem('guruKu_classes');
+      if (savedClasses) {
+        const parsed = JSON.parse(savedClasses);
+        classes.value = parsed.map(c => c.name);
+      } else if (res.ok) {
+        const data = await res.json().catch(()=>null);
+        if (data && data.classes) classes.value = data.classes;
+      }
+    } catch (err) {
+      console.error("Gagal load pengampu", err)
+    } finally {
+      loading.value = false
     }
-  } catch (err) {
-    console.error("Gagal load pengampu", err)
-  } finally {
-    loading.value = false
   }
-}
 
 const saveData = async () => {
   try {
@@ -266,3 +268,6 @@ const calculateRowTotal = (row) => {
   transform: translateY(-2px);
 }
 </style>
+
+
+
