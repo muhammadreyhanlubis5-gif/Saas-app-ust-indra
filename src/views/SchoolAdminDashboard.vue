@@ -296,7 +296,7 @@ const menuGroups = [
     items: [
       { title: 'Validasi Lembaga', icon: iconDb, path: '/admin-sekolah/validasi-lembaga' },
       { title: 'Sesi & Waktu KBM', icon: iconClock, path: '/admin-sekolah/sesi-kbm' },
-      { title: 'Alokasi Jam & Kelas', icon: iconBook, path: '/admin-sekolah/alokasi-jam' },
+      { title: 'Mata Pelajaran', icon: iconBook, path: '/admin-sekolah/mata-pelajaran' },
     ]
   },
   {
@@ -345,3 +345,4 @@ const handleLogout = () => {
   background-color: #94a3b8;
 }
 </style>
+

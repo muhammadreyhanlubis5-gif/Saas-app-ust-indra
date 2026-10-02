@@ -122,7 +122,7 @@
         </div>
         <h2 class="text-3xl font-black text-gray-800 mb-2">Berhasil!</h2>
         <p class="text-gray-500 mb-8 font-medium leading-relaxed">{{ successMessage || 'Data Sesi & Waktu KBM berhasil disimpan.' }}</p>
-        <button @click="showSuccessModal = false" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-transform transform hover:-translate-y-1">Selesai</button>
+        <button @click="router.push('/admin-sekolah/mata-pelajaran')" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-transform transform hover:-translate-y-1 flex items-center justify-center gap-2">Lanjut ke Mata Pelajaran <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></button>
       </div>
     </div>
 
@@ -297,6 +297,7 @@ onMounted(() => {
   animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
 </style>
+
 
 
 

@@ -14,7 +14,7 @@ import TugasTambahan from '../views/TugasTambahan.vue'
 import InputJadwal from '../views/InputJadwal.vue'
 import JadwalGuru from '../views/JadwalGuru.vue'
 import JadwalKelas from '../views/JadwalKelas.vue'
-import AlokasiJam from '../views/AlokasiJam.vue'
+import MataPelajaran from '../views/MataPelajaran.vue'
 import AnalisisGuru from '../views/AnalisisGuru.vue'
 import TunjanganSertifikasi from '../views/TunjanganSertifikasi.vue'
 import ComingSoon from '../views/ComingSoon.vue'
@@ -48,7 +48,7 @@ const routes = [
       { path: 'input-jadwal', name: 'InputJadwal', component: InputJadwal },
       { path: 'jadwal-guru', name: 'JadwalGuru', component: JadwalGuru },
       { path: 'jadwal-kelas', name: 'JadwalKelas', component: JadwalKelas },
-      { path: 'alokasi-jam', name: 'AlokasiJam', component: AlokasiJam },
+      { path: 'mata-pelajaran', name: 'MataPelajaran', component: MataPelajaran },
       { path: 'analisis-guru', name: 'AnalisisGuru', component: AnalisisGuru },
       { path: 'sertifikasi', name: 'TunjanganSertifikasi', component: TunjanganSertifikasi },
       { path: ':pathMatch(.*)*', name: 'AdminNotFound', component: ComingSoon }
@@ -112,3 +112,5 @@ router.beforeEach((to, from, next) => {
 })
 
 export default router
+
+
