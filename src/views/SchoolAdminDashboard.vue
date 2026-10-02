@@ -82,10 +82,6 @@
           <div class="relative z-10 w-full md:w-2/3">
             <h2 class="text-3xl font-black mb-2 drop-shadow-md">Selamat Datang di Workspace Anda, <span class="text-blue-200">{{ profileName || 'Admin' }}</span></h2>
             <p class="text-blue-100 text-sm font-medium mb-6 drop-shadow">Sistem Penjadwalan Cerdas. Lengkapi master data untuk memulai.</p>
-            <button @click="showWizard = true" class="bg-white text-blue-900 hover:bg-blue-50 font-black py-3 px-6 rounded-2xl shadow-lg transition-all flex items-center gap-2 transform hover:-translate-y-1 w-max">
-              <svg class="w-6 h-6 text-blue-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-              <span>1-Click Auto-Generate Jadwal</span>
-            </button>
           </div>
           
           <div class="hidden md:flex relative z-10">
