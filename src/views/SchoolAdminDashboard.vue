@@ -294,10 +294,12 @@ const menuGroups = [
   {
     title: 'Master Data',
     items: [
-      { title: 'Validasi Lembaga', icon: iconDb, path: '/admin-sekolah/validasi-lembaga' },
-      { title: 'Sesi & Waktu KBM', icon: iconClock, path: '/admin-sekolah/sesi-kbm' },
-      { title: 'Mata Pelajaran', icon: iconBook, path: '/admin-sekolah/mata-pelajaran' },
-    ]
+        { title: 'Validasi Lembaga', icon: iconDb, path: '/admin-sekolah/validasi-lembaga' },
+        { title: 'Daftar Kelas', icon: iconUsers, path: '/admin-sekolah/daftar-kelas' },
+        { title: 'Daftar Guru', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', path: '/admin-sekolah/daftar-guru' },
+        { title: 'Sesi & Waktu KBM', icon: iconClock, path: '/admin-sekolah/sesi-kbm' },
+        { title: 'Mata Pelajaran', icon: iconBook, path: '/admin-sekolah/mata-pelajaran' },
+      ]
   },
   {
     title: 'Distribusi Beban',
@@ -345,6 +347,8 @@ const handleLogout = () => {
   background-color: #94a3b8;
 }
 </style>
+
+
 
 
 
