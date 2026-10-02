@@ -2,25 +2,24 @@
   <div class="animate-fade-in-up p-4 md:p-8 max-w-[1400px] mx-auto w-full">
     <!-- Header modern -->
     <div class="bg-blue-900 rounded-3xl p-6 md:p-8 text-white shadow-xl mb-8 relative overflow-hidden">
-      <!-- Background Image Overlay -->
       <div class="absolute inset-0 bg-[url('../assets/banner-bg.png')] bg-cover bg-center opacity-40 mix-blend-overlay"></div>
       <div class="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-transparent"></div>
       
       <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div class="w-full md:w-2/3">
           <h1 class="text-2xl md:text-3xl font-black mb-2 flex items-center gap-3 drop-shadow-md">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-            Master Data: Mata Pelajaran
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            Master Data: Daftar Guru
           </h1>
           <p class="text-blue-100 max-w-2xl text-sm md:text-base drop-shadow">
-            Kelola daftar mata pelajaran yang diajarkan di sekolah. Data ini akan digunakan sebagai basis alokasi jam.
+            Kelola data staf pengajar (Guru) beserta kode guru dan spesialisasi mata pelajarannya untuk memudahkan penugasan.
           </p>
         </div>
         
         <div class="flex gap-3">
           <button @click="showAddModal = true" class="bg-white text-blue-700 hover:bg-gray-50 px-6 py-2.5 rounded-xl font-bold transition-all shadow-md flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-            Tambah Pelajaran
+            Tambah Guru
           </button>
         </div>
       </div>
@@ -30,17 +29,17 @@
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <div v-if="loading" class="text-center py-12">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <p class="text-gray-500 font-medium">Memuat data pelajaran...</p>
+        <p class="text-gray-500 font-medium">Memuat data guru...</p>
       </div>
 
-      <div v-else-if="subjects.length === 0" class="text-center py-20 px-4">
+      <div v-else-if="teachers.length === 0" class="text-center py-20 px-4">
         <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-100">
-          <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+          <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
         </div>
-        <h3 class="text-lg font-bold text-gray-800 mb-1">Belum Ada Mata Pelajaran</h3>
-        <p class="text-gray-500 mb-6 text-sm">Silakan tambah mata pelajaran terlebih dahulu untuk menyusun jadwal.</p>
+        <h3 class="text-lg font-bold text-gray-800 mb-1">Belum Ada Data Guru</h3>
+        <p class="text-gray-500 mb-6 text-sm">Silakan tambah data guru terlebih dahulu agar bisa ditugaskan ke kelas.</p>
         <button @click="showAddModal = true" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-bold transition-colors">
-          Tambah Pelajaran Pertama
+          Tambah Guru Pertama
         </button>
       </div>
 
@@ -48,20 +47,25 @@
         <thead>
           <tr class="bg-gray-50 border-b border-gray-100 text-gray-500 uppercase text-xs tracking-wider">
             <th class="px-6 py-4 font-bold">No</th>
-            <th class="px-6 py-4 font-bold">Kode Pelajaran</th>
-            <th class="px-6 py-4 font-bold">Nama Mata Pelajaran</th>
+            <th class="px-6 py-4 font-bold">Kode Guru</th>
+            <th class="px-6 py-4 font-bold">Nama Guru</th>
+            <th class="px-6 py-4 font-bold">Spesialisasi Mapel</th>
             <th class="px-6 py-4 font-bold text-right">Aksi</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(subject, index) in subjects" :key="subject.id || index" class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+          <tr v-for="(teacher, index) in teachers" :key="teacher.id || index" class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
             <td class="px-6 py-4 text-gray-500">{{ index + 1 }}</td>
             <td class="px-6 py-4">
-              <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded font-mono font-bold text-xs">{{ subject.code }}</span>
+              <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded font-bold font-mono text-sm">{{ teacher.code }}</span>
             </td>
-            <td class="px-6 py-4 font-medium text-gray-800">{{ subject.name }}</td>
+            <td class="px-6 py-4 font-medium text-gray-800">{{ teacher.name }}</td>
+            <td class="px-6 py-4 text-gray-600">
+              <span v-if="teacher.subject" class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">{{ teacher.subject }}</span>
+              <span v-else class="italic text-gray-400 text-xs">Belum diatur</span>
+            </td>
             <td class="px-6 py-4 text-right">
-              <button @click="deleteSubject(index)" class="text-red-400 hover:text-red-600 p-2 hover:bg-red-50 rounded-lg transition-colors">
+              <button @click="deleteTeacher(index)" class="text-red-400 hover:text-red-600 p-2 hover:bg-red-50 rounded-lg transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
               </button>
             </td>
@@ -70,24 +74,32 @@
       </table>
     </div>
 
-    <!-- Form Modal Tambah Pelajaran -->
+    <!-- Form Modal Tambah Guru -->
     <div v-if="showAddModal" class="fixed inset-0 z-40 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
       <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-fade-in-up">
         <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-          <h3 class="font-bold text-gray-800 text-lg">Tambah Mata Pelajaran</h3>
+          <h3 class="font-bold text-gray-800 text-lg">Tambah Data Guru</h3>
           <button @click="showAddModal = false" class="text-gray-400 hover:text-gray-600 bg-white hover:bg-gray-100 rounded-full p-1.5 transition-colors shadow-sm">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
         </div>
         
-        <form @submit.prevent="saveSubject" class="p-6 space-y-5">
+        <form @submit.prevent="saveTeacher" class="p-6 space-y-5">
           <div>
-            <label class="block text-sm font-bold text-gray-700 mb-1">Kode Pelajaran</label>
-            <input v-model="form.code" type="text" required placeholder="Contoh: PAI, BING, MAT" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none uppercase transition-shadow">
+            <label class="block text-sm font-bold text-gray-700 mb-1">Nama Lengkap Guru</label>
+            <input v-model="form.name" type="text" required placeholder="Contoh: Budi Santoso, S.Pd" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none transition-shadow">
           </div>
           <div>
-            <label class="block text-sm font-bold text-gray-700 mb-1">Nama Mata Pelajaran</label>
-            <input v-model="form.name" type="text" required placeholder="Contoh: Pendidikan Agama Islam" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none transition-shadow">
+            <label class="block text-sm font-bold text-gray-700 mb-1">Kode Guru</label>
+            <input v-model="form.code" type="text" required placeholder="Contoh: G-001 atau BS" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none uppercase transition-shadow">
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-1">Mata Pelajaran Utama</label>
+            <select v-model="form.subject" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none transition-shadow">
+              <option value="" disabled>Pilih Mata Pelajaran...</option>
+              <option v-for="mapel in availableSubjects" :key="mapel.id" :value="mapel.name">{{ mapel.name }}</option>
+            </select>
+            <p v-if="availableSubjects.length === 0" class="text-xs text-orange-500 mt-1">Belum ada mata pelajaran. Silakan tambah di Master Data Mapel.</p>
           </div>
           
           <div class="pt-4 flex gap-3">
@@ -114,7 +126,7 @@
           <svg class="w-12 h-12 animate-draw-check" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
         </div>
         <h2 class="text-3xl font-black text-gray-800 mb-2">Berhasil!</h2>
-        <p class="text-gray-500 mb-8 font-medium leading-relaxed">Mata Pelajaran berhasil ditambahkan ke database.</p>
+        <p class="text-gray-500 mb-8 font-medium leading-relaxed">Data Guru berhasil ditambahkan ke database.</p>
         <button @click="showSuccessModal = false" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-transform transform hover:-translate-y-1">Selesai</button>
       </div>
     </div>
@@ -130,41 +142,50 @@ const saving = ref(false)
 const showAddModal = ref(false)
 const showSuccessModal = ref(false)
 
-const subjects = ref([])
-const form = ref({ code: '', name: '' })
+const teachers = ref([])
+const availableSubjects = ref([])
+const form = ref({ name: '', code: '', subject: '' })
 
 onMounted(() => {
-  const saved = localStorage.getItem('guruKu_mapel');
+  const savedMapel = localStorage.getItem('guruKu_mapel');
+  if (savedMapel) {
+    availableSubjects.value = JSON.parse(savedMapel);
+  }
+
+  const saved = localStorage.getItem('guruKu_teachers');
   if (saved) {
-    subjects.value = JSON.parse(saved);
+    teachers.value = JSON.parse(saved);
     loading.value = false;
   } else {
     setTimeout(() => {
-      subjects.value = [
-        { id: 1, code: 'MAT', name: 'Matematika' },
-        { id: 2, code: 'BIN', name: 'Bahasa Indonesia' },
-        { id: 3, code: 'BING', name: 'Bahasa Inggris' }
+      teachers.value = [
+        { id: 1, name: 'Budi Santoso, S.Pd', code: 'BS', subject: 'Matematika' },
+        { id: 2, name: 'Siti Aminah, M.Pd', code: 'SA', subject: 'Bahasa Indonesia' },
       ]
       loading.value = false
     }, 600)
   }
 })
 
-watch(subjects, (newVal) => {
-  localStorage.setItem('guruKu_mapel', JSON.stringify(newVal));
-}, { deep: true });const saveSubject = () => {
+// Sync to localstorage so PengampuMapel can read it
+watch(teachers, (newVal) => {
+  localStorage.setItem('guruKu_teachers', JSON.stringify(newVal));
+}, { deep: true });
+
+const saveTeacher = () => {
   saving.value = true
-  // Simulasi request API
   setTimeout(() => {
-    subjects.value.push({
+    teachers.value.push({
       id: Date.now(),
+      name: form.value.name,
       code: form.value.code.toUpperCase(),
-      name: form.value.name
+      subject: form.value.subject
     })
     
     // Reset state
-    form.value.code = ''
     form.value.name = ''
+    form.value.code = ''
+    form.value.subject = ''
     saving.value = false
     showAddModal.value = false
     
@@ -173,9 +194,9 @@ watch(subjects, (newVal) => {
   }, 1000)
 }
 
-const deleteSubject = (index) => {
-  if (confirm('Yakin ingin menghapus mata pelajaran ini?')) {
-    subjects.value.splice(index, 1)
+const deleteTeacher = (index) => {
+  if (confirm('Yakin ingin menghapus guru ini?')) {
+    teachers.value.splice(index, 1)
   }
 }
 </script>
@@ -200,4 +221,3 @@ const deleteSubject = (index) => {
   stroke-dashoffset: 50;
 }
 </style>
-

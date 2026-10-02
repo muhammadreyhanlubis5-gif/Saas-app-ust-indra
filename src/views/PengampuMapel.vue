@@ -66,14 +66,17 @@
               </button>
 
               <div class="flex gap-4 items-start">
-                <div class="w-12 h-12 bg-blue-100 text-blue-700 rounded-2xl flex items-center justify-center font-black text-xl shadow-inner flex-shrink-0">
-                  {{ row.teacher_code || '?' }}
+                  <div class="w-12 h-12 bg-blue-100 text-blue-700 rounded-2xl flex items-center justify-center font-black text-xl shadow-inner flex-shrink-0">
+                    {{ row.teacher_code || '?' }}
+                  </div>
+                  <div class="flex-1 min-w-0 pr-8">
+                    <select v-model="row.teacher_code" @change="onTeacherSelect(row, idx)" class="w-full bg-transparent border-none p-0 text-lg font-black text-gray-900 focus:ring-0 placeholder-gray-300 truncate cursor-pointer outline-none">
+                      <option value="" disabled>-- Pilih Guru --</option>
+                      <option v-for="t in registeredTeachers" :key="t.code" :value="t.code">{{ t.name }}</option>
+                    </select>
+                    <div class="text-xs font-bold text-gray-400 mt-1 uppercase">{{ row.teacher_code ? 'KODE: ' + row.teacher_code : 'Pilih dari daftar guru' }}</div>
+                  </div>
                 </div>
-                <div class="flex-1 min-w-0 pr-8">
-                  <input v-model="row.teacher_name" class="w-full bg-transparent border-none p-0 text-lg font-black text-gray-900 focus:ring-0 placeholder-gray-300 truncate" placeholder="Nama Guru Lengkap">
-                  <input v-model="row.teacher_code" class="w-full bg-transparent border-none p-0 text-xs font-bold text-gray-400 focus:ring-0 placeholder-gray-300 uppercase mt-1" placeholder="KODE GURU (Cth: MF)">
-                </div>
-              </div>
 
               <div class="mt-4 flex items-center gap-3">
                 <div class="flex-1 bg-gray-50 border border-gray-200 rounded-xl flex items-center px-3 py-1.5 focus-within:border-blue-400 focus-within:ring-1 focus-within:ring-blue-400 transition-all">
@@ -144,11 +147,12 @@
 import { ref, computed, onMounted } from 'vue'
 
 const loading = ref(true)
-const schoolId = localStorage.getItem('school_id')
-const classes = ref([])
-const rows = ref([])
-
-const loadData = async () => {
+  const schoolId = localStorage.getItem('school_id')
+  const classes = ref([])
+  const rows = ref([])
+  const registeredTeachers = ref([])
+  
+  const loadData = async () => {
     loading.value = true
     try {
       const res = await fetch('/api/v1/school/pengampu', {
@@ -168,6 +172,13 @@ const loadData = async () => {
         const data = await res.json().catch(()=>null);
         if (data && data.classes) classes.value = data.classes;
       }
+
+      // Load guru
+      const savedTeachers = localStorage.getItem('guruKu_teachers');
+      if (savedTeachers) {
+        registeredTeachers.value = JSON.parse(savedTeachers);
+      }
+
     } catch (err) {
       console.error("Gagal load pengampu", err)
     } finally {
@@ -222,21 +233,24 @@ const removeClass = (idx) => {
   }
 }
 
-const addTeacherRow = () => {
-  rows.value.unshift({
-    teacher_code: '',
-    teacher_name: '',
-    is_linear: 'true',
-    subject_code: '',
-    hours: new Array(classes.value.length).fill(0)
-  })
-}
-
-const removeRow = (idx) => {
-  if (confirm("Hapus kartu penugasan ini?")) {
-    rows.value.splice(idx, 1)
+const onTeacherSelect = (row, idx) => {
+    const t = registeredTeachers.value.find(x => x.code === row.teacher_code);
+    if (t) {
+      row.teacher_name = t.name;
+      row.subject_code = t.subject;
+    }
   }
-}
+
+  const addTeacherRow = () => {
+    rows.value.unshift({
+      teacher_code: '',
+      teacher_name: '',
+      is_linear: 'true',
+      subject_code: '',
+      subject_name: '',
+      hours: Array(classes.value.length).fill(0)
+    })
+  }
 
 const getAssignedClasses = (row) => {
   const assigned = []
@@ -268,6 +282,9 @@ const calculateRowTotal = (row) => {
   transform: translateY(-2px);
 }
 </style>
+
+
+
 
 
 

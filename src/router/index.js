@@ -8,6 +8,7 @@ import TeacherDashboard from '../views/TeacherDashboard.vue'
 import ExpiredView from '../views/ExpiredView.vue'
 import ValidasiLembaga from '../views/ValidasiLembaga.vue'
 import DaftarKelas from '../views/DaftarKelas.vue'
+import DaftarGuru from '../views/DaftarGuru.vue'
 import SesiWaktu from '../views/SesiWaktu.vue'
 import PengampuMapel from '../views/PengampuMapel.vue'
 import JamKosong from '../views/JamKosong.vue'
@@ -43,6 +44,7 @@ const routes = [
     children: [
       { path: 'validasi-lembaga', name: 'ValidasiLembaga', component: ValidasiLembaga },
         { path: 'daftar-kelas', name: 'DaftarKelas', component: DaftarKelas },
+        { path: 'daftar-guru', name: 'DaftarGuru', component: DaftarGuru },
       { path: 'sesi-kbm', name: 'SesiWaktu', component: SesiWaktu },
       { path: 'pengampu', name: 'PengampuMapel', component: PengampuMapel },
       { path: 'jam-kosong', name: 'JamKosong', component: JamKosong },
@@ -114,6 +116,7 @@ router.beforeEach((to, from, next) => {
 })
 
 export default router
+
 
 
 
