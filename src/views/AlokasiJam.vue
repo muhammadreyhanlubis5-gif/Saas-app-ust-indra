@@ -1,17 +1,18 @@
 <template>
   <div class="animate-fade-in-up p-4 md:p-8 max-w-[1400px] mx-auto">
     <!-- Header modern -->
-    <div class="bg-gradient-to-r from-indigo-600 to-blue-700 rounded-3xl p-6 md:p-8 text-white shadow-xl mb-8 relative overflow-hidden">
-      <div class="absolute -top-24 -right-24 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl"></div>
-      <div class="absolute bottom-0 left-10 w-40 h-40 bg-blue-400 opacity-20 rounded-full blur-2xl"></div>
+    <div class="bg-blue-900 rounded-3xl p-6 md:p-8 text-white shadow-xl mb-8 relative overflow-hidden">
+      <!-- Background Image Overlay -->
+      <div class="absolute inset-0 bg-[url('../assets/banner-bg.png')] bg-cover bg-center opacity-40 mix-blend-overlay"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-transparent"></div>
       
       <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <h1 class="text-2xl md:text-3xl font-black mb-2 flex items-center gap-3">
+        <div class="w-full md:w-2/3">
+          <h1 class="text-2xl md:text-3xl font-black mb-2 flex items-center gap-3 drop-shadow-md">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             Alokasi & Jam Kelas
           </h1>
-          <p class="text-indigo-100 max-w-2xl text-sm md:text-base">
+          <p class="text-blue-100 max-w-2xl text-sm md:text-base drop-shadow">
             Distribusi jam pelajaran per mata pelajaran untuk masing-masing kelas. 
             Perubahan di sini akan otomatis tersinkronisasi dengan form Input Jadwal.
           </p>

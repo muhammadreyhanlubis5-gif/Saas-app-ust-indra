@@ -1,23 +1,24 @@
 <template>
   <div class="animate-fade-in-up p-4 md:p-8 max-w-[1400px] mx-auto">
     <!-- Header modern -->
-    <div class="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-3xl p-6 md:p-8 text-white shadow-xl mb-8 relative overflow-hidden">
-      <div class="absolute -top-24 -right-24 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl"></div>
-      <div class="absolute bottom-0 left-10 w-40 h-40 bg-teal-400 opacity-20 rounded-full blur-2xl"></div>
+    <div class="bg-blue-900 rounded-3xl p-6 md:p-8 text-white shadow-xl mb-8 relative overflow-hidden">
+      <!-- Background Image Overlay -->
+      <div class="absolute inset-0 bg-[url('../assets/banner-bg.png')] bg-cover bg-center opacity-40 mix-blend-overlay"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-transparent"></div>
       
       <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <h1 class="text-2xl md:text-3xl font-black mb-2 flex items-center gap-3">
+        <div class="w-full md:w-2/3">
+          <h1 class="text-2xl md:text-3xl font-black mb-2 flex items-center gap-3 drop-shadow-md">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
             Analisis Sebaran Guru
           </h1>
-          <p class="text-emerald-100 max-w-2xl text-sm md:text-base">
+          <p class="text-blue-100 max-w-2xl text-sm md:text-base drop-shadow">
             Evaluasi kesehatan distribusi jam mengajar. Bandingkan Total Target Jam Pelajaran dengan Jam yang sudah terinput.
           </p>
         </div>
         
         <div class="flex flex-col sm:flex-row gap-3">
-          <button @click="startAnalysis" :disabled="analyzing" class="bg-white text-teal-700 hover:bg-gray-50 px-6 py-2.5 rounded-xl font-bold transition-all shadow-md flex items-center gap-2">
+          <button @click="startAnalysis" :disabled="analyzing" class="bg-white text-blue-900 hover:bg-blue-50 px-6 py-2.5 rounded-xl font-bold transition-all shadow-md flex items-center gap-2">
             <svg v-if="!analyzing" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
             <svg v-else class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
             {{ analyzing ? 'Menganalisis...' : 'Mulai Analisis Cepat' }}

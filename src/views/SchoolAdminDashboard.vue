@@ -75,14 +75,14 @@
       <div v-if="$route.path === '/admin-sekolah'" class="p-8 max-w-[1400px] mx-auto">
         
         <!-- Banner Modern Premium -->
-        <div class="bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 rounded-3xl p-8 mb-8 shadow-xl shadow-blue-900/20 relative overflow-hidden text-white flex justify-between items-center">
-          <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
-          <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/10 blur-3xl rounded-full pointer-events-none"></div>
+        <div class="bg-blue-900 rounded-3xl p-8 mb-8 shadow-xl shadow-blue-900/20 relative overflow-hidden text-white flex justify-between items-center">
+          <div class="absolute inset-0 bg-[url('../assets/banner-bg.png')] bg-cover bg-center opacity-40 mix-blend-overlay"></div>
+          <div class="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-transparent"></div>
           
-          <div class="relative z-10">
-            <h2 class="text-3xl font-black mb-2">Selamat Datang di Workspace Anda, <span class="text-blue-200">{{ profileName || 'Admin' }}</span></h2>
-            <p class="text-blue-100 text-sm font-medium mb-6">Sistem Penjadwalan Cerdas. Lengkapi master data untuk memulai.</p>
-            <button @click="showWizard = true" class="bg-white text-blue-900 hover:bg-blue-50 font-black py-3 px-6 rounded-2xl shadow-lg transition-all flex items-center gap-2 transform hover:-translate-y-1">
+          <div class="relative z-10 w-full md:w-2/3">
+            <h2 class="text-3xl font-black mb-2 drop-shadow-md">Selamat Datang di Workspace Anda, <span class="text-blue-200">{{ profileName || 'Admin' }}</span></h2>
+            <p class="text-blue-100 text-sm font-medium mb-6 drop-shadow">Sistem Penjadwalan Cerdas. Lengkapi master data untuk memulai.</p>
+            <button @click="showWizard = true" class="bg-white text-blue-900 hover:bg-blue-50 font-black py-3 px-6 rounded-2xl shadow-lg transition-all flex items-center gap-2 transform hover:-translate-y-1 w-max">
               <svg class="w-6 h-6 text-blue-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
               <span>1-Click Auto-Generate Jadwal</span>
             </button>
