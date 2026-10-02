@@ -8,9 +8,13 @@ localforage.config({
 });
 
 export const SafeFlow = {
-  async fetch(url, options = {}) {
+  async fetch(endpoint, options = {}) {
     const isMutation = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(options.method?.toUpperCase());
     
+    // Gabungkan dengan BASE_URL jika ada (berguna jika Frontend di Vercel, Backend di LXC Proxmox)
+    const baseUrl = import.meta.env.VITE_API_URL || '';
+    const url = endpoint.startsWith('http') ? endpoint : `${baseUrl}${endpoint}`;
+
     // Auto-inject Authorization Token untuk semua request
     const token = localStorage.getItem('token');
     const headers = {
