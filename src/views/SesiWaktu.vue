@@ -40,43 +40,6 @@
         </div>
       </div>
 
-      <!-- Drag & Drop Upload Card -->
-      <div 
-        @dragover.prevent="dragActive = true" 
-        @dragleave.prevent="dragActive = false" 
-        @drop.prevent="handleDrop"
-        class="bg-white rounded-2xl shadow-sm border-2 border-dashed transition-all duration-300 relative overflow-hidden"
-        :class="dragActive ? 'border-blue-500 bg-blue-50/50' : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50'"
-      >
-        <div class="p-8 text-center flex flex-col items-center justify-center">
-          <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4 transition-transform duration-300" :class="{'scale-110': dragActive}">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-          </div>
-          <h3 class="text-lg font-black text-gray-800 mb-1">Unggah Dokumen Sesi & Waktu KBM</h3>
-          <p class="text-sm text-gray-500 mb-4 max-w-lg mx-auto">
-            Tarik dan lepas file (PDF, Excel, atau Docx) ke area ini. Sistem cerdas kami akan mengekstrak otomatis jam pelajaran, istirahat, dan waktu pelaksanaannya secara presisi, sehingga Anda tidak perlu mengetik manual.
-          </p>
-          
-          <div class="flex items-center justify-center gap-3 w-full max-w-sm mx-auto mb-6 opacity-70">
-            <div class="flex items-center gap-1 text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6zm1.8 18H14l-2-3.4-2 3.4H8.2l2.9-4.5-2.8-4.5h1.8l1.9 3.1 1.9-3.1h1.8l-2.8 4.5 2.9 4.5zM13 9V3.5L18.5 9H13z"></path></svg> .XLSX</div>
-            <div class="flex items-center gap-1 text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm-2 16c-2.05 0-3.81-1.24-4.58-3h1.71c.63.9 1.68 1.5 2.87 1.5 1.93 0 3.5-1.57 3.5-3.5S13.93 9.5 12 9.5c-1.35 0-2.52.78-3.1 1.9l1.6 1.6h-4V9l1.3 1.3C8.69 8.92 10.23 8 12 8c2.76 0 5 2.24 5 5s-2.24 5-5 5z"></path></svg> .PDF</div>
-            <div class="flex items-center gap-1 text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm-1 14l-4 4-4-4h2.5v-3h3v3H13zM13 9V3.5L18.5 9H13z"></path></svg> .DOCX</div>
-          </div>
-
-          <label class="cursor-pointer bg-white border border-gray-300 hover:border-blue-500 hover:text-blue-600 text-gray-700 font-bold py-2.5 px-6 rounded-lg transition-colors shadow-sm inline-block">
-            <span>Pilih File dari Perangkat</span>
-            <input type="file" class="hidden" accept=".xlsx,.xls,.pdf,.docx,.doc" @change="handleFileUpload">
-          </label>
-        </div>
-        
-        <!-- Loading Overlay -->
-        <div v-if="processingFile" class="absolute inset-0 bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center z-10">
-          <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
-          <h3 class="font-bold text-gray-800 text-lg">Menganalisis Dokumen...</h3>
-          <p class="text-gray-500 text-sm mt-1">Sistem sedang mencocokkan struktur jam & sesi</p>
-        </div>
-      </div>
-
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         <!-- Loop for each active day -->
@@ -184,7 +147,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { SafeFlow } from '../core/SafeFlow.js'
-import * as XLSX from 'xlsx'
+
 
 const router = useRouter()
 const loading = ref(true)
@@ -296,152 +259,6 @@ const saveSessions = async () => {
   }
 }
 
-const processFile = async (file) => {
-  if (!file) return;
-  processingFile.value = true;
-  dragActive.value = false;
-  
-  const fileName = file.name.toLowerCase();
-  const isExcel = fileName.endsWith('.xlsx') || fileName.endsWith('.xls');
-
-  if (!isExcel) {
-    processingFile.value = false;
-    errorMessage.value = "Saat ini sistem cerdas kami baru mendukung ekstraksi otomatis dari format Excel (.xlsx / .xls). Harap gunakan format tersebut.";
-    showErrorModal.value = true;
-    return;
-  }
-
-  try {
-    const data = await file.arrayBuffer();
-    const workbook = XLSX.read(data, { type: 'array' });
-    const firstSheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[firstSheetName];
-    const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-    const dayKeywords = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu'];
-    let dayColumns = {};
-    
-    let headerRowIndex = -1;
-    for (let r = 0; r < json.length; r++) {
-      const row = json[r];
-      if (!row) continue;
-      let foundDay = false;
-      for (let c = 0; c < row.length; c++) {
-        if (typeof row[c] === 'string') {
-          const val = row[c].toLowerCase().trim();
-          if (dayKeywords.includes(val)) {
-            dayColumns[row[c].trim()] = c;
-            foundDay = true;
-          }
-        }
-      }
-      if (foundDay) {
-        headerRowIndex = r;
-        break;
-      }
-    }
-
-    if (headerRowIndex === -1 || Object.keys(dayColumns).length === 0) {
-      throw new Error("Tidak menemukan header hari (Senin, Selasa, dll) di dalam file Excel.");
-    }
-
-    let newSessions = {};
-    activeDays.value.forEach(day => {
-      newSessions[day] = [];
-    });
-
-    const timeRegex = /(\d{1,2})[\.:](\d{2})\s*-\s*(\d{1,2})[\.:](\d{2})/;
-
-    Object.keys(dayColumns).forEach(dayName => {
-      const matchedDay = activeDays.value.find(d => d.toLowerCase() === dayName.toLowerCase());
-      if (!matchedDay) return;
-
-      const colIdx = dayColumns[dayName];
-      let sessions = [];
-
-      for (let r = headerRowIndex + 1; r < json.length; r++) {
-        const row = json[r];
-        if (!row) continue;
-        
-        const val1 = row[colIdx] ? String(row[colIdx]).trim() : '';
-        const val2 = row[colIdx + 1] ? String(row[colIdx + 1]).trim() : '';
-        const val3 = row[colIdx + 2] ? String(row[colIdx + 2]).trim() : '';
-        
-        let timeStr = "";
-        let typeStr = "KBM";
-
-        if (val1.toLowerCase().includes('istirahat')) {
-          typeStr = 'ISTIRAHAT';
-        }
-
-        if (timeRegex.test(val1)) timeStr = val1;
-        else if (timeRegex.test(val2)) timeStr = val2;
-        else if (timeRegex.test(val3)) timeStr = val3;
-
-        if (timeStr) {
-          const match = timeStr.match(timeRegex);
-          if (match) {
-            let start_h = match[1].padStart(2, '0');
-            let start_m = match[2].padStart(2, '0');
-            let end_h = match[3].padStart(2, '0');
-            let end_m = match[4].padStart(2, '0');
-            
-            sessions.push({
-              type: typeStr,
-              start_time: start_h + ':' + start_m,
-              end_time: end_h + ':' + end_m
-            });
-          }
-        }
-      }
-      
-      if (sessions.length > 0) {
-        newSessions[matchedDay] = sessions;
-      }
-    });
-
-    let hasData = false;
-    Object.keys(newSessions).forEach(d => {
-      if (newSessions[d].length > 0) hasData = true;
-    });
-
-    if (!hasData) {
-      throw new Error("Format waktu tidak dikenali. Harap gunakan format waktu seperti '07.30 - 08.10'.");
-    }
-
-    Object.keys(newSessions).forEach(d => {
-      if (newSessions[d].length > 0) {
-        daySessions.value[d] = newSessions[d];
-      }
-    });
-
-    processingFile.value = false;
-    successMessage.value = "Ekstraksi Cerdas Selesai! Data dibaca secara presisi dari file Anda.";
-    showSuccessModal.value = true;
-
-  } catch (err) {
-    processingFile.value = false;
-    console.error(err);
-    errorMessage.value = err.message || "Gagal membaca isi file. Pastikan tabelnya sesuai.";
-    showErrorModal.value = true;
-  }
-}
-
-const handleDrop = (e) => {
-  dragActive.value = false;
-  const files = e.dataTransfer.files;
-  if (files.length > 0) {
-    processFile(files[0]);
-  }
-}
-
-const handleFileUpload = (e) => {
-  const files = e.target.files;
-  if (files.length > 0) {
-    processFile(files[0]);
-  }
-}
-
 onMounted(() => {
   fetchProfile()
 })
@@ -480,6 +297,12 @@ onMounted(() => {
   animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
 </style>
+
+
+
+
+
+
 
 
 
