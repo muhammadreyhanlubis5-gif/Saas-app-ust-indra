@@ -23,9 +23,7 @@
           <img src="/logo.png" alt="Logo GuruKu" class="w-full h-full object-contain" fetchpriority="high" />
         </div>
         
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-          GuruKu
-        </h1>
+        <h1 class="text-4xl text-gray-900" style="font-family: 'Permanent Marker', cursive;">GuruKu</h1>
       </div>
 
       <!-- Card Body (Form) -->
@@ -320,3 +318,4 @@ onUnmounted(() => {
   if (approvalInterval) clearInterval(approvalInterval)
 })
 </script>
+
