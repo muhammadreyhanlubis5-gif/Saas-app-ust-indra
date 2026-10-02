@@ -17,7 +17,7 @@
         <div v-if="filteredTeachers.length === 0" class="text-center py-10 text-gray-400 text-sm italic">
           Guru tidak ditemukan.
         </div>
-        <button v-for="teacher in filteredTeachers" :key="teacher.code" 
+        <button v-for="teacher in filteredTeachers" :key="teacher.code"  
           @click="selectedTeacher = teacher"
           class="w-full text-left p-3 rounded-xl transition-all border flex items-center gap-3"
           :class="[selectedTeacher?.code === teacher.code ? 'bg-blue-50 border-blue-200 shadow-sm' : 'bg-white border-gray-100 hover:border-blue-100 hover:bg-gray-50']">

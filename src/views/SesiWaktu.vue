@@ -113,6 +113,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { SafeFlow } from '../core/SafeFlow.js'
 
 const router = useRouter()
 const loading = ref(true)
@@ -153,7 +154,7 @@ const getKbmIndex = (day, currentIndex) => {
 const fetchProfile = async () => {
   loading.value = true
   try {
-    const res = await fetch('/api/v1/school/profile', {
+    const res = await SafeFlow.fetch('/api/v1/school/profile', {
       headers: { 'X-School-ID': schoolId || '' }
     })
     if (res.ok) {
@@ -172,7 +173,7 @@ const fetchProfile = async () => {
 
 const loadSessions = async () => {
   try {
-    const res = await fetch('/api/v1/school/sessions', {
+    const res = await SafeFlow.fetch('/api/v1/school/sessions', {
       headers: { 'X-School-ID': schoolId || '' }
     })
     if (res.ok) {
@@ -195,7 +196,7 @@ const loadSessions = async () => {
 
 const saveSessions = async () => {
   try {
-    const res = await fetch('/api/v1/school/sessions', {
+    const res = await SafeFlow.fetch('/api/v1/school/sessions', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

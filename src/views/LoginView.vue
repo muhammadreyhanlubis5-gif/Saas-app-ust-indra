@@ -20,11 +20,11 @@
       <div class="pt-10 pb-6 px-8 text-center">
         <!-- Logo (Optimized display) -->
         <div class="w-24 h-24 mx-auto mb-4 p-2 flex items-center justify-center">
-          <img src="/logo.png" alt="Logo Sistem Sekolah Pintar" class="w-full h-full object-contain" fetchpriority="high" />
+          <img src="/logo.png" alt="Logo GuruKu" class="w-full h-full object-contain" fetchpriority="high" />
         </div>
         
         <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-          Sistem Sekolah Pintar
+          GuruKu
         </h1>
       </div>
 
@@ -149,7 +149,7 @@
         <!-- Divider & Help text -->
         <div class="mt-8 text-center">
           <p class="text-xs text-gray-400 font-medium">
-            © 2026 Sistem Sekolah Pintar.
+            © 2026 GuruKu.
           </p>
         </div>
       </div>

@@ -139,6 +139,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { SafeFlow } from '../core/SafeFlow.js'
 
 const router = useRouter()
 const loading = ref(true)
@@ -241,7 +242,7 @@ const handleClickOutside = (e) => {
 const fetchProfile = async () => {
   loading.value = true
   try {
-    const res = await fetch('/api/v1/school/profile', {
+    const res = await SafeFlow.fetch('/api/v1/school/profile', {
       headers: {
         'X-School-ID': schoolId || ''
       }
@@ -271,7 +272,7 @@ const fetchProfile = async () => {
 const saveProfile = async () => {
   saving.value = true
   try {
-    const res = await fetch('/api/v1/school/profile', {
+    const res = await SafeFlow.fetch('/api/v1/school/profile', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
