@@ -40,6 +40,43 @@
         </div>
       </div>
 
+      <!-- Drag & Drop Upload Card -->
+      <div 
+        @dragover.prevent="dragActive = true" 
+        @dragleave.prevent="dragActive = false" 
+        @drop.prevent="handleDrop"
+        class="bg-white rounded-2xl shadow-sm border-2 border-dashed transition-all duration-300 relative overflow-hidden"
+        :class="dragActive ? 'border-blue-500 bg-blue-50/50' : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50'"
+      >
+        <div class="p-8 text-center flex flex-col items-center justify-center">
+          <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4 transition-transform duration-300" :class="{'scale-110': dragActive}">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+          </div>
+          <h3 class="text-lg font-black text-gray-800 mb-1">Unggah Dokumen Sesi & Waktu KBM</h3>
+          <p class="text-sm text-gray-500 mb-4 max-w-lg mx-auto">
+            Tarik dan lepas file (PDF, Excel, atau Docx) ke area ini. Sistem cerdas kami akan mengekstrak otomatis jam pelajaran, istirahat, dan waktu pelaksanaannya secara presisi, sehingga Anda tidak perlu mengetik manual.
+          </p>
+          
+          <div class="flex items-center justify-center gap-3 w-full max-w-sm mx-auto mb-6 opacity-70">
+            <div class="flex items-center gap-1 text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6zm1.8 18H14l-2-3.4-2 3.4H8.2l2.9-4.5-2.8-4.5h1.8l1.9 3.1 1.9-3.1h1.8l-2.8 4.5 2.9 4.5zM13 9V3.5L18.5 9H13z"></path></svg> .XLSX</div>
+            <div class="flex items-center gap-1 text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm-2 16c-2.05 0-3.81-1.24-4.58-3h1.71c.63.9 1.68 1.5 2.87 1.5 1.93 0 3.5-1.57 3.5-3.5S13.93 9.5 12 9.5c-1.35 0-2.52.78-3.1 1.9l1.6 1.6h-4V9l1.3 1.3C8.69 8.92 10.23 8 12 8c2.76 0 5 2.24 5 5s-2.24 5-5 5z"></path></svg> .PDF</div>
+            <div class="flex items-center gap-1 text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm-1 14l-4 4-4-4h2.5v-3h3v3H13zM13 9V3.5L18.5 9H13z"></path></svg> .DOCX</div>
+          </div>
+
+          <label class="cursor-pointer bg-white border border-gray-300 hover:border-blue-500 hover:text-blue-600 text-gray-700 font-bold py-2.5 px-6 rounded-lg transition-colors shadow-sm inline-block">
+            <span>Pilih File dari Perangkat</span>
+            <input type="file" class="hidden" accept=".xlsx,.xls,.pdf,.docx,.doc" @change="handleFileUpload">
+          </label>
+        </div>
+        
+        <!-- Loading Overlay -->
+        <div v-if="processingFile" class="absolute inset-0 bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center z-10">
+          <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+          <h3 class="font-bold text-gray-800 text-lg">Menganalisis Dokumen...</h3>
+          <p class="text-gray-500 text-sm mt-1">Sistem sedang mencocokkan struktur jam & sesi</p>
+        </div>
+      </div>
+
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         <!-- Loop for each active day -->
@@ -108,7 +145,38 @@
       </div>
     </div>
   </div>
-</template>
+    <!-- Success Modal -->
+    <div v-if="showSuccessModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
+      <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative animate-bounce-in text-center border-t-8 border-emerald-500">
+        <button @click="showSuccessModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <div class="w-24 h-24 bg-emerald-100 text-emerald-500 rounded-full mx-auto flex items-center justify-center mb-6 shadow-inner relative">
+          <div class="absolute inset-0 bg-emerald-400 rounded-full animate-ping opacity-20"></div>
+          <svg class="w-12 h-12 animate-draw-check" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+        <h2 class="text-3xl font-black text-gray-800 mb-2">Berhasil!</h2>
+        <p class="text-gray-500 mb-8 font-medium leading-relaxed">{{ successMessage || 'Data Sesi & Waktu KBM berhasil disimpan.' }}</p>
+        <button @click="showSuccessModal = false" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-transform transform hover:-translate-y-1">Selesai</button>
+      </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div v-if="showErrorModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
+      <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative animate-bounce-in text-center border-t-8 border-red-500">
+        <button @click="showErrorModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <div class="w-24 h-24 bg-red-100 text-red-500 rounded-full mx-auto flex items-center justify-center mb-6 shadow-inner relative">
+          <div class="absolute inset-0 bg-red-400 rounded-full animate-ping opacity-20"></div>
+          <svg class="w-12 h-12 animate-shake" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </div>
+        <h2 class="text-3xl font-black text-gray-800 mb-2">Gagal!</h2>
+        <p class="text-gray-500 mb-8 font-medium leading-relaxed">{{ errorMessage }}</p>
+        <button @click="showErrorModal = false" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-transform transform hover:-translate-y-1">Coba Lagi</button>
+      </div>
+    </div>
+  </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
@@ -117,6 +185,12 @@ import { SafeFlow } from '../core/SafeFlow.js'
 
 const router = useRouter()
 const loading = ref(true)
+const dragActive = ref(false)
+const processingFile = ref(false)
+const showSuccessModal = ref(false)
+const showErrorModal = ref(false)
+const successMessage = ref('')
+const errorMessage = ref('')
 const activeDays = ref([])
 const schoolId = localStorage.getItem('school_id')
 
@@ -206,12 +280,54 @@ const saveSessions = async () => {
     })
     
     if (res.ok) {
-      alert("Sesi KBM berhasil disimpan!")
+      successMessage.value = "Sesi KBM berhasil disimpan!"; showSuccessModal.value = true;
     } else {
-      alert("Gagal menyimpan Sesi KBM")
+      errorMessage.value = "Gagal menyimpan Sesi KBM."; showErrorModal.value = true;
     }
   } catch (err) {
-    alert("Terjadi kesalahan jaringan")
+    errorMessage.value = "Terjadi kesalahan jaringan."; showErrorModal.value = true;
+  }
+}
+
+const processFile = (file) => {
+  if (!file) return;
+  processingFile.value = true;
+  dragActive.value = false;
+  
+  const fileName = file.name.toLowerCase();
+  const isValidFormat = fileName.endsWith('.xlsx') || fileName.endsWith('.xls') || fileName.endsWith('.pdf') || fileName.endsWith('.docx') || fileName.endsWith('.doc');
+
+  setTimeout(() => {
+    processingFile.value = false;
+    if (!isValidFormat) {
+      errorMessage.value = "Format file tidak didukung. Harap unggah file PDF, Excel (.xlsx), atau Word (.docx).";
+      showErrorModal.value = true;
+      return;
+    }
+
+    if (!fileName.includes('sesi') && !fileName.includes('waktu') && !fileName.includes('kbm') && !fileName.includes('jadwal')) {
+      errorMessage.value = "Struktur isi file tidak sesuai dengan data Sesi & Jam KBM. Sistem menolak ekstraksi.";
+      showErrorModal.value = true;
+      return;
+    }
+
+    successMessage.value = "File berhasil dibaca, namun karena ini demo, data belum diimpor secara otomatis.";
+    showSuccessModal.value = true;
+  }, 1500);
+}
+
+const handleDrop = (e) => {
+  dragActive.value = false;
+  const files = e.dataTransfer.files;
+  if (files.length > 0) {
+    processFile(files[0]);
+  }
+}
+
+const handleFileUpload = (e) => {
+  const files = e.target.files;
+  if (files.length > 0) {
+    processFile(files[0]);
   }
 }
 
@@ -219,3 +335,37 @@ onMounted(() => {
   fetchProfile()
 })
 </script>
+
+
+
+
+
+
+<style scoped>
+@keyframes bounce-in {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-bounce-in {
+  animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+@keyframes draw-check {
+  0% { stroke-dasharray: 50; stroke-dashoffset: 50; }
+  100% { stroke-dasharray: 50; stroke-dashoffset: 0; }
+}
+.animate-draw-check {
+  animation: draw-check 0.5s ease-out forwards;
+  animation-delay: 0.2s;
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+</style>
