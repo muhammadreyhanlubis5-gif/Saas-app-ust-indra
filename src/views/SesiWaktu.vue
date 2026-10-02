@@ -184,6 +184,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { SafeFlow } from '../core/SafeFlow.js'
+import * as XLSX from 'xlsx'
 
 const router = useRouter()
 const loading = ref(true)
@@ -295,65 +296,135 @@ const saveSessions = async () => {
   }
 }
 
-const processFile = (file) => {
+const processFile = async (file) => {
   if (!file) return;
   processingFile.value = true;
   dragActive.value = false;
   
   const fileName = file.name.toLowerCase();
-  const isValidFormat = fileName.endsWith('.xlsx') || fileName.endsWith('.xls') || fileName.endsWith('.pdf') || fileName.endsWith('.docx') || fileName.endsWith('.doc');
+  const isExcel = fileName.endsWith('.xlsx') || fileName.endsWith('.xls');
 
-  setTimeout(() => {
+  if (!isExcel) {
     processingFile.value = false;
-    if (!isValidFormat) {
-      errorMessage.value = "Format file tidak didukung. Harap unggah file PDF, Excel (.xlsx), atau Word (.docx).";
-      showErrorModal.value = true;
-      return;
-    }
+    errorMessage.value = "Saat ini sistem cerdas kami baru mendukung ekstraksi otomatis dari format Excel (.xlsx / .xls). Harap gunakan format tersebut.";
+    showErrorModal.value = true;
+    return;
+  }
 
-    if (!fileName.includes('sesi') && !fileName.includes('waktu') && !fileName.includes('kbm') && !fileName.includes('jadwal')) {
-      errorMessage.value = "Struktur isi file tidak sesuai dengan data Sesi & Jam KBM. Sistem menolak ekstraksi.";
-      showErrorModal.value = true;
-      return;
-    }
+  try {
+    const data = await file.arrayBuffer();
+    const workbook = XLSX.read(data, { type: 'array' });
+    const firstSheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[firstSheetName];
+    const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-    // MOCK DATA EXTRACTION (Sesuai Excel)
-    const mockSchedule = [
-      { type: 'KBM', start: '07:30', end: '08:10' },
-      { type: 'KBM', start: '08:10', end: '08:50' },
-      { type: 'KBM', start: '08:50', end: '09:30' },
-      { type: 'KBM', start: '09:30', end: '10:10' },
-      { type: 'ISTIRAHAT', start: '10:10', end: '10:40' },
-      { type: 'KBM', start: '10:40', end: '11:20' },
-      { type: 'KBM', start: '11:20', end: '12:00' },
-      { type: 'KBM', start: '12:00', end: '12:40' },
-      { type: 'KBM', start: '14:00', end: '14:40' },
-      { type: 'KBM', start: '14:40', end: '15:20' }
-    ];
+    const dayKeywords = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu'];
+    let dayColumns = {};
     
-    // Auto-fill form
-    activeDays.value.forEach(day => {
-      let schedule = [...mockSchedule];
-      
-      const dayLower = day.toLowerCase();
-      if (dayLower === 'jumat') {
-         // Jumat dipotong sampai istirahat pertama (indeks 4) atau lebih pendek
-         schedule = schedule.slice(0, 5); 
-      } else if (dayLower === 'sabtu') {
-         // Sabtu dipotong sampai jam 12:40 (indeks 7) -> panjang array 8
-         schedule = schedule.slice(0, 8);
+    let headerRowIndex = -1;
+    for (let r = 0; r < json.length; r++) {
+      const row = json[r];
+      if (!row) continue;
+      let foundDay = false;
+      for (let c = 0; c < row.length; c++) {
+        if (typeof row[c] === 'string') {
+          const val = row[c].toLowerCase().trim();
+          if (dayKeywords.includes(val)) {
+            dayColumns[row[c].trim()] = c;
+            foundDay = true;
+          }
+        }
       }
-      
-      daySessions.value[day] = schedule.map(s => ({
-         type: s.type,
-         start_time: s.start,
-         end_time: s.end
-      }));
+      if (foundDay) {
+        headerRowIndex = r;
+        break;
+      }
+    }
+
+    if (headerRowIndex === -1 || Object.keys(dayColumns).length === 0) {
+      throw new Error("Tidak menemukan header hari (Senin, Selasa, dll) di dalam file Excel.");
+    }
+
+    let newSessions = {};
+    activeDays.value.forEach(day => {
+      newSessions[day] = [];
     });
 
-    successMessage.value = "File berhasil diekstrak! Data Sesi & Waktu KBM telah diisi otomatis.";
+    const timeRegex = /(\d{1,2})[\.:](\d{2})\s*-\s*(\d{1,2})[\.:](\d{2})/;
+
+    Object.keys(dayColumns).forEach(dayName => {
+      const matchedDay = activeDays.value.find(d => d.toLowerCase() === dayName.toLowerCase());
+      if (!matchedDay) return;
+
+      const colIdx = dayColumns[dayName];
+      let sessions = [];
+
+      for (let r = headerRowIndex + 1; r < json.length; r++) {
+        const row = json[r];
+        if (!row) continue;
+        
+        const val1 = row[colIdx] ? String(row[colIdx]).trim() : '';
+        const val2 = row[colIdx + 1] ? String(row[colIdx + 1]).trim() : '';
+        const val3 = row[colIdx + 2] ? String(row[colIdx + 2]).trim() : '';
+        
+        let timeStr = "";
+        let typeStr = "KBM";
+
+        if (val1.toLowerCase().includes('istirahat')) {
+          typeStr = 'ISTIRAHAT';
+        }
+
+        if (timeRegex.test(val1)) timeStr = val1;
+        else if (timeRegex.test(val2)) timeStr = val2;
+        else if (timeRegex.test(val3)) timeStr = val3;
+
+        if (timeStr) {
+          const match = timeStr.match(timeRegex);
+          if (match) {
+            let start_h = match[1].padStart(2, '0');
+            let start_m = match[2].padStart(2, '0');
+            let end_h = match[3].padStart(2, '0');
+            let end_m = match[4].padStart(2, '0');
+            
+            sessions.push({
+              type: typeStr,
+              start_time: start_h + ':' + start_m,
+              end_time: end_h + ':' + end_m
+            });
+          }
+        }
+      }
+      
+      if (sessions.length > 0) {
+        newSessions[matchedDay] = sessions;
+      }
+    });
+
+    let hasData = false;
+    Object.keys(newSessions).forEach(d => {
+      if (newSessions[d].length > 0) hasData = true;
+    });
+
+    if (!hasData) {
+      throw new Error("Format waktu tidak dikenali. Harap gunakan format waktu seperti '07.30 - 08.10'.");
+    }
+
+    Object.keys(newSessions).forEach(d => {
+      if (newSessions[d].length > 0) {
+        daySessions.value[d] = newSessions[d];
+      }
+    });
+
+    processingFile.value = false;
+    successMessage.value = "Ekstraksi Cerdas Selesai! Data dibaca secara presisi dari file Anda.";
     showSuccessModal.value = true;
-  }, 1500);
+
+  } catch (err) {
+    processingFile.value = false;
+    console.error(err);
+    errorMessage.value = err.message || "Gagal membaca isi file. Pastikan tabelnya sesuai.";
+    showErrorModal.value = true;
+  }
 }
 
 const handleDrop = (e) => {
@@ -409,6 +480,8 @@ onMounted(() => {
   animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
 </style>
+
+
 
 
 
