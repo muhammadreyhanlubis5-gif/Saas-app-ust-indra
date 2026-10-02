@@ -1,5 +1,5 @@
 <template>
-  <div class="animate-fade-in-up">
+  <div class="animate-fade-in-up p-4 md:p-8 max-w-[1400px] mx-auto">
     <!-- Header modern -->
     <div class="bg-gradient-to-r from-indigo-600 to-blue-700 rounded-3xl p-6 md:p-8 text-white shadow-xl mb-8 relative overflow-hidden">
       <div class="absolute -top-24 -right-24 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl"></div>

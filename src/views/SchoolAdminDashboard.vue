@@ -1,11 +1,16 @@
 <template>
-  <div class="flex h-screen bg-gray-50 overflow-hidden font-sans">
+  <div class="flex h-screen bg-gray-50 overflow-hidden font-sans relative">
     
+    <!-- Mobile Overlay Backdrop -->
+    <div v-if="isSidebarOpen" @click="isSidebarOpen = false" class="fixed inset-0 bg-gray-900/50 z-20 md:hidden backdrop-blur-sm transition-opacity"></div>
+
     <!-- Sidebar Kiri -->
-    <aside class="w-72 bg-white border-r border-gray-100 flex flex-col h-full shadow-sm z-20 flex-shrink-0">
+    <aside 
+      :class="[isSidebarOpen ? 'translate-x-0' : '-translate-x-full', 'md:translate-x-0']"
+      class="w-72 bg-white border-r border-gray-100 flex flex-col h-full shadow-xl md:shadow-sm z-30 flex-shrink-0 fixed md:relative transition-transform duration-300 ease-in-out">
       
       <!-- Logo & Profile -->
-      <div class="p-6 border-b border-gray-100 bg-white sticky top-0 z-10">
+      <div class="p-6 border-b border-gray-100 bg-white sticky top-0 z-10 flex justify-between items-center">
         <div class="flex items-center gap-4">
           <img src="../assets/logo.png" alt="Logo" class="w-12 h-12 object-contain rounded-xl shadow-sm">
           <div>
@@ -13,6 +18,10 @@
             <p class="text-xs text-blue-600 font-bold tracking-wide">Workspace Penjadwalan</p>
           </div>
         </div>
+        <!-- Close button for mobile -->
+        <button @click="isSidebarOpen = false" class="md:hidden p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
       </div>
 
       <!-- Navigasi Menu -->
@@ -49,8 +58,19 @@
     </aside>
 
     <!-- Konten Utama -->
-    <main class="flex-1 overflow-y-auto bg-[#F8FAFC]">
+    <main class="flex-1 overflow-y-auto bg-[#F8FAFC] relative">
       
+      <!-- Mobile Header -->
+      <div class="md:hidden flex items-center justify-between p-4 bg-white border-b border-gray-100 sticky top-0 z-10 shadow-sm">
+        <div class="flex items-center gap-3">
+           <img src="../assets/logo.png" alt="Logo" class="w-8 h-8 object-contain">
+           <span class="font-black text-gray-900">GuruKu</span>
+        </div>
+        <button @click="isSidebarOpen = true" class="p-2 text-gray-600 rounded-lg hover:bg-gray-100 border border-gray-200">
+           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+      </div>
+
       <!-- Hanya tampil jika di root dashboard -->
       <div v-if="$route.path === '/admin-sekolah'" class="p-8 max-w-[1400px] mx-auto">
         
@@ -198,6 +218,7 @@ import MagicWizard from '../components/MagicWizard.vue'
 const router = useRouter()
 const profileName = ref('')
 const showWizard = ref(false)
+const isSidebarOpen = ref(false) // Mobile sidebar state
 
 const stats = ref({
   totalGuru: 0,
