@@ -10,9 +10,10 @@
           <p class="text-gray-500 text-sm">Berikan tanda silang (X) pada jam dimana guru tidak dapat mengajar.</p>
         </div>
       </div>
-      <button @click="saveData" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl shadow-md transition-all flex items-center gap-2">
-        <span>Simpan Jadwal Kosong</span>
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      <button @click="saveData" :disabled="saving" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl shadow-md transition-all flex items-center gap-2">
+        <svg v-if="saving" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+        <span>{{ saving ? 'Menyimpan...' : 'Simpan Jadwal Kosong' }}</span>
+        <svg v-if="!saving" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
       </button>
     </div>
 
@@ -82,6 +83,21 @@
         </table>
       </div>
     </div>
+    <!-- Success Modal -->
+    <div v-if="showSuccessModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
+      <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative animate-bounce-in text-center border-t-8 border-emerald-500">
+        <button @click="showSuccessModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <div class="w-24 h-24 bg-emerald-100 text-emerald-500 rounded-full mx-auto flex items-center justify-center mb-6 shadow-inner relative">
+          <div class="absolute inset-0 bg-emerald-400 rounded-full animate-ping opacity-20"></div>
+          <svg class="w-12 h-12 animate-draw-check" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+        <h2 class="text-3xl font-black text-gray-800 mb-2">Berhasil!</h2>
+        <p class="text-gray-500 mb-8 font-medium leading-relaxed">Permintaan Jam Kosong berhasil diperbarui dan disinkronisasi.</p>
+        <button @click="showSuccessModal = false" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-transform transform hover:-translate-y-1">Selesai</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -128,26 +144,20 @@ const getDayColor = (day) => {
 const fetchAllData = async () => {
   loading.value = true
   try {
-    // 1. Fetch Teachers from Pengampu Mapel
-    const pengampuRes = await fetch('/api/v1/school/pengampu', {
-      headers: { 'X-School-ID': schoolId || '' }
-    })
-    if (pengampuRes.ok) {
-      const data = await pengampuRes.json()
-      if (data && data.rows) {
-        // Extract unique teacher objects
-        const teacherMap = new Map()
-        data.rows.forEach(r => {
-          if (r.teacher_code && !teacherMap.has(r.teacher_code)) {
-            teacherMap.set(r.teacher_code, {
-              code: r.teacher_code.toUpperCase(),
-              name: r.teacher_name || r.teacher_code,
-              criteria: r.is_linear || 'true'
-            })
-          }
-        })
-        teachers.value = Array.from(teacherMap.values()).sort((a, b) => a.code.localeCompare(b.code))
-      }
+    // 1. Fetch Teachers from Master Data (Daftar Guru)
+    const savedTeachers = localStorage.getItem('guruKu_teachers');
+    if (savedTeachers) {
+      const parsedTeachers = JSON.parse(savedTeachers);
+      teachers.value = parsedTeachers.map(t => ({
+        code: t.code.toUpperCase(),
+        name: t.name,
+        subject: t.subject
+      })).sort((a, b) => a.code.localeCompare(b.code));
+    } else {
+      // Fallback
+      teachers.value = [
+        { code: 'G01', name: 'Guru Belum Terdaftar' }
+      ];
     }
 
     // 2. Fetch Sessions
@@ -173,6 +183,7 @@ const fetchAllData = async () => {
         })
       })
     }
+    
     // 3. Fetch Jam Kosong Data
     const kosRes = await fetch('/api/v1/school/jam-kosong', {
       headers: { 'X-School-ID': schoolId || '' }
@@ -216,6 +227,24 @@ onMounted(() => {
 </script>
 
 <style scoped>
+@keyframes bounce-in {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-bounce-in {
+  animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+@keyframes draw-check {
+  0% { stroke-dasharray: 50; stroke-dashoffset: 50; }
+  100% { stroke-dasharray: 50; stroke-dashoffset: 0; }
+}
+.animate-draw-check {
+  animation: draw-check 0.5s ease-out forwards;
+  animation-delay: 0.2s;
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+}
 .custom-scrollbar::-webkit-scrollbar {
   height: 10px;
   width: 10px;
@@ -234,3 +263,7 @@ onMounted(() => {
   writing-mode: vertical-rl;
 }
 </style>
+
+
+
+
