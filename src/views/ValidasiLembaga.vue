@@ -127,12 +127,36 @@
       <div class="flex justify-end pt-4">
         <button type="submit" :disabled="saving" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all flex items-center gap-2">
           <svg v-if="!saving" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-          <span v-if="saving">Menyimpan...</span>
+          <svg v-else class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+          <span v-if="saving">Memproses...</span>
           <span v-else>Simpan Validasi Lembaga</span>
         </button>
       </div>
 
     </form>
+
+    <!-- Success Modal -->
+    <div v-if="showSuccessModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
+      <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative animate-bounce-in text-center border-t-8 border-emerald-500">
+        <!-- Close X -->
+        <button @click="showSuccessModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        
+        <!-- Icon Berhasil -->
+        <div class="w-24 h-24 bg-emerald-100 text-emerald-500 rounded-full mx-auto flex items-center justify-center mb-6 shadow-inner relative">
+          <div class="absolute inset-0 bg-emerald-400 rounded-full animate-ping opacity-20"></div>
+          <svg class="w-12 h-12 animate-draw-check" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+        
+        <h2 class="text-3xl font-black text-gray-800 mb-2">Berhasil!</h2>
+        <p class="text-gray-500 mb-8 font-medium leading-relaxed">Data validasi lembaga Anda telah berhasil diverifikasi dan disimpan.</p>
+        
+        <button @click="showSuccessModal = false" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-transform transform hover:-translate-y-1">
+          Selesai
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -144,6 +168,7 @@ import { SafeFlow } from '../core/SafeFlow.js'
 const router = useRouter()
 const loading = ref(true)
 const saving = ref(false)
+const showSuccessModal = ref(false)
 
 const availableDays = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']
 
@@ -290,7 +315,7 @@ const saveProfile = async () => {
     })
     
     if (res.ok) {
-      alert("Validasi Lembaga berhasil disimpan!")
+      showSuccessModal.value = true
     } else {
       alert("Gagal menyimpan data")
     }
@@ -310,3 +335,24 @@ onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
 })
 </script>
+
+<style scoped>
+@keyframes bounce-in {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-bounce-in {
+  animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+@keyframes draw-check {
+  0% { stroke-dasharray: 50; stroke-dashoffset: 50; }
+  100% { stroke-dasharray: 50; stroke-dashoffset: 0; }
+}
+.animate-draw-check {
+  animation: draw-check 0.5s ease-out forwards;
+  animation-delay: 0.2s;
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+}
+</style>
