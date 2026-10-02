@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-4xl mx-auto">
+  <div class="animate-fade-in-up p-4 md:p-8 max-w-[1400px] mx-auto w-full">
     
     <div class="flex items-center gap-4 mb-8">
       <router-link to="/admin-sekolah" class="p-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 border border-gray-100 transition-colors">

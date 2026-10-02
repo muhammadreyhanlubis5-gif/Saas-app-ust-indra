@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-[1400px] mx-auto p-2">
+  <div class="animate-fade-in-up p-4 md:p-8 max-w-[1400px] mx-auto w-full">
     <div class="flex items-center justify-between mb-6">
       <div>
         <h1 class="text-2xl font-bold text-gray-800">Tugas Tambahan Guru</h1>

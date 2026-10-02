@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-[1400px] mx-auto p-4">
+  <div class="animate-fade-in-up p-4 md:p-8 max-w-[1400px] mx-auto w-full">
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
       <div>
