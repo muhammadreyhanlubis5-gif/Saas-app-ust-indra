@@ -137,12 +137,14 @@
 
       </div>
 
-      <div class="flex justify-end pt-4 pb-12">
-        <button @click="saveSessions" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all flex items-center gap-2">
-          <span>Simpan</span>
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-        </button>
-      </div>
+              <div class="flex justify-end pt-4 pb-12">
+          <button @click="saveSessions" :disabled="saving" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all flex items-center gap-2 relative overflow-hidden">
+            <span v-if="saving">Memproses...</span>
+            <span v-else>Simpan</span>
+            <svg v-if="!saving" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            <svg v-else class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+          </button>
+        </div>
     </div>
   </div>
     <!-- Success Modal -->
@@ -185,6 +187,7 @@ import { SafeFlow } from '../core/SafeFlow.js'
 
 const router = useRouter()
 const loading = ref(true)
+const saving = ref(false)
 const dragActive = ref(false)
 const processingFile = ref(false)
 const showSuccessModal = ref(false)
@@ -269,6 +272,7 @@ const loadSessions = async () => {
 }
 
 const saveSessions = async () => {
+  saving.value = true;
   try {
     const res = await SafeFlow.fetch('/api/v1/school/sessions', {
       method: 'PUT',
@@ -286,6 +290,8 @@ const saveSessions = async () => {
     }
   } catch (err) {
     errorMessage.value = "Terjadi kesalahan jaringan."; showErrorModal.value = true;
+  } finally {
+    saving.value = false;
   }
 }
 
@@ -369,3 +375,7 @@ onMounted(() => {
   animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
 </style>
+
+
+
+
