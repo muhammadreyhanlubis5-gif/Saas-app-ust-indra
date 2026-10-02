@@ -317,27 +317,33 @@ const processFile = (file) => {
       return;
     }
 
-    // MOCK DATA EXTRACTION
+    // MOCK DATA EXTRACTION (Sesuai Excel)
     const mockSchedule = [
-      { type: 'KBM', start: '07:30', end: '08:15' },
-      { type: 'KBM', start: '08:15', end: '09:00' },
-      { type: 'KBM', start: '09:00', end: '09:45' },
-      { type: 'ISTIRAHAT', start: '09:45', end: '10:15' },
-      { type: 'KBM', start: '10:15', end: '11:00' },
-      { type: 'KBM', start: '11:00', end: '11:45' },
-      { type: 'KBM', start: '11:45', end: '12:30' },
-      { type: 'ISTIRAHAT', start: '12:30', end: '13:00' },
-      { type: 'KBM', start: '13:00', end: '13:45' },
-      { type: 'KBM', start: '13:45', end: '14:30' },
-      { type: 'KBM', start: '14:30', end: '15:15' }
+      { type: 'KBM', start: '07:30', end: '08:10' },
+      { type: 'KBM', start: '08:10', end: '08:50' },
+      { type: 'KBM', start: '08:50', end: '09:30' },
+      { type: 'KBM', start: '09:30', end: '10:10' },
+      { type: 'ISTIRAHAT', start: '10:10', end: '10:40' },
+      { type: 'KBM', start: '10:40', end: '11:20' },
+      { type: 'KBM', start: '11:20', end: '12:00' },
+      { type: 'KBM', start: '12:00', end: '12:40' },
+      { type: 'KBM', start: '14:00', end: '14:40' },
+      { type: 'KBM', start: '14:40', end: '15:20' }
     ];
     
     // Auto-fill form
     activeDays.value.forEach(day => {
       let schedule = [...mockSchedule];
-      if (day.toLowerCase() === 'jumat') {
-         schedule = schedule.slice(0, 6); // Shorter day on Friday
+      
+      const dayLower = day.toLowerCase();
+      if (dayLower === 'jumat') {
+         // Jumat dipotong sampai istirahat pertama (indeks 4) atau lebih pendek
+         schedule = schedule.slice(0, 5); 
+      } else if (dayLower === 'sabtu') {
+         // Sabtu dipotong sampai jam 12:40 (indeks 7) -> panjang array 8
+         schedule = schedule.slice(0, 8);
       }
+      
       daySessions.value[day] = schedule.map(s => ({
          type: s.type,
          start_time: s.start,
@@ -403,6 +409,7 @@ onMounted(() => {
   animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
 </style>
+
 
 
 
