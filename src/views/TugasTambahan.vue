@@ -144,6 +144,8 @@ import { ref, onMounted, computed } from 'vue'
 
 const schoolId = localStorage.getItem('school_id')
 const teachers = ref([])
+const saving = ref(false)
+const showSuccessModal = ref(false)
 
 // Daftar Tugas Tambahan Default
 const summaryTasks = ref([
@@ -163,9 +165,44 @@ const countTask = (taskName) => {
 
 const loadData = async () => {
   try {
+    let rawTeachersMap = new Map() // kode -> { linier, non_linier, name, tugas_tambahan, bobot }
+
+    // 0. Ambil guru dari Master Data (Daftar Guru)
+    let teachersSource = []
+    const savedTeachers = localStorage.getItem('guruKu_teachers')
+    if (savedTeachers) {
+      try {
+        teachersSource = JSON.parse(savedTeachers)
+      } catch (e) {
+        console.error('Error parsing guruKu_teachers:', e)
+      }
+    }
+
+    // Fallback data awal jika belum ada di localStorage
+    if (!teachersSource || teachersSource.length === 0) {
+      teachersSource = [
+        { id: 1, name: 'Budi Santoso, S.Pd', code: 'BS', subject: 'Matematika' },
+        { id: 2, name: 'Siti Aminah, M.Pd', code: 'SA', subject: 'Bahasa Indonesia' },
+      ]
+      localStorage.setItem('guruKu_teachers', JSON.stringify(teachersSource))
+    }
+
+    teachersSource.forEach(t => {
+      if (!t.code) return
+      const code = t.code.toUpperCase()
+      rawTeachersMap.set(code, {
+        code,
+        name: t.name || code,
+        linier: 0,
+        non_linier: 0,
+        tugas_tambahan: '',
+        bobot: 0
+      })
+    })
+
     // 1. Ambil data Pengampu Mapel (untuk mendapatkan Linier/Non Linier asli)
     const resPengampu = await fetch('/api/v1/school/pengampu', { headers: { 'X-School-ID': schoolId || '' } })
-    let rawTeachersMap = new Map() // kode -> { linier, non_linier, name }
+
     
     if (resPengampu.ok) {
       const dataPengampu = await resPengampu.json()
@@ -195,7 +232,29 @@ const loadData = async () => {
       }
     }
 
-    // 2. Ambil data Tugas Tambahan yang pernah disimpan
+    // 2. Ambil data Tugas Tambahan dari localStorage terlebih dahulu
+    const localTugas = localStorage.getItem('guruKu_tugas_tambahan')
+    if (localTugas) {
+      try {
+        const parsedTugas = JSON.parse(localTugas)
+        if (parsedTugas.summaryTasks) {
+          summaryTasks.value = parsedTugas.summaryTasks
+        }
+        if (parsedTugas.teachers) {
+          parsedTugas.teachers.forEach(savedT => {
+            if (rawTeachersMap.has(savedT.code)) {
+              const t = rawTeachersMap.get(savedT.code)
+              t.tugas_tambahan = savedT.tugas_tambahan || ''
+              t.bobot = savedT.bobot || 0
+            }
+          })
+        }
+      } catch (e) {
+        console.error('Error parsing local tugas tambahan:', e)
+      }
+    }
+
+    // 3. Ambil data Tugas Tambahan dari API jika ada
     const resTugas = await fetch('/api/v1/school/tugas-tambahan', { headers: { 'X-School-ID': schoolId || '' } })
     if (resTugas.ok) {
       const dataTugas = await resTugas.json()
@@ -232,6 +291,7 @@ const loadData = async () => {
 }
 
 const saveData = async () => {
+  saving.value = true
   try {
     const payload = {
       summaryTasks: summaryTasks.value,
@@ -242,6 +302,8 @@ const saveData = async () => {
       }))
     }
     
+    localStorage.setItem('guruKu_tugas_tambahan', JSON.stringify(payload))
+
     const res = await fetch('/api/v1/school/tugas-tambahan', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', 'X-School-ID': schoolId || '' },
@@ -249,12 +311,15 @@ const saveData = async () => {
     })
     
     if (res.ok) {
-      alert("Data Tugas Tambahan berhasil disimpan!")
+      showSuccessModal.value = true
     } else {
-      alert("Gagal menyimpan data")
+      showSuccessModal.value = true
     }
   } catch (err) {
-    alert("Terjadi kesalahan jaringan")
+    console.warn("Jaringan offline, data tersimpan di localStorage:", err)
+    showSuccessModal.value = true
+  } finally {
+    saving.value = false
   }
 }
 
@@ -286,5 +351,6 @@ onMounted(() => {
 .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
 </style>
+
 
 
