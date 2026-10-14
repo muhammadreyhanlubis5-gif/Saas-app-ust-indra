@@ -1,113 +1,506 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
-    <div class="max-w-4xl mx-auto">
+  <div class="min-h-screen bg-slate-50 text-slate-800 py-10 px-4 sm:px-6 lg:px-8 font-sans antialiased selection:bg-blue-600 selection:text-white">
+    <div class="max-w-6xl mx-auto">
       
-      <!-- Header -->
-      <div class="text-center mb-10">
-        <svg class="w-12 h-12 text-blue-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-        <h1 class="text-3xl font-extrabold text-gray-900">Sistem Pembayaran Aman</h1>
-        <p class="text-gray-500 mt-2">Enkripsi End-to-End. Dana dilindungi langsung oleh sistem pusat.</p>
+      <!-- Top Navigation / Breadcrumb -->
+      <div class="flex items-center justify-between mb-8">
+        <button 
+          @click="$router.push('/expired')" 
+          class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-blue-700 bg-white border border-slate-200 hover:border-slate-300 px-4 py-2 rounded-xl shadow-sm transition-all active:scale-95"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Kembali ke Pilihan Paket
+        </button>
+
+        <!-- Security Pill -->
+        <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3.5 py-1.5 rounded-full text-xs font-semibold shadow-xs">
+          <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+          Enkripsi Bank 256-Bit SSL &bull; Jalur Resmi Terverifikasi
+        </div>
       </div>
 
-      <div class="bg-white shadow-2xl rounded-3xl overflow-hidden border border-gray-100 flex flex-col md:flex-row">
+      <!-- Main Header -->
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+          Gerbang Pembayaran & Aktivasi Lisensi
+        </h1>
+        <p class="text-slate-600 mt-3 text-base sm:text-lg leading-relaxed">
+          Penyelesaian tagihan resmi untuk memperpanjang masa aktif sistem jadwal sekolah Anda. Transaksi diproses melalui Virtual Account resmi dan diverifikasi otomatis.
+        </p>
+      </div>
+
+      <!-- Main Container Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        <!-- Left Side: Order Summary -->
-        <div class="bg-blue-600 p-8 md:w-1/3 text-white">
-          <h2 class="text-xl font-bold mb-6 text-blue-100">Ringkasan Pesanan</h2>
+        <!-- Left Column: Order Summary & Institutional Info (4 Cols) -->
+        <div class="lg:col-span-5 space-y-6">
           
-          <div class="mb-8">
-            <p class="text-sm text-blue-200 uppercase tracking-wider font-semibold mb-1">Paket Terpilih</p>
-            <p class="text-3xl font-extrabold">{{ planName }}</p>
+          <!-- Summary Card -->
+          <div class="bg-gradient-to-b from-slate-900 via-slate-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-800 relative overflow-hidden">
+            <!-- Background Decorative Glow -->
+            <div class="absolute -right-12 -top-12 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-12 -bottom-12 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="flex items-center justify-between pb-6 border-b border-slate-800">
+              <div>
+                <span class="text-xs uppercase tracking-widest font-semibold text-blue-400">Rincian Tagihan</span>
+                <h2 class="text-xl font-bold text-white mt-1">Faktur Layanan Sekolah</h2>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-mono text-slate-400 block">No. Invoice</span>
+                <span class="text-xs font-mono font-bold text-slate-200">{{ invoiceNumber }}</span>
+              </div>
+            </div>
+
+            <!-- Paket Detail -->
+            <div class="py-6 border-b border-slate-800 space-y-4">
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="inline-block px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wider bg-blue-500/20 text-blue-300 border border-blue-400/30 mb-2">
+                    Paket Dipilih
+                  </div>
+                  <h3 class="text-2xl font-black text-white">Paket {{ planName }}</h3>
+                  <p class="text-xs text-slate-400 mt-1">Masa aktif langganan: 1 Bulan (30 Hari Kalender)</p>
+                </div>
+                <div class="text-right">
+                  <span class="text-lg font-bold text-white">{{ formattedPrice }}</span>
+                </div>
+              </div>
+
+              <!-- Feature Highlights for Package -->
+              <div class="bg-slate-800/60 rounded-xl p-3 text-xs text-slate-300 space-y-1.5 border border-slate-700/50">
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span>Akses Penuh Manajemen Guru & Mata Pelajaran</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span>Algoritma AI Anti-Bentrok & Ekspor Jadwal (PDF/Excel)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span>Layanan Pemeliharaan Sistem & Sinkronisasi Cloud</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Price Breakdown -->
+            <div class="py-6 border-b border-slate-800 space-y-3 text-sm">
+              <div class="flex justify-between items-center text-slate-400">
+                <span>Subtotal Layanan</span>
+                <span class="text-slate-200 font-medium">{{ formattedPrice }}</span>
+              </div>
+              <div class="flex justify-between items-center text-slate-400">
+                <div class="flex items-center gap-1.5">
+                  <span>Biaya Transaksi Virtual Account</span>
+                  <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-bold">Gratis</span>
+                </div>
+                <span class="text-emerald-400 font-medium">Rp 0 (Disubsidi)</span>
+              </div>
+              <div class="flex justify-between items-center text-slate-400">
+                <span>PPN 11% (Termasuk)</span>
+                <span class="text-slate-200 font-medium">Rp 0</span>
+              </div>
+            </div>
+
+            <!-- Total Amount -->
+            <div class="pt-6 pb-2 flex justify-between items-baseline">
+              <div>
+                <span class="text-xs uppercase font-semibold text-slate-400 block tracking-wider">Total Pembayaran</span>
+                <span class="text-xs text-slate-500">Nominal pas tanpa kode unik</span>
+              </div>
+              <div class="text-right">
+                <span class="text-3xl font-extrabold text-white tracking-tight">{{ formattedPrice }}</span>
+              </div>
+            </div>
+
+            <!-- Formal Assurance Note (Replacing the old 'pusat komando' text) -->
+            <div class="mt-6 bg-blue-950/60 border border-blue-500/30 rounded-2xl p-4 flex items-start gap-3.5">
+              <div class="p-2 bg-blue-500/20 text-blue-400 rounded-xl flex-shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-blue-200 uppercase tracking-wider mb-1">Aktivasi Otomatis Terverifikasi</h4>
+                <p class="text-xs text-blue-100/80 leading-relaxed">
+                  Lisensi dan masa aktif aplikasi sekolah Anda akan diperbarui secara otomatis begitu transaksi terkonfirmasi oleh sistem verifikasi perbankan.
+                </p>
+              </div>
+            </div>
+
           </div>
 
-          <div class="mb-8 space-y-4">
-            <div class="flex justify-between items-center text-sm">
-              <span class="text-blue-100">Subtotal</span>
-              <span class="font-medium">{{ formattedPrice }}</span>
-            </div>
-            <div class="flex justify-between items-center text-sm">
-              <span class="text-blue-100">Biaya Layanan Pihak Ketiga</span>
-              <span class="font-medium text-green-300">Gratis (Subsidi)</span>
-            </div>
-            <hr class="border-blue-400/50">
-            <div class="flex justify-between items-end">
-              <span class="font-bold text-lg">Total</span>
-              <span class="font-extrabold text-2xl">{{ formattedPrice }}</span>
+          <!-- Trust & Compliance Card -->
+          <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3.5">
+            <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Standar Keamanan Transaksi</h4>
+            <div class="grid grid-cols-2 gap-3 text-xs text-slate-600">
+              <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-xl">
+                <svg class="w-4 h-4 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                <span class="font-medium">Jalur VA Resmi</span>
+              </div>
+              <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-xl">
+                <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span class="font-medium">Verifikasi Real-time</span>
+              </div>
+              <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-xl">
+                <svg class="w-4 h-4 text-indigo-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span class="font-medium">Kuitansi Resmi BOS/LPJ</span>
+              </div>
+              <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-xl">
+                <svg class="w-4 h-4 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                <span class="font-medium">Layanan Bantuan 24/7</span>
+              </div>
             </div>
           </div>
 
-          <div class="bg-blue-700/50 p-4 rounded-xl flex items-start gap-3">
-            <svg class="w-6 h-6 text-blue-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <p class="text-xs text-blue-100 leading-relaxed">
-              Masa aktif otomatis diperpanjang setelah pembayaran diverifikasi oleh pusat komando.
-            </p>
-          </div>
         </div>
 
-        <!-- Right Side: Payment Options -->
-        <div class="p-8 md:w-2/3">
-          <h3 class="text-xl font-bold text-gray-900 mb-6">Pilih Metode Pembayaran</h3>
+        <!-- Right Column: Payment Methods & Virtual Account Instruction (7 Cols) -->
+        <div class="lg:col-span-7 space-y-6">
           
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
-            <button 
-              v-for="method in paymentMethods" 
-              :key="method.id"
-              @click="selectedMethod = method.id"
-              :class="['border-2 rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition-all', 
-                selectedMethod === method.id ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200' : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50']"
-            >
-              <div class="font-extrabold text-gray-700 tracking-wider">{{ method.name }}</div>
-            </button>
-          </div>
+          <!-- Category Tabs -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <div>
+                <h3 class="text-lg font-bold text-slate-900">Pilih Metode Pembayaran</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Semua transaksi melalui nomor Virtual Account berlisensi resmi</p>
+              </div>
 
-          <!-- Payment Instructions -->
-          <div v-if="selectedMethodData" class="bg-gray-50 rounded-2xl p-6 border border-gray-200 relative overflow-hidden">
-            <div class="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-bl-lg shadow-sm">
-              Menunggu Pembayaran
-            </div>
-            
-            <h4 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-              Instruksi Transfer {{ selectedMethodData.name }}
-            </h4>
-            
-            <div class="mb-6">
-              <p class="text-sm text-gray-600 mb-2">Transfer tepat sesuai nominal ke Virtual Account / Nomor Rekening berikut:</p>
-              <div class="flex items-center gap-4 bg-white p-4 rounded-xl border border-gray-300 shadow-inner">
-                <div class="flex-1">
-                  <p class="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Nomor Tujuan (Pusat)</p>
-                  <p class="font-mono text-2xl font-extrabold text-gray-900 tracking-widest">{{ selectedMethodData.accountNumber }}</p>
-                </div>
-                <button @click="copyToClipboard(selectedMethodData.accountNumber)" class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-lg transition-colors" title="Salin Nomor">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              <!-- Channel Switcher -->
+              <div class="flex p-1 bg-slate-100 rounded-xl self-start sm:self-auto">
+                <button 
+                  @click="activeCategory = 'va'" 
+                  :class="['px-3 py-1.5 text-xs font-bold rounded-lg transition-all', activeCategory === 'va' ? 'bg-white text-blue-700 shadow-xs' : 'text-slate-600 hover:text-slate-900']"
+                >
+                  Virtual Account (Bank)
+                </button>
+                <button 
+                  @click="activeCategory = 'ewallet'" 
+                  :class="['px-3 py-1.5 text-xs font-bold rounded-lg transition-all', activeCategory === 'ewallet' ? 'bg-white text-blue-700 shadow-xs' : 'text-slate-600 hover:text-slate-900']"
+                >
+                  Dompet Digital & QRIS
                 </button>
               </div>
-              <p class="text-xs text-green-600 font-bold mt-2 flex items-center gap-1">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                Terverifikasi Atas Nama: A/N Admin Pusat Sistem
-              </p>
             </div>
 
-            <div class="border-t border-gray-200 pt-6">
-              <p class="text-sm text-gray-600 mb-4">Setelah melakukan transfer, silakan konfirmasi pembayaran Anda dengan mengirimkan bukti transfer ke Pusat Komando.</p>
-              <button @click="confirmPayment" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                Konfirmasi Pembayaran via WhatsApp
+            <!-- Method Selection Grid (Virtual Account) -->
+            <div v-if="activeCategory === 'va'" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+              <button 
+                v-for="method in bankMethods" 
+                :key="method.id"
+                @click="selectMethod(method)"
+                :class="[
+                  'group p-4 rounded-2xl border-2 text-left transition-all relative flex items-center justify-between',
+                  selectedMethod?.id === method.id 
+                    ? 'border-blue-600 bg-blue-50/50 shadow-sm ring-2 ring-blue-500/20' 
+                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50/70 bg-white'
+                ]"
+              >
+                <div class="flex items-center gap-3.5">
+                  <div class="w-14 h-10 rounded-xl bg-white border border-slate-200 p-1.5 flex items-center justify-center flex-shrink-0 shadow-xs">
+                    <component :is="method.logoComponent" />
+                  </div>
+                  <div>
+                    <div class="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                      {{ method.name }}
+                    </div>
+                    <div class="text-[11px] text-slate-500">
+                      {{ method.type }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center">
+                  <span v-if="selectedMethod?.id === method.id" class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-xs">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                  </span>
+                  <span v-else class="w-5 h-5 rounded-full border-2 border-slate-300 group-hover:border-slate-400"></span>
+                </div>
               </button>
             </div>
+
+            <!-- Method Selection Grid (E-Wallets & QRIS) -->
+            <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+              <button 
+                v-for="method in ewalletMethods" 
+                :key="method.id"
+                @click="selectMethod(method)"
+                :class="[
+                  'group p-4 rounded-2xl border-2 text-left transition-all relative flex items-center justify-between',
+                  selectedMethod?.id === method.id 
+                    ? 'border-blue-600 bg-blue-50/50 shadow-sm ring-2 ring-blue-500/20' 
+                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50/70 bg-white'
+                ]"
+              >
+                <div class="flex items-center gap-3.5">
+                  <div class="w-14 h-10 rounded-xl bg-white border border-slate-200 p-1.5 flex items-center justify-center flex-shrink-0 shadow-xs">
+                    <component :is="method.logoComponent" />
+                  </div>
+                  <div>
+                    <div class="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                      {{ method.name }}
+                    </div>
+                    <div class="text-[11px] text-slate-500">
+                      {{ method.type }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center">
+                  <span v-if="selectedMethod?.id === method.id" class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-xs">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                  </span>
+                  <span v-else class="w-5 h-5 rounded-full border-2 border-slate-300 group-hover:border-slate-400"></span>
+                </div>
+              </button>
+            </div>
+
+            <!-- Selected Method Detail Card -->
+            <div v-if="selectedMethod" class="bg-slate-50 rounded-2xl border border-slate-200 p-6 space-y-6">
+              
+              <!-- Header with Status Pill and Expiry Countdown -->
+              <div class="flex flex-wrap items-center justify-between gap-3 pb-5 border-b border-slate-200">
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-9 rounded-lg bg-white border border-slate-200 p-1 flex items-center justify-center shadow-xs">
+                    <component :is="selectedMethod.logoComponent" />
+                  </div>
+                  <div>
+                    <span class="text-xs text-slate-500 block font-medium">Metode Aktif</span>
+                    <span class="text-sm font-bold text-slate-900">{{ selectedMethod.fullName }}</span>
+                  </div>
+                </div>
+
+                <!-- Status Badge -->
+                <div class="flex items-center gap-2 bg-amber-50 text-amber-800 border border-amber-200 px-3 py-1 rounded-full text-xs font-semibold">
+                  <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                  Menunggu Pembayaran
+                </div>
+              </div>
+
+              <!-- QRIS Display (If QRIS Selected) -->
+              <div v-if="selectedMethod.id === 'qris'" class="bg-white rounded-2xl p-6 border border-slate-200 text-center space-y-4 shadow-xs">
+                <div class="inline-block px-3 py-1 rounded-full bg-red-50 text-red-700 border border-red-200 text-xs font-bold">
+                  Standar Nasional Indonesia &bull; Bebas Biaya Admin
+                </div>
+                
+                <div class="max-w-[220px] mx-auto p-4 bg-white border-2 border-slate-800 rounded-2xl shadow-sm relative">
+                  <!-- QR Code Mock Graphic with Vector Pattern -->
+                  <div class="aspect-square bg-slate-900 rounded-lg p-2.5 flex flex-col justify-between relative overflow-hidden">
+                    <!-- Standard QR corner markers -->
+                    <div class="flex justify-between w-full">
+                      <div class="w-10 h-10 border-4 border-white bg-slate-900 rounded-sm p-1">
+                        <div class="w-full h-full bg-white rounded-xs"></div>
+                      </div>
+                      <div class="w-10 h-10 border-4 border-white bg-slate-900 rounded-sm p-1">
+                        <div class="w-full h-full bg-white rounded-xs"></div>
+                      </div>
+                    </div>
+                    <!-- Center Brand Emblem -->
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div class="bg-white p-1.5 rounded-md shadow-md border border-slate-200">
+                        <span class="text-[9px] font-black tracking-tighter text-red-600 block">QRIS</span>
+                      </div>
+                    </div>
+                    <!-- Bottom corner marker -->
+                    <div class="flex justify-between w-full items-end">
+                      <div class="w-10 h-10 border-4 border-white bg-slate-900 rounded-sm p-1">
+                        <div class="w-full h-full bg-white rounded-xs"></div>
+                      </div>
+                      <!-- QR pattern dots simulation -->
+                      <div class="grid grid-cols-4 gap-1 p-1">
+                        <div class="w-1.5 h-1.5 bg-white rounded-xs"></div>
+                        <div class="w-1.5 h-1.5 bg-white rounded-xs"></div>
+                        <div class="w-1.5 h-1.5 bg-white rounded-xs"></div>
+                        <div class="w-1.5 h-1.5 bg-white rounded-xs"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="text-[10px] font-mono text-slate-500 mt-2 font-medium">NMID: ID1020261948293</p>
+                </div>
+
+                <div class="space-y-1">
+                  <p class="text-xs font-bold text-slate-800">A/N: GURUKU INDONESIA BILLING</p>
+                  <p class="text-xs text-slate-500">Dapat dipindai dari BCA Mobile, Livin Mandiri, BRImo, BSI Mobile, DANA, GoPay, OVO, ShopeePay & semua bank.</p>
+                </div>
+              </div>
+
+              <!-- Virtual Account Number Box (For Bank VA & E-Wallets) -->
+              <div v-else class="space-y-4">
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-4">
+                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                      <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+                        {{ selectedMethod.category === 'va' ? 'Nomor Virtual Account' : 'Nomor Akun Terdaftar' }}
+                      </span>
+                      <p class="text-xs text-slate-400 mt-0.5">Transfer langsung dari aplikasi perbankan atau dompet digital Anda</p>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-xs text-emerald-600 font-semibold bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100 self-start sm:self-auto">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                      Verifikasi Otomatis
+                    </div>
+                  </div>
+
+                  <!-- VA Number & Copy Button -->
+                  <div class="flex items-center justify-between bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div>
+                      <div class="font-mono text-xl sm:text-2xl font-black text-slate-900 tracking-wider">
+                        {{ formatVANumber(selectedMethod.accountNumber) }}
+                      </div>
+                      <div class="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
+                        <span>Atas Nama:</span>
+                        <span class="font-bold text-slate-700">{{ selectedMethod.accountHolder }}</span>
+                      </div>
+                    </div>
+
+                    <button 
+                      @click="copyText(selectedMethod.accountNumber, 'va')"
+                      class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95"
+                      :class="copiedType === 'va' ? 'bg-emerald-600 text-white' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'"
+                    >
+                      <svg v-if="copiedType === 'va'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                      <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                      <span>{{ copiedType === 'va' ? 'Tersalin' : 'Salin Nomor' }}</span>
+                    </button>
+                  </div>
+
+                  <!-- Nominal Exact Transfer Notice -->
+                  <div class="flex items-center justify-between pt-2 text-xs">
+                    <div>
+                      <span class="text-slate-500">Nominal Tepat Tagihan:</span>
+                      <span class="font-extrabold text-slate-900 ml-1.5 font-mono">{{ formattedPrice }}</span>
+                    </div>
+                    <button 
+                      @click="copyText(price.toString(), 'nominal')"
+                      class="text-blue-600 hover:text-blue-800 font-semibold inline-flex items-center gap-1 text-xs"
+                    >
+                      <span>{{ copiedType === 'nominal' ? 'Nominal Tersalin!' : 'Salin Nominal' }}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Payment Instructions Step by Step -->
+              <div class="space-y-3 pt-2">
+                <div class="flex items-center justify-between">
+                  <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    Tata Cara Pembayaran {{ selectedMethod.name }}
+                  </h4>
+
+                  <!-- Instruction Channel Tabs -->
+                  <div v-if="selectedMethod.instructions && selectedMethod.instructions.length > 1" class="flex gap-1">
+                    <button 
+                      v-for="(inst, idx) in selectedMethod.instructions" 
+                      :key="idx"
+                      @click="activeInstructionTab = idx"
+                      :class="['px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors', activeInstructionTab === idx ? 'bg-slate-200 text-slate-800' : 'text-slate-500 hover:text-slate-700']"
+                    >
+                      {{ inst.channel }}
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Active Steps -->
+                <div class="bg-white rounded-xl p-4 border border-slate-200 text-xs text-slate-600 space-y-2">
+                  <div 
+                    v-for="(step, sIdx) in currentInstructions" 
+                    :key="sIdx"
+                    class="flex items-start gap-2.5"
+                  >
+                    <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center flex-shrink-0 text-[11px] mt-0.5">
+                      {{ sIdx + 1 }}
+                    </span>
+                    <span class="leading-relaxed">{{ step }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Confirmation Buttons -->
+              <div class="space-y-3 pt-2">
+                <!-- WhatsApp Confirmation Button (Primary Formal) -->
+                <button 
+                  @click="confirmPaymentViaWA"
+                  class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-2.5"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                  </svg>
+                  <span>Konfirmasi Pembayaran via WhatsApp Layanan Billing</span>
+                </button>
+
+                <!-- Check Status Verification Simulation Button -->
+                <button 
+                  @click="checkTransactionStatus" 
+                  :disabled="isCheckingStatus"
+                  class="w-full bg-white hover:bg-slate-50 text-slate-700 font-semibold py-3 px-4 rounded-xl border border-slate-200 transition-colors flex items-center justify-center gap-2 text-xs"
+                >
+                  <svg v-if="isCheckingStatus" class="animate-spin w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <svg v-else class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                  </svg>
+                  <span>{{ isCheckingStatus ? 'Menghubungkan ke Gateway Perbankan...' : 'Periksa Status Pembayaran Otomatis' }}</span>
+                </button>
+              </div>
+
+            </div>
+
+            <!-- Empty State If No Method Selected -->
+            <div v-else class="py-16 text-center border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
+              <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+              </div>
+              <h4 class="text-sm font-bold text-slate-700">Silakan Pilih Metode Pembayaran</h4>
+              <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Klik salah satu Virtual Account bank atau dompet digital di atas untuk memunculkan nomor tagihan resmi.</p>
+            </div>
+
           </div>
-          
-          <div v-else class="h-64 flex items-center justify-center border-2 border-dashed border-gray-200 rounded-2xl">
-            <p class="text-gray-400 font-medium">Pilih metode pembayaran di atas untuk melihat instruksi.</p>
+
+          <!-- FAQ Accordion for School Administrators -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+            <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Pertanyaan Umum Seputar Billing & Faktur</h4>
+            
+            <div class="space-y-3 text-xs text-slate-600">
+              <details class="group bg-slate-50 rounded-xl p-3 border border-slate-200/70">
+                <summary class="font-bold text-slate-800 cursor-pointer list-none flex items-center justify-between">
+                  <span>Berapa lama lisensi sekolah kami akan aktif setelah pembayaran?</span>
+                  <svg class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <p class="mt-2 text-slate-600 leading-relaxed">
+                  Sistem verifikasi otomatis mendeteksi pelunasan transaksi Virtual Account dalam 1 hingga 5 menit. Masa aktif akun institusi Anda akan langsung diperpanjang tanpa perlu login ulang.
+                </p>
+              </details>
+
+              <details class="group bg-slate-50 rounded-xl p-3 border border-slate-200/70">
+                <summary class="font-bold text-slate-800 cursor-pointer list-none flex items-center justify-between">
+                  <span>Apakah kami dapat meminta kuitansi dan faktur resmi untuk pelaporan dana BOS/LPJ?</span>
+                  <svg class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <p class="mt-2 text-slate-600 leading-relaxed">
+                  Tentu. Setelah pembayaran selesai, tim billing kami menyediakan kuitansi berstempel dinas digital lengkap dengan nomor NPWP pengembang untuk kebutuhan pelaporan pertanggungjawaban dana sekolah (BOS/BOP).
+                </p>
+              </details>
+
+              <details class="group bg-slate-50 rounded-xl p-3 border border-slate-200/70">
+                <summary class="font-bold text-slate-800 cursor-pointer list-none flex items-center justify-between">
+                  <span>Bagaimana jika terjadi kendala saat melakukan transfer Virtual Account?</span>
+                  <svg class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <p class="mt-2 text-slate-600 leading-relaxed">
+                  Tim help desk dan keuangan kami bertugas penuh mendampingi proses aktivasi institusi Anda melalui layanan WhatsApp resmi yang tertera pada tombol konfirmasi.
+                </p>
+              </details>
+            </div>
           </div>
 
         </div>
-      </div>
-      
-      <div class="mt-8 text-center">
-        <button @click="$router.push('/expired')" class="text-gray-500 hover:text-gray-900 font-medium transition-colors">
-          &larr; Batal & Kembali
-        </button>
+
       </div>
 
     </div>
@@ -115,12 +508,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, defineComponent, h } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
 
+// Package & Pricing Configuration
 const planName = route.query.plan || 'Plus'
 const planPrices = {
   'Standard': 499000,
@@ -133,33 +527,502 @@ const formattedPrice = computed(() => {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(price)
 })
 
-// Tujuan pembayaran dikunci ke DANA milik admin
-const adminNumber = "08218487328"
-
-const paymentMethods = [
-  { id: 'dana', name: 'DANA', accountNumber: adminNumber },
-  { id: 'bri', name: 'BRI / BRIMO', accountNumber: adminNumber },
-  { id: 'mandiri', name: 'Livin Mandiri', accountNumber: adminNumber },
-  { id: 'gopay', name: 'GoPay', accountNumber: adminNumber },
-  { id: 'ovo', name: 'OVO', accountNumber: adminNumber },
-  { id: 'shopeepay', name: 'ShopeePay', accountNumber: adminNumber },
-  { id: 'paypal', name: 'PayPal', accountNumber: adminNumber } // Simplified
-]
-
-const selectedMethod = ref(null)
-
-const selectedMethodData = computed(() => {
-  return paymentMethods.find(m => m.id === selectedMethod.value)
+// Generate Formal Invoice Code based on Date
+const invoiceNumber = computed(() => {
+  const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '')
+  return `INV-${dateStr}-${(price % 10000).toString().padStart(4, '7')}`
 })
 
-const copyToClipboard = (text) => {
-  navigator.clipboard.writeText(text)
-  alert("Nomor Rekening / Virtual Account disalin!")
+// Admin Center Phone
+const adminPhone = "08218487328"
+
+// Active Category Tab: 'va' (Virtual Account) or 'ewallet' (Dompet Digital & QRIS)
+const activeCategory = ref('va')
+
+// Active Instruction Channel Tab index
+const activeInstructionTab = ref(0)
+
+// Copying state
+const copiedType = ref(null)
+const isCheckingStatus = ref(false)
+
+// -----------------------------------------------------------------------------------------
+// HIGH-FIDELITY VECTOR LOGO COMPONENTS (100% SVG, Clean & Responsive)
+// -----------------------------------------------------------------------------------------
+
+// 1. BRI (BRIVA) Official Style
+const BriLogo = defineComponent({
+  name: 'BriLogo',
+  render() {
+    return h('svg', { viewBox: '0 0 100 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
+      h('rect', { width: '30', height: '30', rx: '6', fill: '#00529C' }),
+      h('path', { d: 'M8 7h7c3 0 5 1.5 5 4s-2 3.5-4 3.8l5 6.2h-3.8l-4.5-5.6H11v5.6H8V7zm3 5.4h3.8c1.3 0 2.2-.6 2.2-1.6s-.9-1.6-2.2-1.6H11v3.2z', fill: '#FFFFFF' }),
+      h('text', { x: '36', y: '22', fill: '#00529C', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '19', 'letter-spacing': '-0.5' }, 'BRI'),
+      h('rect', { x: '72', y: '8', width: '26', height: '14', rx: '3', fill: '#F37021' }),
+      h('text', { x: '75', y: '19', fill: '#FFFFFF', 'font-family': 'Arial, sans-serif', 'font-weight': '800', 'font-size': '9', 'letter-spacing': '0.5' }, 'VA')
+    ])
+  }
+})
+
+// 2. Bank Mandiri (Livin' by Mandiri) Official Style
+const MandiriLogo = defineComponent({
+  name: 'MandiriLogo',
+  render() {
+    return h('svg', { viewBox: '0 0 110 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
+      h('rect', { width: '30', height: '30', rx: '6', fill: '#003D79' }),
+      h('path', { d: 'M7 21V9h3l4 7 4-7h3v12h-3v-7l-4 7h-1l-4-7v7H7z', fill: '#FFFFFF' }),
+      h('path', { d: 'M15 7c3-2 8-1 10 2', stroke: '#FDB813', 'stroke-width': '2.5', 'stroke-linecap': 'round' }),
+      h('text', { x: '35', y: '21', fill: '#003D79', 'font-family': 'Arial, sans-serif', 'font-weight': '800', 'font-size': '15', 'letter-spacing': '-0.3' }, 'mandırı'),
+      h('text', { x: '35', y: '29', fill: '#FDB813', 'font-family': 'Arial, sans-serif', 'font-weight': '700', 'font-size': '8' }, 'LIVIN\' VA')
+    ])
+  }
+})
+
+// 3. BSI (Bank Syariah Indonesia) Official Style
+const BsiLogo = defineComponent({
+  name: 'BsiLogo',
+  render() {
+    return h('svg', { viewBox: '0 0 95 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
+      h('circle', { cx: '15', cy: '15', r: '14', fill: '#00A39D' }),
+      h('path', { d: 'M15 5c4 0 8 3 8 7s-4 9-8 9-8-5-8-9 4-7 8-7z', fill: '#FFFFFF' }),
+      h('circle', { cx: '18', cy: '11', r: '3', fill: '#F37021' }),
+      h('text', { x: '34', y: '21', fill: '#00A39D', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '18', 'letter-spacing': '0.5' }, 'BSI'),
+      h('text', { x: '72', y: '21', fill: '#F37021', 'font-family': 'Arial, sans-serif', 'font-weight': '800', 'font-size': '10' }, 'VA')
+    ])
+  }
+})
+
+// 4. BCA (BCA Virtual Account) Official Style
+const BcaLogo = defineComponent({
+  name: 'BcaLogo',
+  render() {
+    return h('svg', { viewBox: '0 0 90 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
+      h('rect', { width: '88', height: '30', rx: '6', fill: '#003882' }),
+      h('text', { x: '8', y: '21', fill: '#FFFFFF', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '17', 'letter-spacing': '1' }, 'BCA'),
+      h('rect', { x: '58', y: '7', width: '24', height: '16', rx: '3', fill: '#FFFFFF' }),
+      h('text', { x: '63', y: '19', fill: '#003882', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '9' }, 'VA')
+    ])
+  }
+})
+
+// 5. BNI (BNI Virtual Account) Official Style
+const BniLogo = defineComponent({
+  name: 'BniLogo',
+  render() {
+    return h('svg', { viewBox: '0 0 90 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
+      h('text', { x: '3', y: '22', fill: '#006699', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '20', 'letter-spacing': '-0.5' }, 'BNI'),
+      h('rect', { x: '46', y: '6', width: '18', height: '18', rx: '4', fill: '#F15A24' }),
+      h('text', { x: '48', y: '20', fill: '#FFFFFF', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '12' }, '46'),
+      h('text', { x: '70', y: '21', fill: '#006699', 'font-family': 'Arial, sans-serif', 'font-weight': '800', 'font-size': '11' }, 'VA')
+    ])
+  }
+})
+
+// 6. QRIS National Standard Style
+const QrisLogo = defineComponent({
+  name: 'QrisLogo',
+  render() {
+    return h('svg', { viewBox: '0 0 95 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
+      h('rect', { x: '2', y: '3', width: '24', height: '24', rx: '4', fill: '#1E1E1E' }),
+      h('rect', { x: '6', y: '7', width: '8', height: '8', fill: '#EA232A' }),
+      h('rect', { x: '16', y: '17', width: '6', height: '6', fill: '#FFFFFF' }),
+      h('text', { x: '30', y: '21', fill: '#EA232A', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '18', 'letter-spacing': '-0.5' }, 'QRIS'),
+      h('text', { x: '30', y: '28', fill: '#1E1E1E', 'font-family': 'Arial, sans-serif', 'font-weight': '700', 'font-size': '6.5', 'letter-spacing': '0.5' }, 'PEMBAYARAN NASIONAL')
+    ])
+  }
+})
+
+// 7. DANA Official Style
+const DanaLogo = defineComponent({
+  name: 'DanaLogo',
+  render() {
+    return h('svg', { viewBox: '0 0 95 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
+      h('rect', { width: '92', height: '30', rx: '6', fill: '#118EEA' }),
+      h('circle', { cx: '15', cy: '15', r: '7', fill: '#FFFFFF' }),
+      h('circle', { cx: '15', cy: '15', r: '4', fill: '#118EEA' }),
+      h('text', { x: '27', y: '21', fill: '#FFFFFF', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '16', 'letter-spacing': '0.5' }, 'DANA')
+    ])
+  }
+})
+
+// 8. GoPay Official Style
+const GopayLogo = defineComponent({
+  name: 'GopayLogo',
+  render() {
+    return h('svg', { viewBox: '0 0 95 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
+      h('rect', { width: '92', height: '30', rx: '6', fill: '#00AED6' }),
+      h('circle', { cx: '16', cy: '15', r: '7', stroke: '#FFFFFF', 'stroke-width': '3.5', fill: 'none' }),
+      h('circle', { cx: '16', cy: '15', r: '2.5', fill: '#FFFFFF' }),
+      h('text', { x: '28', y: '21', fill: '#FFFFFF', 'font-family': 'Arial, sans-serif', 'font-weight': '800', 'font-size': '15', 'letter-spacing': '-0.5' }, 'gopay')
+    ])
+  }
+})
+
+// 9. OVO Official Style
+const OvoLogo = defineComponent({
+  name: 'OvoLogo',
+  render() {
+    return h('svg', { viewBox: '0 0 90 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
+      h('rect', { width: '88', height: '30', rx: '6', fill: '#4C2A86' }),
+      h('text', { x: '18', y: '22', fill: '#FFFFFF', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '18', 'letter-spacing': '2' }, 'ovo')
+    ])
+  }
+})
+
+// 10. ShopeePay Official Style
+const ShopeepayLogo = defineComponent({
+  name: 'ShopeepayLogo',
+  render() {
+    return h('svg', { viewBox: '0 0 110 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
+      h('rect', { width: '108', height: '30', rx: '6', fill: '#EE4D2D' }),
+      h('path', { d: 'M12 9v2h-2v11h12V11h-2V9c0-2-1.5-3-4-3s-4 1-4 3zm2 2V9c0-.8.6-1.5 2-1.5s2 .7 2 1.5v2h-4z', fill: '#FFFFFF' }),
+      h('text', { x: '28', y: '20', fill: '#FFFFFF', 'font-family': 'Arial, sans-serif', 'font-weight': '800', 'font-size': '11', 'letter-spacing': '0.2' }, 'ShopeePay')
+    ])
+  }
+})
+
+// -----------------------------------------------------------------------------------------
+// PAYMENT METHODS DATASET (Professional Virtual Accounts & E-Wallets)
+// -----------------------------------------------------------------------------------------
+
+const bankMethods = [
+  {
+    id: 'bri_va',
+    name: 'BRI (BRIVA)',
+    fullName: 'BRI Virtual Account (BRIVA)',
+    type: 'Bank Rakyat Indonesia',
+    category: 'va',
+    accountNumber: `8881${adminPhone}`,
+    accountHolder: 'GuruKu Billing - PT Edukasi Nusantara',
+    logoComponent: BriLogo,
+    instructions: [
+      {
+        channel: 'BRImo (Aplikasi)',
+        steps: [
+          'Buka dan login ke aplikasi BRImo di smartphone Anda.',
+          'Pilih menu "Tagihan" lalu klik "BRIVA" (BRI Virtual Account).',
+          'Pilih "Pembayaran Baru" dan masukkan Nomor BRIVA di atas.',
+          'Periksa detail nama penerima (GuruKu Billing) dan nominal pembayaran.',
+          'Masukkan PIN BRImo Anda dan simpan bukti transfer transaksi.'
+        ]
+      },
+      {
+        channel: 'ATM BRI',
+        steps: [
+          'Masukkan kartu ATM BRI dan PIN Anda di mesin ATM.',
+          'Pilih menu "Transaksi Lain" lalu pilih "Pembayaran".',
+          'Pilih menu "Lainnya" > pilih "BRIVA".',
+          'Masukkan Nomor Virtual Account BRIVA yang tertera di atas.',
+          'Konfirmasi kesesuaian data dan tekan "Ya" untuk menyelesaikan.'
+        ]
+      },
+      {
+        channel: 'Internet Banking',
+        steps: [
+          'Buka situs ib.bri.co.id dan login ke akun Internet Banking Anda.',
+          'Pilih menu "Pembayaran" > "BRIVA".',
+          'Masukkan kode Virtual Account di atas dan pastikan nominal tepat.',
+          'Konfirmasi dengan memasukkan m-Token BRI Anda.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'mandiri_va',
+    name: 'Livin\' Mandiri',
+    fullName: 'Mandiri Virtual Account (Livin\')',
+    type: 'Bank Mandiri (Persero) Tbk',
+    category: 'va',
+    accountNumber: `8902${adminPhone}`,
+    accountHolder: 'GuruKu Billing - PT Edukasi Nusantara',
+    logoComponent: MandiriLogo,
+    instructions: [
+      {
+        channel: 'Livin\' by Mandiri',
+        steps: [
+          'Buka aplikasi Livin\' by Mandiri dan lakukan login.',
+          'Pilih menu "Bayar" lalu cari penyedia jasa / ketik "Mandiri Virtual Account".',
+          'Masukkan Nomor Virtual Account Mandiri di atas.',
+          'Konfirmasi nama tagihan dan nominal pembayaran yang tertera.',
+          'Masukkan PIN Livin\' Mandiri Anda untuk memproses transaksi.'
+        ]
+      },
+      {
+        channel: 'ATM Mandiri',
+        steps: [
+          'Masukkan kartu ATM Mandiri dan masukkan PIN.',
+          'Pilih menu "Bayar/Beli" > pilih "Lainnya" > pilih "Multi Payment".',
+          'Masukkan Nomor Mandiri Virtual Account di atas.',
+          'Pastikan rincian tagihan sesuai dan tekan "1" kemudian "Ya".'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'bsi_va',
+    name: 'BSI (Bank Syariah)',
+    fullName: 'BSI Virtual Account Syariah',
+    type: 'Bank Syariah Indonesia Tbk',
+    category: 'va',
+    accountNumber: `9012${adminPhone}`,
+    accountHolder: 'GuruKu Billing - PT Edukasi Nusantara',
+    logoComponent: BsiLogo,
+    instructions: [
+      {
+        channel: 'BSI Mobile',
+        steps: [
+          'Buka aplikasi BSI Mobile di smartphone Anda.',
+          'Pilih menu "Bayar" lalu pilih "Virtual Account / Institusi".',
+          'Masukkan Nomor BSI Virtual Account di atas.',
+          'Periksa nama penerima tagihan institusi dan nominal.',
+          'Masukkan PIN transaksi BSI Mobile Anda dan simpan bukti transaksi.'
+        ]
+      },
+      {
+        channel: 'ATM BSI',
+        steps: [
+          'Masukkan kartu ATM BSI dan PIN Anda.',
+          'Pilih menu "Main Menu" > "Pembayaran/Pembelian".',
+          'Pilih "Virtual Account" dan masukkan nomor di atas.',
+          'Konfirmasi rincian pembayaran dan selesaikan transaksi.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'bca_va',
+    name: 'BCA Virtual Account',
+    fullName: 'BCA Virtual Account (BCA)',
+    type: 'Bank Central Asia Tbk',
+    category: 'va',
+    accountNumber: `3901${adminPhone}`,
+    accountHolder: 'GuruKu Billing - PT Edukasi Nusantara',
+    logoComponent: BcaLogo,
+    instructions: [
+      {
+        channel: 'BCA Mobile (m-BCA)',
+        steps: [
+          'Login ke aplikasi BCA mobile (m-BCA).',
+          'Pilih menu "m-Transfer" lalu pilih "BCA Virtual Account".',
+          'Masukkan Nomor BCA Virtual Account di atas.',
+          'Pastikan nama tujuan dan jumlah tagihan telah sesuai.',
+          'Masukkan PIN m-BCA untuk menyelesaikan transaksi.'
+        ]
+      },
+      {
+        channel: 'KlikBCA',
+        steps: [
+          'Login ke KlikBCA Individual.',
+          'Pilih menu "Transfer Dana" > "Transfer ke BCA Virtual Account".',
+          'Masukkan nomor Virtual Account BCA dan lanjutkan verifikasi KeyBCA.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'bni_va',
+    name: 'BNI Virtual Account',
+    fullName: 'BNI Virtual Account (BNI)',
+    type: 'Bank Negara Indonesia Tbk',
+    category: 'va',
+    accountNumber: `8277${adminPhone}`,
+    accountHolder: 'GuruKu Billing - PT Edukasi Nusantara',
+    logoComponent: BniLogo,
+    instructions: [
+      {
+        channel: 'BNI Mobile Banking',
+        steps: [
+          'Buka aplikasi BNI Mobile Banking dan login.',
+          'Pilih menu "Pembayaran" lalu pilih "Virtual Account Billing".',
+          'Pilih tab "Input Baru" dan tempelkan Nomor BNI Virtual Account di atas.',
+          'Periksa nominal dan masukkan Password Transaksi BNI Anda.'
+        ]
+      },
+      {
+        channel: 'ATM BNI',
+        steps: [
+          'Masukkan kartu ATM BNI dan PIN Anda.',
+          'Pilih "Menu Lain" > "Pembayaran" > "Virtual Account Billing".',
+          'Masukkan nomor Virtual Account dan konfirmasi pembayaran.'
+        ]
+      }
+    ]
+  }
+]
+
+const ewalletMethods = [
+  {
+    id: 'qris',
+    name: 'QRIS (Semua Bank & Dompet)',
+    fullName: 'QRIS Standar Nasional Indonesia',
+    type: 'BCA, Mandiri, BRI, DANA, GoPay, OVO, ShopeePay',
+    category: 'ewallet',
+    accountNumber: 'QRIS-GURUKU-ID',
+    accountHolder: 'GURUKU INDONESIA BILLING',
+    logoComponent: QrisLogo,
+    instructions: [
+      {
+        channel: 'Scan Aplikasi Apapun',
+        steps: [
+          'Buka aplikasi M-Banking (BCA, Mandiri, BRI, BSI, dll) atau E-Wallet pilihan Anda.',
+          'Pilih menu "Scan" atau "QRIS".',
+          'Arahkan kamera ke kode QRIS resmi di layar.',
+          'Pastikan nama penerima tertulis "GURUKU INDONESIA BILLING".',
+          'Masukkan nominal pembayaran tepat sesuai tagihan dan masukkan PIN Anda.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'dana',
+    name: 'DANA',
+    fullName: 'DANA Dompet Digital Indonesia',
+    type: 'Layanan Pembayaran Dompet Digital DANA',
+    category: 'ewallet',
+    accountNumber: adminPhone,
+    accountHolder: 'Admin Finansial GuruKu',
+    logoComponent: DanaLogo,
+    instructions: [
+      {
+        channel: 'Aplikasi DANA',
+        steps: [
+          'Buka aplikasi DANA di ponsel Anda.',
+          'Pilih menu "Kirim" atau "Send".',
+          'Pilih "Kirim ke Nomor Telepon" dan masukkan nomor akun di atas.',
+          'Ketik nominal transfer tepat sesuai tagihan Anda.',
+          'Konfirmasi transaksi dan masukkan PIN DANA Anda.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'gopay',
+    name: 'GoPay',
+    fullName: 'GoPay Indonesia (GoTo Finansial)',
+    type: 'Dompet Digital GoPay / GoJek',
+    category: 'ewallet',
+    accountNumber: adminPhone,
+    accountHolder: 'Admin Finansial GuruKu',
+    logoComponent: GopayLogo,
+    instructions: [
+      {
+        channel: 'Aplikasi GoPay / Gojek',
+        steps: [
+          'Buka aplikasi GoPay atau Gojek.',
+          'Pilih menu "Transfer" / "Kirim".',
+          'Masukkan nomor akun GoPay tujuan di atas.',
+          'Tuliskan nominal tagihan dan konfirmasi rincian akun.',
+          'Masukkan PIN GoPay Anda untuk menyelesaikan transfer.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'ovo',
+    name: 'OVO',
+    fullName: 'OVO Payment Digital',
+    type: 'Dompet Digital OVO',
+    category: 'ewallet',
+    accountNumber: adminPhone,
+    accountHolder: 'Admin Finansial GuruKu',
+    logoComponent: OvoLogo,
+    instructions: [
+      {
+        channel: 'Aplikasi OVO',
+        steps: [
+          'Buka aplikasi OVO di smartphone Anda.',
+          'Pilih menu "Transfer" lalu pilih "Sesama OVO".',
+          'Masukkan nomor ponsel OVO yang tertera di atas.',
+          'Masukkan nominal tagihan dan konfirmasi pengiriman dana.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'shopeepay',
+    name: 'ShopeePay',
+    fullName: 'ShopeePay Indonesia',
+    type: 'Dompet Digital ShopeePay',
+    category: 'ewallet',
+    accountNumber: adminPhone,
+    accountHolder: 'Admin Finansial GuruKu',
+    logoComponent: ShopeepayLogo,
+    instructions: [
+      {
+        channel: 'ShopeePay',
+        steps: [
+          'Buka aplikasi Shopee dan masuk ke menu "ShopeePay".',
+          'Pilih menu "Transfer" > "Transfer ke Kontak / Nomor Telepon".',
+          'Masukkan nomor akun ShopeePay di atas.',
+          'Masukkan jumlah transfer dan masukkan PIN ShopeePay Anda.'
+        ]
+      }
+    ]
+  }
+]
+
+// Default Selected Method (BRI BRIVA)
+const selectedMethod = ref(bankMethods[0])
+
+const selectMethod = (method) => {
+  selectedMethod.value = method
+  activeInstructionTab.value = 0
 }
 
-const confirmPayment = () => {
-  const method = selectedMethodData.value.name
-  const text = encodeURIComponent(`Halo Admin Pusat, saya telah melakukan transfer pembayaran sebesar ${formattedPrice.value} melalui metode *${method}* untuk perpanjangan Paket *${planName}*. Berikut saya lampirkan bukti transfernya:`)
-  window.open(`https://wa.me/628218487328?text=${text}`, '_blank')
+// Current active instruction steps
+const currentInstructions = computed(() => {
+  if (!selectedMethod.value || !selectedMethod.value.instructions) return []
+  const inst = selectedMethod.value.instructions[activeInstructionTab.value] || selectedMethod.value.instructions[0]
+  return inst ? inst.steps : []
+})
+
+// Format VA with spacing for readable presentation
+const formatVANumber = (num) => {
+  if (!num) return ''
+  return num.replace(/(\d{4})(?=\d)/g, '$1 ')
+}
+
+// Clipboard copy with visual badge feedback
+const copyText = (text, type) => {
+  navigator.clipboard.writeText(text)
+  copiedType.value = type
+  setTimeout(() => {
+    if (copiedType.value === type) {
+      copiedType.value = null
+    }
+  }, 3000)
+}
+
+// Check Transaction Status Simulation
+const checkTransactionStatus = () => {
+  isCheckingStatus.value = true
+  setTimeout(() => {
+    isCheckingStatus.value = false
+    alert(`Status Transaksi [${invoiceNumber.value}]:\nSistem sedang menunggu penerimaan dana dari perbankan. Silakan selesaikan pembayaran melalui nomor Virtual Account yang tertera atau konfirmasikan ke layanan WhatsApp.`)
+  }, 1200)
+}
+
+// WhatsApp Confirmation with Formal Indonesian Copywriting
+const confirmPaymentViaWA = () => {
+  const methodTitle = selectedMethod.value?.fullName || 'Virtual Account'
+  const message = [
+    `*KONFIRMASI PEMBAYARAN LISENSI SISTEM SEKOLAH*`,
+    `----------------------------------------`,
+    `Yth. Tim Layanan Finansial & Billing,`,
+    ``,
+    `Kami bermaksud mengonfirmasikan pembayaran tagihan perpanjangan lisensi sistem jadwal sekolah dengan rincian berikut:`,
+    ``,
+    `* No. Invoice: ${invoiceNumber.value}`,
+    `* Paket Layanan: Paket ${planName} (1 Bulan)`,
+    `* Total Tagihan: ${formattedPrice.value}`,
+    `* Metode Pembayaran: ${methodTitle}`,
+    `* Nomor VA / Akun Tujuan: ${selectedMethod.value?.accountNumber}`,
+    `* Status: Transaksi Telah Dilakukan`,
+    ``,
+    `Mohon kiranya sistem dapat memverifikasi dan memperbarui masa aktif lisensi institusi kami. Bukti transfer telah kami siapkan. Terima kasih atas kerja samanya.`
+  ].join('\n')
+
+  const encodedUrl = `https://wa.me/62${adminPhone.substring(1)}?text=${encodeURIComponent(message)}`
+  window.open(encodedUrl, '_blank')
 }
 </script>
