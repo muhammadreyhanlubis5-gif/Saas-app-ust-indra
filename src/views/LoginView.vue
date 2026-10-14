@@ -1,5 +1,5 @@
 <template>
-  <!-- Loading Animation Overlay (Menyiapkan Workspace) -->
+  <!-- Loading Animation Overlay (Menyiapkan Ruang Kerja) -->
   <div v-if="showAnimation" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900/95 backdrop-blur-sm transition-opacity duration-300">
     <div class="relative flex flex-col items-center">
       <img :src="animasiImg" alt="Loading..." class="w-48 h-48 object-contain z-10" />
@@ -8,15 +8,15 @@
     </div>
   </div>
 
-  <!-- Main Background Container (Responsif di semua ukuran layar) -->
+  <!-- Container Utama (Responsif di semua ukuran layar) -->
   <div class="min-h-screen w-full flex items-center justify-center bg-[#eaedf7] font-sans p-3 sm:p-6 lg:p-8">
     
-    <!-- Central Modern Card (Split Two-Column Layout) -->
-    <div class="w-full max-w-sm sm:max-w-md md:max-w-4xl bg-white rounded-3xl md:rounded-[36px] shadow-[0_25px_70px_-15px_rgba(20,35,90,0.22)] overflow-hidden flex flex-col md:flex-row border border-slate-200/60 my-auto transition-all duration-300">
+    <!-- Kartu Terpusat Modern (Dua Kolom Split) -->
+    <div class="w-full max-w-sm sm:max-w-md md:max-w-4xl lg:max-w-4xl bg-white rounded-3xl md:rounded-[36px] shadow-[0_25px_70px_-15px_rgba(20,35,90,0.22)] overflow-hidden flex flex-col md:flex-row border border-slate-200/60 my-auto transition-all duration-300">
       
-      <!-- LEFT PANEL: Slider Otomatis (Interval 5 detik, Latar Royal Blue Mewah) -->
+      <!-- PANEL KIRI: Slider Otomatis 8 Slide (Interval 5 detik, Bingkai Rapi & Mewah) -->
       <div 
-        class="w-full md:w-[48%] bg-[#263D9B] text-white p-6 sm:p-8 md:p-10 flex flex-col justify-between items-center relative overflow-hidden select-none min-h-[360px] sm:min-h-[420px] md:min-h-[520px]"
+        class="group w-full md:w-[48%] bg-[#263D9B] text-white p-6 sm:p-8 md:p-10 flex flex-col justify-between items-center relative overflow-hidden select-none min-h-[460px] sm:min-h-[500px] md:min-h-[540px]"
         @mouseenter="pauseSlider"
         @mouseleave="resumeSlider"
       >
@@ -31,152 +31,58 @@
           <span>Penjadwalan Cerdas GuruKu</span>
         </div>
 
-        <!-- Konten Slide Tengah dengan transisi halus -->
-        <div class="relative z-10 w-full flex flex-col items-center justify-center my-auto text-center py-2 sm:py-4">
+        <!-- Konten Slide Tengah dengan Bingkai Kokoh & Rapi -->
+        <div class="relative z-10 w-full flex flex-col items-center justify-center my-auto text-center py-2">
           
-          <!-- Wadah Grafis Slide (Ketinggian terukur agar tidak goyang) -->
-          <div class="h-36 sm:h-44 md:h-56 flex items-center justify-center mb-3 sm:mb-4 transition-all duration-500">
-            
-            <!-- SLIDE 1: Ilustrasi Astronot -->
-            <div v-if="currentSlide === 0" class="relative animate-fade-scale flex items-center justify-center">
-              <div class="w-36 h-36 sm:w-44 sm:h-44 md:w-56 md:h-56 flex items-center justify-center">
+          <!-- BINGKAI FOTO TERUKUR: Menyesuaikan seluruh aspek rasio 8 slide agar tidak berantakan -->
+          <div class="w-full flex items-center justify-center mb-3 sm:mb-4">
+            <div class="relative w-full max-w-[270px] sm:max-w-[300px] md:max-w-[320px] h-44 sm:h-52 md:h-56 rounded-2xl sm:rounded-3xl p-2 sm:p-2.5 bg-white/15 backdrop-blur-md border border-white/30 shadow-[0_15px_35px_-10px_rgba(0,0,0,0.35)] flex items-center justify-center overflow-hidden">
+              
+              <!-- Wadah dalam putih dengan bayangan inset halus -->
+              <div class="w-full h-full rounded-xl sm:rounded-2xl overflow-hidden bg-white flex items-center justify-center relative p-1 shadow-inner">
                 <img 
-                  src="/astronaut.png" 
-                  alt="Selamat Datang" 
-                  class="w-full h-full object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.35)]" 
+                  :key="slides[currentSlide].id"
+                  :src="slides[currentSlide].image" 
+                  :alt="slides[currentSlide].title" 
+                  class="max-h-full max-w-full object-contain transition-all duration-700 select-none animate-fade-scale" 
                 />
               </div>
+
+              <!-- Tombol Navigasi Cepat Sisi Kiri & Kanan (Muncul saat hover) -->
+              <button 
+                type="button" 
+                @click.stop="prevSlide" 
+                class="absolute left-2.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-slate-900/60 hover:bg-slate-900/80 text-white flex items-center justify-center backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 hover:scale-110 focus:opacity-100 cursor-pointer shadow-md"
+                title="Slide Sebelumnya"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+              </button>
+              <button 
+                type="button" 
+                @click.stop="nextSlideManual" 
+                class="absolute right-2.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-slate-900/60 hover:bg-slate-900/80 text-white flex items-center justify-center backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 hover:scale-110 focus:opacity-100 cursor-pointer shadow-md"
+                title="Slide Selanjutnya"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+              </button>
+
             </div>
-
-            <!-- SLIDE 2: Ilustrasi Matriks Jadwal Anti-Bentrok -->
-            <div v-else-if="currentSlide === 1" class="relative animate-fade-scale flex items-center justify-center">
-              <div class="w-36 h-36 sm:w-44 sm:h-44 md:w-56 md:h-56 flex items-center justify-center">
-                <svg class="w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.35)]" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <!-- Papan Utama -->
-                  <rect x="20" y="25" width="160" height="150" rx="16" fill="#1E2F79" stroke="#3D56C5" stroke-width="2.5"/>
-                  <rect x="20" y="25" width="160" height="32" rx="16" fill="#283FA8"/>
-                  <circle cx="38" cy="41" r="4" fill="#60A5FA"/>
-                  <circle cx="50" cy="41" r="4" fill="#93C5FD"/>
-                  <circle cx="62" cy="41" r="4" fill="#BFDBFE"/>
-                  <rect x="80" y="37" width="55" height="8" rx="4" fill="#ffffff" fill-opacity="0.6"/>
-                  
-                  <!-- Indikator Hari -->
-                  <rect x="32" y="66" width="30" height="6" rx="3" fill="#60A5FA" fill-opacity="0.9"/>
-                  <rect x="68" y="66" width="30" height="6" rx="3" fill="#ffffff" fill-opacity="0.4"/>
-                  <rect x="104" y="66" width="30" height="6" rx="3" fill="#ffffff" fill-opacity="0.4"/>
-                  <rect x="140" y="66" width="28" height="6" rx="3" fill="#ffffff" fill-opacity="0.4"/>
-                  
-                  <!-- Baris 1 -->
-                  <rect x="32" y="80" width="136" height="24" rx="8" fill="#2563EB" fill-opacity="0.4" stroke="#3B82F6" stroke-width="1.5"/>
-                  <rect x="42" y="87" width="45" height="10" rx="3" fill="#93C5FD"/>
-                  <rect x="94" y="88" width="30" height="8" rx="2" fill="#ffffff" fill-opacity="0.6"/>
-                  <circle cx="152" cy="92" r="5" fill="#10B981"/>
-
-                  <!-- Baris 2 -->
-                  <rect x="32" y="110" width="136" height="24" rx="8" fill="#4F46E5" fill-opacity="0.4" stroke="#6366F1" stroke-width="1.5"/>
-                  <rect x="42" y="117" width="52" height="10" rx="3" fill="#C7D2FE"/>
-                  <rect x="101" y="118" width="26" height="8" rx="2" fill="#ffffff" fill-opacity="0.6"/>
-                  <circle cx="152" cy="122" r="5" fill="#10B981"/>
-
-                  <!-- Baris 3 -->
-                  <rect x="32" y="140" width="136" height="24" rx="8" fill="#0D9488" fill-opacity="0.4" stroke="#14B8A6" stroke-width="1.5"/>
-                  <rect x="42" y="147" width="40" height="10" rx="3" fill="#99F6E4"/>
-                  <rect x="89" y="148" width="35" height="8" rx="2" fill="#ffffff" fill-opacity="0.6"/>
-                  <circle cx="152" cy="152" r="5" fill="#10B981"/>
-
-                  <!-- Badge Anti-Bentrok -->
-                  <rect x="98" y="15" width="86" height="26" rx="13" fill="#10B981"/>
-                  <path d="M110 28L114 32L122 24" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <text x="127" y="32" fill="white" font-size="8.5" font-weight="bold" font-family="sans-serif">Anti Bentrok</text>
-                </svg>
-              </div>
-            </div>
-
-            <!-- SLIDE 3: Ilustrasi Sinkronisasi Master Data -->
-            <div v-else-if="currentSlide === 2" class="relative animate-fade-scale flex items-center justify-center">
-              <div class="w-36 h-36 sm:w-44 sm:h-44 md:w-56 md:h-56 flex items-center justify-center">
-                <svg class="w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.35)]" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <!-- Garis Penghubung -->
-                  <path d="M100 55 L50 135 M100 55 L150 135 M50 135 L150 135" stroke="#4C65D6" stroke-width="2.5" stroke-dasharray="4 3"/>
-                  
-                  <!-- Titik Pusat -->
-                  <circle cx="100" cy="108" r="22" fill="#1E2F79" stroke="#60A5FA" stroke-width="2.5"/>
-                  <path d="M93 108 L98 103 L98 106 C105 106 109 108 111 113 C109 110 106 109 98 109 L98 113 Z" fill="#60A5FA"/>
-
-                  <!-- Simpul Guru -->
-                  <circle cx="100" cy="50" r="24" fill="#2563EB" stroke="#93C5FD" stroke-width="2"/>
-                  <path d="M100 42 A5 5 0 1 0 100 52 A5 5 0 1 0 100 42 M90 59 C90 55 94 54 100 54 C106 54 110 55 110 59" stroke="white" stroke-width="2" stroke-linecap="round"/>
-
-                  <!-- Simpul Kelas -->
-                  <circle cx="48" cy="140" r="24" fill="#4F46E5" stroke="#A5B4FC" stroke-width="2"/>
-                  <path d="M40 134 H56 V148 H40 Z M44 134 V148 M48 134 V148 M52 134 V148" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
-
-                  <!-- Simpul 24 JP -->
-                  <circle cx="152" cy="140" r="24" fill="#059669" stroke="#6EE7B7" stroke-width="2"/>
-                  <text x="141" y="143" fill="white" font-size="9" font-weight="extrabold" font-family="sans-serif">24</text>
-                  <text x="154" y="143" fill="#A7F3D0" font-size="7" font-weight="bold" font-family="sans-serif">JP</text>
-                  <path d="M145 149 L159 149" stroke="#6EE7B7" stroke-width="1.5" stroke-linecap="round"/>
-
-                  <!-- Lencana Sinkron -->
-                  <rect x="58" y="166" width="84" height="24" rx="12" fill="#1E2F79" stroke="#3B82F6" stroke-width="1.5"/>
-                  <circle cx="70" cy="178" r="3.5" fill="#10B981"/>
-                  <text x="79" y="181" fill="white" font-size="8" font-weight="bold" font-family="sans-serif">Sinkron Otomatis</text>
-                </svg>
-              </div>
-            </div>
-
-            <!-- SLIDE 4: Ilustrasi Dokumen Ekspor & Matriks Cetak -->
-            <div v-else-if="currentSlide === 3" class="relative animate-fade-scale flex items-center justify-center">
-              <div class="w-36 h-36 sm:w-44 sm:h-44 md:w-56 md:h-56 flex items-center justify-center">
-                <svg class="w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.35)]" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="50" y="24" width="112" height="142" rx="10" fill="#1E2F79" stroke="#3D56C5" stroke-width="2"/>
-                  <rect x="38" y="34" width="112" height="142" rx="10" fill="#FFFFFF"/>
-                  <rect x="48" y="44" width="40" height="6" rx="3" fill="#2563EB"/>
-                  <rect x="48" y="53" width="70" height="4" rx="2" fill="#94A3B8"/>
-                  <line x1="48" y1="62" x2="140" y2="62" stroke="#E2E8F0" stroke-width="1.5"/>
-                  
-                  <rect x="48" y="68" width="92" height="16" rx="4" fill="#F1F5F9"/>
-                  <rect x="52" y="73" width="14" height="6" rx="2" fill="#3B82F6"/>
-                  <rect x="70" y="73" width="20" height="6" rx="2" fill="#64748B"/>
-                  <rect x="94" y="73" width="20" height="6" rx="2" fill="#64748B"/>
-                  <rect x="118" y="73" width="18" height="6" rx="2" fill="#10B981"/>
-
-                  <rect x="48" y="88" width="92" height="16" rx="4" fill="#F8FAFC"/>
-                  <rect x="52" y="93" width="14" height="6" rx="2" fill="#3B82F6"/>
-                  <rect x="70" y="93" width="20" height="6" rx="2" fill="#64748B"/>
-                  <rect x="94" y="93" width="20" height="6" rx="2" fill="#64748B"/>
-                  <rect x="118" y="93" width="18" height="6" rx="2" fill="#10B981"/>
-
-                  <rect x="48" y="108" width="92" height="16" rx="4" fill="#F1F5F9"/>
-                  <rect x="52" y="113" width="14" height="6" rx="2" fill="#3B82F6"/>
-                  <rect x="70" y="113" width="20" height="6" rx="2" fill="#64748B"/>
-                  <rect x="94" y="113" width="20" height="6" rx="2" fill="#64748B"/>
-                  <rect x="118" y="113" width="18" height="6" rx="2" fill="#10B981"/>
-
-                  <!-- Cap Resmi -->
-                  <circle cx="126" cy="150" r="14" fill="#FEF2F2" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="2 1"/>
-                  <text x="112" y="152" fill="#DC2626" font-size="5" font-weight="bold" font-family="sans-serif">TERVALIDASI</text>
-
-                  <!-- Badge Ekspor -->
-                  <rect x="114" y="20" width="66" height="24" rx="6" fill="#10B981"/>
-                  <text x="120" y="34" fill="white" font-size="8" font-weight="bold" font-family="sans-serif">FORMAT RESMI</text>
-                </svg>
-              </div>
-            </div>
-
           </div>
 
-          <!-- Teks Judul & Subjudul Slide -->
-          <h3 class="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-white mb-1.5 transition-all duration-300">
-            {{ slides[currentSlide].title }}
-          </h3>
-          <p class="text-[11px] sm:text-xs md:text-sm text-blue-100/80 max-w-xs leading-relaxed transition-all duration-300">
-            {{ slides[currentSlide].subtitle }}
-          </p>
+          <!-- Teks Judul & Subjudul Slide (Ketinggian terkendali agar stabil) -->
+          <div class="min-h-[64px] sm:min-h-[70px] flex flex-col justify-center">
+            <h3 class="text-base sm:text-lg md:text-xl font-bold tracking-tight text-white mb-1 transition-all duration-300">
+              {{ slides[currentSlide].title }}
+            </h3>
+            <p class="text-[11px] sm:text-xs text-blue-100/80 max-w-xs leading-relaxed transition-all duration-300 line-clamp-2">
+              {{ slides[currentSlide].subtitle }}
+            </p>
+          </div>
+
         </div>
 
-        <!-- Titik Indikator Slide (Pagination Dots) -->
-        <div class="relative z-10 flex items-center justify-center gap-2.5 pt-2">
+        <!-- Titik Indikator 8 Slide (Pagination Dots) -->
+        <div class="relative z-10 flex items-center justify-center gap-1.5 sm:gap-2 pt-1 flex-wrap max-w-[280px]">
           <button 
             v-for="(slide, index) in slides" 
             :key="slide.id"
@@ -185,14 +91,14 @@
             class="transition-all duration-300 focus:outline-none cursor-pointer"
             :class="currentSlide === index 
               ? 'w-3 h-3 bg-white rounded-full ring-4 ring-indigo-300/40 shadow-sm scale-110' 
-              : 'w-2 h-2 bg-white/40 hover:bg-white/70 rounded-full'"
+              : 'w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white/40 hover:bg-white/70 rounded-full'"
           >
           </button>
         </div>
 
       </div>
 
-      <!-- RIGHT PANEL: Formulir Masuk (Clean & Bahasa Indonesia Penuh) -->
+      <!-- PANEL KANAN: Formulir Masuk (Clean & Bahasa Indonesia Penuh) -->
       <div class="w-full md:w-[52%] bg-white p-6 sm:p-8 md:p-12 flex flex-col justify-center relative">
         
         <!-- Notifikasi Password Baru Disetujui -->
@@ -397,6 +303,16 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import animasiImg from '../assets/animasi.png'
 
+// Import 8 Gambar Slide dari folder assets/slides-login
+import slide1 from '../assets/slides-login/1.jpg'
+import slide2 from '../assets/slides-login/2.jpg'
+import slide3 from '../assets/slides-login/3.jpg'
+import slide4 from '../assets/slides-login/4.jpg'
+import slide5 from '../assets/slides-login/5.jpg'
+import slide6 from '../assets/slides-login/6.jpg'
+import slide7 from '../assets/slides-login/7.jpg'
+import slide8 from '../assets/slides-login/8.jpg'
+
 const router = useRouter()
 const username = ref('')
 const password = ref('')
@@ -406,7 +322,7 @@ const isSubmitting = ref(false)
 const showAnimation = ref(false)
 const loadingText = ref('Sinkronisasi dengan server...')
 
-// Logika Slider: 4 slide mewah berganti setiap 5 detik
+// Konfigurasi 8 Slide Login dengan teks Bahasa Indonesia
 const currentSlide = ref(0)
 let sliderTimer = null
 let isPaused = false
@@ -414,23 +330,51 @@ let isPaused = false
 const slides = [
   {
     id: 1,
-    title: 'Selamat Datang di GuruKu',
-    subtitle: 'Hanya dengan beberapa klik, jadwal KBM sekolah siap disusun dan diterbitkan.'
+    image: slide1,
+    title: 'Perencanaan KBM Cerdas',
+    subtitle: 'Kemudahan menyusun dan mengelola seluruh jadwal pembelajaran sekolah secara otomatis.'
   },
   {
     id: 2,
-    title: 'Penyusunan Bebas Bentrok',
-    subtitle: 'Sistem cerdas otomatis menyusun jadwal KBM tanpa tumpang tindih.'
+    image: slide2,
+    title: 'Proses Belajar Menyenangkan',
+    subtitle: 'Distribusi jam teratur mendukung kegiatan belajar mengajar yang efektif dan terstruktur.'
   },
   {
     id: 3,
-    title: 'Sinkronisasi Master Data',
-    subtitle: 'Wali kelas, beban mengajar guru, dan 24 JP sertifikasi terhubung seketika.'
+    image: slide3,
+    title: 'Menyambut Masa Depan Siswa',
+    subtitle: 'Waktu belajar yang tertata rapi memberi ruang terbaik bagi tumbuh kembang anak.'
   },
   {
     id: 4,
-    title: 'Laporan & Matriks Siap Cetak',
-    subtitle: 'Cetak jadwal kelas mingguan dan matriks guru berformat resmi sekali klik.'
+    image: slide4,
+    title: 'Kolaborasi Tim Kurikulum',
+    subtitle: 'Sinergi kepala sekolah, waka kurikulum, dan dewan guru dalam satu ekosistem sistem terintegrasi.'
+  },
+  {
+    id: 5,
+    image: slide5,
+    title: 'Ruang Kelas yang Produktif',
+    subtitle: 'Deteksi bentrok otomatis memastikan setiap kelas memiliki pengampu yang tepat pada setiap jam.'
+  },
+  {
+    id: 6,
+    image: slide6,
+    title: 'Otomasi Jadwal Anti Bentrok',
+    subtitle: 'Sistem cerdas memetakan jam mengajar guru, ruang kelas, dan mata pelajaran dalam sekejap.'
+  },
+  {
+    id: 7,
+    image: slide7,
+    title: 'Generasi Penuh Prestasi',
+    subtitle: 'Mendukung prestasi generasi sekolah dengan kedisiplinan dan jadwal belajar yang tepat sasaran.'
+  },
+  {
+    id: 8,
+    image: slide8,
+    title: 'Harmoni Seluruh Warga Sekolah',
+    subtitle: 'Transparansi beban mengajar 24 JP sertifikasi dan keadilan distribusi jam guru terjamin.'
   }
 ]
 
@@ -453,7 +397,17 @@ const resumeSlider = () => {
 
 const goToSlide = (index) => {
   currentSlide.value = index
-  startSliderTimer() // Reset timer setelah interaksi manual
+  startSliderTimer() // Reset timer setelah klik manual
+}
+
+const prevSlide = () => {
+  currentSlide.value = (currentSlide.value - 1 + slides.length) % slides.length
+  startSliderTimer()
+}
+
+const nextSlideManual = () => {
+  currentSlide.value = (currentSlide.value + 1) % slides.length
+  startSliderTimer()
 }
 
 // Logika Lupa Password
@@ -621,7 +575,7 @@ onUnmounted(() => {
 @keyframes fadeScale {
   0% {
     opacity: 0;
-    transform: scale(0.92);
+    transform: scale(0.94);
   }
   100% {
     opacity: 1;
