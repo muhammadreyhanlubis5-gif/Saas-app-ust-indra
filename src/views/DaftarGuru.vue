@@ -228,7 +228,23 @@ onMounted(() => {
   const saved = localStorage.getItem('guruKu_teachers')
   if (saved) {
     try {
-      teachers.value = JSON.parse(saved)
+      const parsed = JSON.parse(saved)
+      // Auto-deduplikasi berdasarkan kode guru jika ada data ganda sebelumnya
+      const seenCodes = new Set()
+      const cleanTeachers = []
+      parsed.forEach(t => {
+        const codeKey = (t.code || '').trim().toUpperCase()
+        if (codeKey && !seenCodes.has(codeKey)) {
+          seenCodes.add(codeKey)
+          cleanTeachers.push({
+            ...t,
+            code: codeKey,
+            name: (t.name || '').trim()
+          })
+        }
+      })
+      teachers.value = cleanTeachers
+      localStorage.setItem('guruKu_teachers', JSON.stringify(cleanTeachers))
     } catch (e) {
       console.error('Error parsing teachers:', e)
     }
@@ -239,8 +255,9 @@ onMounted(() => {
         { id: 1, name: 'Budi Santoso, S.Pd', code: 'BS', subject: 'Matematika' },
         { id: 2, name: 'Siti Aminah, M.Pd', code: 'SA', subject: 'Bahasa Indonesia' },
       ]
+      localStorage.setItem('guruKu_teachers', JSON.stringify(teachers.value))
       loading.value = false
-    }, 600)
+    }, 400)
   }
 })
 
@@ -354,26 +371,31 @@ const handleFileUpload = (event) => {
         throw new Error('Kolom "Nama Guru" dan "Kode Guru" tidak ditemukan atau tidak ada data yang valid. Silakan gunakan template yang telah disediakan.')
       }
 
-      // Merge data: tambahkan yang baru, update data lama jika kode guru sudah ada
+      // Validasi: Tolak kode guru yang sudah ada (nama boleh sama asalkan kode beda)
       let addedCount = 0
-      let updatedCount = 0
+      const duplicateCodes = []
 
       importedList.forEach(item => {
-        const existingIdx = teachers.value.findIndex(
+        const existing = teachers.value.find(
           t => t.code.toUpperCase() === item.code
         )
-        if (existingIdx !== -1) {
-          // Update nama dan mapel jika ada perubahan
-          teachers.value[existingIdx].name = item.name || teachers.value[existingIdx].name
-          if (item.subject) teachers.value[existingIdx].subject = item.subject
-          updatedCount++
+        if (existing) {
+          duplicateCodes.push(`${item.code} (${item.name})`)
         } else {
           teachers.value.push(item)
           addedCount++
         }
       })
 
-      successMessage.value = `Berhasil mengimpor file Excel! ${addedCount} guru baru ditambahkan${updatedCount > 0 ? `, ${updatedCount} data guru diperbarui` : ''}. Data sudah tersinkronisasi ke seluruh sistem.`
+      if (addedCount === 0 && duplicateCodes.length > 0) {
+        throw new Error(`Semua data guru dalam file ditolak karena kode guru sudah terdaftar di sistem: ${duplicateCodes.join(', ')}. Setiap guru wajib memiliki kode unik!`)
+      }
+
+      let msg = `Berhasil mengimpor ${addedCount} guru baru!`
+      if (duplicateCodes.length > 0) {
+        msg += ` (${duplicateCodes.length} data ditolak/dilewati karena kode guru sudah ada: ${duplicateCodes.slice(0, 3).join(', ')}${duplicateCodes.length > 3 ? '...' : ''}).`
+      }
+      successMessage.value = msg
       showSuccessModal.value = true
     } catch (err) {
       console.error('Error saat parsing file Excel:', err)
@@ -395,15 +417,29 @@ const handleFileUpload = (event) => {
   reader.readAsArrayBuffer(file)
 }
 
-// 4. Tambah Guru Manual
+// 4. Tambah Guru Manual dengan Validasi Kode Guru Unik
 const saveTeacher = () => {
+  const code = form.value.code.trim().toUpperCase()
+  const name = form.value.name.trim()
+  const subject = form.value.subject
+
+  if (!code || !name) return
+
+  // Validasi: Tolak jika Kode Guru sudah digunakan oleh guru lain
+  const existingTeacher = teachers.value.find(t => t.code.trim().toUpperCase() === code)
+  if (existingTeacher) {
+    errorMessage.value = `Gagal! Kode Guru "${code}" sudah terdaftar untuk guru "${existingTeacher.name}". Setiap guru wajib memiliki kode unik. Nama guru boleh sama asalkan kode guru berbeda!`
+    showErrorModal.value = true
+    return
+  }
+
   saving.value = true
   setTimeout(() => {
     teachers.value.push({
       id: Date.now(),
-      name: form.value.name,
-      code: form.value.code.toUpperCase(),
-      subject: form.value.subject
+      name: name,
+      code: code,
+      subject: subject
     })
 
     // Reset state
@@ -413,9 +449,9 @@ const saveTeacher = () => {
     saving.value = false
     showAddModal.value = false
 
-    successMessage.value = 'Data Guru berhasil ditambahkan ke database.'
+    successMessage.value = `Data Guru "${name}" (${code}) berhasil ditambahkan ke database.`
     showSuccessModal.value = true
-  }, 600)
+  }, 400)
 }
 
 const deleteTeacher = (index) => {
