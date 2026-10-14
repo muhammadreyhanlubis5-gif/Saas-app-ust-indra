@@ -324,7 +324,7 @@ const generateSessionsMatrix = () => {
   return result
 }
 
-// THE ALGORITHM (Reused from InputJadwal)
+// THE ALGORITHM (Smart Schedule Generator)
 const runAutoGenerate = (generatedSessions, generatedClasses, generatedPengampu) => {
   const currentSchedule = {} // { "SENIN-1-4 TM": { guru: "SB", mapel: "NAH" } }
   

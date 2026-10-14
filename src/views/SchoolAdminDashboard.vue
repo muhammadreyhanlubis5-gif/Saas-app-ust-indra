@@ -315,8 +315,8 @@
                 </div>
               </div>
 
-              <router-link to="/admin-sekolah/input-jadwal" class="w-full py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-md hover:bg-emerald-700 transition-colors text-center block">
-                Mulai Susun Jadwal
+              <router-link to="/admin-sekolah/jadwal-kelas" class="w-full py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-md hover:bg-emerald-700 transition-colors text-center block">
+                Lihat Jadwal Kelas
               </router-link>
             </div>
 
@@ -449,12 +449,12 @@
                   <span class="text-[10px] text-gray-400 mt-0.5">Atur Jadwal Cuti</span>
                 </router-link>
 
-                <router-link to="/admin-sekolah/input-jadwal" class="p-3.5 rounded-2xl border border-gray-100 bg-gray-50/60 hover:bg-emerald-50/60 hover:border-emerald-200 transition-all flex flex-col items-start group">
+                <router-link to="/admin-sekolah/jadwal-kelas" class="p-3.5 rounded-2xl border border-gray-100 bg-gray-50/60 hover:bg-emerald-50/60 hover:border-emerald-200 transition-all flex flex-col items-start group">
                   <span class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-2 shadow-sm group-hover:scale-105 transition-transform">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                   </span>
-                  <span class="text-xs font-bold text-gray-800 group-hover:text-emerald-700">Susun Jadwal</span>
-                  <span class="text-[10px] text-gray-400 mt-0.5">Engine Cerdas</span>
+                  <span class="text-xs font-bold text-gray-800 group-hover:text-emerald-700">Jadwal Kelas</span>
+                  <span class="text-[10px] text-gray-400 mt-0.5">Matriks & Ekspor</span>
                 </router-link>
               </div>
             </div>
@@ -597,10 +597,10 @@ const smartRecommendation = computed(() => {
     }
   }
   return {
-    title: 'Semua Data Siap! Jalankan Penyusunan Jadwal',
-    desc: 'Distribusi jam telah terpetakan. Anda dapat langsung menjalankan Engine Input & Susun Jadwal dengan pendeteksi bentrok otomatis.',
-    actionLabel: 'Mulai Susun Jadwal',
-    actionRoute: '/admin-sekolah/input-jadwal'
+    title: 'Semua Data Siap! Terbitkan Jadwal',
+    desc: 'Distribusi jam telah terpetakan. Anda dapat langsung melihat matriks jadwal kelas dan jadwal guru.',
+    actionLabel: 'Lihat Jadwal Kelas',
+    actionRoute: '/admin-sekolah/jadwal-kelas'
   }
 })
 
@@ -766,7 +766,6 @@ const menuGroups = [
   {
     title: 'Penjadwalan',
     items: [
-      { title: 'Input & Susun Jadwal', path: '/admin-sekolah/input-jadwal', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
       { title: 'Jadwal Guru', path: '/admin-sekolah/jadwal-guru', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
       { title: 'Jadwal Kelas', path: '/admin-sekolah/jadwal-kelas', icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4' }
     ]

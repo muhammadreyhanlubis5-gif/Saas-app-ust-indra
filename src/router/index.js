@@ -13,7 +13,6 @@ import SesiWaktu from '../views/SesiWaktu.vue'
 import PengampuMapel from '../views/PengampuMapel.vue'
 import JamKosong from '../views/JamKosong.vue'
 import TugasTambahan from '../views/TugasTambahan.vue'
-import InputJadwal from '../views/InputJadwal.vue'
 import JadwalGuru from '../views/JadwalGuru.vue'
 import JadwalKelas from '../views/JadwalKelas.vue'
 import MataPelajaran from '../views/MataPelajaran.vue'
@@ -49,7 +48,6 @@ const routes = [
       { path: 'pengampu', name: 'PengampuMapel', component: PengampuMapel },
       { path: 'jam-kosong', name: 'JamKosong', component: JamKosong },
       { path: 'tugas-tambahan', name: 'TugasTambahan', component: TugasTambahan },
-      { path: 'input-jadwal', name: 'InputJadwal', component: InputJadwal },
       { path: 'jadwal-guru', name: 'JadwalGuru', component: JadwalGuru },
       { path: 'jadwal-kelas', name: 'JadwalKelas', component: JadwalKelas },
       { path: 'mata-pelajaran', name: 'MataPelajaran', component: MataPelajaran },
