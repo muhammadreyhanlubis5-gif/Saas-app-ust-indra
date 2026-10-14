@@ -449,15 +449,28 @@
             
             <div class="relative">
               <label class="block text-sm font-bold text-gray-700 mb-1">Nama Sekolah/Madrasah *</label>
-              <input v-model="form.name" @input="searchSchool" type="text" required class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm" placeholder="Ketik nama sekolah...">
+              <input v-model="form.name" @input="searchSchool" type="text" required class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm" placeholder="Ketik nama sekolah atau daerah (misal: Bandung, Surabaya, Medan)...">
               
               <!-- Dropdown Saran Autocomplete -->
-              <div v-if="showSchoolSuggestions && schoolSuggestions.length > 0" class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-xl max-h-60 overflow-y-auto custom-scrollbar">
+              <div v-if="showSchoolSuggestions && schoolSuggestions.length > 0" class="absolute z-20 w-full mt-1.5 bg-white border border-gray-200 rounded-2xl shadow-2xl max-h-72 overflow-y-auto custom-scrollbar divide-y divide-gray-100">
+                <div class="px-4 py-2 bg-gray-50/90 sticky top-0 flex items-center justify-between text-[11px] font-bold text-gray-500 border-b border-gray-100 backdrop-blur-sm z-10">
+                  <span>Ditemukan {{ schoolSuggestions.length }} Saran Sekolah Nasional</span>
+                  <span class="text-indigo-600 font-semibold">Pilih untuk isi otomatis</span>
+                </div>
                 <div v-for="(suggestion, idx) in schoolSuggestions" :key="idx" 
                      @click="selectSchool(suggestion)"
-                     class="px-4 py-3 hover:bg-indigo-50 cursor-pointer border-b border-gray-50 last:border-0 transition-colors">
-                  <p class="text-sm font-bold text-gray-800">{{ suggestion.customName ? suggestion.customName : extractSchoolName(suggestion.display_name) }}</p>
-                  <p class="text-[10px] text-gray-500 mt-1 truncate">{{ suggestion.display_name }}</p>
+                     class="px-4 py-3 hover:bg-indigo-50/80 cursor-pointer transition-colors group">
+                  <div class="flex items-center justify-between gap-2">
+                    <p class="text-sm font-bold text-gray-800 group-hover:text-indigo-600 transition-colors">
+                      {{ suggestion.customName ? suggestion.customName : extractSchoolName(suggestion.display_name) }}
+                    </p>
+                    <span v-if="suggestion.province" class="shrink-0 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-100">
+                      {{ suggestion.province }}
+                    </span>
+                  </div>
+                  <p class="text-[11px] text-gray-500 mt-1 line-clamp-1 group-hover:text-gray-600">
+                    {{ suggestion.address || suggestion.display_name }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -778,8 +791,8 @@ const isSearchingSchool = ref(false)
 let searchTimeout = null
 
 const searchSchool = () => {
-  const queryText = form.value.name.toLowerCase().trim()
-  if (queryText.length < 2) {
+  const query = form.value.name.trim().toLowerCase()
+  if (query.length < 2) {
     schoolSuggestions.value = []
     showSchoolSuggestions.value = false
     return
@@ -792,26 +805,58 @@ const searchSchool = () => {
   
   searchTimeout = setTimeout(async () => {
     try {
-      // 1. Cek dari Database 1.900+ Sekolah Indonesia (data-nama-sekolah)
-      const localMatches = (indonesiaSchools || []).filter(s => 
-        s.name.toLowerCase().includes(queryText) || 
-        (s.address && s.address.toLowerCase().includes(queryText))
-      ).slice(0, 10).map(s => ({
+      const tokens = query.split(/\s+/).filter(Boolean)
+
+      // Cari sekolah yang mengandung SEMUA kata kunci yang diketik
+      const allMatches = (indonesiaSchools || []).filter(s => {
+        const searchTarget = s.search || (s.name + ' ' + (s.city || '') + ' ' + (s.province || '') + ' ' + (s.address || '')).toLowerCase()
+        return tokens.every(token => searchTarget.includes(token))
+      })
+
+      // Jika kata kunci umum (misal: 'smp', 'sma', 'sd', 'negeri', 'swasta', 'smk'),
+      // variasikan hasilnya dari berbagai provinsi di Indonesia agar mencakup semua daerah!
+      let localMatches = []
+      const genericKeywords = ['sd', 'sdn', 'smp', 'smpn', 'sma', 'sman', 'smk', 'smkn', 'mts', 'ma', 'negeri', 'swasta', 'sekolah', 'madrasah']
+      
+      if (tokens.length === 1 && genericKeywords.includes(tokens[0])) {
+        const seenProvinces = new Set()
+        // Ambil perwakilan 1 sekolah per provinsi/daerah terlebih dahulu
+        for (const s of allMatches) {
+          if (!seenProvinces.has(s.province)) {
+            localMatches.push(s)
+            seenProvinces.add(s.province)
+            if (localMatches.length >= 10) break
+          }
+        }
+        // Lengkapi hingga 15 sekolah
+        for (const s of allMatches) {
+          if (!localMatches.includes(s)) {
+            localMatches.push(s)
+            if (localMatches.length >= 15) break
+          }
+        }
+      } else {
+        localMatches = allMatches.slice(0, 15)
+      }
+
+      const formattedLocal = localMatches.map(s => ({
         display_name: s.display_name,
         customName: s.name,
-        address: s.address
+        address: s.address,
+        province: s.province,
+        city: s.city
       }))
 
-      // Jika dari data lokal sudah ada hasil relevan, tampilkan langsung secara instan
-      if (localMatches.length >= 3) {
-        schoolSuggestions.value = localMatches
+      // Jika dari data lokal Indonesia sudah ada minimal 3 hasil relevan, langsung tampilkan
+      if (formattedLocal.length >= 3) {
+        schoolSuggestions.value = formattedLocal
         isSearchingSchool.value = false
         return
       }
 
       // 2. Fetch cadangan dari Nominatim OpenStreetMap jika hasil lokal sedikit
-      const query = encodeURIComponent(form.value.name)
-      const res = await SafeFlow.fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json&countrycodes=id&limit=5`, {
+      const queryParam = encodeURIComponent(form.value.name)
+      const res = await SafeFlow.fetch(`https://nominatim.openstreetmap.org/search?q=${queryParam}&format=json&countrycodes=id&limit=5`, {
         headers: { 'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7' }
       })
       
@@ -820,15 +865,14 @@ const searchSchool = () => {
         apiResults = await res.json()
       }
 
-      // Gabungkan hasil lokal dan API
-      schoolSuggestions.value = [...localMatches, ...apiResults].slice(0, 8)
+      schoolSuggestions.value = [...formattedLocal, ...apiResults].slice(0, 12)
       
     } catch (e) {
       console.error("Gagal mencari sekolah", e)
     } finally {
       isSearchingSchool.value = false
     }
-  }, 250)
+  }, 200)
 }
 
 const selectSchool = (suggestion) => {
