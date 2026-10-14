@@ -220,8 +220,8 @@
                 ]"
               >
                 <div class="flex items-center gap-3.5">
-                  <div class="w-14 h-10 rounded-xl bg-white border border-slate-200 p-1.5 flex items-center justify-center flex-shrink-0 shadow-xs">
-                    <component :is="method.logoComponent" />
+                  <div class="w-14 h-11 rounded-xl bg-white border border-slate-200 p-1 flex items-center justify-center flex-shrink-0 shadow-xs overflow-hidden">
+                    <img :src="method.logo" :alt="method.name" class="w-full h-full object-contain" />
                   </div>
                   <div>
                     <div class="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
@@ -256,8 +256,8 @@
                 ]"
               >
                 <div class="flex items-center gap-3.5">
-                  <div class="w-14 h-10 rounded-xl bg-white border border-slate-200 p-1.5 flex items-center justify-center flex-shrink-0 shadow-xs">
-                    <component :is="method.logoComponent" />
+                  <div class="w-14 h-11 rounded-xl bg-white border border-slate-200 p-1 flex items-center justify-center flex-shrink-0 shadow-xs overflow-hidden">
+                    <img :src="method.logo" :alt="method.name" class="w-full h-full object-contain" />
                   </div>
                   <div>
                     <div class="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
@@ -284,8 +284,8 @@
               <!-- Header with Status Pill and Expiry Countdown -->
               <div class="flex flex-wrap items-center justify-between gap-3 pb-5 border-b border-slate-200">
                 <div class="flex items-center gap-3">
-                  <div class="w-12 h-9 rounded-lg bg-white border border-slate-200 p-1 flex items-center justify-center shadow-xs">
-                    <component :is="selectedMethod.logoComponent" />
+                  <div class="w-14 h-11 rounded-xl bg-white border border-slate-200 p-1 flex items-center justify-center shadow-xs overflow-hidden">
+                    <img :src="selectedMethod.logo" :alt="selectedMethod.name" class="w-full h-full object-contain" />
                   </div>
                   <div>
                     <span class="text-xs text-slate-500 block font-medium">Metode Aktif</span>
@@ -339,7 +339,7 @@
 
                 <div class="space-y-1">
                   <p class="text-xs font-bold text-slate-800">A/N: GURUKU INDONESIA BILLING</p>
-                  <p class="text-xs text-slate-500">Dapat dipindai dari BCA Mobile, Livin Mandiri, BRImo, BSI Mobile, DANA, GoPay, OVO, ShopeePay & semua bank.</p>
+                  <p class="text-xs text-slate-500">Dapat dipindai dari Livin' Mandiri, BRImo, BSI Mobile, BNI Mobile, DANA, GoPay, OVO & seluruh penyedia QRIS perbankan.</p>
                 </div>
               </div>
 
@@ -843,9 +843,18 @@
 </template>
 
 <script setup>
-import { ref, computed, defineComponent, h, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import aduanSuksesImg from '../assets/aduan-sukses.png'
+
+import briIcon from '../assets/icon-pay/bri.jpg'
+import livinIcon from '../assets/icon-pay/livin.jpg'
+import bsiIcon from '../assets/icon-pay/bsi.jpg'
+import bniIcon from '../assets/icon-pay/bni.jpg'
+import qrisIcon from '../assets/icon-pay/qris.jpg'
+import danaIcon from '../assets/icon-pay/dana.jpg'
+import gopayIcon from '../assets/icon-pay/gopay.jpg'
+import ovoIcon from '../assets/icon-pay/ovo.jpg'
 
 const route = useRoute()
 const router = useRouter()
@@ -920,142 +929,7 @@ const handleFileUpload = (event) => {
 }
 
 // -----------------------------------------------------------------------------------------
-// HIGH-FIDELITY VECTOR LOGO COMPONENTS (100% SVG, Clean & Responsive)
-// -----------------------------------------------------------------------------------------
-
-// 1. BRI (BRIVA) Official Style
-const BriLogo = defineComponent({
-  name: 'BriLogo',
-  render() {
-    return h('svg', { viewBox: '0 0 100 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
-      h('rect', { width: '30', height: '30', rx: '6', fill: '#00529C' }),
-      h('path', { d: 'M8 7h7c3 0 5 1.5 5 4s-2 3.5-4 3.8l5 6.2h-3.8l-4.5-5.6H11v5.6H8V7zm3 5.4h3.8c1.3 0 2.2-.6 2.2-1.6s-.9-1.6-2.2-1.6H11v3.2z', fill: '#FFFFFF' }),
-      h('text', { x: '36', y: '22', fill: '#00529C', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '19', 'letter-spacing': '-0.5' }, 'BRI'),
-      h('rect', { x: '72', y: '8', width: '26', height: '14', rx: '3', fill: '#F37021' }),
-      h('text', { x: '75', y: '19', fill: '#FFFFFF', 'font-family': 'Arial, sans-serif', 'font-weight': '800', 'font-size': '9', 'letter-spacing': '0.5' }, 'VA')
-    ])
-  }
-})
-
-// 2. Bank Mandiri (Livin' by Mandiri) Official Style
-const MandiriLogo = defineComponent({
-  name: 'MandiriLogo',
-  render() {
-    return h('svg', { viewBox: '0 0 110 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
-      h('rect', { width: '30', height: '30', rx: '6', fill: '#003D79' }),
-      h('path', { d: 'M7 21V9h3l4 7 4-7h3v12h-3v-7l-4 7h-1l-4-7v7H7z', fill: '#FFFFFF' }),
-      h('path', { d: 'M15 7c3-2 8-1 10 2', stroke: '#FDB813', 'stroke-width': '2.5', 'stroke-linecap': 'round' }),
-      h('text', { x: '35', y: '21', fill: '#003D79', 'font-family': 'Arial, sans-serif', 'font-weight': '800', 'font-size': '15', 'letter-spacing': '-0.3' }, 'mandırı'),
-      h('text', { x: '35', y: '29', fill: '#FDB813', 'font-family': 'Arial, sans-serif', 'font-weight': '700', 'font-size': '8' }, 'LIVIN\' VA')
-    ])
-  }
-})
-
-// 3. BSI (Bank Syariah Indonesia) Official Style
-const BsiLogo = defineComponent({
-  name: 'BsiLogo',
-  render() {
-    return h('svg', { viewBox: '0 0 95 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
-      h('circle', { cx: '15', cy: '15', r: '14', fill: '#00A39D' }),
-      h('path', { d: 'M15 5c4 0 8 3 8 7s-4 9-8 9-8-5-8-9 4-7 8-7z', fill: '#FFFFFF' }),
-      h('circle', { cx: '18', cy: '11', r: '3', fill: '#F37021' }),
-      h('text', { x: '34', y: '21', fill: '#00A39D', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '18', 'letter-spacing': '0.5' }, 'BSI'),
-      h('text', { x: '72', y: '21', fill: '#F37021', 'font-family': 'Arial, sans-serif', 'font-weight': '800', 'font-size': '10' }, 'VA')
-    ])
-  }
-})
-
-// 4. BCA (BCA Virtual Account) Official Style
-const BcaLogo = defineComponent({
-  name: 'BcaLogo',
-  render() {
-    return h('svg', { viewBox: '0 0 90 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
-      h('rect', { width: '88', height: '30', rx: '6', fill: '#003882' }),
-      h('text', { x: '8', y: '21', fill: '#FFFFFF', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '17', 'letter-spacing': '1' }, 'BCA'),
-      h('rect', { x: '58', y: '7', width: '24', height: '16', rx: '3', fill: '#FFFFFF' }),
-      h('text', { x: '63', y: '19', fill: '#003882', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '9' }, 'VA')
-    ])
-  }
-})
-
-// 5. BNI (BNI Virtual Account) Official Style
-const BniLogo = defineComponent({
-  name: 'BniLogo',
-  render() {
-    return h('svg', { viewBox: '0 0 90 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
-      h('text', { x: '3', y: '22', fill: '#006699', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '20', 'letter-spacing': '-0.5' }, 'BNI'),
-      h('rect', { x: '46', y: '6', width: '18', height: '18', rx: '4', fill: '#F15A24' }),
-      h('text', { x: '48', y: '20', fill: '#FFFFFF', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '12' }, '46'),
-      h('text', { x: '70', y: '21', fill: '#006699', 'font-family': 'Arial, sans-serif', 'font-weight': '800', 'font-size': '11' }, 'VA')
-    ])
-  }
-})
-
-// 6. QRIS National Standard Style
-const QrisLogo = defineComponent({
-  name: 'QrisLogo',
-  render() {
-    return h('svg', { viewBox: '0 0 95 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
-      h('rect', { x: '2', y: '3', width: '24', height: '24', rx: '4', fill: '#1E1E1E' }),
-      h('rect', { x: '6', y: '7', width: '8', height: '8', fill: '#EA232A' }),
-      h('rect', { x: '16', y: '17', width: '6', height: '6', fill: '#FFFFFF' }),
-      h('text', { x: '30', y: '21', fill: '#EA232A', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '18', 'letter-spacing': '-0.5' }, 'QRIS'),
-      h('text', { x: '30', y: '28', fill: '#1E1E1E', 'font-family': 'Arial, sans-serif', 'font-weight': '700', 'font-size': '6.5', 'letter-spacing': '0.5' }, 'PEMBAYARAN NASIONAL')
-    ])
-  }
-})
-
-// 7. DANA Official Style
-const DanaLogo = defineComponent({
-  name: 'DanaLogo',
-  render() {
-    return h('svg', { viewBox: '0 0 95 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
-      h('rect', { width: '92', height: '30', rx: '6', fill: '#118EEA' }),
-      h('circle', { cx: '15', cy: '15', r: '7', fill: '#FFFFFF' }),
-      h('circle', { cx: '15', cy: '15', r: '4', fill: '#118EEA' }),
-      h('text', { x: '27', y: '21', fill: '#FFFFFF', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '16', 'letter-spacing': '0.5' }, 'DANA')
-    ])
-  }
-})
-
-// 8. GoPay Official Style
-const GopayLogo = defineComponent({
-  name: 'GopayLogo',
-  render() {
-    return h('svg', { viewBox: '0 0 95 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
-      h('rect', { width: '92', height: '30', rx: '6', fill: '#00AED6' }),
-      h('circle', { cx: '16', cy: '15', r: '7', stroke: '#FFFFFF', 'stroke-width': '3.5', fill: 'none' }),
-      h('circle', { cx: '16', cy: '15', r: '2.5', fill: '#FFFFFF' }),
-      h('text', { x: '28', y: '21', fill: '#FFFFFF', 'font-family': 'Arial, sans-serif', 'font-weight': '800', 'font-size': '15', 'letter-spacing': '-0.5' }, 'gopay')
-    ])
-  }
-})
-
-// 9. OVO Official Style
-const OvoLogo = defineComponent({
-  name: 'OvoLogo',
-  render() {
-    return h('svg', { viewBox: '0 0 90 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
-      h('rect', { width: '88', height: '30', rx: '6', fill: '#4C2A86' }),
-      h('text', { x: '18', y: '22', fill: '#FFFFFF', 'font-family': 'Arial, sans-serif', 'font-weight': '900', 'font-size': '18', 'letter-spacing': '2' }, 'ovo')
-    ])
-  }
-})
-
-// 10. ShopeePay Official Style
-const ShopeepayLogo = defineComponent({
-  name: 'ShopeepayLogo',
-  render() {
-    return h('svg', { viewBox: '0 0 110 32', class: 'w-full h-auto max-h-7', fill: 'none' }, [
-      h('rect', { width: '108', height: '30', rx: '6', fill: '#EE4D2D' }),
-      h('path', { d: 'M12 9v2h-2v11h12V11h-2V9c0-2-1.5-3-4-3s-4 1-4 3zm2 2V9c0-.8.6-1.5 2-1.5s2 .7 2 1.5v2h-4z', fill: '#FFFFFF' }),
-      h('text', { x: '28', y: '20', fill: '#FFFFFF', 'font-family': 'Arial, sans-serif', 'font-weight': '800', 'font-size': '11', 'letter-spacing': '0.2' }, 'ShopeePay')
-    ])
-  }
-})
-
-// -----------------------------------------------------------------------------------------
-// PAYMENT METHODS DATASET (Professional Virtual Accounts & E-Wallets)
+// METODE PEMBAYARAN RESMI (4 Virtual Account Bank & 4 Dompet Digital / QRIS)
 // -----------------------------------------------------------------------------------------
 
 const bankMethods = [
@@ -1067,7 +941,7 @@ const bankMethods = [
     category: 'va',
     accountNumber: `8881${adminPhone}`,
     accountHolder: 'GuruKu Billing - PT Edukasi Nusantara',
-    logoComponent: BriLogo,
+    logo: briIcon,
     instructions: [
       {
         channel: 'BRImo (Aplikasi)',
@@ -1108,7 +982,7 @@ const bankMethods = [
     category: 'va',
     accountNumber: `8902${adminPhone}`,
     accountHolder: 'GuruKu Billing - PT Edukasi Nusantara',
-    logoComponent: MandiriLogo,
+    logo: livinIcon,
     instructions: [
       {
         channel: 'Livin\' by Mandiri',
@@ -1139,7 +1013,7 @@ const bankMethods = [
     category: 'va',
     accountNumber: `9012${adminPhone}`,
     accountHolder: 'GuruKu Billing - PT Edukasi Nusantara',
-    logoComponent: BsiLogo,
+    logo: bsiIcon,
     instructions: [
       {
         channel: 'BSI Mobile',
@@ -1163,36 +1037,6 @@ const bankMethods = [
     ]
   },
   {
-    id: 'bca_va',
-    name: 'BCA Virtual Account',
-    fullName: 'BCA Virtual Account (BCA)',
-    type: 'Bank Central Asia Tbk',
-    category: 'va',
-    accountNumber: `3901${adminPhone}`,
-    accountHolder: 'GuruKu Billing - PT Edukasi Nusantara',
-    logoComponent: BcaLogo,
-    instructions: [
-      {
-        channel: 'BCA Mobile (m-BCA)',
-        steps: [
-          'Login ke aplikasi BCA mobile (m-BCA).',
-          'Pilih menu "m-Transfer" lalu pilih "BCA Virtual Account".',
-          'Masukkan Nomor BCA Virtual Account di atas.',
-          'Pastikan nama tujuan dan jumlah tagihan telah sesuai.',
-          'Masukkan PIN m-BCA untuk menyelesaikan transaksi.'
-        ]
-      },
-      {
-        channel: 'KlikBCA',
-        steps: [
-          'Login ke KlikBCA Individual.',
-          'Pilih menu "Transfer Dana" > "Transfer ke BCA Virtual Account".',
-          'Masukkan nomor Virtual Account BCA dan lanjutkan verifikasi KeyBCA.'
-        ]
-      }
-    ]
-  },
-  {
     id: 'bni_va',
     name: 'BNI Virtual Account',
     fullName: 'BNI Virtual Account (BNI)',
@@ -1200,7 +1044,7 @@ const bankMethods = [
     category: 'va',
     accountNumber: `8277${adminPhone}`,
     accountHolder: 'GuruKu Billing - PT Edukasi Nusantara',
-    logoComponent: BniLogo,
+    logo: bniIcon,
     instructions: [
       {
         channel: 'BNI Mobile Banking',
@@ -1228,16 +1072,16 @@ const ewalletMethods = [
     id: 'qris',
     name: 'QRIS (Semua Bank & Dompet)',
     fullName: 'QRIS Standar Nasional Indonesia',
-    type: 'BCA, Mandiri, BRI, DANA, GoPay, OVO, ShopeePay',
+    type: 'Mandiri, BRI, BNI, BSI, DANA, GoPay, OVO',
     category: 'ewallet',
     accountNumber: 'QRIS-GURUKU-ID',
     accountHolder: 'GURUKU INDONESIA BILLING',
-    logoComponent: QrisLogo,
+    logo: qrisIcon,
     instructions: [
       {
         channel: 'Scan Aplikasi Apapun',
         steps: [
-          'Buka aplikasi M-Banking (BCA, Mandiri, BRI, BSI, dll) atau E-Wallet pilihan Anda.',
+          'Buka aplikasi M-Banking (Mandiri, BRI, BNI, BSI, dll) atau E-Wallet pilihan Anda.',
           'Pilih menu "Scan" atau "QRIS".',
           'Arahkan kamera ke kode QRIS resmi di layar.',
           'Pastikan nama penerima tertulis "GURUKU INDONESIA BILLING".',
@@ -1254,7 +1098,7 @@ const ewalletMethods = [
     category: 'ewallet',
     accountNumber: adminPhone,
     accountHolder: 'Admin Finansial GuruKu',
-    logoComponent: DanaLogo,
+    logo: danaIcon,
     instructions: [
       {
         channel: 'Aplikasi DANA',
@@ -1276,7 +1120,7 @@ const ewalletMethods = [
     category: 'ewallet',
     accountNumber: adminPhone,
     accountHolder: 'Admin Finansial GuruKu',
-    logoComponent: GopayLogo,
+    logo: gopayIcon,
     instructions: [
       {
         channel: 'Aplikasi GoPay / Gojek',
@@ -1298,7 +1142,7 @@ const ewalletMethods = [
     category: 'ewallet',
     accountNumber: adminPhone,
     accountHolder: 'Admin Finansial GuruKu',
-    logoComponent: OvoLogo,
+    logo: ovoIcon,
     instructions: [
       {
         channel: 'Aplikasi OVO',
@@ -1307,27 +1151,6 @@ const ewalletMethods = [
           'Pilih menu "Transfer" lalu pilih "Sesama OVO".',
           'Masukkan nomor ponsel OVO yang tertera di atas.',
           'Masukkan nominal tagihan dan konfirmasi pengiriman dana.'
-        ]
-      }
-    ]
-  },
-  {
-    id: 'shopeepay',
-    name: 'ShopeePay',
-    fullName: 'ShopeePay Indonesia',
-    type: 'Dompet Digital ShopeePay',
-    category: 'ewallet',
-    accountNumber: adminPhone,
-    accountHolder: 'Admin Finansial GuruKu',
-    logoComponent: ShopeepayLogo,
-    instructions: [
-      {
-        channel: 'ShopeePay',
-        steps: [
-          'Buka aplikasi Shopee dan masuk ke menu "ShopeePay".',
-          'Pilih menu "Transfer" > "Transfer ke Kontak / Nomor Telepon".',
-          'Masukkan nomor akun ShopeePay di atas.',
-          'Masukkan jumlah transfer dan masukkan PIN ShopeePay Anda.'
         ]
       }
     ]
