@@ -216,6 +216,7 @@ onMounted(() => {
       console.error('Error parsing classes:', e);
     }
     loading.value = false;
+    syncHomeroomTeachersToGuru(classes.value);
   } else {
     setTimeout(() => {
       classes.value = [
@@ -223,13 +224,94 @@ onMounted(() => {
         { id: 2, name: '4 B', student_count: 30, homeroom_teacher: 'Siti Aminah, M.Pd' },
       ]
       loading.value = false
+      syncHomeroomTeachersToGuru(classes.value);
     }, 600)
   }
 })
 
-// Sinkronkan ke localStorage agar PengampuMapel & komponen lain otomatis terupdate
+// Fungsi Pembuat Kode Guru Otomatis yang Unik
+const generateUniqueTeacherCode = (teacherName, existingTeachers) => {
+  let clean = teacherName
+    .replace(/(,\s*)?(s\.pd|m\.pd|s\.ag|s\.si|m\.si|m\.kom|s\.kom|drs\.|dra\.|ph\.d|m\.hum|s\.sos|s\.e|m\.m)/gi, '')
+    .trim()
+
+  const words = clean.split(/\s+/).filter(w => w.length > 0)
+  let candidate = ''
+  if (words.length >= 2) {
+    candidate = (words[0][0] + words[1][0]).toUpperCase()
+  } else if (words.length === 1) {
+    candidate = words[0].substring(0, 2).toUpperCase()
+  } else {
+    candidate = 'G'
+  }
+
+  const existingCodes = new Set(existingTeachers.map(t => (t.code || '').trim().toUpperCase()))
+
+  if (!existingCodes.has(candidate)) {
+    return candidate
+  }
+
+  if (words.length >= 3) {
+    const candidate3 = (words[0][0] + words[1][0] + words[2][0]).toUpperCase()
+    if (!existingCodes.has(candidate3)) return candidate3
+  }
+
+  let counter = 1
+  while (existingCodes.has(`${candidate}${counter}`)) {
+    counter++
+  }
+  return `${candidate}${counter}`
+}
+
+// Sinkronkan Wali Kelas ke Daftar Guru (guruKu_teachers) secara otomatis
+const syncHomeroomTeachersToGuru = (classesList) => {
+  if (!classesList || classesList.length === 0) return
+
+  let teachers = []
+  const savedTeachers = localStorage.getItem('guruKu_teachers')
+  if (savedTeachers) {
+    try {
+      teachers = JSON.parse(savedTeachers)
+    } catch (e) {}
+  }
+
+  let addedNew = false
+
+  classesList.forEach((cls, idx) => {
+    const waliName = (cls.homeroom_teacher || '').trim()
+    if (!waliName || waliName === '-') return
+
+    // Cek apakah wali kelas ini sudah ada di teachers
+    const exists = teachers.some(t => {
+      const tName = (t.name || '').trim().toLowerCase()
+      const wName = waliName.toLowerCase()
+      if (tName === wName) return true
+      const cleanT = tName.replace(/[.,]/g, '').replace(/\b(spd|mpd|sag|ssi|msi|mkom|skom|drs|dra)\b/gi, '').trim()
+      const cleanW = wName.replace(/[.,]/g, '').replace(/\b(spd|mpd|sag|ssi|msi|mkom|skom|drs|dra)\b/gi, '').trim()
+      return cleanT === cleanW
+    })
+
+    if (!exists) {
+      const newCode = generateUniqueTeacherCode(waliName, teachers)
+      teachers.push({
+        id: Date.now() + idx,
+        name: waliName,
+        code: newCode,
+        subject: `Wali Kelas ${cls.name}`
+      })
+      addedNew = true
+    }
+  })
+
+  if (addedNew) {
+    localStorage.setItem('guruKu_teachers', JSON.stringify(teachers))
+  }
+}
+
+// Sinkronkan ke localStorage agar PengampuMapel, DaftarGuru, & TugasTambahan otomatis terupdate
 watch(classes, (newVal) => {
   localStorage.setItem('guruKu_classes', JSON.stringify(newVal));
+  syncHomeroomTeachersToGuru(newVal);
 }, { deep: true });
 
 // 1. Download Template Excel Resmi

@@ -259,7 +259,75 @@ onMounted(() => {
       loading.value = false
     }, 400)
   }
+
+  // Sinkronisasi otomatis dari Wali Kelas yang sudah di-upload/didaftarkan di Daftar Kelas
+  const savedClasses = localStorage.getItem('guruKu_classes')
+  if (savedClasses) {
+    try {
+      const parsedClasses = JSON.parse(savedClasses)
+      let addedFromClasses = false
+      parsedClasses.forEach((cls, idx) => {
+        const wali = (cls.homeroom_teacher || '').trim()
+        if (!wali || wali === '-') return
+        const exists = teachers.value.some(t => {
+          const tName = (t.name || '').trim().toLowerCase()
+          const wName = wali.toLowerCase()
+          if (tName === wName) return true
+          const cleanT = tName.replace(/[.,]/g, '').replace(/\b(spd|mpd|sag|ssi|msi|mkom|skom|drs|dra)\b/gi, '').trim()
+          const cleanW = wName.replace(/[.,]/g, '').replace(/\b(spd|mpd|sag|ssi|msi|mkom|skom|drs|dra)\b/gi, '').trim()
+          return cleanT === cleanW
+        })
+        if (!exists) {
+          const newCode = generateUniqueTeacherCode(wali, teachers.value)
+          teachers.value.push({
+            id: Date.now() + idx,
+            name: wali,
+            code: newCode,
+            subject: `Wali Kelas ${cls.name}`
+          })
+          addedFromClasses = true
+        }
+      })
+      if (addedFromClasses) {
+        localStorage.setItem('guruKu_teachers', JSON.stringify(teachers.value))
+      }
+    } catch (e) {}
+  }
 })
+
+// Fungsi Pembuat Kode Guru Otomatis yang Unik
+const generateUniqueTeacherCode = (teacherName, existingTeachers) => {
+  let clean = teacherName
+    .replace(/(,\s*)?(s\.pd|m\.pd|s\.ag|s\.si|m\.si|m\.kom|s\.kom|drs\.|dra\.|ph\.d|m\.hum|s\.sos|s\.e|m\.m)/gi, '')
+    .trim()
+
+  const words = clean.split(/\s+/).filter(w => w.length > 0)
+  let candidate = ''
+  if (words.length >= 2) {
+    candidate = (words[0][0] + words[1][0]).toUpperCase()
+  } else if (words.length === 1) {
+    candidate = words[0].substring(0, 2).toUpperCase()
+  } else {
+    candidate = 'G'
+  }
+
+  const existingCodes = new Set(existingTeachers.map(t => (t.code || '').trim().toUpperCase()))
+
+  if (!existingCodes.has(candidate)) {
+    return candidate
+  }
+
+  if (words.length >= 3) {
+    const candidate3 = (words[0][0] + words[1][0] + words[2][0]).toUpperCase()
+    if (!existingCodes.has(candidate3)) return candidate3
+  }
+
+  let counter = 1
+  while (existingCodes.has(`${candidate}${counter}`)) {
+    counter++
+  }
+  return `${candidate}${counter}`
+}
 
 // Sinkronkan ke localStorage agar PengampuMapel & komponen lain otomatis terupdate
 watch(teachers, (newVal) => {

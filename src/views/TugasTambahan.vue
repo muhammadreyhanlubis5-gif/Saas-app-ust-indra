@@ -45,7 +45,7 @@
                 <td class="px-3 py-2 border-r border-gray-200 text-center font-bold text-gray-700 bg-gray-50">{{ teacher.code }}</td>
                 <td class="px-3 py-2 border-r border-gray-200 font-medium text-gray-800 bg-white">{{ teacher.name }}</td>
                 <td class="px-1 py-1 border-r border-gray-200 bg-yellow-50">
-                  <select v-model="teacher.tugas_tambahan" class="w-full bg-white border border-gray-300 rounded px-2 py-1.5 text-xs focus:ring-2 focus:ring-blue-500 outline-none text-gray-700 font-medium">
+                  <select v-model="teacher.tugas_tambahan" @change="onTaskChange(teacher)" class="w-full bg-white border border-gray-300 rounded px-2 py-1.5 text-xs focus:ring-2 focus:ring-blue-500 outline-none text-gray-700 font-medium">
                     <option value="">- Tidak Ada -</option>
                     <option v-for="tugas in summaryTasks" :key="tugas.name" :value="tugas.name">{{ tugas.name }}</option>
                   </select>
@@ -276,17 +276,73 @@ const loadData = async () => {
       }
     }
 
-    // Finalize teachers array
+        // Ambil data Wali Kelas dari Daftar Kelas (guruKu_classes)
+    const homeroomMap = new Map()
+    let classesCount = 0
+    const savedClasses = localStorage.getItem('guruKu_classes')
+    if (savedClasses) {
+      try {
+        const parsedClasses = JSON.parse(savedClasses)
+        classesCount = parsedClasses.length
+        parsedClasses.forEach(c => {
+          const wali = (c.homeroom_teacher || '').trim()
+          if (wali && wali !== '-') {
+            homeroomMap.set(wali.toLowerCase(), c.name)
+            const cleanWali = wali.toLowerCase().replace(/[.,]/g, '').replace(/\b(spd|mpd|sag|ssi|msi|mkom|skom|drs|dra)\b/gi, '').trim()
+            homeroomMap.set(cleanWali, c.name)
+          }
+        })
+      } catch (e) {}
+    }
+
+    // Finalize teachers array & auto-sync tugas tambahan Wali Kelas
     const finalTeachers = Array.from(rawTeachersMap.values())
     finalTeachers.forEach(t => {
+      const tName = (t.name || '').trim().toLowerCase()
+      const cleanT = tName.replace(/[.,]/g, '').replace(/\b(spd|mpd|sag|ssi|msi|mkom|skom|drs|dra)\b/gi, '').trim()
+
+      const isHomeroom = homeroomMap.has(tName) || homeroomMap.has(cleanT)
+
+      // Jika guru terdaftar sebagai Wali Kelas di Daftar Kelas, otomatis set Wali Kelas & Bobot 2 JP
+      if (isHomeroom && (!t.tugas_tambahan || t.tugas_tambahan === '' || t.tugas_tambahan === '- Tidak Ada -')) {
+        t.tugas_tambahan = 'Wali Kelas'
+        if (!t.bobot || t.bobot === 0) {
+          t.bobot = 2 // Standar beban ekuivalen tugas tambahan Wali Kelas
+        }
+      }
+
       if (t.tugas_tambahan === undefined) t.tugas_tambahan = ''
       if (t.bobot === undefined) t.bobot = 0
     })
+
+    // Sesuaikan kebutuhan kuota Wali Kelas dengan jumlah kelas aktual
+    if (classesCount > 0) {
+      const waliTask = summaryTasks.value.find(st => st.name === 'Wali Kelas')
+      if (waliTask) {
+        waliTask.required = classesCount
+      }
+    }
     
     teachers.value = finalTeachers.sort((a,b) => a.code.localeCompare(b.code))
     
   } catch (err) {
     console.error("Gagal load data:", err)
+  }
+}
+
+const onTaskChange = (teacher) => {
+  if (teacher.tugas_tambahan === 'Wali Kelas') {
+    if (!teacher.bobot || teacher.bobot === 0) teacher.bobot = 2
+  } else if (teacher.tugas_tambahan === 'Kepala Sekolah') {
+    if (!teacher.bobot || teacher.bobot === 0) teacher.bobot = 18
+  } else if (teacher.tugas_tambahan === 'Wakil Kepala Sekolah' || teacher.tugas_tambahan === 'Kepala Laboratorium' || teacher.tugas_tambahan === 'Kepala Perpustakaan') {
+    if (!teacher.bobot || teacher.bobot === 0) teacher.bobot = 12
+  } else if (teacher.tugas_tambahan === 'Pembina OSIS' || teacher.tugas_tambahan === 'Pembina Pramuka') {
+    if (!teacher.bobot || teacher.bobot === 0) teacher.bobot = 2
+  } else if (teacher.tugas_tambahan === 'Guru Piket') {
+    if (!teacher.bobot || teacher.bobot === 0) teacher.bobot = 1
+  } else if (!teacher.tugas_tambahan) {
+    teacher.bobot = 0
   }
 }
 
@@ -351,6 +407,8 @@ onMounted(() => {
 .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
 </style>
+
+
 
 
 
