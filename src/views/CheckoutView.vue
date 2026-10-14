@@ -1,5 +1,23 @@
 <template>
-  <div class="min-h-screen bg-slate-50 text-slate-800 py-10 px-4 sm:px-6 lg:px-8 font-sans antialiased selection:bg-blue-600 selection:text-white">
+  <div class="min-h-screen bg-slate-50 text-slate-800 py-10 px-4 sm:px-6 lg:px-8 font-sans antialiased selection:bg-blue-600 selection:text-white relative">
+    
+    <!-- Tombol Bantuan Bulat (?) di Kanan Atas Layar (Konsisten dengan Halaman Login) -->
+    <div class="fixed top-5 right-5 sm:top-6 sm:right-6 z-40">
+      <button 
+        type="button" 
+        @click="showHelpModal = true" 
+        class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white text-[#263D9B] shadow-xl hover:shadow-2xl border border-slate-200/90 flex items-center justify-center font-bold text-lg transition-all hover:scale-110 active:scale-95 group relative cursor-pointer"
+        title="Pusat Bantuan & Layanan Billing"
+      >
+        <svg class="w-6 h-6 text-[#263D9B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="absolute right-full mr-3 px-3 py-1.5 bg-slate-900/90 text-white text-xs font-bold rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+          Butuh Bantuan Pembayaran?
+        </span>
+      </button>
+    </div>
+
     <div class="max-w-6xl mx-auto">
       
       <!-- Top Navigation / Breadcrumb -->
@@ -118,7 +136,7 @@
               </div>
             </div>
 
-            <!-- Formal Assurance Note (Replacing the old 'pusat komando' text) -->
+            <!-- Formal Assurance Note -->
             <div class="mt-6 bg-blue-950/60 border border-blue-500/30 rounded-2xl p-4 flex items-start gap-3.5">
               <div class="p-2 bg-blue-500/20 text-blue-400 rounded-xl flex-shrink-0">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -175,13 +193,13 @@
               <div class="flex p-1 bg-slate-100 rounded-xl self-start sm:self-auto">
                 <button 
                   @click="activeCategory = 'va'" 
-                  :class="['px-3 py-1.5 text-xs font-bold rounded-lg transition-all', activeCategory === 'va' ? 'bg-white text-blue-700 shadow-xs' : 'text-slate-600 hover:text-slate-900']"
+                  :class="['px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer', activeCategory === 'va' ? 'bg-white text-blue-700 shadow-xs' : 'text-slate-600 hover:text-slate-900']"
                 >
                   Virtual Account (Bank)
                 </button>
                 <button 
                   @click="activeCategory = 'ewallet'" 
-                  :class="['px-3 py-1.5 text-xs font-bold rounded-lg transition-all', activeCategory === 'ewallet' ? 'bg-white text-blue-700 shadow-xs' : 'text-slate-600 hover:text-slate-900']"
+                  :class="['px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer', activeCategory === 'ewallet' ? 'bg-white text-blue-700 shadow-xs' : 'text-slate-600 hover:text-slate-900']"
                 >
                   Dompet Digital & QRIS
                 </button>
@@ -195,7 +213,7 @@
                 :key="method.id"
                 @click="selectMethod(method)"
                 :class="[
-                  'group p-4 rounded-2xl border-2 text-left transition-all relative flex items-center justify-between',
+                  'group p-4 rounded-2xl border-2 text-left transition-all relative flex items-center justify-between cursor-pointer',
                   selectedMethod?.id === method.id 
                     ? 'border-blue-600 bg-blue-50/50 shadow-sm ring-2 ring-blue-500/20' 
                     : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50/70 bg-white'
@@ -231,7 +249,7 @@
                 :key="method.id"
                 @click="selectMethod(method)"
                 :class="[
-                  'group p-4 rounded-2xl border-2 text-left transition-all relative flex items-center justify-between',
+                  'group p-4 rounded-2xl border-2 text-left transition-all relative flex items-center justify-between cursor-pointer',
                   selectedMethod?.id === method.id 
                     ? 'border-blue-600 bg-blue-50/50 shadow-sm ring-2 ring-blue-500/20' 
                     : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50/70 bg-white'
@@ -278,7 +296,7 @@
                 <!-- Status Badge -->
                 <div class="flex items-center gap-2 bg-amber-50 text-amber-800 border border-amber-200 px-3 py-1 rounded-full text-xs font-semibold">
                   <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                  Menunggu Pembayaran
+                  {{ paymentSubmitted ? 'Menunggu Verifikasi Bank' : 'Menunggu Pembayaran' }}
                 </div>
               </div>
 
@@ -291,7 +309,6 @@
                 <div class="max-w-[220px] mx-auto p-4 bg-white border-2 border-slate-800 rounded-2xl shadow-sm relative">
                   <!-- QR Code Mock Graphic with Vector Pattern -->
                   <div class="aspect-square bg-slate-900 rounded-lg p-2.5 flex flex-col justify-between relative overflow-hidden">
-                    <!-- Standard QR corner markers -->
                     <div class="flex justify-between w-full">
                       <div class="w-10 h-10 border-4 border-white bg-slate-900 rounded-sm p-1">
                         <div class="w-full h-full bg-white rounded-xs"></div>
@@ -300,18 +317,15 @@
                         <div class="w-full h-full bg-white rounded-xs"></div>
                       </div>
                     </div>
-                    <!-- Center Brand Emblem -->
                     <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
                       <div class="bg-white p-1.5 rounded-md shadow-md border border-slate-200">
                         <span class="text-[9px] font-black tracking-tighter text-red-600 block">QRIS</span>
                       </div>
                     </div>
-                    <!-- Bottom corner marker -->
                     <div class="flex justify-between w-full items-end">
                       <div class="w-10 h-10 border-4 border-white bg-slate-900 rounded-sm p-1">
                         <div class="w-full h-full bg-white rounded-xs"></div>
                       </div>
-                      <!-- QR pattern dots simulation -->
                       <div class="grid grid-cols-4 gap-1 p-1">
                         <div class="w-1.5 h-1.5 bg-white rounded-xs"></div>
                         <div class="w-1.5 h-1.5 bg-white rounded-xs"></div>
@@ -359,7 +373,7 @@
 
                     <button 
                       @click="copyText(selectedMethod.accountNumber, 'va')"
-                      class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95"
+                      class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer"
                       :class="copiedType === 'va' ? 'bg-emerald-600 text-white' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'"
                     >
                       <svg v-if="copiedType === 'va'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -376,11 +390,24 @@
                     </div>
                     <button 
                       @click="copyText(price.toString(), 'nominal')"
-                      class="text-blue-600 hover:text-blue-800 font-semibold inline-flex items-center gap-1 text-xs"
+                      class="text-blue-600 hover:text-blue-800 font-semibold inline-flex items-center gap-1 text-xs cursor-pointer"
                     >
                       <span>{{ copiedType === 'nominal' ? 'Nominal Tersalin!' : 'Salin Nominal' }}</span>
                     </button>
                   </div>
+                </div>
+              </div>
+
+              <!-- Kartu Status Jika Bukti Transfer Sudah Diunggah -->
+              <div v-if="paymentSubmitted" class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-start gap-3.5 animate-fade-in">
+                <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <div>
+                  <h5 class="text-xs font-bold text-emerald-900 uppercase tracking-wider">Konfirmasi Transaksi Diterima!</h5>
+                  <p class="text-xs text-emerald-700 mt-1 leading-relaxed">
+                    Bukti pembayaran atas nama <b>{{ proofForm.senderName }}</b> telah tersimpan di sistem. Administrator finansial sedang melakukan verifikasi (estimasi 1-5 menit). Masa aktif sekolah Anda akan otomatis diperpanjang.
+                  </p>
                 </div>
               </div>
 
@@ -397,7 +424,7 @@
                       v-for="(inst, idx) in selectedMethod.instructions" 
                       :key="idx"
                       @click="activeInstructionTab = idx"
-                      :class="['px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors', activeInstructionTab === idx ? 'bg-slate-200 text-slate-800' : 'text-slate-500 hover:text-slate-700']"
+                      :class="['px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors cursor-pointer', activeInstructionTab === idx ? 'bg-slate-200 text-slate-800' : 'text-slate-500 hover:text-slate-700']"
                     >
                       {{ inst.channel }}
                     </button>
@@ -419,24 +446,36 @@
                 </div>
               </div>
 
-              <!-- Action Confirmation Buttons -->
+              <!-- Action Confirmation Buttons Grid -->
               <div class="space-y-3 pt-2">
-                <!-- WhatsApp Confirmation Button (Primary Formal) -->
+                
+                <!-- 1. Tombol Unggah Bukti Transfer / Selesaikan Transaksi (Realistis & Mandiri) -->
                 <button 
-                  @click="confirmPaymentViaWA"
-                  class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-2.5"
+                  @click="showUploadProofModal = true"
+                  class="w-full bg-[#263D9B] hover:bg-[#1f3282] text-white font-bold py-3.5 px-6 rounded-xl shadow-md shadow-blue-900/20 transition-all active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer"
                 >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
                   </svg>
-                  <span>Konfirmasi Pembayaran via WhatsApp Layanan Billing</span>
+                  <span>Kirim Bukti Pembayaran / Selesaikan Transaksi</span>
                 </button>
 
-                <!-- Check Status Verification Simulation Button -->
+                <!-- 2. WhatsApp Confirmation Button (Primary Formal) -->
+                <button 
+                  @click="confirmPaymentViaWA"
+                  class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl shadow-sm transition-all active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer text-xs"
+                >
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                  </svg>
+                  <span>Konfirmasi Pembayaran via WhatsApp Billing</span>
+                </button>
+
+                <!-- 3. Check Status Verification Simulation Button -->
                 <button 
                   @click="checkTransactionStatus" 
                   :disabled="isCheckingStatus"
-                  class="w-full bg-white hover:bg-slate-50 text-slate-700 font-semibold py-3 px-4 rounded-xl border border-slate-200 transition-colors flex items-center justify-center gap-2 text-xs"
+                  class="w-full bg-white hover:bg-slate-50 text-slate-700 font-semibold py-2.5 px-4 rounded-xl border border-slate-200 transition-colors flex items-center justify-center gap-2 text-xs cursor-pointer"
                 >
                   <svg v-if="isCheckingStatus" class="animate-spin w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -493,7 +532,7 @@
                   <svg class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </summary>
                 <p class="mt-2 text-slate-600 leading-relaxed">
-                  Tim help desk dan keuangan kami bertugas penuh mendampingi proses aktivasi institusi Anda melalui layanan WhatsApp resmi yang tertera pada tombol konfirmasi.
+                  Tim help desk dan keuangan kami bertugas penuh mendampingi proses aktivasi institusi Anda melalui tombol tanda tanya (?) di kanan atas atau layanan WhatsApp resmi.
                 </p>
               </details>
             </div>
@@ -504,12 +543,296 @@
       </div>
 
     </div>
+
+    <!-- MODAL 1: BANTUAN & KONSULTASI BILLING (Triggered by ? Button) -->
+    <div v-if="showHelpModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
+      <div class="w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden my-auto max-h-[90vh] flex flex-col">
+        
+        <!-- Header Modal -->
+        <div class="px-6 py-5 bg-[#263D9B] text-white flex items-center justify-between flex-shrink-0">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white leading-tight">Pusat Bantuan & Layanan Billing</h3>
+              <p class="text-xs text-blue-200 mt-0.5">Bingung cara bayar atau butuh panduan? Hubungi tim admin kami.</p>
+            </div>
+          </div>
+          <button @click="showHelpModal = false" class="text-blue-200 hover:text-white transition-colors cursor-pointer p-1">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+
+        <!-- Form Body -->
+        <form @submit.prevent="submitHelpTicket" class="p-6 overflow-y-auto space-y-4 text-xs">
+          
+          <!-- Quick WhatsApp Option -->
+          <div class="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200 flex items-center justify-between gap-3">
+            <div>
+              <p class="font-bold text-emerald-900">Ingin respons kilat via WhatsApp?</p>
+              <p class="text-[11px] text-emerald-700">Chat CS Admin Billing langsung tanpa antre.</p>
+            </div>
+            <a 
+              :href="whatsappDirectHelpUrl" 
+              target="_blank"
+              class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all whitespace-nowrap flex items-center gap-1.5"
+            >
+              <span>Chat WhatsApp</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+          </div>
+
+          <div class="relative flex py-1 items-center">
+            <div class="flex-grow border-t border-slate-200"></div>
+            <span class="flex-shrink mx-3 text-slate-400 text-[10px] font-bold uppercase tracking-wider">Atau Kirim Tiket Aduan</span>
+            <div class="flex-grow border-t border-slate-200"></div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Nama Lengkap / Petugas *</label>
+              <input 
+                type="text" 
+                v-model.trim="helpForm.name" 
+                placeholder="Nama Anda"
+                required
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#263D9B] focus:ring-2 focus:ring-[#263D9B]/10 transition-all bg-white"
+              />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Nomor WhatsApp Aktif *</label>
+              <input 
+                type="text" 
+                v-model.trim="helpForm.contact" 
+                placeholder="08xxxxxxxxxx"
+                required
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#263D9B] focus:ring-2 focus:ring-[#263D9B]/10 transition-all bg-white"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Asal Sekolah / Lembaga *</label>
+            <input 
+              type="text" 
+              v-model.trim="helpForm.school" 
+              placeholder="Contoh: SMP Negeri 1 Jakarta"
+              required
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#263D9B] focus:ring-2 focus:ring-[#263D9B]/10 transition-all bg-white"
+            />
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Kategori Kendala Pembayaran *</label>
+            <select 
+              v-model="helpForm.category" 
+              required
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 focus:outline-none focus:border-[#263D9B] bg-white"
+            >
+              <option value="Panduan Transfer Virtual Account (M-Banking / ATM)">Panduan Transfer Virtual Account (M-Banking / ATM)</option>
+              <option value="Konfirmasi & Validasi Pembayaran Lisensi">Konfirmasi & Validasi Pembayaran Lisensi</option>
+              <option value="Permintaan Rekening Bank Lain / Alternatif">Permintaan Rekening Bank Lain / Alternatif</option>
+              <option value="Permintaan Faktur / Kuitansi LPJ Dana BOS">Permintaan Faktur / Kuitansi LPJ Dana BOS</option>
+              <option value="Pertanyaan / Kendala Teknis Lainnya">Pertanyaan / Kendala Teknis Lainnya</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Pesan / Pertanyaan Anda *</label>
+            <textarea 
+              v-model.trim="helpForm.message" 
+              rows="3" 
+              placeholder="Jelaskan pertanyaan atau kendala yang Anda alami seputar pembayaran..."
+              required
+              class="w-full p-3.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#263D9B] focus:ring-2 focus:ring-[#263D9B]/10 transition-all bg-white leading-relaxed"
+            ></textarea>
+          </div>
+
+          <div class="pt-2 flex gap-3">
+            <button 
+              type="button" 
+              @click="showHelpModal = false" 
+              class="w-1/3 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
+            >
+              Batal
+            </button>
+            <button 
+              type="submit" 
+              :disabled="isSubmittingHelp"
+              class="w-2/3 py-3 rounded-xl bg-[#263D9B] hover:bg-[#1d3080] text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75"
+            >
+              <span v-if="!isSubmittingHelp">Kirim Aduan & Saran</span>
+              <span v-else>Mengirim...</span>
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+    <!-- MODAL 2: UNGGAH BUKTI PEMBAYARAN (Realistis Selesaikan Transaksi) -->
+    <div v-if="showUploadProofModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
+      <div class="w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden my-auto max-h-[90vh] flex flex-col">
+        
+        <!-- Header -->
+        <div class="px-6 py-5 bg-[#263D9B] text-white flex items-center justify-between flex-shrink-0">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white leading-tight">Konfirmasi & Bukti Pembayaran</h3>
+              <p class="text-xs text-blue-200 mt-0.5">Invoice: {{ invoiceNumber }} &bull; Total: {{ formattedPrice }}</p>
+            </div>
+          </div>
+          <button @click="showUploadProofModal = false" class="text-blue-200 hover:text-white transition-colors cursor-pointer p-1">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+
+        <!-- Form Body -->
+        <form @submit.prevent="submitPaymentProof" class="p-6 overflow-y-auto space-y-4 text-xs">
+          
+          <div class="bg-blue-50 p-3.5 rounded-2xl border border-blue-100 text-blue-900 space-y-1">
+            <p class="font-bold flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span>Metode Dipilih: {{ selectedMethod.fullName }}</span>
+            </p>
+            <p class="text-[11px] text-blue-700">Nomor Tujuan: <b>{{ selectedMethod.accountNumber }}</b> (A/N: {{ selectedMethod.accountHolder }})</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Nama Pemilik Rekening Pengirim *</label>
+              <input 
+                type="text" 
+                v-model.trim="proofForm.senderName" 
+                placeholder="Contoh: Bendahara SMPN 1"
+                required
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#263D9B] focus:ring-2 focus:ring-[#263D9B]/10 transition-all bg-white"
+              />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Bank / Aplikasi Pengirim *</label>
+              <input 
+                type="text" 
+                v-model.trim="proofForm.bankName" 
+                placeholder="Contoh: Bank BRI / Mandiri / DANA"
+                required
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#263D9B] focus:ring-2 focus:ring-[#263D9B]/10 transition-all bg-white"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Unggah Struk / Bukti Transfer *</label>
+            <div class="border-2 border-dashed border-slate-200 hover:border-blue-400 rounded-2xl p-4 text-center cursor-pointer transition-colors bg-slate-50/50 relative">
+              <input 
+                type="file" 
+                accept="image/*" 
+                @change="handleFileUpload" 
+                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                required
+              />
+              <div v-if="!proofPreview" class="space-y-1">
+                <svg class="w-8 h-8 text-slate-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <p class="font-bold text-slate-700">Klik untuk unggah screenshot bukti transfer</p>
+                <p class="text-[11px] text-slate-400">Format JPG, PNG atau PDF (Maksimal 5MB)</p>
+              </div>
+              <div v-else class="space-y-2">
+                <img :src="proofPreview" alt="Pratinjau Bukti" class="h-28 mx-auto rounded-xl object-contain shadow-xs border border-slate-200" />
+                <p class="text-[11px] font-bold text-emerald-600">Bukti berhasil dipilih (Klik untuk ganti)</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Catatan Tambahan (Opsional)</label>
+            <textarea 
+              v-model.trim="proofForm.notes" 
+              rows="2" 
+              placeholder="Keterangan tambahan jika diperlukan..."
+              class="w-full p-3 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#263D9B] bg-white"
+            ></textarea>
+          </div>
+
+          <div class="pt-2 flex gap-3">
+            <button 
+              type="button" 
+              @click="showUploadProofModal = false" 
+              class="w-1/3 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
+            >
+              Batal
+            </button>
+            <button 
+              type="submit" 
+              :disabled="isSubmittingProof"
+              class="w-2/3 py-3 rounded-xl bg-[#263D9B] hover:bg-[#1d3080] text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75"
+            >
+              <span v-if="!isSubmittingProof">Kirim Bukti Pembayaran</span>
+              <span v-else>Memproses...</span>
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+    <!-- POPUP 3: SUKSES ADUAN / KONSULTASI (Animasi Chibi & Pesan Sesuai Permintaan) -->
+    <div v-if="showSuccessModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-fade-in">
+      <div class="w-full max-w-sm sm:max-w-md bg-white rounded-[32px] shadow-2xl border border-slate-100 overflow-hidden text-center p-6 sm:p-8 relative">
+        
+        <!-- Animasi Chibi Megaphone Pengumuman -->
+        <div class="flex justify-center -mt-20 sm:-mt-24 mb-3">
+          <div class="relative">
+            <div class="absolute inset-0 bg-blue-500/15 rounded-full blur-2xl transform scale-90"></div>
+            <img 
+              :src="aduanSuksesImg" 
+              alt="Aduan Berhasil Diteruskan" 
+              class="relative w-44 h-52 sm:w-52 sm:h-60 object-contain drop-shadow-2xl animate-bounce-gentle pointer-events-none"
+            />
+          </div>
+        </div>
+
+        <!-- Konten Teks Sesuai Permintaan Persis -->
+        <div class="space-y-3 px-1 sm:px-2">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-black uppercase tracking-wider border border-emerald-100">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            <span>Pesan Berhasil Terkirim</span>
+          </div>
+
+          <h3 class="text-lg font-black text-slate-800 tracking-tight">
+            Pusat Bantuan & Billing Menerima Pesan Anda
+          </h3>
+
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium bg-slate-50 p-4 rounded-2xl border border-slate-100">
+            pesan anda sudah kami teruskan ke pusat bantuan, kami akan memproses nya tunggu sebentar lagi CS akan mengkabari anda lewat nomor yang anda daftarkan terimakasih
+          </p>
+
+          <div class="pt-2">
+            <button 
+              @click="showSuccessModal = false" 
+              type="button"
+              class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#263D9B] to-[#1e307d] hover:from-[#1e307d] hover:to-[#172562] text-white font-black text-xs shadow-lg shadow-[#263D9B]/30 hover:shadow-xl transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+            >
+              Baik, Terima Kasih
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script setup>
 import { ref, computed, defineComponent, h } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import aduanSuksesImg from '../assets/aduan-sukses.png'
 
 const route = useRoute()
 const router = useRouter()
@@ -545,6 +868,43 @@ const activeInstructionTab = ref(0)
 // Copying state
 const copiedType = ref(null)
 const isCheckingStatus = ref(false)
+
+// Modals State
+const showHelpModal = ref(false)
+const showSuccessModal = ref(false)
+const showUploadProofModal = ref(false)
+const isSubmittingHelp = ref(false)
+const isSubmittingProof = ref(false)
+const paymentSubmitted = ref(false)
+
+// Form Bantuan & Aduan
+const helpForm = ref({
+  name: '',
+  contact: '',
+  school: '',
+  category: 'Panduan Transfer Virtual Account (M-Banking / ATM)',
+  message: ''
+})
+
+// Form Bukti Pembayaran
+const proofForm = ref({
+  senderName: '',
+  bankName: '',
+  notes: '',
+  fileData: null
+})
+const proofPreview = ref(null)
+
+const handleFileUpload = (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    proofPreview.value = e.target.result
+    proofForm.value.fileData = e.target.result
+  }
+  reader.readAsDataURL(file)
+}
 
 // -----------------------------------------------------------------------------------------
 // HIGH-FIDELITY VECTOR LOGO COMPONENTS (100% SVG, Clean & Responsive)
@@ -993,12 +1353,131 @@ const copyText = (text, type) => {
   }, 3000)
 }
 
+// Direct WhatsApp URL for Help Modal
+const whatsappDirectHelpUrl = computed(() => {
+  const msg = encodeURIComponent(`Halo Tim CS Admin GuruKu, saya sedang di halaman pembayaran perpanjangan paket ${planName} (${formattedPrice.value}) dan memerlukan bantuan/konsultasi pembayaran.`)
+  return `https://wa.me/62${adminPhone.substring(1)}?text=${msg}`
+})
+
+// Submit Help Ticket
+const submitHelpTicket = async () => {
+  if (isSubmittingHelp.value) return
+  isSubmittingHelp.value = true
+
+  try {
+    const payload = {
+      name: helpForm.value.name,
+      contact: helpForm.value.contact,
+      school: helpForm.value.school || 'Pelanggan Billing',
+      category: helpForm.value.category,
+      message: `[KENDALA BILLING - ${planName} / ${formattedPrice.value}]\n${helpForm.value.message}`
+    }
+
+    let createdTicket = null
+    try {
+      const res = await fetch('/api/v1/support-tickets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      if (res.ok) {
+        const data = await res.json()
+        createdTicket = data.ticket
+      }
+    } catch (apiErr) {
+      console.warn('API support-tickets fetch fallback:', apiErr)
+    }
+
+    const now = new Date()
+    const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) + ', ' + 
+                    now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+
+    const localTicket = createdTicket || {
+      id: 'TICK-' + Date.now().toString().slice(-4),
+      name: helpForm.value.name,
+      contact: helpForm.value.contact,
+      school: helpForm.value.school || 'Pelanggan Billing',
+      category: helpForm.value.category,
+      message: `[KENDALA BILLING - ${planName} / ${formattedPrice.value}]\n${helpForm.value.message}`,
+      status: 'MENUNGGU',
+      date: dateStr
+    }
+
+    let existing = []
+    try {
+      const raw = localStorage.getItem('guruKu_support_tickets')
+      if (raw) existing = JSON.parse(raw)
+    } catch (e) {}
+
+    existing.unshift(localTicket)
+    localStorage.setItem('guruKu_support_tickets', JSON.stringify(existing))
+
+    // Tutup Modal Form, Buka Modal Sukses
+    showHelpModal.value = false
+    showSuccessModal.value = true
+
+    // Reset Form
+    helpForm.value = {
+      name: '',
+      contact: '',
+      school: '',
+      category: 'Panduan Transfer Virtual Account (M-Banking / ATM)',
+      message: ''
+    }
+  } catch (err) {
+    console.error('Error submitting ticket:', err)
+  } finally {
+    isSubmittingHelp.value = false
+  }
+}
+
+// Submit Proof of Payment
+const submitPaymentProof = () => {
+  if (isSubmittingProof.value) return
+  isSubmittingProof.value = true
+
+  setTimeout(() => {
+    const paymentRecord = {
+      invoice: invoiceNumber.value,
+      plan: planName,
+      amount: price,
+      method: selectedMethod.value.fullName,
+      senderName: proofForm.value.senderName,
+      bankName: proofForm.value.bankName,
+      notes: proofForm.value.notes,
+      proofImage: proofForm.value.fileData,
+      status: 'MENUNGGU_VERIFIKASI',
+      timestamp: new Date().toISOString(),
+      formattedDate: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    }
+
+    // Save to localStorage for persistence & SuperAdmin reading
+    let existingPayments = []
+    try {
+      const raw = localStorage.getItem('guruKu_pending_payments')
+      if (raw) existingPayments = JSON.parse(raw)
+    } catch (e) {}
+    existingPayments.unshift(paymentRecord)
+    localStorage.setItem('guruKu_pending_payments', JSON.stringify(existingPayments))
+
+    paymentSubmitted.value = true
+    showUploadProofModal.value = false
+    isSubmittingProof.value = false
+
+    alert(`Bukti pembayaran untuk [${invoiceNumber.value}] berhasil dikirim!\n\nTim verifikasi sedang mencocokkan mutasi bank. Begitu transaksi terverifikasi, lisensi sekolah Anda otomatis aktif.`)
+  }, 1000)
+}
+
 // Check Transaction Status Simulation
 const checkTransactionStatus = () => {
   isCheckingStatus.value = true
   setTimeout(() => {
     isCheckingStatus.value = false
-    alert(`Status Transaksi [${invoiceNumber.value}]:\nSistem sedang menunggu penerimaan dana dari perbankan. Silakan selesaikan pembayaran melalui nomor Virtual Account yang tertera atau konfirmasikan ke layanan WhatsApp.`)
+    if (paymentSubmitted.value) {
+      alert(`Status Transaksi [${invoiceNumber.value}]:\nBukti pembayaran Anda sudah tercatat di sistem (Menunggu Konfirmasi Admin). Estimasi waktu aktivasi: 1 - 5 menit.`)
+    } else {
+      alert(`Status Transaksi [${invoiceNumber.value}]:\nSistem sedang menunggu penerimaan dana dari perbankan. Silakan selesaikan pembayaran melalui nomor Virtual Account yang tertera atau unggah bukti transfer.`)
+    }
   }, 1200)
 }
 

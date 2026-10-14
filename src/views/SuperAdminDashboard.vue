@@ -27,6 +27,17 @@
           Laporan Pendapatan
         </button>
 
+        <button @click="activeTab = 'verifikasi'" class="w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition-all relative"
+          :class="activeTab === 'verifikasi' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-gray-400 hover:bg-gray-800 hover:text-white'">
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span>Verifikasi Bayar</span>
+          </div>
+          <span v-if="pendingPaymentsCount > 0" class="bg-emerald-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm animate-pulse">
+            {{ pendingPaymentsCount }}
+          </span>
+        </button>
+
         <button @click="activeTab = 'aduan'" class="w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition-all relative"
           :class="activeTab === 'aduan' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-gray-400 hover:bg-gray-800 hover:text-white'">
           <div class="flex items-center gap-3">
@@ -323,6 +334,125 @@
         </div>
       </div>
 
+      <!-- VERIFIKASI PEMBAYARAN MASUK TAB -->
+      <div v-else-if="activeTab === 'verifikasi'" class="animate-fade-in space-y-6">
+        <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/40 border border-gray-100 overflow-hidden">
+          <div class="p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-white/50 backdrop-blur-xl">
+            <div>
+              <h2 class="text-xl font-black text-gray-800 tracking-tight">Verifikasi Pembayaran & Bukti Transfer</h2>
+              <p class="text-sm text-gray-500 mt-1 font-medium">Validasi bukti pelunasan lisensi dari sekolah dan perpanjang masa aktif dalam satu klik.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button @click="loadPendingPayments" class="p-2.5 bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-700 transition-colors cursor-pointer flex items-center gap-2 text-xs font-bold" title="Perbarui Data">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                <span>Perbarui Data</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="overflow-x-auto">
+            <table class="min-w-full bg-white">
+              <thead>
+                <tr class="bg-gray-50/80 text-left border-y border-gray-100">
+                  <th class="py-4 px-6 uppercase font-black text-[11px] text-gray-400 tracking-wider">No. Invoice & Paket</th>
+                  <th class="py-4 px-6 uppercase font-black text-[11px] text-gray-400 tracking-wider">Pengirim & Bank</th>
+                  <th class="py-4 px-6 uppercase font-black text-[11px] text-gray-400 tracking-wider">Metode & Nominal</th>
+                  <th class="py-4 px-6 uppercase font-black text-[11px] text-gray-400 tracking-wider">Bukti Transfer</th>
+                  <th class="py-4 px-6 uppercase font-black text-[11px] text-gray-400 tracking-wider">Status</th>
+                  <th class="py-4 px-6 uppercase font-black text-[11px] text-gray-400 tracking-wider text-right">Aksi Verifikasi</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-50">
+                <tr v-if="pendingPayments.length === 0">
+                  <td colspan="6" class="py-16 text-center text-gray-400 font-medium">
+                    <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Belum ada konfirmasi pembayaran baru yang masuk.
+                  </td>
+                </tr>
+                <tr v-for="(p, pIdx) in pendingPayments" :key="pIdx" class="hover:bg-blue-50/20 transition-colors">
+                  <td class="py-4 px-6">
+                    <p class="font-bold text-gray-900 text-sm font-mono">{{ p.invoice }}</p>
+                    <p class="text-xs text-blue-600 font-semibold mt-0.5">Paket {{ p.plan }} &bull; {{ p.formattedDate }}</p>
+                  </td>
+                  <td class="py-4 px-6">
+                    <p class="text-sm font-bold text-gray-800">{{ p.senderName }}</p>
+                    <p class="text-xs text-gray-500 font-medium">Dari: {{ p.bankName }}</p>
+                    <p v-if="p.notes" class="text-[11px] text-gray-400 italic mt-0.5 max-w-xs truncate" :title="p.notes">"{{ p.notes }}"</p>
+                  </td>
+                  <td class="py-4 px-6">
+                    <p class="font-black text-gray-900 text-sm">{{ formatRupiah(p.amount) }}</p>
+                    <p class="text-xs text-slate-500 font-medium">{{ p.method }}</p>
+                  </td>
+                  <td class="py-4 px-6">
+                    <div v-if="p.proofImage" class="flex items-center gap-2">
+                      <img 
+                        :src="p.proofImage" 
+                        alt="Bukti Transfer" 
+                        @click="previewReceiptImage = p.proofImage"
+                        class="w-12 h-12 rounded-xl object-cover border border-slate-200 shadow-xs cursor-pointer hover:scale-105 transition-transform" 
+                        title="Klik untuk memperbesar"
+                      />
+                      <button 
+                        @click="previewReceiptImage = p.proofImage" 
+                        class="text-[11px] text-blue-600 font-bold hover:underline cursor-pointer"
+                      >
+                        Lihat Foto
+                      </button>
+                    </div>
+                    <span v-else class="text-xs text-gray-400 italic">Tanpa Gambar</span>
+                  </td>
+                  <td class="py-4 px-6">
+                    <span 
+                      class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold"
+                      :class="{
+                        'bg-amber-100 text-amber-800': p.status === 'MENUNGGU_VERIFIKASI',
+                        'bg-emerald-100 text-emerald-800': p.status === 'TERVERIFIKASI',
+                        'bg-rose-100 text-rose-800': p.status === 'DITOLAK'
+                      }"
+                    >
+                      <span class="w-1.5 h-1.5 rounded-full"
+                        :class="{
+                          'bg-amber-500': p.status === 'MENUNGGU_VERIFIKASI',
+                          'bg-emerald-500': p.status === 'TERVERIFIKASI',
+                          'bg-rose-500': p.status === 'DITOLAK'
+                        }"
+                      ></span>
+                      {{ p.status === 'MENUNGGU_VERIFIKASI' ? 'Menunggu Verifikasi' : p.status }}
+                    </span>
+                  </td>
+                  <td class="py-4 px-6 text-right space-x-1.5 whitespace-nowrap">
+                    <button 
+                      v-if="p.status === 'MENUNGGU_VERIFIKASI'"
+                      @click="approvePayment(p)"
+                      class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-all cursor-pointer active:scale-95"
+                      title="Setujui dan perpanjang masa aktif sekolah"
+                    >
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                      <span>Setujui (+30 Hari)</span>
+                    </button>
+                    <button 
+                      v-if="p.status === 'MENUNGGU_VERIFIKASI'"
+                      @click="rejectPayment(p)"
+                      class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs border border-rose-200 transition-all cursor-pointer active:scale-95"
+                      title="Tolak pembayaran"
+                    >
+                      <span>Tolak</span>
+                    </button>
+                    <button 
+                      @click="deletePaymentRecord(p.invoice)"
+                      class="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                      title="Hapus Catatan"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- ADUAN & SARAN KLIEN TAB -->
       <div v-else-if="activeTab === 'aduan'" class="animate-fade-in space-y-6">
         <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/40 border border-gray-100 overflow-hidden">
@@ -542,6 +672,20 @@
         </form>
       </div>
     </div>
+
+    <!-- Modal Pratinjau Struk Pembayaran -->
+    <div v-if="previewReceiptImage" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in" @click.self="previewReceiptImage = null">
+      <div class="bg-white rounded-3xl max-w-xl w-full p-5 overflow-hidden shadow-2xl relative">
+        <div class="flex justify-between items-center pb-3 mb-3 border-b border-gray-100">
+          <h3 class="font-bold text-gray-800 text-sm">Bukti Transfer Pembayaran</h3>
+          <button @click="previewReceiptImage = null" class="p-1.5 text-gray-400 hover:text-gray-700 rounded-lg cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <img :src="previewReceiptImage" alt="Bukti Transfer Penuh" class="max-h-[70vh] w-auto mx-auto rounded-2xl object-contain shadow-inner border border-slate-100" />
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -576,6 +720,58 @@ const formatRupiah = (angka) => {
     currency: 'IDR',
     minimumFractionDigits: 0
   }).format(angka || 0)
+}
+
+// Data & Methods untuk Verifikasi Pembayaran Masuk
+const pendingPayments = ref([])
+const previewReceiptImage = ref(null)
+
+const loadPendingPayments = () => {
+  try {
+    const raw = localStorage.getItem('guruKu_pending_payments')
+    if (raw) {
+      pendingPayments.value = JSON.parse(raw)
+    }
+  } catch (e) {}
+}
+
+const pendingPaymentsCount = computed(() => {
+  return pendingPayments.value.filter(p => p.status === 'MENUNGGU_VERIFIKASI').length
+})
+
+const approvePayment = (payment) => {
+  payment.status = 'TERVERIFIKASI'
+  localStorage.setItem('guruKu_pending_payments', JSON.stringify(pendingPayments.value))
+
+  // Coba perpanjang sekolah jika nama cocok
+  const matched = schools.value.find(s => 
+    s.name && payment.senderName && (
+      s.name.toLowerCase().includes(payment.senderName.toLowerCase()) || 
+      payment.senderName.toLowerCase().includes(s.name.toLowerCase())
+    )
+  )
+  if (matched) {
+    const currentExpiry = new Date(matched.valid_until)
+    const baseDate = currentExpiry > new Date() ? currentExpiry : new Date()
+    baseDate.setDate(baseDate.getDate() + 30)
+    matched.valid_until = baseDate.toISOString().slice(0, 10)
+  }
+
+  alert(`Pembayaran [${payment.invoice}] berhasil disetujui! Status diperbarui menjadi TERVERIFIKASI.`)
+}
+
+const rejectPayment = (payment) => {
+  if (confirm(`Tolak konfirmasi pembayaran [${payment.invoice}]?`)) {
+    payment.status = 'DITOLAK'
+    localStorage.setItem('guruKu_pending_payments', JSON.stringify(pendingPayments.value))
+  }
+}
+
+const deletePaymentRecord = (invoice) => {
+  if (confirm(`Hapus catatan transaksi [${invoice}]?`)) {
+    pendingPayments.value = pendingPayments.value.filter(p => p.invoice !== invoice)
+    localStorage.setItem('guruKu_pending_payments', JSON.stringify(pendingPayments.value))
+  }
 }
 
 // Data & Methods untuk Aduan & Saran Klien
@@ -993,12 +1189,14 @@ onMounted(() => {
   fetchSchools()
   loadForgotPasswordReports()
   loadSupportTickets()
+  loadPendingPayments()
   document.addEventListener('click', handleClickOutside)
   
   // Fallback Polling (3 detik) agar real-time tersinkron dengan database
   reportInterval = setInterval(() => {
     loadForgotPasswordReports()
     loadSupportTickets()
+    loadPendingPayments()
   }, 3000)
 })
 
