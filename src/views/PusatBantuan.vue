@@ -227,10 +227,11 @@
                   <button 
                     v-if="item.contact"
                     @click="contactWhatsApp(item.contact, item.name)" 
-                    class="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[11px] transition-colors border border-emerald-200 cursor-pointer"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[11px] transition-all border border-emerald-200 cursor-pointer shadow-sm active:scale-95"
                     title="Hubungi Via WhatsApp"
                   >
-                    WhatsApp
+                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                    <span>WhatsApp</span>
                   </button>
                   <button 
                     v-if="item.status !== 'SELESAI'"
@@ -314,7 +315,7 @@
               <input 
                 type="text" 
                 v-model.trim="newTicket.contact" 
-                placeholder="Contoh: 081234567890"
+                placeholder="Nomor WhatsApp aktif"
                 required
                 class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#263D9B] focus:ring-2 focus:ring-[#263D9B]/10 transition-all bg-white"
               />
@@ -363,14 +364,74 @@
 
     </div>
 
+    <!-- MODAL POPUP SUKSES ADUAN DENGAN ANIMASI MEGAPON -->
+    <div 
+      v-if="showSuccessModal" 
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md animate-fade-in"
+      @click.self="showSuccessModal = false"
+    >
+      <div class="relative bg-white rounded-3xl max-w-sm sm:max-w-md w-full pt-4 pb-7 px-6 text-center shadow-2xl border border-slate-100 animate-pop-in">
+        
+        <!-- Tombol Tutup X -->
+        <button 
+          @click="showSuccessModal = false" 
+          class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-full p-2 transition-colors cursor-pointer z-10"
+          title="Tutup"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+
+        <!-- Ilustrasi Animasi Megafon di Atas Popup -->
+        <div class="flex justify-center -mt-20 sm:-mt-24 mb-3">
+          <div class="relative">
+            <div class="absolute inset-0 bg-blue-500/15 rounded-full blur-2xl transform scale-90"></div>
+            <img 
+              :src="aduanSuksesImg" 
+              alt="Aduan Berhasil Diteruskan" 
+              class="relative w-44 h-52 sm:w-52 sm:h-60 object-contain drop-shadow-2xl animate-bounce-gentle pointer-events-none"
+            />
+          </div>
+        </div>
+
+        <!-- Konten Teks -->
+        <div class="space-y-3 px-1 sm:px-2">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-black uppercase tracking-wider border border-emerald-100">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            <span>Aduan Berhasil Terkirim</span>
+          </div>
+
+          <h3 class="text-lg font-black text-slate-800 tracking-tight">
+            Pusat Bantuan Telah Menerima Pesan Anda
+          </h3>
+
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium bg-slate-50 p-4 rounded-2xl border border-slate-100">
+            Pesan anda sudah kami teruskan ke pusat bantuan, kami akan memproses nya tunggu sebentar lagi CS akan mengkabari anda lewat nomor yang anda daftarkan terimakasih.
+          </p>
+
+          <div class="pt-2">
+            <button 
+              @click="showSuccessModal = false" 
+              type="button"
+              class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#263D9B] to-[#1e307d] hover:from-[#1e307d] hover:to-[#172562] text-white font-black text-xs shadow-lg shadow-[#263D9B]/30 hover:shadow-xl transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+            >
+              Baik, Terima Kasih
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { SafeFlow } from '../core/SafeFlow.js'
+import aduanSuksesImg from '../assets/aduan-sukses.png'
 
 const activeSubTab = ref('aduan')
+const showSuccessModal = ref(false)
 const searchQuery = ref('')
 const filterStatus = ref('ALL')
 
@@ -501,10 +562,18 @@ const deleteTicket = async (id) => {
 }
 
 const contactWhatsApp = (phone, name) => {
-  const cleanPhone = phone.replace(/[^0-9]/g, '')
-  const intlPhone = cleanPhone.startsWith('0') ? '62' + cleanPhone.slice(1) : cleanPhone
-  const msg = encodeURIComponent(`Halo Bpk/Ibu ${name}, kami dari Tim Layanan GuruKu menindaklanjuti aduan/saran Anda mengenai aplikasi jadwal.`)
-  window.open(`https://wa.me/${intlPhone}?text=${msg}`, '_blank')
+  if (!phone) {
+    alert("Nomor WhatsApp tidak valid atau kosong.")
+    return
+  }
+  let cleanPhone = phone.toString().replace(/[^0-9]/g, '')
+  if (cleanPhone.startsWith('0')) {
+    cleanPhone = '62' + cleanPhone.slice(1)
+  } else if (!cleanPhone.startsWith('62')) {
+    cleanPhone = '62' + cleanPhone
+  }
+  const msg = encodeURIComponent(`Halo Bpk/Ibu ${name || ''}, kami dari Tim Layanan GuruKu menindaklanjuti aduan/saran Anda mengenai aplikasi jadwal. Bagaimana kami dapat membantu?`)
+  window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${msg}`, '_blank')
 }
 
 // Form Tiket Baru
@@ -558,14 +627,13 @@ const submitDirectTicket = async () => {
   tickets.value.unshift(ticketObj)
   saveTickets()
 
-  alert("Aduan berhasil disimpan dan diteruskan ke Tim Administrator.")
   newTicket.value = {
     name: '',
     contact: '',
     category: 'Kendala Login / Akun Terkunci',
     message: ''
   }
-  activeSubTab.value = 'aduan'
+  showSuccessModal.value = true
 }
 
 // Daftar FAQ
@@ -604,5 +672,33 @@ onMounted(() => {
 }
 .animate-fade-in {
   animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes bounceGentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-bounce-gentle {
+  animation: bounceGentle 2.4s ease-in-out infinite;
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-pop-in {
+  animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 </style>
