@@ -456,16 +456,39 @@ const helpForm = ref({
   message: ''
 })
 
-const submitHelpTicket = () => {
+const submitHelpTicket = async () => {
   if (isSubmittingHelp.value) return
   isSubmittingHelp.value = true
 
   try {
+    const payload = {
+      name: helpForm.value.name,
+      contact: helpForm.value.contact,
+      school: helpForm.value.school || 'Pengguna Login',
+      category: helpForm.value.category,
+      message: helpForm.value.message
+    }
+
+    let createdTicket = null
+    try {
+      const res = await fetch('/api/v1/support-tickets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      if (res.ok) {
+        const data = await res.json()
+        createdTicket = data.ticket
+      }
+    } catch (apiErr) {
+      console.warn('API support-tickets fetch fallback:', apiErr)
+    }
+
     const now = new Date()
     const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) + ', ' + 
                     now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
 
-    const newTicket = {
+    const localTicket = createdTicket || {
       id: 'TICK-' + Date.now().toString().slice(-4),
       name: helpForm.value.name,
       contact: helpForm.value.contact,
@@ -482,7 +505,7 @@ const submitHelpTicket = () => {
       if (raw) existing = JSON.parse(raw)
     } catch (e) {}
 
-    existing.unshift(newTicket)
+    existing.unshift(localTicket)
     localStorage.setItem('guruKu_support_tickets', JSON.stringify(existing))
 
     alert("Terima kasih! Aduan / saran Anda telah berhasil terkirim ke Administrator. Tim kami akan segera menindaklanjuti.")

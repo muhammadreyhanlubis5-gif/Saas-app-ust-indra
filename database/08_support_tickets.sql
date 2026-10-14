@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS support_tickets (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    contact VARCHAR(100) NOT NULL,
+    school VARCHAR(255) DEFAULT 'Pengguna Umum',
+    category VARCHAR(100) NOT NULL,
+    message TEXT NOT NULL,
+    status VARCHAR(20) DEFAULT 'MENUNGGU',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

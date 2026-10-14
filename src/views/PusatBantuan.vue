@@ -368,6 +368,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { SafeFlow } from '../core/SafeFlow.js'
 
 const activeSubTab = ref('aduan')
 const searchQuery = ref('')
@@ -408,7 +409,21 @@ const initialSampleTickets = [
   }
 ]
 
-const loadTickets = () => {
+const loadTickets = async () => {
+  try {
+    const res = await SafeFlow.fetch('/api/v1/support-tickets')
+    if (res.ok) {
+      const data = await res.json()
+      if (Array.isArray(data) && data.length > 0) {
+        tickets.value = data
+        localStorage.setItem('guruKu_support_tickets', JSON.stringify(data))
+        return
+      }
+    }
+  } catch (e) {
+    console.warn("Gagal memuat tiket dari database:", e)
+  }
+
   try {
     const raw = localStorage.getItem('guruKu_support_tickets')
     if (raw) {
@@ -452,18 +467,36 @@ const filteredTickets = computed(() => {
   })
 })
 
-const updateStatus = (id, newStatus) => {
+const updateStatus = async (id, newStatus) => {
   const item = tickets.value.find(t => t.id === id)
   if (item) {
     item.status = newStatus
     saveTickets()
   }
+
+  try {
+    await SafeFlow.fetch(`/api/v1/support-tickets/${id}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: newStatus })
+    })
+  } catch (err) {
+    console.error("Gagal update status tiket:", err)
+  }
 }
 
-const deleteTicket = (id) => {
+const deleteTicket = async (id) => {
   if (confirm("Hapus aduan ini dari daftar?")) {
     tickets.value = tickets.value.filter(t => t.id !== id)
     saveTickets()
+
+    try {
+      await SafeFlow.fetch(`/api/v1/support-tickets/${id}`, {
+        method: 'DELETE'
+      })
+    } catch (err) {
+      console.error("Gagal menghapus tiket:", err)
+    }
   }
 }
 
@@ -482,16 +515,40 @@ const newTicket = ref({
   message: ''
 })
 
-const submitDirectTicket = () => {
+const submitDirectTicket = async () => {
+  const schoolName = localStorage.getItem('school_name') || 'Admin Sekolah'
+  const payload = {
+    name: newTicket.value.name,
+    contact: newTicket.value.contact,
+    school: schoolName,
+    category: newTicket.value.category,
+    message: newTicket.value.message
+  }
+
+  let createdTicket = null
+  try {
+    const res = await SafeFlow.fetch('/api/v1/support-tickets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    if (res.ok) {
+      const data = await res.json()
+      createdTicket = data.ticket
+    }
+  } catch (err) {
+    console.warn("API support tickets fallback:", err)
+  }
+
   const now = new Date()
   const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) + ', ' + 
                   now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
 
-  const ticketObj = {
+  const ticketObj = createdTicket || {
     id: 'TICK-' + Date.now().toString().slice(-4),
     name: newTicket.value.name,
     contact: newTicket.value.contact,
-    school: localStorage.getItem('school_name') || 'Admin Sekolah',
+    school: schoolName,
     category: newTicket.value.category,
     message: newTicket.value.message,
     status: 'MENUNGGU',

@@ -567,7 +567,22 @@ const formatRupiah = (angka) => {
 const supportTickets = ref([])
 const filterTicketStatus = ref('ALL')
 
-const loadSupportTickets = () => {
+const loadSupportTickets = async () => {
+  try {
+    const res = await SafeFlow.fetch('/api/v1/support-tickets')
+    if (res.ok) {
+      const data = await res.json()
+      if (Array.isArray(data)) {
+        supportTickets.value = data
+        localStorage.setItem('guruKu_support_tickets', JSON.stringify(data))
+        return
+      }
+    }
+  } catch (err) {
+    console.warn("Koneksi API tiket gagal, menggunakan cache lokal:", err)
+  }
+
+  // Fallback cache lokal
   try {
     const raw = localStorage.getItem('guruKu_support_tickets')
     if (raw) {
@@ -591,18 +606,36 @@ const filteredSupportTickets = computed(() => {
   })
 })
 
-const resolveSupportTicket = (id) => {
+const resolveSupportTicket = async (id) => {
   const t = supportTickets.value.find(item => item.id === id)
   if (t) {
     t.status = 'SELESAI'
     saveSupportTickets()
   }
+
+  try {
+    await SafeFlow.fetch(`/api/v1/support-tickets/${id}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'SELESAI' })
+    })
+  } catch (err) {
+    console.error("Gagal update status tiket ke server:", err)
+  }
 }
 
-const deleteSupportTicket = (id) => {
+const deleteSupportTicket = async (id) => {
   if (confirm("Hapus tiket aduan ini?")) {
     supportTickets.value = supportTickets.value.filter(t => t.id !== id)
     saveSupportTickets()
+
+    try {
+      await SafeFlow.fetch(`/api/v1/support-tickets/${id}`, {
+        method: 'DELETE'
+      })
+    } catch (err) {
+      console.error("Gagal menghapus tiket dari server:", err)
+    }
   }
 }
 

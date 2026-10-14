@@ -46,6 +46,12 @@ func SetupRoutes(r *gin.Engine) {
 		dashboard.GET("/validation", handlers.GetDashboardValidation)
 	}
 
+	// Support Tickets (Aduan & Saran)
+	api.POST("/support-tickets", handlers.CreateSupportTicket)
+	api.GET("/support-tickets", handlers.GetSupportTickets)
+	api.PUT("/support-tickets/:id/status", handlers.UpdateSupportTicketStatus)
+	api.DELETE("/support-tickets/:id", handlers.DeleteSupportTicket)
+
 	// You can expand others here
 	api.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{"message": "pong dari Vercel + Neon!"})
