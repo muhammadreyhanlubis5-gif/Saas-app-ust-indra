@@ -536,6 +536,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { SafeFlow } from '../core/SafeFlow.js'
+import indonesiaSchools from '../data/schools_indonesia.json'
 
 const router = useRouter()
 const activeTab = ref('manajemen')
@@ -776,16 +777,8 @@ const schoolSuggestions = ref([])
 const isSearchingSchool = ref(false)
 let searchTimeout = null
 
-// Custom hardcoded database for client-specific schools
-const customSchools = [
-  { name: 'SMP Swasta Galih Agung', display_name: 'SMP Swasta Galih Agung, Jl. Berdikari No.1A, Desa Lau Bakeri, Kec. Kutalimbaru, Kab. Deli Serdang, Sumatera Utara 20354' },
-  { name: 'SMA SWASTA GALIH AGUNG', display_name: 'SMA SWASTA GALIH AGUNG, Jl. Berdikari No.1A, Desa Lau Bakeri, Kec. Kutalimbaru, Kab. Deli Serdang, Sumatera Utara 20354' },
-  { name: 'MTS Darularafah', display_name: 'MTS Darularafah, Jl. Berdikari No.1A, Desa Lau Bakeri, Kec. Kutalimbaru, Kab. Deli Serdang, Sumatera Utara 20354' },
-  { name: 'MAS Darularafah', display_name: 'MAS Darularafah, Jl. Berdikari No.1A, Desa Lau Bakeri, Kec. Kutalimbaru, Kab. Deli Serdang, Sumatera Utara 20354' }
-]
-
 const searchSchool = () => {
-  const queryText = form.value.name.toLowerCase()
+  const queryText = form.value.name.toLowerCase().trim()
   if (queryText.length < 2) {
     schoolSuggestions.value = []
     showSchoolSuggestions.value = false
@@ -799,16 +792,24 @@ const searchSchool = () => {
   
   searchTimeout = setTimeout(async () => {
     try {
-      // 1. Cek dari Custom Database lokal terlebih dahulu
-      const localMatches = customSchools.filter(s => 
+      // 1. Cek dari Database 1.900+ Sekolah Indonesia (data-nama-sekolah)
+      const localMatches = (indonesiaSchools || []).filter(s => 
         s.name.toLowerCase().includes(queryText) || 
-        s.display_name.toLowerCase().includes(queryText)
-      ).map(s => ({
+        (s.address && s.address.toLowerCase().includes(queryText))
+      ).slice(0, 10).map(s => ({
         display_name: s.display_name,
-        customName: s.name // Penanda custom name
+        customName: s.name,
+        address: s.address
       }))
 
-      // 2. Fetch dari Nominatim OpenStreetMap
+      // Jika dari data lokal sudah ada hasil relevan, tampilkan langsung secara instan
+      if (localMatches.length >= 3) {
+        schoolSuggestions.value = localMatches
+        isSearchingSchool.value = false
+        return
+      }
+
+      // 2. Fetch cadangan dari Nominatim OpenStreetMap jika hasil lokal sedikit
       const query = encodeURIComponent(form.value.name)
       const res = await SafeFlow.fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json&countrycodes=id&limit=5`, {
         headers: { 'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7' }
@@ -820,23 +821,24 @@ const searchSchool = () => {
       }
 
       // Gabungkan hasil lokal dan API
-      schoolSuggestions.value = [...localMatches, ...apiResults].slice(0, 7)
+      schoolSuggestions.value = [...localMatches, ...apiResults].slice(0, 8)
       
     } catch (e) {
       console.error("Gagal mencari sekolah", e)
     } finally {
       isSearchingSchool.value = false
     }
-  }, 500)
+  }, 250)
 }
 
 const selectSchool = (suggestion) => {
   if (suggestion.customName) {
     form.value.name = suggestion.customName
+    form.value.address = suggestion.address || suggestion.display_name
   } else {
     form.value.name = extractSchoolName(suggestion.display_name)
+    form.value.address = suggestion.display_name
   }
-  form.value.address = suggestion.display_name
   showSchoolSuggestions.value = false
 }
 

@@ -130,8 +130,19 @@
         <!-- Mode Masuk Standar -->
         <div v-if="!showForgotPassword" class="animate-fade-in">
           
+          <!-- Logo Aplikasi GuruKu (Rapi dan Elegan) -->
+          <div class="flex justify-center mb-3 sm:mb-4">
+            <div class="p-1 rounded-2xl bg-white shadow-md shadow-slate-200/60 border border-slate-100 ring-2 ring-slate-100/50">
+              <img 
+                :src="logoApk" 
+                alt="Logo GuruKu" 
+                class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover"
+              />
+            </div>
+          </div>
+
           <!-- Judul "Selamat Datang" -->
-          <div class="text-center mb-6 sm:mb-8">
+          <div class="text-center mb-5 sm:mb-7">
             <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 tracking-tight">Selamat Datang</h2>
             <p class="text-xs text-gray-400 mt-1.5 font-medium">Masuk ke portal administrasi GuruKu</p>
           </div>
@@ -484,6 +495,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import animasiImg from '../assets/animasi.png'
 import aduanSuksesImg from '../assets/aduan-sukses.png'
+import logoApk from '../assets/logo-apk.jpg'
 
 // Import 8 Gambar Slide dari folder assets/slides-login
 import slide1 from '../assets/slides-login/1.jpg'
