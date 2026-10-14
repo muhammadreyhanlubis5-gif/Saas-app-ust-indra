@@ -432,55 +432,58 @@
     <!-- MODAL POPUP SUKSES ADUAN DENGAN ANIMASI MEGAPON -->
     <div 
       v-if="showSuccessModal" 
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md animate-fade-in"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 pt-20 bg-slate-950/70 backdrop-blur-md animate-fade-in"
       @click.self="showSuccessModal = false"
     >
-      <div class="relative bg-white rounded-3xl max-w-sm sm:max-w-md w-full pt-4 pb-7 px-6 text-center shadow-2xl border border-slate-100 animate-pop-in">
+      <div class="w-full max-w-sm sm:max-w-md relative animate-pop-in mt-16 sm:mt-20">
         
-        <!-- Tombol Tutup X -->
-        <button 
-          @click="showSuccessModal = false" 
-          class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-full p-2 transition-colors cursor-pointer z-10"
-          title="Tutup"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
-        </button>
-
-        <!-- Ilustrasi Animasi Megafon di Atas Popup -->
-        <div class="flex justify-center -mt-20 sm:-mt-24 mb-3">
-          <div class="relative">
-            <div class="absolute inset-0 bg-blue-500/15 rounded-full blur-2xl transform scale-90"></div>
+        <!-- Ilustrasi Animasi Megafon Berdiri Di Atas Popup (100% Utuh Bebas Terpotong) -->
+        <div class="absolute -top-32 sm:-top-36 left-1/2 -translate-x-1/2 flex justify-center pointer-events-none z-30 w-full">
+          <div class="relative flex justify-center">
+            <div class="absolute inset-0 bg-blue-500/25 rounded-full blur-2xl transform scale-90"></div>
             <img 
               :src="aduanSuksesImg" 
               alt="Aduan Berhasil Diteruskan" 
-              class="relative w-44 h-52 sm:w-52 sm:h-60 object-contain drop-shadow-2xl animate-bounce-gentle pointer-events-none"
+              class="relative w-44 h-52 sm:w-52 sm:h-60 object-contain drop-shadow-[0_20px_25px_rgba(0,0,0,0.35)] animate-bounce-gentle pointer-events-none"
             />
           </div>
         </div>
 
-        <!-- Konten Teks -->
-        <div class="space-y-3 px-1 sm:px-2">
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-black uppercase tracking-wider border border-emerald-100">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-            <span>Aduan Berhasil Terkirim</span>
-          </div>
+        <!-- Kartu Putih Popup (Tanpa overflow-hidden agar animasi bebas) -->
+        <div class="bg-white rounded-[32px] shadow-2xl border border-slate-100 text-center p-6 sm:p-8 pt-12 sm:pt-14 relative overflow-visible">
+          <!-- Tombol Tutup X -->
+          <button 
+            @click="showSuccessModal = false" 
+            class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-full p-2 transition-colors cursor-pointer z-10"
+            title="Tutup"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
 
-          <h3 class="text-lg font-black text-slate-800 tracking-tight">
-            Pusat Bantuan Telah Menerima Pesan Anda
-          </h3>
+          <!-- Konten Teks -->
+          <div class="space-y-3 px-1 sm:px-2">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-black uppercase tracking-wider border border-emerald-100">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              <span>Aduan Berhasil Terkirim</span>
+            </div>
 
-          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium bg-slate-50 p-4 rounded-2xl border border-slate-100">
-            Pesan anda sudah kami teruskan ke pusat bantuan, kami akan memproses nya tunggu sebentar lagi CS akan mengkabari anda lewat nomor yang anda daftarkan terimakasih.
-          </p>
+            <h3 class="text-lg font-black text-slate-800 tracking-tight">
+              Pusat Bantuan Telah Menerima Pesan Anda
+            </h3>
 
-          <div class="pt-2">
-            <button 
-              @click="showSuccessModal = false" 
-              type="button"
-              class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#263D9B] to-[#1e307d] hover:from-[#1e307d] hover:to-[#172562] text-white font-black text-xs shadow-lg shadow-[#263D9B]/30 hover:shadow-xl transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
-            >
-              Baik, Terima Kasih
-            </button>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              pesan anda sudah kami teruskan ke pusat bantuan, kami akan memproses nya tunggu sebentar lagi CS akan mengkabari anda lewat nomor yang anda daftarkan terimakasih
+            </p>
+
+            <div class="pt-2">
+              <button 
+                @click="showSuccessModal = false" 
+                type="button"
+                class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#263D9B] to-[#1e307d] hover:from-[#1e307d] hover:to-[#172562] text-white font-black text-xs shadow-lg shadow-[#263D9B]/30 hover:shadow-xl transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+              >
+                Baik, Terima Kasih
+              </button>
+            </div>
           </div>
         </div>
 
@@ -528,73 +531,62 @@ const helpForm = ref({
   message: ''
 })
 
-const submitHelpTicket = async () => {
+const submitHelpTicket = () => {
   if (isSubmittingHelp.value) return
   isSubmittingHelp.value = true
 
-  try {
-    const payload = {
-      name: helpForm.value.name,
-      contact: helpForm.value.contact,
-      school: helpForm.value.school || 'Pengguna Login',
-      category: helpForm.value.category,
-      message: helpForm.value.message
-    }
-
-    let createdTicket = null
-    try {
-      const res = await fetch('/api/v1/support-tickets', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-      if (res.ok) {
-        const data = await res.json()
-        createdTicket = data.ticket
-      }
-    } catch (apiErr) {
-      console.warn('API support-tickets fetch fallback:', apiErr)
-    }
-
-    const now = new Date()
-    const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) + ', ' + 
-                    now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
-
-    const localTicket = createdTicket || {
-      id: 'TICK-' + Date.now().toString().slice(-4),
-      name: helpForm.value.name,
-      contact: helpForm.value.contact,
-      school: helpForm.value.school || 'Pengguna Login',
-      category: helpForm.value.category,
-      message: helpForm.value.message,
-      status: 'MENUNGGU',
-      date: dateStr
-    }
-
-    let existing = []
-    try {
-      const raw = localStorage.getItem('guruKu_support_tickets')
-      if (raw) existing = JSON.parse(raw)
-    } catch (e) {}
-
-    existing.unshift(localTicket)
-    localStorage.setItem('guruKu_support_tickets', JSON.stringify(existing))
-
-    // Tutup modal input dan buka popup sukses animasi megafon
-    helpForm.value = {
-      name: '',
-      contact: '',
-      school: '',
-      category: 'Kendala Login / Akun Terkunci',
-      message: ''
-    }
-    showHelpModal.value = false
-    showSuccessModal.value = true
-  } catch (err) {
-    alert("Terjadi kendala saat mengirim aduan. Silakan coba kembali.")
-  } finally {
-    isSubmittingHelp.value = false
+  const payload = {
+    name: helpForm.value.name,
+    contact: helpForm.value.contact,
+    school: helpForm.value.school || 'Pengguna Login',
+    category: helpForm.value.category,
+    message: helpForm.value.message
   }
+
+  const now = new Date()
+  const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) + ', ' + 
+                  now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+
+  const localTicket = {
+    id: 'TICK-' + Date.now().toString().slice(-4),
+    name: helpForm.value.name,
+    contact: helpForm.value.contact,
+    school: helpForm.value.school || 'Pengguna Login',
+    category: helpForm.value.category,
+    message: helpForm.value.message,
+    status: 'MENUNGGU',
+    date: dateStr
+  }
+
+  let existing = []
+  try {
+    const raw = localStorage.getItem('guruKu_support_tickets')
+    if (raw) existing = JSON.parse(raw)
+  } catch (e) {}
+
+  existing.unshift(localTicket)
+  localStorage.setItem('guruKu_support_tickets', JSON.stringify(existing))
+
+  // Tutup modal input dan buka popup sukses animasi megafon secara instan (0ms)
+  helpForm.value = {
+    name: '',
+    contact: '',
+    school: '',
+    category: 'Kendala Login / Akun Terkunci',
+    message: ''
+  }
+  showHelpModal.value = false
+  showSuccessModal.value = true
+  isSubmittingHelp.value = false
+
+  // Background sync ke API serverless tanpa menahan antarmuka
+  try {
+    fetch('/api/v1/support-tickets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).catch(() => {})
+  } catch (e) {}
 }
 
 // Konfigurasi 8 Slide Login dengan teks Bahasa Indonesia
@@ -767,16 +759,16 @@ const handleLogin = async () => {
         } catch(e) {}
       }
 
-      // Animasi pergantian teks
+      // Animasi pergantian teks kilat & responsif
       setTimeout(() => {
         loadingText.value = 'Data berhasil tervalidasi...'
-      }, 1500)
+      }, 350)
       
       setTimeout(() => {
         loadingText.value = `Siap mengunggah data (${schoolName})...`
-      }, 3000)
+      }, 700)
 
-      // Redirect setelah semua teks selesai terbaca (total 4.5 detik)
+      // Redirect cepat (total 1.1 detik)
       setTimeout(() => {
         if (decodedPayload.role === 'SUPER_ADMIN') {
           router.push('/super-admin')
@@ -785,7 +777,7 @@ const handleLogin = async () => {
         } else {
           router.push('/guru')
         }
-      }, 4500)
+      }, 1100)
       
     } else {
       alert("Login Gagal: " + (data.error || "Password salah atau username tidak ditemukan"))
@@ -825,9 +817,11 @@ const checkApproval = async () => {
 }
 
 onMounted(() => {
-  // Preload gambar animasi
+  // Preload gambar animasi agar instan tanpa loading
   const img = new Image()
   img.src = animasiImg
+  const img2 = new Image()
+  img2.src = aduanSuksesImg
 
   // Mulai perputaran slide 5 detik
   startSliderTimer()
