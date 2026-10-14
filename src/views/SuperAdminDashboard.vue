@@ -27,6 +27,17 @@
           Laporan Pendapatan
         </button>
 
+        <button @click="activeTab = 'aduan'" class="w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition-all relative"
+          :class="activeTab === 'aduan' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-gray-400 hover:bg-gray-800 hover:text-white'">
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span>Aduan & Saran</span>
+          </div>
+          <span v-if="unreadTicketsCount > 0" class="bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
+            {{ unreadTicketsCount }}
+          </span>
+        </button>
+
         <button @click="activeTab = 'pengaturan'" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all"
           :class="activeTab === 'pengaturan' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-gray-400 hover:bg-gray-800 hover:text-white'">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
@@ -312,6 +323,108 @@
         </div>
       </div>
 
+      <!-- ADUAN & SARAN KLIEN TAB -->
+      <div v-else-if="activeTab === 'aduan'" class="animate-fade-in space-y-6">
+        <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/40 border border-gray-100 overflow-hidden">
+          <div class="p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-white/50 backdrop-blur-xl">
+            <div>
+              <h2 class="text-xl font-black text-gray-800 tracking-tight">Pusat Layanan Aduan & Saran Klien</h2>
+              <p class="text-sm text-gray-500 mt-1 font-medium">Laporan kendala login, pesan keluhan, dan saran pengguna dari seluruh sekolah.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <select v-model="filterTicketStatus" class="px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 outline-none">
+                <option value="ALL">Semua Status</option>
+                <option value="MENUNGGU">Menunggu</option>
+                <option value="DIPROSES">Diproses</option>
+                <option value="SELESAI">Selesai</option>
+              </select>
+              <button @click="loadSupportTickets" class="p-2.5 bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-700 transition-colors cursor-pointer" title="Perbarui Data">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+              </button>
+            </div>
+          </div>
+          
+          <div class="overflow-x-auto">
+            <table class="min-w-full bg-white">
+              <thead>
+                <tr class="bg-gray-50/80 text-left border-y border-gray-100">
+                  <th class="py-4 px-6 uppercase font-black text-[11px] text-gray-400 tracking-wider">Tanggal & Pelapor</th>
+                  <th class="py-4 px-6 uppercase font-black text-[11px] text-gray-400 tracking-wider">Kategori & Asal Sekolah</th>
+                  <th class="py-4 px-6 uppercase font-black text-[11px] text-gray-400 tracking-wider">Isi Aduan / Saran</th>
+                  <th class="py-4 px-6 uppercase font-black text-[11px] text-gray-400 tracking-wider text-center">Status</th>
+                  <th class="py-4 px-6 uppercase font-black text-[11px] text-gray-400 tracking-wider text-right">Tindakan</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-50">
+                <tr v-if="filteredSupportTickets.length === 0">
+                  <td colspan="5" class="py-12 text-center text-gray-400 font-bold">
+                    Tidak ada tiket aduan atau saran yang ditemukan.
+                  </td>
+                </tr>
+                <tr v-for="t in filteredSupportTickets" :key="t.id" class="hover:bg-gray-50/80 transition-colors">
+                  <td class="py-4 px-6">
+                    <p class="font-bold text-gray-800 text-sm">{{ t.name }}</p>
+                    <p class="text-xs text-indigo-600 font-semibold mt-0.5">{{ t.contact || '-' }}</p>
+                    <p class="text-[10px] text-gray-400 mt-1">{{ t.date }}</p>
+                  </td>
+                  <td class="py-4 px-6">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold bg-indigo-50 text-indigo-700">
+                      {{ t.category || 'Kendala Umum' }}
+                    </span>
+                    <p class="text-xs text-gray-600 font-medium mt-1">{{ t.school || 'Pengguna Mandiri' }}</p>
+                  </td>
+                  <td class="py-4 px-6 max-w-md">
+                    <p class="text-xs text-gray-700 leading-relaxed font-medium">"{{ t.message }}"</p>
+                  </td>
+                  <td class="py-4 px-6 text-center">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold"
+                      :class="{
+                        'bg-amber-100 text-amber-800': t.status === 'MENUNGGU',
+                        'bg-blue-100 text-blue-800': t.status === 'DIPROSES',
+                        'bg-emerald-100 text-emerald-800': t.status === 'SELESAI'
+                      }"
+                    >
+                      <span class="w-1.5 h-1.5 rounded-full"
+                        :class="{
+                          'bg-amber-500': t.status === 'MENUNGGU',
+                          'bg-blue-500': t.status === 'DIPROSES',
+                          'bg-emerald-500': t.status === 'SELESAI'
+                        }"
+                      ></span>
+                      {{ t.status }}
+                    </span>
+                  </td>
+                  <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
+                    <button 
+                      v-if="t.contact"
+                      @click="contactClientWA(t.contact, t.name)"
+                      class="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs border border-emerald-200 transition-colors cursor-pointer"
+                      title="Hubungi Via WhatsApp"
+                    >
+                      WhatsApp
+                    </button>
+                    <button 
+                      v-if="t.status !== 'SELESAI'"
+                      @click="resolveSupportTicket(t.id)"
+                      class="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs border border-blue-200 transition-colors cursor-pointer"
+                    >
+                      Selesaikan
+                    </button>
+                    <button 
+                      @click="deleteSupportTicket(t.id)"
+                      class="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                      title="Hapus Tiket"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </main>
 
     <!-- Modal Tambah Klien -->
@@ -448,6 +561,56 @@ const formatRupiah = (angka) => {
     currency: 'IDR',
     minimumFractionDigits: 0
   }).format(angka || 0)
+}
+
+// Data & Methods untuk Aduan & Saran Klien
+const supportTickets = ref([])
+const filterTicketStatus = ref('ALL')
+
+const loadSupportTickets = () => {
+  try {
+    const raw = localStorage.getItem('guruKu_support_tickets')
+    if (raw) {
+      supportTickets.value = JSON.parse(raw)
+    }
+  } catch (e) {}
+}
+
+const saveSupportTickets = () => {
+  localStorage.setItem('guruKu_support_tickets', JSON.stringify(supportTickets.value))
+}
+
+const unreadTicketsCount = computed(() => {
+  return supportTickets.value.filter(t => t.status === 'MENUNGGU').length
+})
+
+const filteredSupportTickets = computed(() => {
+  return supportTickets.value.filter(t => {
+    if (filterTicketStatus.value === 'ALL') return true
+    return t.status === filterTicketStatus.value
+  })
+})
+
+const resolveSupportTicket = (id) => {
+  const t = supportTickets.value.find(item => item.id === id)
+  if (t) {
+    t.status = 'SELESAI'
+    saveSupportTickets()
+  }
+}
+
+const deleteSupportTicket = (id) => {
+  if (confirm("Hapus tiket aduan ini?")) {
+    supportTickets.value = supportTickets.value.filter(t => t.id !== id)
+    saveSupportTickets()
+  }
+}
+
+const contactClientWA = (phone, name) => {
+  const cleanPhone = (phone || '').replace(/[^0-9]/g, '')
+  const intlPhone = cleanPhone.startsWith('0') ? '62' + cleanPhone.slice(1) : cleanPhone
+  const msg = encodeURIComponent(`Halo Bpk/Ibu ${name}, kami dari Super Admin GuruKu menindaklanjuti aduan/saran yang Anda kirimkan.`)
+  window.open(`https://wa.me/${intlPhone}?text=${msg}`, '_blank')
 }
 
 // Data & Methods for Pengaturan Sistem
@@ -730,11 +893,13 @@ let reportInterval = null
 onMounted(() => {
   fetchSchools()
   loadForgotPasswordReports()
+  loadSupportTickets()
   document.addEventListener('click', handleClickOutside)
   
   // Fallback Polling (3 detik) agar real-time tersinkron dengan database
   reportInterval = setInterval(() => {
     loadForgotPasswordReports()
+    loadSupportTickets()
   }, 3000)
 })
 

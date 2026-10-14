@@ -9,8 +9,25 @@
   </div>
 
   <!-- Container Utama (Responsif di semua ukuran layar) -->
-  <div class="min-h-screen w-full flex items-center justify-center bg-[#eaedf7] font-sans p-3 sm:p-6 lg:p-8">
+  <div class="min-h-screen w-full flex items-center justify-center bg-[#eaedf7] font-sans p-3 sm:p-6 lg:p-8 relative">
     
+    <!-- Tombol Bantuan Bulat (?) di Kanan Atas Layar -->
+    <div class="fixed top-5 right-5 sm:top-6 sm:right-6 z-40">
+      <button 
+        type="button" 
+        @click="showHelpModal = true" 
+        class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white text-[#263D9B] shadow-xl hover:shadow-2xl border border-slate-200/90 flex items-center justify-center font-bold text-lg transition-all hover:scale-110 active:scale-95 group relative cursor-pointer"
+        title="Pusat Bantuan & Layanan Aduan"
+      >
+        <svg class="w-6 h-6 text-[#263D9B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="absolute right-full mr-3 px-3 py-1.5 bg-slate-900/90 text-white text-xs font-bold rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+          Pusat Bantuan & Aduan
+        </span>
+      </button>
+    </div>
+
     <!-- Kartu Terpusat Modern (Dua Kolom Split) -->
     <div class="w-full max-w-sm sm:max-w-md md:max-w-4xl lg:max-w-4xl bg-white rounded-3xl md:rounded-[36px] shadow-[0_25px_70px_-15px_rgba(20,35,90,0.22)] overflow-hidden flex flex-col md:flex-row border border-slate-200/60 my-auto transition-all duration-300">
       
@@ -295,6 +312,112 @@
 
     </div>
 
+    <!-- Modal Layanan Bantuan, Saran & Aduan -->
+    <div v-if="showHelpModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
+      <div class="w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden my-auto max-h-[90vh] flex flex-col">
+        
+        <!-- Header Modal -->
+        <div class="px-6 py-5 bg-[#263D9B] text-white flex items-center justify-between flex-shrink-0">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white leading-tight">Pusat Bantuan & Aduan</h3>
+              <p class="text-xs text-blue-200 mt-0.5">Ada masalah login atau saran? Hubungi admin kami.</p>
+            </div>
+          </div>
+          <button @click="showHelpModal = false" class="text-blue-200 hover:text-white transition-colors cursor-pointer p-1">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+
+        <!-- Form Body -->
+        <form @submit.prevent="submitHelpTicket" class="p-6 overflow-y-auto space-y-4 text-xs">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Nama Lengkap *</label>
+              <input 
+                type="text" 
+                v-model.trim="helpForm.name" 
+                placeholder="Contoh: Budi Santoso"
+                required
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#263D9B] focus:ring-2 focus:ring-[#263D9B]/10 transition-all bg-white"
+              />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Nomor WhatsApp / HP *</label>
+              <input 
+                type="text" 
+                v-model.trim="helpForm.contact" 
+                placeholder="Contoh: 081234567890"
+                required
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#263D9B] focus:ring-2 focus:ring-[#263D9B]/10 transition-all bg-white"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Asal Sekolah / Lembaga (Opsional)</label>
+            <input 
+              type="text" 
+              v-model.trim="helpForm.school" 
+              placeholder="Contoh: SMP Negeri 1 atau Pengguna Umum"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#263D9B] focus:ring-2 focus:ring-[#263D9B]/10 transition-all bg-white"
+            />
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Kategori Masalah / Pengaduan *</label>
+            <select 
+              v-model="helpForm.category" 
+              required
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 focus:outline-none focus:border-[#263D9B] bg-white"
+            >
+              <option value="Kendala Login / Akun Terkunci">Kendala Login / Akun Terkunci</option>
+              <option value="Lupa Username / Password">Lupa Username / Password</option>
+              <option value="Akun Belum Terdaftar / Masa Kontrak">Akun Belum Terdaftar / Masa Kontrak</option>
+              <option value="Laporan Bug / Error Sistem">Laporan Bug / Error Sistem</option>
+              <option value="Saran & Masukan Pengembangan">Saran & Masukan Pengembangan</option>
+              <option value="Pertanyaan Teknis Lainnya">Pertanyaan Teknis Lainnya</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Pesan / Keluhan / Saran Anda *</label>
+            <textarea 
+              v-model.trim="helpForm.message" 
+              rows="4" 
+              placeholder="Ceritakan kendala yang Anda alami secara detail..."
+              required
+              class="w-full p-3.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#263D9B] focus:ring-2 focus:ring-[#263D9B]/10 transition-all bg-white leading-relaxed"
+            ></textarea>
+          </div>
+
+          <div class="pt-2 flex gap-3">
+            <button 
+              type="button" 
+              @click="showHelpModal = false" 
+              class="w-1/3 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
+            >
+              Batal
+            </button>
+            <button 
+              type="submit" 
+              :disabled="isSubmittingHelp"
+              class="w-2/3 py-3 rounded-xl bg-[#263D9B] hover:bg-[#1d3080] text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75"
+            >
+              <span v-if="!isSubmittingHelp">Kirim Aduan & Saran</span>
+              <span v-else>Mengirim...</span>
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -321,6 +444,63 @@ const isSubmitting = ref(false)
 
 const showAnimation = ref(false)
 const loadingText = ref('Sinkronisasi dengan server...')
+
+// Modal Bantuan & Layanan Aduan
+const showHelpModal = ref(false)
+const isSubmittingHelp = ref(false)
+const helpForm = ref({
+  name: '',
+  contact: '',
+  school: '',
+  category: 'Kendala Login / Akun Terkunci',
+  message: ''
+})
+
+const submitHelpTicket = () => {
+  if (isSubmittingHelp.value) return
+  isSubmittingHelp.value = true
+
+  try {
+    const now = new Date()
+    const dateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) + ', ' + 
+                    now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+
+    const newTicket = {
+      id: 'TICK-' + Date.now().toString().slice(-4),
+      name: helpForm.value.name,
+      contact: helpForm.value.contact,
+      school: helpForm.value.school || 'Pengguna Login',
+      category: helpForm.value.category,
+      message: helpForm.value.message,
+      status: 'MENUNGGU',
+      date: dateStr
+    }
+
+    let existing = []
+    try {
+      const raw = localStorage.getItem('guruKu_support_tickets')
+      if (raw) existing = JSON.parse(raw)
+    } catch (e) {}
+
+    existing.unshift(newTicket)
+    localStorage.setItem('guruKu_support_tickets', JSON.stringify(existing))
+
+    alert("Terima kasih! Aduan / saran Anda telah berhasil terkirim ke Administrator. Tim kami akan segera menindaklanjuti.")
+    
+    helpForm.value = {
+      name: '',
+      contact: '',
+      school: '',
+      category: 'Kendala Login / Akun Terkunci',
+      message: ''
+    }
+    showHelpModal.value = false
+  } catch (err) {
+    alert("Terjadi kesalahan saat mengirim aduan.")
+  } finally {
+    isSubmittingHelp.value = false
+  }
+}
 
 // Konfigurasi 8 Slide Login dengan teks Bahasa Indonesia
 const currentSlide = ref(0)
