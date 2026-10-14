@@ -161,8 +161,16 @@ const loading = ref(true)
       if (res.ok) {
         const data = await res.json()
         if (data && data.rows) rows.value = data.rows
+      } else {
+        const savedPengampu = localStorage.getItem('guruKu_pengampu')
+        if (savedPengampu) {
+          try {
+            const parsedP = JSON.parse(savedPengampu)
+            if (parsedP && parsedP.rows) rows.value = parsedP.rows
+          } catch (e) {}
+        }
       }
-      
+
       // Sinkronasi dari localStorage Daftar Kelas
       const savedClasses = localStorage.getItem('guruKu_classes');
       if (savedClasses) {
@@ -192,6 +200,7 @@ const saveData = async () => {
       classes: classes.value,
       rows: rows.value
     }
+      localStorage.setItem('guruKu_pengampu', JSON.stringify(payload))
     const res = await fetch('/api/v1/school/pengampu', {
       method: 'PUT',
       headers: {
@@ -282,6 +291,11 @@ const calculateRowTotal = (row) => {
   transform: translateY(-2px);
 }
 </style>
+
+
+
+
+
 
 
 
