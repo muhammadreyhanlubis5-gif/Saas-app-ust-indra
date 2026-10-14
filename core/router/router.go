@@ -52,6 +52,13 @@ func SetupRoutes(r *gin.Engine) {
 	api.PUT("/support-tickets/:id/status", handlers.UpdateSupportTicketStatus)
 	api.DELETE("/support-tickets/:id", handlers.DeleteSupportTicket)
 
+	// Payment Confirmations (Verifikasi Bayar)
+	api.POST("/payment-confirmations", handlers.CreatePaymentConfirmation)
+	api.GET("/payment-confirmations", handlers.GetPaymentConfirmations)
+	api.PUT("/payment-confirmations/:id/approve", handlers.ApprovePaymentConfirmation)
+	api.PUT("/payment-confirmations/:id/reject", handlers.RejectPaymentConfirmation)
+	api.DELETE("/payment-confirmations/:id", handlers.DeletePaymentConfirmation)
+
 	// You can expand others here
 	api.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{"message": "pong dari Vercel + Neon!"})

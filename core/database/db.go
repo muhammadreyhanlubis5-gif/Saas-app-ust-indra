@@ -30,8 +30,49 @@ func Connect() {
 
 	log.Println("Successfully connected to Neon Serverless Postgres!")
 	
+	// Otomatis Buat Tabel Penting (Support Tickets & Konfirmasi Pembayaran) jika belum ada
+	autoMigrateTables()
+
 	// Otomatis Seed Super Admin jika belum ada
 	seedSuperAdmin()
+}
+
+func autoMigrateTables() {
+	if DB == nil {
+		return
+	}
+
+	_, err := DB.Exec(`
+		CREATE TABLE IF NOT EXISTS support_tickets (
+			id SERIAL PRIMARY KEY,
+			name VARCHAR(255) NOT NULL,
+			contact VARCHAR(100) NOT NULL,
+			school VARCHAR(255) DEFAULT 'Pengguna Umum',
+			category VARCHAR(100) NOT NULL,
+			message TEXT NOT NULL,
+			status VARCHAR(20) DEFAULT 'MENUNGGU',
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		);
+
+		CREATE TABLE IF NOT EXISTS payment_confirmations (
+			id SERIAL PRIMARY KEY,
+			invoice VARCHAR(100) NOT NULL UNIQUE,
+			plan VARCHAR(50) NOT NULL,
+			amount BIGINT NOT NULL,
+			method VARCHAR(100) NOT NULL,
+			sender_name VARCHAR(255) NOT NULL,
+			bank_name VARCHAR(100) NOT NULL,
+			notes TEXT,
+			proof_image TEXT,
+			status VARCHAR(50) DEFAULT 'MENUNGGU_VERIFIKASI',
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		);
+	`)
+	if err != nil {
+		log.Println("[Database] Gagal menjalankan auto-migrasi tabel:", err)
+	} else {
+		log.Println("[Database] Auto-migrasi tabel berhasil!")
+	}
 }
 
 func seedSuperAdmin() {

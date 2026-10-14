@@ -922,8 +922,33 @@ const handleFileUpload = (event) => {
   if (!file) return
   const reader = new FileReader()
   reader.onload = (e) => {
-    proofPreview.value = e.target.result
-    proofForm.value.fileData = e.target.result
+    const rawDataUrl = e.target.result
+    proofPreview.value = rawDataUrl
+
+    // Kompres gambar otomatis (maks 1200px, JPEG 0.75) agar muat di database & localStorage tanpa crash
+    const img = new Image()
+    img.onload = () => {
+      const maxDim = 1200
+      let w = img.width
+      let h = img.height
+      if (w > maxDim || h > maxDim) {
+        if (w > h) {
+          h = Math.round((h * maxDim) / w)
+          w = maxDim
+        } else {
+          w = Math.round((w * maxDim) / h)
+          h = maxDim
+        }
+      }
+      const canvas = document.createElement('canvas')
+      canvas.width = w
+      canvas.height = h
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0, w, h)
+      const compressed = canvas.toDataURL('image/jpeg', 0.75)
+      proofForm.value.fileData = compressed
+    }
+    img.src = rawDataUrl
   }
   reader.readAsDataURL(file)
 }
@@ -1267,36 +1292,62 @@ const submitPaymentProof = () => {
   if (isSubmittingProof.value) return
   isSubmittingProof.value = true
 
-  setTimeout(() => {
-    const paymentRecord = {
-      invoice: invoiceNumber.value,
-      plan: planName,
-      amount: price,
-      method: selectedMethod.value.fullName,
-      senderName: proofForm.value.senderName,
-      bankName: proofForm.value.bankName,
-      notes: proofForm.value.notes,
-      proofImage: proofForm.value.fileData,
-      status: 'MENUNGGU_VERIFIKASI',
-      timestamp: new Date().toISOString(),
-      formattedDate: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-    }
+  const paymentRecord = {
+    invoice: invoiceNumber.value,
+    plan: planName,
+    amount: price,
+    method: selectedMethod.value.fullName,
+    senderName: proofForm.value.senderName,
+    bankName: proofForm.value.bankName,
+    notes: proofForm.value.notes,
+    proofImage: proofForm.value.fileData,
+    status: 'MENUNGGU_VERIFIKASI',
+    timestamp: new Date().toISOString(),
+    formattedDate: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+  }
 
-    // Save to localStorage for persistence & SuperAdmin reading
+  // 1. Simpan ke localStorage dengan aman untuk fallback instan
+  try {
     let existingPayments = []
-    try {
-      const raw = localStorage.getItem('guruKu_pending_payments')
-      if (raw) existingPayments = JSON.parse(raw)
-    } catch (e) {}
+    const raw = localStorage.getItem('guruKu_pending_payments')
+    if (raw) existingPayments = JSON.parse(raw)
+    existingPayments = existingPayments.filter(p => p.invoice !== paymentRecord.invoice)
     existingPayments.unshift(paymentRecord)
     localStorage.setItem('guruKu_pending_payments', JSON.stringify(existingPayments))
+  } catch (e) {
+    console.warn('LocalStorage quota warning:', e)
+  }
 
+  // 2. Kirim ke Database Neon PostgreSQL melalui Cloud API agar Super Admin melihatnya di perangkat manapun
+  try {
+    fetch('/api/v1/payment-confirmations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        invoice: paymentRecord.invoice,
+        plan: paymentRecord.plan,
+        amount: paymentRecord.amount,
+        method: paymentRecord.method,
+        senderName: paymentRecord.senderName,
+        bankName: paymentRecord.bankName,
+        notes: paymentRecord.notes || '',
+        proofImage: paymentRecord.proofImage || ''
+      })
+    }).then(res => res.json()).then(data => {
+      console.log('[Billing API] Berhasil tersinkronisasi ke server:', data)
+    }).catch(err => {
+      console.warn('[Billing API] Gagal terhubung ke cloud API:', err)
+    })
+  } catch (e) {}
+
+  // 3. Update status tampilan secara instan tanpa membuat pengguna menunggu lama
+  setTimeout(() => {
     paymentSubmitted.value = true
     showUploadProofModal.value = false
     isSubmittingProof.value = false
 
     alert(`Bukti pembayaran untuk [${invoiceNumber.value}] berhasil dikirim!\n\nTim verifikasi sedang mencocokkan mutasi bank. Begitu transaksi terverifikasi, lisensi sekolah Anda otomatis aktif.`)
-  }, 1000)
+  }, 400)
 }
 
 // Check Transaction Status Simulation

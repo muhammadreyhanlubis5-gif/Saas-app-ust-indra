@@ -439,7 +439,7 @@
                       <span>Tolak</span>
                     </button>
                     <button 
-                      @click="deletePaymentRecord(p.invoice)"
+                      @click="deletePaymentRecord(p.invoice, p.id)"
                       class="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                       title="Hapus Catatan"
                     >
@@ -726,7 +726,25 @@ const formatRupiah = (angka) => {
 const pendingPayments = ref([])
 const previewReceiptImage = ref(null)
 
-const loadPendingPayments = () => {
+const loadPendingPayments = async () => {
+  // 1. Ambil dari database Neon Postgres secara real-time
+  try {
+    const res = await SafeFlow.fetch('/api/v1/payment-confirmations')
+    if (res.ok) {
+      const data = await res.json()
+      if (Array.isArray(data)) {
+        pendingPayments.value = data
+        try {
+          localStorage.setItem('guruKu_pending_payments', JSON.stringify(data))
+        } catch (e) {}
+        return
+      }
+    }
+  } catch (e) {
+    console.warn("Koneksi API pembayaran gagal, membaca cache lokal:", e)
+  }
+
+  // 2. Fallback cadangan dari localStorage
   try {
     const raw = localStorage.getItem('guruKu_pending_payments')
     if (raw) {
@@ -739,9 +757,22 @@ const pendingPaymentsCount = computed(() => {
   return pendingPayments.value.filter(p => p.status === 'MENUNGGU_VERIFIKASI').length
 })
 
-const approvePayment = (payment) => {
+const approvePayment = async (payment) => {
   payment.status = 'TERVERIFIKASI'
-  localStorage.setItem('guruKu_pending_payments', JSON.stringify(pendingPayments.value))
+  try {
+    localStorage.setItem('guruKu_pending_payments', JSON.stringify(pendingPayments.value))
+  } catch (e) {}
+
+  // Sinkronisasi persetujuan ke database serverless
+  try {
+    const targetId = payment.id || payment.invoice
+    await SafeFlow.fetch(`/api/v1/payment-confirmations/${targetId}/approve`, {
+      method: 'PUT'
+    })
+    fetchSchools()
+  } catch (err) {
+    console.error("Gagal sinkron persetujuan ke server:", err)
+  }
 
   // Coba perpanjang sekolah jika nama cocok
   const matched = schools.value.find(s => 
@@ -760,17 +791,39 @@ const approvePayment = (payment) => {
   alert(`Pembayaran [${payment.invoice}] berhasil disetujui! Status diperbarui menjadi TERVERIFIKASI.`)
 }
 
-const rejectPayment = (payment) => {
+const rejectPayment = async (payment) => {
   if (confirm(`Tolak konfirmasi pembayaran [${payment.invoice}]?`)) {
     payment.status = 'DITOLAK'
-    localStorage.setItem('guruKu_pending_payments', JSON.stringify(pendingPayments.value))
+    try {
+      localStorage.setItem('guruKu_pending_payments', JSON.stringify(pendingPayments.value))
+    } catch (e) {}
+
+    try {
+      const targetId = payment.id || payment.invoice
+      await SafeFlow.fetch(`/api/v1/payment-confirmations/${targetId}/reject`, {
+        method: 'PUT'
+      })
+    } catch (err) {
+      console.error("Gagal sinkron penolakan ke server:", err)
+    }
   }
 }
 
-const deletePaymentRecord = (invoice) => {
+const deletePaymentRecord = async (invoice, id) => {
   if (confirm(`Hapus catatan transaksi [${invoice}]?`)) {
     pendingPayments.value = pendingPayments.value.filter(p => p.invoice !== invoice)
-    localStorage.setItem('guruKu_pending_payments', JSON.stringify(pendingPayments.value))
+    try {
+      localStorage.setItem('guruKu_pending_payments', JSON.stringify(pendingPayments.value))
+    } catch (e) {}
+
+    try {
+      const targetId = id || invoice
+      await SafeFlow.fetch(`/api/v1/payment-confirmations/${targetId}`, {
+        method: 'DELETE'
+      })
+    } catch (err) {
+      console.error("Gagal menghapus dari server:", err)
+    }
   }
 }
 
@@ -1185,14 +1238,23 @@ const formatDate = (dateString) => {
 
 let reportInterval = null
 
+const handleStorageChange = (e) => {
+  if (e.key === 'guruKu_pending_payments') {
+    loadPendingPayments()
+  } else if (e.key === 'guruKu_support_tickets') {
+    loadSupportTickets()
+  }
+}
+
 onMounted(() => {
   fetchSchools()
   loadForgotPasswordReports()
   loadSupportTickets()
   loadPendingPayments()
   document.addEventListener('click', handleClickOutside)
+  window.addEventListener('storage', handleStorageChange)
   
-  // Fallback Polling (3 detik) agar real-time tersinkron dengan database
+  // Polling real-time (3 detik) agar tersinkron otomatis dengan database serverless Neon
   reportInterval = setInterval(() => {
     loadForgotPasswordReports()
     loadSupportTickets()
@@ -1202,6 +1264,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
+  window.removeEventListener('storage', handleStorageChange)
   if (reportInterval) clearInterval(reportInterval)
 })
 
