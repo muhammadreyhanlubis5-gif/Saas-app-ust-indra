@@ -215,9 +215,10 @@
                     :class="isMasterDataComplete ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
                   </div>
-                  <span class="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider"
+                  <span class="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1"
                     :class="isMasterDataComplete ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'">
-                    {{ isMasterDataComplete ? '✓ Selesai (Lengkap)' : 'Langkah 1' }}
+                    <svg v-if="isMasterDataComplete" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    <span>{{ isMasterDataComplete ? 'Selesai (Lengkap)' : 'Langkah 1' }}</span>
                   </span>
                 </div>
                 <h3 class="font-black text-gray-900 text-lg mb-1">Persiapan Master Data</h3>
@@ -254,9 +255,10 @@
                     :class="rawStats.jamMengajar > 0 ? 'bg-emerald-100 text-emerald-600' : 'bg-indigo-100 text-indigo-600'">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                   </div>
-                  <span class="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider"
+                  <span class="text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1"
                     :class="rawStats.jamMengajar > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-indigo-100 text-indigo-700'">
-                    {{ rawStats.jamMengajar > 0 ? '✓ Terdistribusi' : 'Langkah 2' }}
+                    <svg v-if="rawStats.jamMengajar > 0" class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    <span>{{ rawStats.jamMengajar > 0 ? 'Terdistribusi' : 'Langkah 2' }}</span>
                   </span>
                 </div>
                 <h3 class="font-black text-gray-900 text-lg mb-1">Distribusi Beban</h3>
@@ -329,8 +331,8 @@
             <div>
               <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-black">
-                    💡
+                  <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-inner">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
                   </div>
                   <div>
                     <h3 class="font-black text-gray-900 text-lg">Asisten Kesiapan Jadwal</h3>
@@ -356,24 +358,43 @@
 
               <!-- Checklist Status -->
               <div class="grid grid-cols-2 gap-3 text-xs font-semibold">
-                <div class="flex items-center gap-2 p-2.5 rounded-xl border"
+                <div class="flex items-center gap-2.5 p-2.5 rounded-xl border transition-colors"
                   :class="rawStats.totalKelas > 0 ? 'bg-emerald-50/40 border-emerald-200 text-emerald-800' : 'bg-gray-50 border-gray-200 text-gray-500'">
-                  <span>{{ rawStats.totalKelas > 0 ? '✅' : '⏳' }}</span>
+                  <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                    :class="rawStats.totalKelas > 0 ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-gray-400'">
+                    <svg v-if="rawStats.totalKelas > 0" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  </div>
                   <span>Rombel Kelas ({{ rawStats.totalKelas }})</span>
                 </div>
-                <div class="flex items-center gap-2 p-2.5 rounded-xl border"
+
+                <div class="flex items-center gap-2.5 p-2.5 rounded-xl border transition-colors"
                   :class="rawStats.totalGuru > 0 ? 'bg-emerald-50/40 border-emerald-200 text-emerald-800' : 'bg-gray-50 border-gray-200 text-gray-500'">
-                  <span>{{ rawStats.totalGuru > 0 ? '✅' : '⏳' }}</span>
+                  <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                    :class="rawStats.totalGuru > 0 ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-gray-400'">
+                    <svg v-if="rawStats.totalGuru > 0" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  </div>
                   <span>Staf Guru ({{ rawStats.totalGuru }})</span>
                 </div>
-                <div class="flex items-center gap-2 p-2.5 rounded-xl border"
+
+                <div class="flex items-center gap-2.5 p-2.5 rounded-xl border transition-colors"
                   :class="rawStats.totalMapel > 0 ? 'bg-emerald-50/40 border-emerald-200 text-emerald-800' : 'bg-gray-50 border-gray-200 text-gray-500'">
-                  <span>{{ rawStats.totalMapel > 0 ? '✅' : '⏳' }}</span>
+                  <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                    :class="rawStats.totalMapel > 0 ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-gray-400'">
+                    <svg v-if="rawStats.totalMapel > 0" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  </div>
                   <span>Mata Pelajaran ({{ rawStats.totalMapel }})</span>
                 </div>
-                <div class="flex items-center gap-2 p-2.5 rounded-xl border"
+
+                <div class="flex items-center gap-2.5 p-2.5 rounded-xl border transition-colors"
                   :class="rawStats.jamMengajar > 0 ? 'bg-emerald-50/40 border-emerald-200 text-emerald-800' : 'bg-gray-50 border-gray-200 text-gray-500'">
-                  <span>{{ rawStats.jamMengajar > 0 ? '✅' : '⏳' }}</span>
+                  <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                    :class="rawStats.jamMengajar > 0 ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-gray-400'">
+                    <svg v-if="rawStats.jamMengajar > 0" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  </div>
                   <span>Jam Pengampu ({{ rawStats.jamMengajar }} JP)</span>
                 </div>
               </div>
@@ -392,8 +413,8 @@
             <div>
               <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black">
-                    ⚡
+                  <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-inner">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                   </div>
                   <div>
                     <h3 class="font-black text-gray-900 text-lg">Pintasan Aksi Cepat</h3>
@@ -402,35 +423,35 @@
                 </div>
               </div>
 
-              <!-- 4 Shortcut Buttons -->
+              <!-- 4 Shortcut Buttons dengan Clean Vector SVG -->
               <div class="grid grid-cols-2 gap-3 mb-2">
                 <router-link to="/admin-sekolah/daftar-guru" class="p-3.5 rounded-2xl border border-gray-100 bg-gray-50/60 hover:bg-blue-50/60 hover:border-blue-200 transition-all flex flex-col items-start group">
-                  <span class="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-2 font-bold">
-                    👨‍🏫
+                  <span class="w-9 h-9 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-2 shadow-sm group-hover:scale-105 transition-transform">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                   </span>
                   <span class="text-xs font-bold text-gray-800 group-hover:text-blue-700">Daftar Guru</span>
                   <span class="text-[10px] text-gray-400 mt-0.5">Tambah / Excel</span>
                 </router-link>
 
                 <router-link to="/admin-sekolah/daftar-kelas" class="p-3.5 rounded-2xl border border-gray-100 bg-gray-50/60 hover:bg-indigo-50/60 hover:border-indigo-200 transition-all flex flex-col items-start group">
-                  <span class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-2 font-bold">
-                    🏫
+                  <span class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-2 shadow-sm group-hover:scale-105 transition-transform">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                   </span>
                   <span class="text-xs font-bold text-gray-800 group-hover:text-indigo-700">Daftar Kelas</span>
                   <span class="text-[10px] text-gray-400 mt-0.5">Tambah / Excel</span>
                 </router-link>
 
                 <router-link to="/admin-sekolah/jam-kosong" class="p-3.5 rounded-2xl border border-gray-100 bg-gray-50/60 hover:bg-amber-50/60 hover:border-amber-200 transition-all flex flex-col items-start group">
-                  <span class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mb-2 font-bold">
-                    ⏰
+                  <span class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mb-2 shadow-sm group-hover:scale-105 transition-transform">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                   </span>
                   <span class="text-xs font-bold text-gray-800 group-hover:text-amber-700">Jam Kosong</span>
                   <span class="text-[10px] text-gray-400 mt-0.5">Atur Jadwal Cuti</span>
                 </router-link>
 
                 <router-link to="/admin-sekolah/input-jadwal" class="p-3.5 rounded-2xl border border-gray-100 bg-gray-50/60 hover:bg-emerald-50/60 hover:border-emerald-200 transition-all flex flex-col items-start group">
-                  <span class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-2 font-bold">
-                    🚀
+                  <span class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-2 shadow-sm group-hover:scale-105 transition-transform">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
                   </span>
                   <span class="text-xs font-bold text-gray-800 group-hover:text-emerald-700">Susun Jadwal</span>
                   <span class="text-[10px] text-gray-400 mt-0.5">Engine Cerdas</span>
