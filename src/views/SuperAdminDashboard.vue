@@ -1,80 +1,85 @@
 <template>
-  <div class="flex h-screen bg-gray-50 font-sans overflow-hidden relative">
+  <div class="flex h-screen w-full max-w-full bg-slate-50 font-sans overflow-hidden relative">
     
-    <!-- Mobile Backdrop -->
+    <!-- Mobile Backdrop for Sidebar Drawer -->
     <div 
       v-if="isSidebarOpen" 
       @click="isSidebarOpen = false" 
-      class="fixed inset-0 bg-gray-950/60 backdrop-blur-xs z-40 lg:hidden transition-opacity duration-300"
+      class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 lg:hidden transition-opacity duration-300"
     ></div>
 
-    <!-- Sidebar Navigation -->
+    <!-- Sidebar Navigation (Desktop static, Mobile slide-over drawer) -->
     <aside 
-      class="fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 text-white flex flex-col h-full shadow-2xl transition-transform duration-300 ease-in-out lg:static lg:translate-x-0"
+      class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white flex flex-col h-full shadow-2xl transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 shrink-0"
       :class="isSidebarOpen ? 'translate-x-0' : '-translate-x-full'"
     >
       <!-- Sidebar Header -->
-      <div class="p-5 border-b border-gray-800 flex items-center justify-between">
+      <div class="p-5 border-b border-slate-800 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <img src="../assets/logo.png" alt="Logo" class="w-10 h-10 object-contain rounded-lg">
+          <img src="../assets/logo.png" alt="Logo" class="w-10 h-10 object-contain rounded-xl shadow-md">
           <div>
             <h1 class="font-black text-white leading-tight text-lg">Super Admin</h1>
-            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">SaaS Management</p>
+            <p class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">SaaS Management</p>
           </div>
         </div>
-        <button @click="isSidebarOpen = false" class="lg:hidden p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors" aria-label="Tutup Menu">
+        <button @click="isSidebarOpen = false" class="lg:hidden p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors" aria-label="Tutup Menu">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
 
       <!-- Navigation Links -->
-      <div class="flex-1 overflow-y-auto py-6 px-3 space-y-2 custom-scrollbar">
+      <div class="flex-1 overflow-y-auto py-5 px-3 space-y-2 custom-scrollbar">
         
-        <button @click="activeTab = 'manajemen'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all cursor-pointer"
-          :class="activeTab === 'manajemen' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-gray-400 hover:bg-gray-800 hover:text-white'">
-          <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+        <button @click="activeTab = 'manajemen'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all cursor-pointer text-sm"
+          :class="activeTab === 'manajemen' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
+          <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
           <span>Manajemen Klien</span>
         </button>
         
-        <button @click="activeTab = 'laporan'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all cursor-pointer"
-          :class="activeTab === 'laporan' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-gray-400 hover:bg-gray-800 hover:text-white'">
+        <button @click="activeTab = 'laporan'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all cursor-pointer text-sm"
+          :class="activeTab === 'laporan' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
           <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
           <span>Laporan Pendapatan</span>
         </button>
 
-        <button @click="activeTab = 'verifikasi'; isSidebarOpen = false" class="w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition-all relative cursor-pointer"
-          :class="activeTab === 'verifikasi' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-gray-400 hover:bg-gray-800 hover:text-white'">
+        <button @click="activeTab = 'verifikasi'; isSidebarOpen = false" class="w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition-all relative cursor-pointer text-sm"
+          :class="activeTab === 'verifikasi' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
           <div class="flex items-center gap-3">
             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span>Verifikasi Bayar</span>
           </div>
-          <span v-if="pendingPaymentsCount > 0" class="bg-emerald-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm animate-pulse">
+          <span v-if="pendingPaymentsCount > 0" class="bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs animate-pulse">
             {{ pendingPaymentsCount }}
           </span>
         </button>
 
-        <button @click="activeTab = 'aduan'; isSidebarOpen = false" class="w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition-all relative cursor-pointer"
-          :class="activeTab === 'aduan' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-gray-400 hover:bg-gray-800 hover:text-white'">
+        <button @click="activeTab = 'aduan'; isSidebarOpen = false" class="w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition-all relative cursor-pointer text-sm"
+          :class="activeTab === 'aduan' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
           <div class="flex items-center gap-3">
-            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
             <span>Aduan & Saran</span>
           </div>
-          <span v-if="unreadTicketsCount > 0" class="bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
+          <span v-if="unreadTicketsCount > 0" class="bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs">
             {{ unreadTicketsCount }}
           </span>
         </button>
 
-        <button @click="activeTab = 'pengaturan'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all cursor-pointer"
-          :class="activeTab === 'pengaturan' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-gray-400 hover:bg-gray-800 hover:text-white'">
-          <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-          <span>Pengaturan Sistem</span>
+        <button @click="activeTab = 'pengaturan'; isSidebarOpen = false" class="w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition-all relative cursor-pointer text-sm"
+          :class="activeTab === 'pengaturan' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <span>Pengaturan Sistem</span>
+          </div>
+          <span v-if="forgotPasswordReports.length > 0" class="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs">
+            {{ forgotPasswordReports.length }}
+          </span>
         </button>
         
       </div>
 
       <!-- Sidebar Footer / Logout -->
-      <div class="p-4 border-t border-gray-800">
-        <button @click="handleLogout" class="flex items-center justify-center w-full gap-2 px-4 py-3 font-bold text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all cursor-pointer">
+      <div class="p-4 border-t border-slate-800">
+        <button @click="handleLogout" class="flex items-center justify-center w-full gap-2 px-4 py-3 font-bold text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all cursor-pointer text-sm">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
           <span>Keluar (Log Out)</span>
         </button>
@@ -82,134 +87,190 @@
     </aside>
 
     <!-- Main Content Area Wrapper -->
-    <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+    <div class="flex-1 flex flex-col min-w-0 w-full max-w-full h-full overflow-hidden">
 
       <!-- Mobile & Tablet Header Bar (Visible on < lg screens) -->
-      <header class="lg:hidden bg-gray-900 text-white border-b border-gray-800 px-4 py-3 flex items-center justify-between shrink-0 z-30 shadow-md">
-        <div class="flex items-center gap-3">
-          <button @click="isSidebarOpen = true" class="p-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-xl transition-colors cursor-pointer" aria-label="Buka Menu">
+      <header class="lg:hidden bg-slate-900 text-white border-b border-slate-800 px-3.5 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between shrink-0 z-30 shadow-md">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <button @click="isSidebarOpen = true" class="p-2 -ml-1 text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 rounded-xl transition-all cursor-pointer" aria-label="Buka Menu">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
           </button>
-          <div class="flex items-center gap-2">
-            <img src="../assets/logo.png" alt="Logo" class="w-7 h-7 object-contain rounded-md">
-            <div>
-              <span class="font-black text-sm tracking-tight leading-none block">Super Admin</span>
-              <span class="text-[9px] text-gray-400 uppercase tracking-widest font-bold">Pusat Komando</span>
+          <div class="flex items-center gap-2 min-w-0">
+            <img src="../assets/logo.png" alt="Logo" class="w-7 h-7 object-contain rounded-lg shrink-0 shadow-xs">
+            <div class="min-w-0">
+              <span class="font-black text-sm tracking-tight text-white block truncate leading-none">Super Admin</span>
+              <span class="text-[9px] text-blue-400 uppercase tracking-widest font-bold block mt-0.5 truncate">{{ currentTabTitle }}</span>
             </div>
           </div>
         </div>
 
-        <div class="flex items-center gap-2">
-          <span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 truncate max-w-[120px] sm:max-w-none">
-            {{ currentTabTitle }}
-          </span>
-          <button @click="handleLogout" class="p-2 text-gray-400 hover:text-red-400 hover:bg-gray-800 rounded-lg transition-colors cursor-pointer" title="Keluar">
+        <div class="flex items-center gap-2 shrink-0">
+          <button 
+            v-if="activeTab === 'manajemen'"
+            @click="showModal = true" 
+            class="px-2.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs font-bold transition-all flex items-center gap-1 shadow-sm cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+            <span>+ Klien</span>
+          </button>
+          <button @click="handleLogout" class="p-2 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-xl transition-colors cursor-pointer" title="Keluar">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
           </button>
         </div>
       </header>
 
-      <!-- Mobile Quick Horizontal Tab Bar (< lg screens) -->
-      <nav class="lg:hidden bg-white border-b border-gray-200 px-3 py-2 flex items-center gap-2 overflow-x-auto custom-scrollbar shrink-0 shadow-xs">
-        <button 
-          v-for="tab in tabItems" 
-          :key="tab.id"
-          @click="activeTab = tab.id"
-          class="px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 cursor-pointer"
-          :class="activeTab === tab.id ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
-        >
-          <span>{{ tab.label }}</span>
-          <span v-if="tab.badge > 0" class="px-1.5 py-0.2 rounded-full text-[10px] font-black" :class="activeTab === tab.id ? 'bg-white text-indigo-700' : 'bg-emerald-500 text-white'">
-            {{ tab.badge }}
-          </span>
-        </button>
-      </nav>
-
       <!-- Scrollable Main View -->
-      <main class="flex-1 overflow-y-auto bg-gray-50/50 p-3 sm:p-5 md:p-8 lg:p-10 relative custom-scrollbar">
-        <!-- Background Ornament -->
-        <div class="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl pointer-events-none -mt-20 -mr-20"></div>
+      <main class="flex-1 overflow-y-auto overflow-x-hidden w-full max-w-full bg-slate-50/70 p-3 sm:p-5 md:p-8 lg:p-10 relative custom-scrollbar pb-24 lg:pb-10">
+        <!-- Safely Constrained Background Ornament (Zero Horizontal Overflow Leak) -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <div class="absolute -top-24 -right-24 w-80 sm:w-96 h-80 sm:h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
+        </div>
 
-        <!-- PREMIUM BANNER -->
-        <div class="bg-gradient-to-br from-gray-900 via-gray-800 to-indigo-900 rounded-2xl sm:rounded-3xl p-5 sm:p-7 md:p-8 mb-6 sm:mb-8 shadow-2xl relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-5 text-white">
-          <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
-          <div class="relative z-10">
-            <h1 class="text-xl sm:text-2xl md:text-3xl font-black tracking-tight mb-1.5 sm:mb-2">Pusat Komando SaaS</h1>
-            <p class="text-gray-300 font-medium text-xs sm:text-sm md:text-base max-w-lg leading-relaxed">Kelola penyewaan aplikasi, kelancaran pembayaran klien, dan pantau metrik pertumbuhan secara *real-time*.</p>
-          </div>
-          <div class="relative z-10 w-full md:w-auto grid grid-cols-2 gap-2.5 sm:gap-4 shrink-0">
-            <div class="bg-white/10 backdrop-blur-md border border-white/20 p-3 sm:p-4 rounded-xl sm:rounded-2xl text-left md:text-right">
-              <p class="text-[10px] sm:text-xs text-gray-300 uppercase tracking-widest font-bold mb-1">Klien Aktif</p>
-              <p class="text-xl sm:text-2xl md:text-3xl font-black text-white font-mono">{{ activeClientsCount }}</p>
+        <!-- PREMIUM HERO BANNER -->
+        <div class="bg-gradient-to-br from-slate-900 via-gray-900 to-indigo-950 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 mb-5 sm:mb-7 shadow-xl relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sm:gap-6 text-white z-10 border border-slate-800/80">
+          <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay pointer-events-none"></div>
+          <div class="relative z-10 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/20 text-blue-300 border border-blue-400/30">Pusat Komando</span>
+              <span class="text-[11px] text-slate-400 font-medium hidden sm:inline">&bull; Multi-Tenant SaaS</span>
             </div>
-            <div class="bg-indigo-600/30 backdrop-blur-md border border-indigo-500/30 p-3 sm:p-4 rounded-xl sm:rounded-2xl text-left md:text-right">
-              <p class="text-[10px] sm:text-xs text-indigo-200 uppercase tracking-widest font-bold mb-1">Total Pendapatan</p>
-              <p class="text-sm sm:text-lg md:text-2xl font-black text-white font-mono truncate" :title="formatRupiah(totalRevenue)">{{ formatRupiah(totalRevenue) }}</p>
+            <h1 class="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-white leading-tight">Monitoring & Lisensi Tenant</h1>
+            <p class="text-slate-300 font-medium text-xs sm:text-sm mt-1 max-w-lg leading-relaxed hidden sm:block">Kelola penyewaan aplikasi sekolah, kelancaran pembayaran, dan verifikasi langganan secara terpusat.</p>
+          </div>
+          <div class="relative z-10 w-full md:w-auto grid grid-cols-2 gap-2.5 sm:gap-3.5 shrink-0">
+            <div class="bg-white/10 backdrop-blur-md border border-white/15 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
+              <p class="text-[10px] sm:text-xs text-slate-300 uppercase tracking-wider font-bold mb-0.5">Klien Aktif</p>
+              <p class="text-lg sm:text-2xl font-black text-white font-mono">{{ activeClientsCount }} <span class="text-xs font-semibold text-slate-300">Sekolah</span></p>
+            </div>
+            <div class="bg-indigo-600/30 backdrop-blur-md border border-indigo-400/20 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
+              <p class="text-[10px] sm:text-xs text-indigo-200 uppercase tracking-wider font-bold mb-0.5">Total Omzet</p>
+              <p class="text-sm sm:text-lg md:text-xl font-black text-white font-mono truncate" :title="formatRupiah(totalRevenue)">{{ formatRupiah(totalRevenue) }}</p>
             </div>
           </div>
         </div>
 
         <!-- MANAJEMEN KLIEN TAB -->
         <div v-if="activeTab === 'manajemen'" class="animate-fade-in">
-          <div class="bg-white rounded-2xl sm:rounded-3xl shadow-xl shadow-gray-200/40 border border-gray-100 overflow-hidden">
-            <div class="p-4 sm:p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/50 backdrop-blur-xl">
+          <div class="bg-white rounded-2xl sm:rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200/80 overflow-hidden">
+            <!-- Header Card Section -->
+            <div class="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3.5 bg-white">
               <div>
-                <h2 class="text-lg sm:text-xl font-black text-gray-800 tracking-tight">Daftar Klien Sekolah (Tenants)</h2>
-                <p class="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1 font-medium">Manajemen batas waktu kontrak dan akses sistem sekolah.</p>
+                <h2 class="text-base sm:text-xl font-black text-slate-800 tracking-tight">Daftar Klien Sekolah (Tenants)</h2>
+                <p class="text-xs text-slate-500 font-medium mt-0.5">Kelola batas waktu lisensi, kontak, dan kredensial akses sekolah.</p>
               </div>
-              <button @click="showModal = true" class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-indigo-500/40 font-bold text-xs sm:text-sm transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer">
+              <button @click="showModal = true" class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl shadow-md shadow-blue-500/20 font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98">
                 <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 <span>Tambah Klien Baru</span>
               </button>
             </div>
+
+            <!-- Live Search Bar -->
+            <div class="px-4 py-3 bg-slate-50/80 border-b border-slate-100 flex items-center gap-2.5">
+              <div class="relative flex-1">
+                <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input 
+                  v-model="clientSearch" 
+                  type="text" 
+                  placeholder="Cari nama sekolah, username, atau alamat..." 
+                  class="w-full pl-9 pr-8 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400"
+                />
+                <button v-if="clientSearch" @click="clientSearch = ''" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+              </div>
+              <span class="text-xs font-bold text-slate-500 shrink-0 px-2">{{ filteredSchools.length }} Klien</span>
+            </div>
             
             <!-- Mobile Cards View (< md) -->
-            <div class="md:hidden divide-y divide-gray-100">
-              <div v-if="loading" class="p-8 text-center text-gray-400 font-bold animate-pulse text-sm">
+            <div class="md:hidden p-3 sm:p-4 space-y-3 bg-slate-50/40">
+              <div v-if="loading" class="p-8 text-center text-slate-400 font-bold animate-pulse text-xs sm:text-sm">
                 Memuat Data Klien...
               </div>
-              <div v-else-if="schools.length === 0" class="p-10 text-center text-gray-400 text-sm">
-                Belum ada klien sekolah yang terdaftar.
+              <div v-else-if="filteredSchools.length === 0" class="p-8 text-center text-slate-400 text-xs sm:text-sm bg-white rounded-2xl border border-slate-200/80">
+                <svg class="w-10 h-10 mx-auto mb-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                {{ clientSearch ? 'Tidak ada sekolah yang cocok dengan kata kunci.' : 'Belum ada klien sekolah yang terdaftar.' }}
               </div>
-              <div v-for="school in schools" :key="'m-'+school.id" class="p-4 hover:bg-gray-50/80 transition-colors space-y-3">
-                <div class="flex items-start justify-between gap-2">
-                  <div class="min-w-0">
-                    <h3 class="font-bold text-gray-900 text-sm leading-snug">{{ school.name }}</h3>
-                    <p class="text-[11px] text-gray-500 flex items-center gap-1 mt-0.5">
-                      <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-                      <span class="truncate max-w-[220px]" :title="school.address">{{ school.address || '-' }}</span>
-                    </p>
+              <div 
+                v-for="school in filteredSchools" 
+                :key="'m-'+school.id" 
+                class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs hover:shadow-md transition-all space-y-3.5"
+              >
+                <!-- Card Header -->
+                <div class="flex items-start justify-between gap-2.5">
+                  <div class="flex items-start gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 mt-0.5">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    </div>
+                    <div class="min-w-0">
+                      <h3 class="font-extrabold text-slate-900 text-sm leading-snug">{{ school.name }}</h3>
+                      <p class="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5 line-clamp-1" :title="school.address">
+                        <svg class="w-3 h-3 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+                        <span>{{ school.address || 'Alamat belum disetel' }}</span>
+                      </p>
+                    </div>
                   </div>
-                  <span v-if="isExpired(school.valid_until)" class="px-2 py-0.5 text-[10px] font-black rounded-md bg-red-100 text-red-700 border border-red-200 uppercase tracking-widest shrink-0">Expired</span>
-                  <span v-else class="px-2 py-0.5 text-[10px] font-black rounded-md bg-green-100 text-green-700 border border-green-200 uppercase tracking-widest shrink-0">Active</span>
+                  <span 
+                    v-if="isExpired(school.valid_until)" 
+                    class="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-black rounded-full bg-rose-50 text-rose-700 border border-rose-200 uppercase tracking-wider shrink-0"
+                  >
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                    Expired
+                  </span>
+                  <span 
+                    v-else 
+                    class="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-black rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-wider shrink-0"
+                  >
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Aktif
+                  </span>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2 text-xs bg-gray-50 p-2.5 rounded-xl border border-gray-100">
+                <!-- Info Grid -->
+                <div class="grid grid-cols-2 gap-2 text-xs bg-slate-50/80 p-3 rounded-xl border border-slate-100">
                   <div>
-                    <span class="text-[10px] text-gray-400 block font-bold uppercase">Admin Akun</span>
-                    <span class="font-mono font-bold text-indigo-700 truncate block">@{{ school.admin_username }}</span>
+                    <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Username Admin</span>
+                    <span class="font-mono font-bold text-indigo-700 truncate block mt-0.5">@{{ school.admin_username }}</span>
                   </div>
                   <div>
-                    <span class="text-[10px] text-gray-400 block font-bold uppercase">Kontak</span>
-                    <span class="font-semibold text-gray-700 truncate block">{{ school.contact_number || '-' }}</span>
+                    <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">No. Kontak</span>
+                    <span class="font-semibold text-slate-700 truncate block mt-0.5">{{ school.contact_number || '-' }}</span>
                   </div>
                   <div>
-                    <span class="text-[10px] text-gray-400 block font-bold uppercase">Pembayaran</span>
-                    <span class="font-bold text-gray-800">{{ school.payment_method }} &bull; {{ formatRupiah(school.payment_amount) }}</span>
+                    <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Batas Masa Aktif</span>
+                    <span class="font-bold block mt-0.5" :class="isExpired(school.valid_until) ? 'text-rose-600' : 'text-slate-700'">
+                      {{ formatDate(school.valid_until) }}
+                    </span>
                   </div>
                   <div>
-                    <span class="text-[10px] text-gray-400 block font-bold uppercase">Batas Waktu</span>
-                    <span class="font-semibold text-gray-700">{{ formatDate(school.valid_until) }}</span>
+                    <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Nilai Kontrak</span>
+                    <span class="font-black text-slate-900 block mt-0.5">{{ school.payment_method }} &bull; {{ formatRupiah(school.payment_amount) }}</span>
                   </div>
                 </div>
 
-                <div class="flex items-center justify-end gap-2 pt-1">
-                  <button @click="blockSchool(school.id)" class="px-3 py-1.5 rounded-lg text-xs font-bold text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-200 transition-colors cursor-pointer">
-                    Blokir
+                <!-- Action Footer -->
+                <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-100">
+                  <button 
+                    v-if="school.contact_number"
+                    @click="contactSchool(school)"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 transition-all cursor-pointer active:scale-95"
+                  >
+                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                    <span>Chat WA</span>
                   </button>
-                  <button @click="deleteSchool(school.id, school.name)" class="px-3 py-1.5 rounded-lg text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 transition-colors cursor-pointer">
-                    Hapus
-                  </button>
+                  <div class="flex items-center gap-1.5 ml-auto">
+                    <button 
+                      @click="blockSchool(school.id)" 
+                      class="px-3 py-1.5 rounded-xl text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 transition-colors cursor-pointer active:scale-95"
+                    >
+                      Blokir
+                    </button>
+                    <button 
+                      @click="deleteSchool(school.id, school.name)" 
+                      class="px-3 py-1.5 rounded-xl text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200/80 transition-colors cursor-pointer active:scale-95"
+                    >
+                      Hapus
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -218,52 +279,53 @@
             <div class="hidden md:block overflow-x-auto custom-scrollbar">
               <table class="min-w-full bg-white">
                 <thead>
-                  <tr class="bg-gray-50/80 text-left border-y border-gray-100">
-                    <th class="py-4 px-6 uppercase font-black text-[11px] text-gray-400 tracking-wider">Nama Sekolah</th>
-                    <th class="py-4 px-6 uppercase font-black text-[11px] text-gray-400 tracking-wider">Kontak & Asal</th>
-                    <th class="py-4 px-6 uppercase font-black text-[11px] text-gray-400 tracking-wider">Username Admin</th>
-                    <th class="py-4 px-6 uppercase font-black text-[11px] text-gray-400 tracking-wider">Status & Batas Waktu</th>
-                    <th class="py-4 px-6 uppercase font-black text-[11px] text-gray-400 tracking-wider text-right">Aksi</th>
+                  <tr class="bg-slate-50 text-left border-y border-slate-100">
+                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-400 tracking-wider">Nama Sekolah</th>
+                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-400 tracking-wider">Kontak & Asal</th>
+                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-400 tracking-wider">Username Admin</th>
+                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-400 tracking-wider">Status & Batas Waktu</th>
+                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-400 tracking-wider text-right">Aksi</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-50">
+                <tbody class="divide-y divide-slate-100">
                   <tr v-if="loading" class="animate-pulse">
-                    <td colspan="5" class="py-10 text-center text-gray-400 font-bold">Memuat Data Klien...</td>
+                    <td colspan="5" class="py-10 text-center text-slate-400 font-bold">Memuat Data Klien...</td>
                   </tr>
-                  <tr v-else-if="schools.length === 0">
-                    <td colspan="5" class="py-16 text-center text-gray-400 font-medium">
-                      <svg class="w-16 h-16 mx-auto mb-4 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                      Belum ada klien sekolah yang terdaftar.
+                  <tr v-else-if="filteredSchools.length === 0">
+                    <td colspan="5" class="py-16 text-center text-slate-400 font-medium">
+                      <svg class="w-16 h-16 mx-auto mb-4 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                      {{ clientSearch ? 'Tidak ada sekolah yang cocok dengan pencarian.' : 'Belum ada klien sekolah yang terdaftar.' }}
                     </td>
                   </tr>
-                  <tr v-for="school in schools" :key="school.id" class="hover:bg-blue-50/30 transition-colors group">
-                    <td class="py-5 px-6">
-                      <p class="font-bold text-gray-900 text-sm mb-1 group-hover:text-blue-700 transition-colors">{{ school.name }}</p>
-                      <p class="text-[11px] text-gray-500 font-medium flex items-center gap-1">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                  <tr v-for="school in filteredSchools" :key="school.id" class="hover:bg-blue-50/30 transition-colors group">
+                    <td class="py-4 px-6">
+                      <p class="font-bold text-slate-900 text-sm mb-1 group-hover:text-blue-700 transition-colors">{{ school.name }}</p>
+                      <p class="text-[11px] text-slate-500 font-medium flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
                         {{ school.payment_method }} ({{ formatRupiah(school.payment_amount) }})
                       </p>
                     </td>
-                    <td class="py-5 px-6">
-                      <p class="text-sm font-bold text-gray-700 mb-1">{{ school.contact_number || '-' }}</p>
-                      <p class="text-[11px] text-gray-500 font-medium max-w-[200px] truncate" :title="school.address">{{ school.address || '-' }}</p>
+                    <td class="py-4 px-6">
+                      <p class="text-sm font-bold text-slate-700 mb-0.5">{{ school.contact_number || '-' }}</p>
+                      <p class="text-[11px] text-slate-500 font-medium max-w-[200px] truncate" :title="school.address">{{ school.address || '-' }}</p>
                     </td>
-                    <td class="py-5 px-6">
-                      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200">
+                    <td class="py-4 px-6">
+                      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                         {{ school.admin_username }}
                       </span>
                     </td>
-                    <td class="py-5 px-6">
-                      <div class="flex flex-col gap-1.5">
-                        <span v-if="isExpired(school.valid_until)" class="inline-flex w-max px-2.5 py-1 text-[10px] font-black rounded-md bg-red-100 text-red-700 border border-red-200 uppercase tracking-widest">Expired</span>
-                        <span v-else class="inline-flex w-max px-2.5 py-1 text-[10px] font-black rounded-md bg-green-100 text-green-700 border border-green-200 uppercase tracking-widest">Active</span>
-                        <span class="text-xs font-bold text-gray-500">{{ formatDate(school.valid_until) }}</span>
+                    <td class="py-4 px-6">
+                      <div class="flex flex-col gap-1">
+                        <span v-if="isExpired(school.valid_until)" class="inline-flex w-max px-2.5 py-0.5 text-[10px] font-black rounded-md bg-rose-100 text-rose-700 border border-rose-200 uppercase tracking-wider">Expired</span>
+                        <span v-else class="inline-flex w-max px-2.5 py-0.5 text-[10px] font-black rounded-md bg-emerald-100 text-emerald-700 border border-emerald-200 uppercase tracking-wider">Active</span>
+                        <span class="text-xs font-bold text-slate-500">{{ formatDate(school.valid_until) }}</span>
                       </div>
                     </td>
-                    <td class="py-5 px-6 text-right space-x-4 whitespace-nowrap">
-                      <button @click="blockSchool(school.id)" class="text-sm font-bold text-orange-500 hover:text-orange-700 transition-colors cursor-pointer">Blokir</button>
-                      <button @click="deleteSchool(school.id, school.name)" class="text-sm font-bold text-red-500 hover:text-red-700 transition-colors cursor-pointer">Hapus</button>
+                    <td class="py-4 px-6 text-right space-x-3 whitespace-nowrap">
+                      <button v-if="school.contact_number" @click="contactSchool(school)" class="text-xs font-bold text-emerald-600 hover:text-emerald-800 transition-colors cursor-pointer">Chat WA</button>
+                      <button @click="blockSchool(school.id)" class="text-xs font-bold text-amber-600 hover:text-amber-800 transition-colors cursor-pointer">Blokir</button>
+                      <button @click="deleteSchool(school.id, school.name)" class="text-xs font-bold text-rose-600 hover:text-rose-800 transition-colors cursor-pointer">Hapus</button>
                     </td>
                   </tr>
                 </tbody>
@@ -322,28 +384,28 @@
             </div>
 
             <!-- Mobile Transactions List (< md) -->
-            <div class="md:hidden divide-y divide-gray-100">
-              <div v-if="schools.length === 0" class="p-8 text-center text-gray-400 text-xs">
+            <div class="md:hidden p-3 sm:p-4 space-y-2.5 bg-slate-50/40">
+              <div v-if="schools.length === 0" class="p-8 text-center text-slate-400 text-xs bg-white rounded-2xl border border-slate-100">
                 Tidak ada riwayat transaksi.
               </div>
-              <div v-for="school in schools" :key="'tx-mob-'+school.id" class="p-4 hover:bg-gray-50/80 transition-colors space-y-2">
+              <div v-for="school in schools" :key="'tx-mob-'+school.id" class="bg-white rounded-2xl p-3.5 border border-slate-200/90 shadow-2xs hover:shadow-xs transition-all space-y-2">
                 <div class="flex items-start justify-between gap-2">
                   <div class="min-w-0">
-                    <h4 class="font-bold text-gray-800 text-sm truncate">{{ school.name }}</h4>
-                    <p class="text-[11px] text-gray-400">Admin: @{{ school.admin_username }}</p>
+                    <h4 class="font-bold text-slate-900 text-sm leading-tight truncate">{{ school.name }}</h4>
+                    <p class="text-[11px] text-slate-400 font-medium">Admin: @{{ school.admin_username }}</p>
                   </div>
-                  <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-black bg-blue-50 text-blue-700 uppercase shrink-0">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-black bg-blue-50 text-blue-700 border border-blue-100 uppercase shrink-0">
                     {{ school.payment_method }}
                   </span>
                 </div>
-                <div class="flex items-center justify-between text-xs pt-1">
-                  <span class="text-gray-500">{{ school.contact_number || '-' }}</span>
-                  <span class="font-black text-gray-900 font-mono text-sm">{{ formatRupiah(school.payment_amount) }}</span>
+                <div class="flex items-center justify-between text-xs pt-1 border-t border-slate-100">
+                  <span class="text-slate-500 font-medium">{{ school.contact_number || '-' }}</span>
+                  <span class="font-black text-emerald-600 font-mono text-sm">{{ formatRupiah(school.payment_amount) }}</span>
                 </div>
               </div>
-              <div class="p-4 bg-gray-50 flex items-center justify-between font-black text-sm">
-                <span class="text-gray-600 uppercase text-xs">Total Terkumpul:</span>
-                <span class="text-green-600 font-mono text-base">{{ formatRupiah(totalRevenue) }}</span>
+              <div class="p-3.5 bg-slate-900 text-white rounded-2xl flex items-center justify-between font-black text-xs sm:text-sm shadow-md">
+                <span class="text-slate-300 uppercase tracking-wider text-[11px]">Total Omzet:</span>
+                <span class="text-emerald-400 font-mono text-sm sm:text-base">{{ formatRupiah(totalRevenue) }}</span>
               </div>
             </div>
 
@@ -493,24 +555,28 @@
           </div>
           
           <!-- Mobile Cards View (< md) -->
-          <div class="md:hidden divide-y divide-gray-100">
-            <div v-if="pendingPayments.length === 0" class="py-12 text-center text-gray-400 text-xs font-medium">
-              <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <div class="md:hidden p-3 sm:p-4 space-y-3.5 bg-slate-50/40">
+            <div v-if="pendingPayments.length === 0" class="py-12 text-center text-slate-400 text-xs font-medium bg-white rounded-2xl border border-slate-100">
+              <svg class="w-12 h-12 mx-auto mb-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               Belum ada konfirmasi pembayaran baru yang masuk.
             </div>
-            <div v-for="(p, pIdx) in pendingPayments" :key="'p-mob-'+pIdx" class="p-4 hover:bg-gray-50/80 transition-colors space-y-3">
+            <div 
+              v-for="(p, pIdx) in pendingPayments" 
+              :key="'p-mob-'+pIdx" 
+              class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs hover:shadow-md transition-all space-y-3.5"
+            >
               <div class="flex items-start justify-between gap-2">
-                <div>
+                <div class="min-w-0">
                   <span class="text-xs font-bold text-blue-600 font-mono block">{{ p.invoice }}</span>
-                  <h4 class="font-bold text-gray-900 text-sm mt-0.5">{{ p.senderName }}</h4>
-                  <p class="text-xs text-gray-500 font-medium">Dari: {{ p.bankName }}</p>
+                  <h4 class="font-extrabold text-slate-900 text-sm mt-0.5 leading-snug">{{ p.senderName }}</h4>
+                  <p class="text-xs text-slate-500 font-medium">Bank Pengirim: <span class="font-bold text-slate-700">{{ p.bankName }}</span></p>
                 </div>
                 <span 
                   class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold shrink-0"
                   :class="{
-                    'bg-amber-100 text-amber-800': p.status === 'MENUNGGU_VERIFIKASI',
-                    'bg-emerald-100 text-emerald-800': p.status === 'TERVERIFIKASI',
-                    'bg-rose-100 text-rose-800': p.status === 'DITOLAK'
+                    'bg-amber-50 text-amber-800 border border-amber-200': p.status === 'MENUNGGU_VERIFIKASI',
+                    'bg-emerald-50 text-emerald-800 border border-emerald-200': p.status === 'TERVERIFIKASI',
+                    'bg-rose-50 text-rose-800 border border-rose-200': p.status === 'DITOLAK'
                   }"
                 >
                   <span class="w-1.5 h-1.5 rounded-full"
@@ -524,46 +590,46 @@
                 </span>
               </div>
 
-              <div class="grid grid-cols-2 gap-2 text-xs bg-gray-50 p-2.5 rounded-xl border border-gray-100">
+              <div class="grid grid-cols-2 gap-2 text-xs bg-slate-50/80 p-3 rounded-xl border border-slate-100">
                 <div>
-                  <span class="text-[10px] text-gray-400 block font-bold uppercase">Paket & Tanggal</span>
-                  <span class="font-bold text-gray-800">Paket {{ p.plan }} &bull; {{ p.formattedDate }}</span>
+                  <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Paket & Tanggal</span>
+                  <span class="font-bold text-slate-800 block mt-0.5">Paket {{ p.plan }} &bull; {{ p.formattedDate }}</span>
                 </div>
                 <div>
-                  <span class="text-[10px] text-gray-400 block font-bold uppercase">Nominal & Metode</span>
-                  <span class="font-black text-indigo-700 font-mono">{{ formatRupiah(p.amount) }} ({{ p.method }})</span>
+                  <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Nominal & Metode</span>
+                  <span class="font-black text-indigo-700 font-mono block mt-0.5">{{ formatRupiah(p.amount) }} ({{ p.method }})</span>
                 </div>
               </div>
 
-              <div v-if="p.notes" class="text-xs text-gray-600 italic bg-amber-50/50 p-2.5 rounded-xl border border-amber-100">
+              <div v-if="p.notes" class="text-xs text-slate-600 italic bg-amber-50/50 p-2.5 rounded-xl border border-amber-100">
                 "{{ p.notes }}"
               </div>
 
               <!-- Struk Foto -->
-              <div v-if="p.proofImage" class="flex items-center gap-3 bg-gray-50 p-2 rounded-xl border border-gray-100">
+              <div v-if="p.proofImage" class="flex items-center gap-3 bg-slate-50/80 p-2.5 rounded-xl border border-slate-100">
                 <img 
                   :src="p.proofImage" 
                   alt="Bukti Transfer" 
                   @click="previewReceiptImage = p.proofImage"
-                  class="w-14 h-14 rounded-lg object-cover border border-slate-200 shadow-2xs cursor-pointer hover:scale-105 transition-transform shrink-0" 
+                  class="w-14 h-14 rounded-xl object-cover border border-slate-200 shadow-2xs cursor-pointer hover:scale-105 transition-transform shrink-0" 
                 />
                 <div class="flex-1 min-w-0">
-                  <span class="text-xs font-bold text-gray-800 block">Bukti Transfer</span>
+                  <span class="text-xs font-bold text-slate-800 block">Bukti Transfer</span>
                   <button 
                     @click="previewReceiptImage = p.proofImage" 
                     class="text-xs text-blue-600 font-bold hover:underline cursor-pointer flex items-center gap-1 mt-0.5"
                   >
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                    <span>Lihat Foto Penuh</span>
+                    <span>Buka Foto Struk</span>
                   </button>
                 </div>
               </div>
 
-              <div class="flex items-center gap-2 pt-1">
+              <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
                 <button 
                   v-if="p.status === 'MENUNGGU_VERIFIKASI'"
                   @click="approvePayment(p)"
-                  class="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-all cursor-pointer active:scale-95"
+                  class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-all cursor-pointer active:scale-95"
                 >
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                   <span>Setujui (+30 Hari)</span>
@@ -577,7 +643,7 @@
                 </button>
                 <button 
                   @click="deletePaymentRecord(p.invoice, p.id)"
-                  class="p-2 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 border border-gray-200 transition-colors cursor-pointer"
+                  class="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 transition-colors cursor-pointer"
                   title="Hapus Catatan"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -712,22 +778,26 @@
           </div>
           
           <!-- Mobile Cards View (< md) -->
-          <div class="md:hidden divide-y divide-gray-100">
-            <div v-if="filteredSupportTickets.length === 0" class="py-12 text-center text-gray-400 font-bold text-xs">
+          <div class="md:hidden p-3 sm:p-4 space-y-3.5 bg-slate-50/40">
+            <div v-if="filteredSupportTickets.length === 0" class="py-12 text-center text-slate-400 font-bold text-xs bg-white rounded-2xl border border-slate-100">
               Tidak ada tiket aduan atau saran yang ditemukan.
             </div>
-            <div v-for="t in filteredSupportTickets" :key="'t-mob-'+t.id" class="p-4 hover:bg-gray-50/80 transition-colors space-y-3">
+            <div 
+              v-for="t in filteredSupportTickets" 
+              :key="'t-mob-'+t.id" 
+              class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs hover:shadow-md transition-all space-y-3"
+            >
               <div class="flex items-start justify-between gap-2">
-                <div>
-                  <h4 class="font-bold text-gray-900 text-sm">{{ t.name }}</h4>
-                  <p class="text-xs text-indigo-600 font-semibold">{{ t.contact || '-' }}</p>
-                  <p class="text-[10px] text-gray-400 mt-0.5">{{ t.date }}</p>
+                <div class="min-w-0">
+                  <h4 class="font-extrabold text-slate-900 text-sm leading-tight">{{ t.name }}</h4>
+                  <p class="text-xs text-indigo-600 font-semibold mt-0.5">{{ t.contact || '-' }}</p>
+                  <p class="text-[10px] text-slate-400 font-medium mt-0.5">{{ t.date }}</p>
                 </div>
                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold shrink-0"
                   :class="{
-                    'bg-amber-100 text-amber-800': t.status === 'MENUNGGU',
-                    'bg-blue-100 text-blue-800': t.status === 'DIPROSES',
-                    'bg-emerald-100 text-emerald-800': t.status === 'SELESAI'
+                    'bg-amber-50 text-amber-800 border border-amber-200': t.status === 'MENUNGGU',
+                    'bg-blue-50 text-blue-800 border border-blue-200': t.status === 'DIPROSES',
+                    'bg-emerald-50 text-emerald-800 border border-emerald-200': t.status === 'SELESAI'
                   }"
                 >
                   <span class="w-1.5 h-1.5 rounded-full"
@@ -742,21 +812,21 @@
               </div>
 
               <div class="flex items-center gap-2 text-xs">
-                <span class="px-2 py-0.5 rounded-md font-bold bg-indigo-50 text-indigo-700 text-[10px]">
+                <span class="px-2.5 py-0.5 rounded-md font-bold bg-indigo-50 text-indigo-700 text-[10px] border border-indigo-100">
                   {{ t.category || 'Kendala Umum' }}
                 </span>
-                <span class="text-gray-600 font-medium truncate">{{ t.school || 'Pengguna Mandiri' }}</span>
+                <span class="text-slate-600 font-medium truncate">{{ t.school || 'Pengguna Mandiri' }}</span>
               </div>
 
-              <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 text-xs text-gray-700 leading-relaxed font-medium italic">
+              <div class="bg-slate-50/80 p-3 rounded-xl border border-slate-100 text-xs text-slate-700 leading-relaxed font-medium italic">
                 "{{ t.message }}"
               </div>
 
-              <div class="flex items-center gap-2 pt-1">
+              <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
                 <button 
                   v-if="t.contact"
                   @click="contactClientWA(t.contact, t.name)"
-                  class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs border border-emerald-200 transition-all cursor-pointer"
+                  class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs border border-emerald-200 transition-all cursor-pointer active:scale-95"
                 >
                   <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
                   <span>WhatsApp</span>
@@ -764,13 +834,13 @@
                 <button 
                   v-if="t.status !== 'SELESAI'"
                   @click="resolveSupportTicket(t.id)"
-                  class="px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs border border-blue-200 transition-colors cursor-pointer"
+                  class="px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs border border-blue-200 transition-colors cursor-pointer active:scale-95"
                 >
                   Selesaikan
                 </button>
                 <button 
                   @click="deleteSupportTicket(t.id)"
-                  class="p-2 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 border border-gray-200 transition-colors cursor-pointer"
+                  class="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 transition-colors cursor-pointer"
                   title="Hapus Tiket"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -863,6 +933,35 @@
       </div>
 
       </main>
+
+      <!-- Mobile Bottom Navigation Bar (Fixed on screens < lg) -->
+      <nav class="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 px-1 py-1 flex items-center justify-around shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+        <button 
+          v-for="tab in tabItems" 
+          :key="'bnav-'+tab.id"
+          @click="activeTab = tab.id"
+          class="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all relative flex-1 cursor-pointer select-none"
+          :class="activeTab === tab.id ? 'text-blue-600 font-extrabold' : 'text-slate-400 hover:text-slate-600 font-medium'"
+        >
+          <div class="relative">
+            <svg v-if="tab.id === 'manajemen'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+            <svg v-else-if="tab.id === 'laporan'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            <svg v-else-if="tab.id === 'verifikasi'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <svg v-else-if="tab.id === 'aduan'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+            <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+
+            <!-- Badge Notification -->
+            <span v-if="tab.badge > 0" class="absolute -top-1 -right-2.5 min-w-[15px] h-3.5 px-1 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center animate-pulse shadow-xs">
+              {{ tab.badge > 99 ? '99+' : tab.badge }}
+            </span>
+          </div>
+          <span class="text-[10px] mt-1 tracking-tight leading-none text-center">
+            {{ tab.shortLabel || tab.label }}
+          </span>
+          <div v-if="activeTab === tab.id" class="w-3.5 h-0.5 bg-blue-600 rounded-full mt-0.5"></div>
+        </button>
+      </nav>
+
     </div> <!-- End Main Content Area Wrapper -->
 
     <!-- Modal Tambah Klien -->
@@ -968,10 +1067,10 @@
             </div>
           </div>
 
-          <div class="p-4 sm:p-6 border-t border-gray-100 flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 sticky bottom-0 bg-white z-10 -mx-4 -mb-4 sm:-mx-6 sm:-mb-6">
-             <button type="button" @click="showModal = false" class="w-full sm:w-auto px-6 py-2.5 sm:py-3 text-gray-600 bg-white border border-gray-200 hover:bg-gray-50 rounded-xl font-bold transition-colors text-sm cursor-pointer">Batal</button>
-             <button type="submit" :disabled="saving" class="w-full sm:w-auto px-8 py-2.5 sm:py-3 bg-indigo-600 text-white rounded-xl font-black hover:bg-indigo-700 shadow-lg shadow-indigo-500/30 transition-all flex items-center justify-center gap-2 transform hover:-translate-y-0.5 text-sm cursor-pointer">
-               <svg v-if="saving" class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+          <div class="p-4 sm:p-5 border-t border-slate-100 flex flex-col-reverse sm:flex-row justify-end gap-2 bg-slate-50/70 rounded-b-2xl sm:rounded-b-3xl">
+             <button type="button" @click="showModal = false" class="w-full sm:w-auto px-5 py-2.5 text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl font-bold transition-colors text-xs sm:text-sm cursor-pointer">Batal</button>
+             <button type="submit" :disabled="saving" class="w-full sm:w-auto px-7 py-2.5 bg-indigo-600 text-white rounded-xl font-black hover:bg-indigo-700 shadow-md shadow-indigo-500/20 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer">
+               <svg v-if="saving" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                <span v-if="saving">Memproses...</span>
                <span v-else>Simpan & Buat Tenant</span>
              </button>
@@ -1009,6 +1108,26 @@ const showModal = ref(false)
 const loading = ref(true)
 const saving = ref(false)
 const schools = ref([])
+const clientSearch = ref('')
+
+const filteredSchools = computed(() => {
+  if (!clientSearch.value.trim()) return schools.value
+  const q = clientSearch.value.toLowerCase().trim()
+  return schools.value.filter(s => 
+    (s.name && s.name.toLowerCase().includes(q)) ||
+    (s.admin_username && s.admin_username.toLowerCase().includes(q)) ||
+    (s.address && s.address.toLowerCase().includes(q)) ||
+    (s.contact_number && s.contact_number.includes(q))
+  )
+})
+
+const contactSchool = (school) => {
+  if (!school.contact_number) {
+    alert("Nomor kontak sekolah belum dicantumkan.")
+    return
+  }
+  contactClient(school.contact_number)
+}
 
 const currentTabTitle = computed(() => {
   switch (activeTab.value) {
@@ -1022,11 +1141,11 @@ const currentTabTitle = computed(() => {
 })
 
 const tabItems = computed(() => [
-  { id: 'manajemen', label: 'Manajemen Klien', badge: 0 },
-  { id: 'laporan', label: 'Laporan Pendapatan', badge: 0 },
-  { id: 'verifikasi', label: 'Verifikasi Bayar', badge: pendingPaymentsCount.value },
-  { id: 'aduan', label: 'Aduan & Saran', badge: unreadTicketsCount.value },
-  { id: 'pengaturan', label: 'Pengaturan', badge: forgotPasswordReports.value?.length || 0 }
+  { id: 'manajemen', label: 'Manajemen Klien', shortLabel: 'Klien', badge: 0 },
+  { id: 'laporan', label: 'Laporan Pendapatan', shortLabel: 'Laporan', badge: 0 },
+  { id: 'verifikasi', label: 'Verifikasi Bayar', shortLabel: 'Verifikasi', badge: pendingPaymentsCount.value },
+  { id: 'aduan', label: 'Aduan & Saran', shortLabel: 'Aduan', badge: unreadTicketsCount.value },
+  { id: 'pengaturan', label: 'Pengaturan', shortLabel: 'Pengaturan', badge: forgotPasswordReports.value?.length || 0 }
 ])
 
 const totalRevenue = computed(() => {
