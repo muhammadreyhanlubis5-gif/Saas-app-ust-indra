@@ -241,14 +241,16 @@
 
                 <!-- Action Footer -->
                 <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-100">
-                  <button 
+                  <a 
                     v-if="school.contact_number"
-                    @click="contactSchool(school)"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 transition-all cursor-pointer active:scale-95"
+                    :href="getWaUrl(school.contact_number, school.name, `Halo Pengelola ${school.name}, kami dari Tim Super Admin GuruKu.`)"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 transition-all cursor-pointer active:scale-95 no-underline"
                   >
                     <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
                     <span>Chat WA</span>
-                  </button>
+                  </a>
                   <div class="flex items-center gap-1.5 ml-auto">
                     <button 
                       @click="blockSchool(school.id)" 
@@ -315,7 +317,7 @@
                       </div>
                     </td>
                     <td class="py-4 px-6 text-right space-x-3 whitespace-nowrap">
-                      <button v-if="school.contact_number" @click="contactSchool(school)" class="text-xs font-bold text-emerald-600 hover:text-emerald-800 transition-colors cursor-pointer">Chat WA</button>
+                      <a v-if="school.contact_number" :href="getWaUrl(school.contact_number, school.name, `Halo Pengelola ${school.name}, kami dari Tim Super Admin GuruKu.`)" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-emerald-600 hover:text-emerald-800 transition-colors cursor-pointer no-underline inline-block">Chat WA</a>
                       <button @click="blockSchool(school.id)" class="text-xs font-bold text-amber-600 hover:text-amber-800 transition-colors cursor-pointer">Blokir</button>
                       <button @click="deleteSchool(school.id, school.name)" class="text-xs font-bold text-rose-600 hover:text-rose-800 transition-colors cursor-pointer">Hapus</button>
                     </td>
@@ -512,9 +514,15 @@
                     >
                       {{ processingIds.has(report.id) ? 'Memproses...' : 'Berikan Izin' }}
                     </button>
-                    <button @click="contactClient(report.contact)" class="flex-1 min-w-[120px] bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold py-2 px-3 rounded-lg transition-colors border border-blue-200 text-center cursor-pointer">
+                    <a 
+                      v-if="report.contact"
+                      :href="getWaUrl(report.contact, report.school_name || report.username, `Halo Bpk/Ibu, kami dari Layanan Super Admin GuruKu menindaklanjuti permohonan reset password akun sekolah Anda.`)" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      class="flex-1 min-w-[120px] bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold py-2 px-3 rounded-lg transition-colors border border-blue-200 text-center cursor-pointer no-underline flex items-center justify-center"
+                    >
                       Hubungi Klien
-                    </button>
+                    </a>
                     <button 
                       @click="rejectReport(report.id)" 
                       :disabled="processingIds.has(report.id)"
@@ -815,14 +823,16 @@
               </div>
 
               <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
-                <button 
+                <a 
                   v-if="t.contact"
-                  @click="contactClientWA(t.contact, t.name)"
-                  class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs border border-emerald-200 transition-all cursor-pointer active:scale-95"
+                  :href="getWaUrl(t.contact, t.name)"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs border border-emerald-200 transition-all cursor-pointer active:scale-95 no-underline shadow-xs"
                 >
                   <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
                   <span>WhatsApp</span>
-                </button>
+                </a>
                 <button 
                   v-if="t.status !== 'SELESAI'"
                   @click="resolveSupportTicket(t.id)"
@@ -893,15 +903,17 @@
                     </span>
                   </td>
                   <td class="py-4 px-6 text-right space-x-1 whitespace-nowrap">
-                    <button 
+                    <a 
                       v-if="t.contact"
-                      @click="contactClientWA(t.contact, t.name)"
-                      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs border border-emerald-200 transition-all cursor-pointer shadow-sm active:scale-95"
+                      :href="getWaUrl(t.contact, t.name)"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs border border-emerald-200 transition-all cursor-pointer shadow-sm active:scale-95 no-underline"
                       title="Hubungi Pelapor via WhatsApp"
                     >
                       <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
                       <span>WhatsApp</span>
-                    </button>
+                    </a>
                     <button 
                       v-if="t.status !== 'SELESAI'"
                       @click="resolveSupportTicket(t.id)"
@@ -1113,12 +1125,24 @@ const filteredSchools = computed(() => {
   )
 })
 
+const getWaUrl = (phone, name, customMsg) => {
+  if (!phone) return '#'
+  let cleanPhone = phone.toString().replace(/[^0-9]/g, '')
+  if (cleanPhone.startsWith('0')) {
+    cleanPhone = '62' + cleanPhone.slice(1)
+  } else if (!cleanPhone.startsWith('62')) {
+    cleanPhone = '62' + cleanPhone
+  }
+  const msg = customMsg || `Halo Bpk/Ibu ${name || ''}, kami dari Tim Layanan Super Admin GuruKu menindaklanjuti aduan/saran yang Anda kirimkan. Bagaimana kami dapat membantu?`
+  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`
+}
+
 const contactSchool = (school) => {
   if (!school.contact_number) {
     alert("Nomor kontak sekolah belum dicantumkan.")
     return
   }
-  contactClient(school.contact_number)
+  contactClient(school.contact_number, school.name)
 }
 
 const currentTabTitle = computed(() => {
@@ -1342,18 +1366,19 @@ const deleteSupportTicket = async (id) => {
 }
 
 const contactClientWA = (phone, name) => {
-  if (!phone) {
+  const url = getWaUrl(phone, name)
+  if (!url || url === '#') {
     alert("Nomor telepon / WhatsApp tidak valid atau kosong.")
     return
   }
-  let cleanPhone = phone.toString().replace(/[^0-9]/g, '')
-  if (cleanPhone.startsWith('0')) {
-    cleanPhone = '62' + cleanPhone.slice(1)
-  } else if (!cleanPhone.startsWith('62')) {
-    cleanPhone = '62' + cleanPhone
+  try {
+    const win = window.open(url, '_blank')
+    if (!win || win.closed || typeof win.closed === 'undefined') {
+      window.location.href = url
+    }
+  } catch (err) {
+    window.location.href = url
   }
-  const msg = encodeURIComponent(`Halo Bpk/Ibu ${name || ''}, kami dari Tim Layanan Super Admin GuruKu menindaklanjuti aduan/saran yang Anda kirimkan. Bagaimana kami dapat membantu?`)
-  window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${msg}`, '_blank')
 }
 
 // Data & Methods for Pengaturan Sistem
@@ -1445,19 +1470,21 @@ const resolveReport = async (id) => {
   }
 }
 
-const contactClient = (number) => {
+const contactClient = (number, name = '') => {
   if (!number) {
     alert("Nomor WhatsApp tidak valid atau kosong.")
     return
   }
-  let cleanPhone = number.toString().replace(/[^0-9]/g, '')
-  if (cleanPhone.startsWith('0')) {
-    cleanPhone = '62' + cleanPhone.slice(1)
-  } else if (!cleanPhone.startsWith('62')) {
-    cleanPhone = '62' + cleanPhone
+  const msg = `Halo Bpk/Ibu ${name ? name + ' ' : ''}, kami dari Layanan Super Admin GuruKu menindaklanjuti permohonan / akun sekolah Anda.`
+  const url = getWaUrl(number, name, msg)
+  try {
+    const win = window.open(url, '_blank')
+    if (!win || win.closed || typeof win.closed === 'undefined') {
+      window.location.href = url
+    }
+  } catch (err) {
+    window.location.href = url
   }
-  const msg = encodeURIComponent(`Halo Bpk/Ibu, kami dari Layanan Super Admin GuruKu menindaklanjuti permohonan reset akses akun sekolah Anda.`)
-  window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${msg}`, '_blank')
 }
 
 const form = ref({
