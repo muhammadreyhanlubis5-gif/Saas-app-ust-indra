@@ -23,7 +23,7 @@
       <!-- Top Navigation / Breadcrumb -->
       <div class="flex items-center justify-between mb-8">
         <button 
-          @click="$router.push('/expired')" 
+          @click="$router.push(ROUTES.EXPIRED)" 
           class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-blue-700 bg-white border border-slate-200 hover:border-slate-300 px-4 py-2 rounded-xl shadow-sm transition-all active:scale-95"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -846,6 +846,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import aduanSuksesImg from '../assets/aduan-sukses.png'
+import { ROUTES } from '../config/routePaths.js'
 
 import briIcon from '../assets/icon-pay/bri.jpg'
 import livinIcon from '../assets/icon-pay/livin.jpg'

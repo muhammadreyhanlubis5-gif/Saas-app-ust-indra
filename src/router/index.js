@@ -20,16 +20,16 @@ import AnalisisGuru from '../views/AnalisisGuru.vue'
 import TunjanganSertifikasi from '../views/TunjanganSertifikasi.vue'
 import PusatBantuan from '../views/PusatBantuan.vue'
 import ComingSoon from '../views/ComingSoon.vue'
-import { SUPER_ADMIN_SECRET_PATH } from '../config/adminSecret.js'
+import { ROUTES, SCHOOL_ADMIN_SUB } from '../config/routePaths.js'
 
 const routes = [
   { path: '/', name: 'Login', component: Login, meta: { requiresAuth: false } },
-  { path: '/expired', name: 'Expired', component: ExpiredView, meta: { requiresAuth: false } },
-  { path: '/checkout', name: 'Checkout', component: () => import('../views/CheckoutView.vue'), meta: { requiresAuth: false } },
+  { path: ROUTES.EXPIRED, name: 'Expired', component: ExpiredView, meta: { requiresAuth: false } },
+  { path: ROUTES.CHECKOUT, name: 'Checkout', component: () => import('../views/CheckoutView.vue'), meta: { requiresAuth: false } },
   
-  // SUPER ADMIN (SECRET OBFUSCATED URL BERISI KODE & SIMBOL)
+  // SUPER ADMIN (SECRET OBFUSCATED URL)
   {
-    path: SUPER_ADMIN_SECRET_PATH,
+    path: ROUTES.SUPER_ADMIN,
     component: SuperAdminDashboard,
     meta: { requiresAuth: true, role: 'SUPER_ADMIN' },
     children: [
@@ -37,44 +37,58 @@ const routes = [
     ]
   },
   
-  // Blokir dan alihkan jalur '/super-admin' lama agar penyerang tidak bisa menebak
+  // SCHOOL ADMIN (SECRET OBFUSCATED URL)
   {
-    path: '/super-admin',
-    redirect: '/'
-  },
-  
-  // SCHOOL ADMIN (TENANT)
-  {
-    path: '/admin-sekolah',
+    path: ROUTES.SCHOOL_ADMIN,
     component: SchoolAdminDashboard,
     meta: { requiresAuth: true, role: 'SCHOOL_ADMIN' },
     children: [
-      { path: 'validasi-lembaga', name: 'ValidasiLembaga', component: ValidasiLembaga },
-        { path: 'daftar-kelas', name: 'DaftarKelas', component: DaftarKelas },
-        { path: 'daftar-guru', name: 'DaftarGuru', component: DaftarGuru },
-      { path: 'sesi-kbm', name: 'SesiWaktu', component: SesiWaktu },
-      { path: 'pengampu', name: 'PengampuMapel', component: PengampuMapel },
-      { path: 'jam-kosong', name: 'JamKosong', component: JamKosong },
-      { path: 'tugas-tambahan', name: 'TugasTambahan', component: TugasTambahan },
-      { path: 'jadwal-guru', name: 'JadwalGuru', component: JadwalGuru },
-      { path: 'jadwal-kelas', name: 'JadwalKelas', component: JadwalKelas },
-      { path: 'mata-pelajaran', name: 'MataPelajaran', component: MataPelajaran },
-      { path: 'analisis-guru', name: 'AnalisisGuru', component: AnalisisGuru },
-      { path: 'sertifikasi', name: 'TunjanganSertifikasi', component: TunjanganSertifikasi },
-      { path: 'bantuan', name: 'PusatBantuan', component: PusatBantuan },
+      { path: SCHOOL_ADMIN_SUB.VALIDASI_LEMBAGA, name: 'ValidasiLembaga', component: ValidasiLembaga },
+      { path: SCHOOL_ADMIN_SUB.DAFTAR_KELAS, name: 'DaftarKelas', component: DaftarKelas },
+      { path: SCHOOL_ADMIN_SUB.DAFTAR_GURU, name: 'DaftarGuru', component: DaftarGuru },
+      { path: SCHOOL_ADMIN_SUB.SESI_KBM, name: 'SesiWaktu', component: SesiWaktu },
+      { path: SCHOOL_ADMIN_SUB.PENGAMPU, name: 'PengampuMapel', component: PengampuMapel },
+      { path: SCHOOL_ADMIN_SUB.JAM_KOSONG, name: 'JamKosong', component: JamKosong },
+      { path: SCHOOL_ADMIN_SUB.TUGAS_TAMBAHAN, name: 'TugasTambahan', component: TugasTambahan },
+      { path: SCHOOL_ADMIN_SUB.JADWAL_GURU, name: 'JadwalGuru', component: JadwalGuru },
+      { path: SCHOOL_ADMIN_SUB.JADWAL_KELAS, name: 'JadwalKelas', component: JadwalKelas },
+      { path: SCHOOL_ADMIN_SUB.MATA_PELAJARAN, name: 'MataPelajaran', component: MataPelajaran },
+      { path: SCHOOL_ADMIN_SUB.ANALISIS_GURU, name: 'AnalisisGuru', component: AnalisisGuru },
+      { path: SCHOOL_ADMIN_SUB.TUNJANGAN_SERTIFIKASI, name: 'TunjanganSertifikasi', component: TunjanganSertifikasi },
+      { path: SCHOOL_ADMIN_SUB.PUSAT_BANTUAN, name: 'PusatBantuan', component: PusatBantuan },
       { path: ':pathMatch(.*)*', name: 'AdminNotFound', component: ComingSoon }
     ]
   },
   
-  // GURU (TEACHER)
+  // GURU / TEACHER (SECRET OBFUSCATED URL)
   {
-    path: '/guru',
+    path: ROUTES.TEACHER,
     component: TeacherDashboard,
     meta: { requiresAuth: true, role: 'TEACHER' },
     children: [
       { path: '', name: 'TeacherHome', component: TeacherDashboard },
     ]
-  }
+  },
+
+  // OTOMATIS ALIHKAN (REDIRECT) SEMUA JALUR LAMA KE URL BERSIMBOL AGAR TIDAK TEBAKAN
+  { path: '/super-admin', redirect: '/' },
+  { path: '/expired', redirect: ROUTES.EXPIRED },
+  { path: '/checkout', redirect: ROUTES.CHECKOUT },
+  { path: '/guru', redirect: ROUTES.TEACHER },
+  { path: '/admin-sekolah', redirect: ROUTES.SCHOOL_ADMIN },
+  { path: '/admin-sekolah/validasi-lembaga', redirect: ROUTES.VALIDASI_LEMBAGA },
+  { path: '/admin-sekolah/daftar-kelas', redirect: ROUTES.DAFTAR_KELAS },
+  { path: '/admin-sekolah/daftar-guru', redirect: ROUTES.DAFTAR_GURU },
+  { path: '/admin-sekolah/sesi-kbm', redirect: ROUTES.SESI_WAKTU },
+  { path: '/admin-sekolah/pengampu', redirect: ROUTES.PENGAMPU },
+  { path: '/admin-sekolah/jam-kosong', redirect: ROUTES.JAM_KOSONG },
+  { path: '/admin-sekolah/tugas-tambahan', redirect: ROUTES.TUGAS_TAMBAHAN },
+  { path: '/admin-sekolah/jadwal-guru', redirect: ROUTES.JADWAL_GURU },
+  { path: '/admin-sekolah/jadwal-kelas', redirect: ROUTES.JADWAL_KELAS },
+  { path: '/admin-sekolah/mata-pelajaran', redirect: ROUTES.MATA_PELAJARAN },
+  { path: '/admin-sekolah/analisis-guru', redirect: ROUTES.ANALISIS_GURU },
+  { path: '/admin-sekolah/sertifikasi', redirect: ROUTES.TUNJANGAN_SERTIFIKASI },
+  { path: '/admin-sekolah/bantuan', redirect: ROUTES.PUSAT_BANTUAN }
 ]
 
 const router = createRouter({

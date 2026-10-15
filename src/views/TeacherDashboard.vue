@@ -6,7 +6,7 @@
           <h1 class="text-2xl font-bold text-gray-800">Selamat Datang, Bapak Budi Santoso!</h1>
           <p class="text-gray-500 mt-1">Portal Guru - SMA Negeri 1 Jakarta</p>
         </div>
-        <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded border">
+        <button @click="handleLogout" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded border">
           Keluar (Logout)
         </button>
       </header>
@@ -53,3 +53,13 @@
     </div>
   </div>
 </template>
+
+<script setup>
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const handleLogout = () => {
+  localStorage.clear()
+  router.push('/')
+}
+</script>

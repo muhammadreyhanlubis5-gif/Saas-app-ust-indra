@@ -509,7 +509,7 @@ import slide5 from '../assets/slides-login/5.jpg'
 import slide6 from '../assets/slides-login/6.jpg'
 import slide7 from '../assets/slides-login/7.jpg'
 import slide8 from '../assets/slides-login/8.jpg'
-import { SUPER_ADMIN_SECRET_PATH } from '../config/adminSecret.js'
+import { ROUTES } from '../config/routePaths.js'
 
 const router = useRouter()
 const username = ref('')
@@ -772,11 +772,11 @@ const handleLogin = async () => {
       // Redirect cepat (total 1.1 detik)
       setTimeout(() => {
         if (decodedPayload.role === 'SUPER_ADMIN') {
-          router.push(SUPER_ADMIN_SECRET_PATH)
+          router.push(ROUTES.SUPER_ADMIN)
         } else if (decodedPayload.role === 'SCHOOL_ADMIN') {
-          router.push('/admin-sekolah')
+          router.push(ROUTES.SCHOOL_ADMIN)
         } else {
-          router.push('/guru')
+          router.push(ROUTES.TEACHER)
         }
       }, 1100)
       

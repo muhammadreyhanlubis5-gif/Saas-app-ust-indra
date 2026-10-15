@@ -196,6 +196,7 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { ROUTES } from '../config/routePaths.js'
 
 const props = defineProps({
   show: Boolean
@@ -484,7 +485,7 @@ const generateMagic = async () => {
     if (saveRes.ok) {
       alert("Jadwal Berhasil Disusun Secara Otomatis!")
       emit('close')
-      router.push('/admin-sekolah/jadwal-guru')
+      router.push(ROUTES.JADWAL_GURU)
     } else {
       throw new Error("Gagal menyimpan jadwal ke database")
     }

@@ -2,7 +2,7 @@
   <div class="animate-fade-in-up p-4 md:p-8 max-w-[1400px] mx-auto w-full">
     
     <div class="flex items-center gap-4 mb-8">
-      <router-link to="/admin-sekolah" class="p-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 border border-gray-100 transition-colors">
+      <router-link :to="ROUTES.SCHOOL_ADMIN" class="p-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 border border-gray-100 transition-colors">
         <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
       </router-link>
       <div>
@@ -187,6 +187,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { SafeFlow } from '../core/SafeFlow.js'
+import { ROUTES } from '../config/routePaths.js'
 
 const router = useRouter()
 const loading = ref(true)

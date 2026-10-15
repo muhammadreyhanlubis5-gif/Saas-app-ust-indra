@@ -25,7 +25,7 @@
             <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
             Daftar Kelas (Rombel)
           </h2>
-          <router-link to="/admin-sekolah/daftar-kelas" class="text-sm font-bold text-blue-600 hover:text-blue-800 bg-blue-50 px-4 py-2 rounded-xl transition-colors inline-flex items-center gap-1">Kelola Kelas <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></router-link>
+          <router-link :to="ROUTES.DAFTAR_KELAS" class="text-sm font-bold text-blue-600 hover:text-blue-800 bg-blue-50 px-4 py-2 rounded-xl transition-colors inline-flex items-center gap-1">Kelola Kelas <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></router-link>
         </div>
         
         <div class="flex flex-wrap gap-3">
@@ -145,6 +145,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { ROUTES } from '../config/routePaths.js'
 
 const loading = ref(true)
   const schoolId = localStorage.getItem('school_id')

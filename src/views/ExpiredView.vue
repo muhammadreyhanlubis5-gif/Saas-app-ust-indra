@@ -96,6 +96,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { ROUTES } from '../config/routePaths.js'
 
 const router = useRouter()
 const showPricing = ref(false)
@@ -106,6 +107,6 @@ const backToLogin = () => {
 }
 
 const pilihPaket = (paket) => {
-  router.push(`/checkout?plan=${paket}`)
+  router.push(`${ROUTES.CHECKOUT}?plan=${paket}`)
 }
 </script>

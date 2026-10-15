@@ -1,7 +1,7 @@
 <template>
   <div class="animate-fade-in-up p-4 md:p-8 max-w-[1400px] mx-auto w-full">
     <div class="flex items-center gap-4 mb-6">
-      <router-link to="/admin-sekolah/validasi-lembaga" class="p-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 border border-gray-100 transition-colors">
+      <router-link :to="ROUTES.VALIDASI_LEMBAGA" class="p-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 border border-gray-100 transition-colors">
         <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
       </router-link>
       <div>
@@ -18,7 +18,7 @@
       <svg class="w-12 h-12 mx-auto mb-3 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
       <h3 class="font-bold text-lg mb-1">Hari Aktif Belum Diatur</h3>
       <p class="text-sm mb-4">Anda belum mengatur hari pelaksanaan KBM di Tahap 1.</p>
-      <router-link to="/admin-sekolah/validasi-lembaga" class="inline-block bg-yellow-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-yellow-700 transition-colors">
+      <router-link :to="ROUTES.VALIDASI_LEMBAGA" class="inline-block bg-yellow-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-yellow-700 transition-colors">
         Kembali ke Validasi Lembaga
       </router-link>
     </div>
@@ -122,7 +122,7 @@
         </div>
         <h2 class="text-3xl font-black text-gray-800 mb-2">Berhasil!</h2>
         <p class="text-gray-500 mb-8 font-medium leading-relaxed">{{ successMessage || 'Data Sesi & Waktu KBM berhasil disimpan.' }}</p>
-        <button @click="router.push('/admin-sekolah/mata-pelajaran')" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-transform transform hover:-translate-y-1 flex items-center justify-center gap-2">Lanjut ke Mata Pelajaran <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></button>
+        <button @click="router.push(ROUTES.MATA_PELAJARAN)" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-transform transform hover:-translate-y-1 flex items-center justify-center gap-2">Lanjut ke Mata Pelajaran <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></button>
       </div>
     </div>
 
@@ -147,6 +147,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { SafeFlow } from '../core/SafeFlow.js'
+import { ROUTES } from '../config/routePaths.js'
 
 
 const router = useRouter()

@@ -13,7 +13,7 @@
         <h2 class="text-3xl font-black text-gray-800 mb-3 tracking-tight">Masih Dalam Tahap Pengembangan</h2>
         <p class="text-gray-500 mb-8 font-medium">Halaman ini sedang diracik oleh tim ahli kami untuk memberikan pengalaman SaaS terbaik untuk Anda. Silakan nantikan pembaruannya!</p>
         
-        <button @click="$router.push('/admin-sekolah')" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3.5 px-8 rounded-2xl shadow-lg shadow-blue-500/30 transition-all flex items-center gap-3 justify-center w-full transform hover:-translate-y-1">
+        <button @click="$router.push(ROUTES.SCHOOL_ADMIN)" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3.5 px-8 rounded-2xl shadow-lg shadow-blue-500/30 transition-all flex items-center gap-3 justify-center w-full transform hover:-translate-y-1">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
           Kembali ke Dashboard Utama
         </button>
@@ -23,4 +23,5 @@
 </template>
 
 <script setup>
+import { ROUTES } from '../config/routePaths.js'
 </script>

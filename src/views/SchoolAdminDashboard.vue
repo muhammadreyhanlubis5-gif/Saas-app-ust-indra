@@ -27,8 +27,8 @@
       <!-- Navigasi Menu -->
       <nav class="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-6">
         
-        <router-link to="/admin-sekolah" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-bold text-sm"
-          :class="[$route.path === '/admin-sekolah' ? 'bg-blue-50 text-blue-700 shadow-sm border border-blue-100' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900']">
+        <router-link :to="ROUTES.SCHOOL_ADMIN" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-bold text-sm"
+          :class="[$route.path === ROUTES.SCHOOL_ADMIN || $route.path === '/admin-sekolah' ? 'bg-blue-50 text-blue-700 shadow-sm border border-blue-100' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900']">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
           Dashboard Utama
         </router-link>
@@ -72,7 +72,7 @@
       </div>
 
       <!-- Hanya tampil jika di root dashboard -->
-      <div v-if="$route.path === '/admin-sekolah'" class="p-4 md:p-8 max-w-[1400px] mx-auto animate-fade-in-up">
+      <div v-if="$route.path === ROUTES.SCHOOL_ADMIN || $route.path === '/admin-sekolah'" class="p-4 md:p-8 max-w-[1400px] mx-auto animate-fade-in-up">
         
         <!-- Banner Modern Premium dengan Sapaan Dinamis -->
         <div class="bg-blue-900 rounded-3xl p-6 md:p-8 mb-8 shadow-xl shadow-blue-900/20 relative overflow-hidden text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -108,7 +108,7 @@
         <!-- Statistik Utama dengan Animasi Count-Up Perlahan -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
           <!-- Card Total Guru -->
-          <router-link to="/admin-sekolah/daftar-guru" class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-lg transition-all hover:-translate-y-1 group block cursor-pointer">
+          <router-link :to="ROUTES.DAFTAR_GURU" class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-lg transition-all hover:-translate-y-1 group block cursor-pointer">
             <div class="flex items-center justify-between mb-3">
               <p class="text-xs font-black text-gray-400 uppercase tracking-widest group-hover:text-blue-600 transition-colors">Total Guru</p>
               <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
@@ -126,7 +126,7 @@
           </router-link>
 
           <!-- Card Total Kelas -->
-          <router-link to="/admin-sekolah/daftar-kelas" class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-lg transition-all hover:-translate-y-1 group block cursor-pointer">
+          <router-link :to="ROUTES.DAFTAR_KELAS" class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-lg transition-all hover:-translate-y-1 group block cursor-pointer">
             <div class="flex items-center justify-between mb-3">
               <p class="text-xs font-black text-gray-400 uppercase tracking-widest group-hover:text-indigo-600 transition-colors">Total Kelas</p>
               <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
@@ -144,7 +144,7 @@
           </router-link>
 
           <!-- Card Mata Pelajaran -->
-          <router-link to="/admin-sekolah/mata-pelajaran" class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-lg transition-all hover:-translate-y-1 group block cursor-pointer">
+          <router-link :to="ROUTES.MATA_PELAJARAN" class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-lg transition-all hover:-translate-y-1 group block cursor-pointer">
             <div class="flex items-center justify-between mb-3">
               <p class="text-xs font-black text-gray-400 uppercase tracking-widest group-hover:text-emerald-600 transition-colors">Mata Pelajaran</p>
               <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
@@ -162,7 +162,7 @@
           </router-link>
 
           <!-- Card Jam Mengajar -->
-          <router-link to="/admin-sekolah/pengampu" class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-3xl shadow-sm border border-blue-100 hover:shadow-lg transition-all hover:-translate-y-1 group relative overflow-hidden block cursor-pointer">
+          <router-link :to="ROUTES.PENGAMPU" class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-3xl shadow-sm border border-blue-100 hover:shadow-lg transition-all hover:-translate-y-1 group relative overflow-hidden block cursor-pointer">
             <div class="absolute -right-4 -bottom-4 opacity-5 text-blue-900 pointer-events-none">
               <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </div>
@@ -241,7 +241,7 @@
                 </div>
               </div>
 
-              <router-link to="/admin-sekolah/daftar-kelas" class="w-full py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-md hover:bg-blue-700 transition-colors text-center block">
+              <router-link :to="ROUTES.DAFTAR_KELAS" class="w-full py-2.5 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-md hover:bg-blue-700 transition-colors text-center block">
                 Kelola Master Data
               </router-link>
             </div>
@@ -281,7 +281,7 @@
                 </div>
               </div>
 
-              <router-link to="/admin-sekolah/pengampu" class="w-full py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-bold shadow-md hover:bg-indigo-700 transition-colors text-center block">
+              <router-link :to="ROUTES.PENGAMPU" class="w-full py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-bold shadow-md hover:bg-indigo-700 transition-colors text-center block">
                 Atur Distribusi Pengampu
               </router-link>
             </div>
@@ -315,7 +315,7 @@
                 </div>
               </div>
 
-              <router-link to="/admin-sekolah/jadwal-kelas" class="w-full py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-md hover:bg-emerald-700 transition-colors text-center block">
+              <router-link :to="ROUTES.JADWAL_KELAS" class="w-full py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-md hover:bg-emerald-700 transition-colors text-center block">
                 Lihat Jadwal Kelas
               </router-link>
             </div>
@@ -425,7 +425,7 @@
 
               <!-- 4 Shortcut Buttons dengan Clean Vector SVG -->
               <div class="grid grid-cols-2 gap-3 mb-2">
-                <router-link to="/admin-sekolah/daftar-guru" class="p-3.5 rounded-2xl border border-gray-100 bg-gray-50/60 hover:bg-blue-50/60 hover:border-blue-200 transition-all flex flex-col items-start group">
+                <router-link :to="ROUTES.DAFTAR_GURU" class="p-3.5 rounded-2xl border border-gray-100 bg-gray-50/60 hover:bg-blue-50/60 hover:border-blue-200 transition-all flex flex-col items-start group">
                   <span class="w-9 h-9 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-2 shadow-sm group-hover:scale-105 transition-transform">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                   </span>
@@ -433,7 +433,7 @@
                   <span class="text-[10px] text-gray-400 mt-0.5">Tambah / Excel</span>
                 </router-link>
 
-                <router-link to="/admin-sekolah/daftar-kelas" class="p-3.5 rounded-2xl border border-gray-100 bg-gray-50/60 hover:bg-indigo-50/60 hover:border-indigo-200 transition-all flex flex-col items-start group">
+                <router-link :to="ROUTES.DAFTAR_KELAS" class="p-3.5 rounded-2xl border border-gray-100 bg-gray-50/60 hover:bg-indigo-50/60 hover:border-indigo-200 transition-all flex flex-col items-start group">
                   <span class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-2 shadow-sm group-hover:scale-105 transition-transform">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                   </span>
@@ -441,7 +441,7 @@
                   <span class="text-[10px] text-gray-400 mt-0.5">Tambah / Excel</span>
                 </router-link>
 
-                <router-link to="/admin-sekolah/jam-kosong" class="p-3.5 rounded-2xl border border-gray-100 bg-gray-50/60 hover:bg-amber-50/60 hover:border-amber-200 transition-all flex flex-col items-start group">
+                <router-link :to="ROUTES.JAM_KOSONG" class="p-3.5 rounded-2xl border border-gray-100 bg-gray-50/60 hover:bg-amber-50/60 hover:border-amber-200 transition-all flex flex-col items-start group">
                   <span class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mb-2 shadow-sm group-hover:scale-105 transition-transform">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                   </span>
@@ -449,7 +449,7 @@
                   <span class="text-[10px] text-gray-400 mt-0.5">Atur Jadwal Cuti</span>
                 </router-link>
 
-                <router-link to="/admin-sekolah/jadwal-kelas" class="p-3.5 rounded-2xl border border-gray-100 bg-gray-50/60 hover:bg-emerald-50/60 hover:border-emerald-200 transition-all flex flex-col items-start group">
+                <router-link :to="ROUTES.JADWAL_KELAS" class="p-3.5 rounded-2xl border border-gray-100 bg-gray-50/60 hover:bg-emerald-50/60 hover:border-emerald-200 transition-all flex flex-col items-start group">
                   <span class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-2 shadow-sm group-hover:scale-105 transition-transform">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                   </span>
@@ -480,6 +480,7 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import MagicWizard from '../components/MagicWizard.vue'
+import { ROUTES } from '../config/routePaths.js'
 
 const router = useRouter()
 const route = useRoute()
@@ -569,7 +570,7 @@ const smartRecommendation = computed(() => {
       title: 'Langkah Pertama: Daftarkan Rombongan Belajar',
       desc: 'Sekolah belum memiliki data kelas. Silakan tambahkan nama kelas atau unduh template Excel di menu Daftar Kelas.',
       actionLabel: 'Isi Daftar Kelas',
-      actionRoute: '/admin-sekolah/daftar-kelas'
+      actionRoute: ROUTES.DAFTAR_KELAS
     }
   }
   if (rawStats.value.totalGuru === 0) {
@@ -577,7 +578,7 @@ const smartRecommendation = computed(() => {
       title: 'Langkah Kedua: Daftarkan Dewan Guru',
       desc: 'Belum ada guru yang terdaftar. Masukkan data guru pengajar beserta kode uniknya di menu Daftar Guru.',
       actionLabel: 'Isi Daftar Guru',
-      actionRoute: '/admin-sekolah/daftar-guru'
+      actionRoute: ROUTES.DAFTAR_GURU
     }
   }
   if (rawStats.value.totalMapel === 0) {
@@ -585,7 +586,7 @@ const smartRecommendation = computed(() => {
       title: 'Langkah Ketiga: Lengkapi Mata Pelajaran',
       desc: 'Masukkan daftar mata pelajaran kurikulum sekolah Anda di menu Mata Pelajaran.',
       actionLabel: 'Isi Mata Pelajaran',
-      actionRoute: '/admin-sekolah/mata-pelajaran'
+      actionRoute: ROUTES.MATA_PELAJARAN
     }
   }
   if (rawStats.value.jamMengajar === 0) {
@@ -593,14 +594,14 @@ const smartRecommendation = computed(() => {
       title: 'Master Data Lengkap! Distribusikan Jam Guru',
       desc: 'Semua kelas, guru, dan mapel sudah siap. Sekarang hubungkan guru ke mata pelajaran dan kelasnya di menu Distribusi Pengampu.',
       actionLabel: 'Atur Pengampu Mapel',
-      actionRoute: '/admin-sekolah/pengampu'
+      actionRoute: ROUTES.PENGAMPU
     }
   }
   return {
     title: 'Semua Data Siap! Terbitkan Jadwal',
     desc: 'Distribusi jam telah terpetakan. Anda dapat langsung melihat matriks jadwal kelas dan jadwal guru.',
     actionLabel: 'Lihat Jadwal Kelas',
-    actionRoute: '/admin-sekolah/jadwal-kelas'
+    actionRoute: ROUTES.JADWAL_KELAS
   }
 })
 
@@ -730,7 +731,7 @@ onMounted(() => {
 
 // Refresh stats saat user kembali ke Dashboard Utama dari menu lain
 watch(() => route.path, (newPath) => {
-  if (newPath === '/admin-sekolah') {
+  if (newPath === ROUTES.SCHOOL_ADMIN || newPath === '/admin-sekolah') {
     fetchProfileName()
     fetchDashboardStats()
   }
@@ -748,39 +749,39 @@ const menuGroups = [
   {
     title: 'Master Data',
     items: [
-      { title: 'Validasi Lembaga', icon: iconDb, path: '/admin-sekolah/validasi-lembaga' },
-      { title: 'Daftar Kelas', icon: iconUsers, path: '/admin-sekolah/daftar-kelas' },
-      { title: 'Daftar Guru', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', path: '/admin-sekolah/daftar-guru' },
-      { title: 'Sesi & Waktu KBM', icon: iconClock, path: '/admin-sekolah/sesi-kbm' },
-      { title: 'Mata Pelajaran', icon: iconBook, path: '/admin-sekolah/mata-pelajaran' },
+      { title: 'Validasi Lembaga', icon: iconDb, path: ROUTES.VALIDASI_LEMBAGA },
+      { title: 'Daftar Kelas', icon: iconUsers, path: ROUTES.DAFTAR_KELAS },
+      { title: 'Daftar Guru', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', path: ROUTES.DAFTAR_GURU },
+      { title: 'Sesi & Waktu KBM', icon: iconClock, path: ROUTES.SESI_KBM },
+      { title: 'Mata Pelajaran', icon: iconBook, path: ROUTES.MATA_PELAJARAN },
     ]
   },
   {
     title: 'Distribusi Beban',
     items: [
-      { title: 'Pengampu Mapel', icon: iconUsers, path: '/admin-sekolah/pengampu' },
-      { title: 'Permintaan Jam Kosong', icon: iconCalendar, path: '/admin-sekolah/jam-kosong' },
-      { title: 'Tugas Tambahan', icon: iconBadge, path: '/admin-sekolah/tugas-tambahan' },
+      { title: 'Pengampu Mapel', icon: iconUsers, path: ROUTES.PENGAMPU },
+      { title: 'Permintaan Jam Kosong', icon: iconCalendar, path: ROUTES.JAM_KOSONG },
+      { title: 'Tugas Tambahan', icon: iconBadge, path: ROUTES.TUGAS_TAMBAHAN },
     ]
   },
   {
     title: 'Penjadwalan',
     items: [
-      { title: 'Jadwal Guru', path: '/admin-sekolah/jadwal-guru', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
-      { title: 'Jadwal Kelas', path: '/admin-sekolah/jadwal-kelas', icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4' }
+      { title: 'Jadwal Guru', path: ROUTES.JADWAL_GURU, icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
+      { title: 'Jadwal Kelas', path: ROUTES.JADWAL_KELAS, icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4' }
     ]
   },
   {
     title: 'Analisis & Laporan',
     items: [
-      { title: 'Analisis Sebaran Guru', icon: iconChart, path: '/admin-sekolah/analisis-guru' },
-      { title: 'Tunjangan Sertifikasi', icon: iconBadge, path: '/admin-sekolah/sertifikasi' },
+      { title: 'Analisis Sebaran Guru', icon: iconChart, path: ROUTES.ANALISIS_GURU },
+      { title: 'Tunjangan Sertifikasi', icon: iconBadge, path: ROUTES.TUNJANGAN_SERTIFIKASI },
     ]
   },
   {
     title: 'Layanan & Bantuan',
     items: [
-      { title: 'Pusat Bantuan & Aduan', path: '/admin-sekolah/bantuan', icon: 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' }
+      { title: 'Pusat Bantuan & Aduan', path: ROUTES.PUSAT_BANTUAN, icon: 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' }
     ]
   }
 ]
