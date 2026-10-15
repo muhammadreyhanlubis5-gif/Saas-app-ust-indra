@@ -20,20 +20,27 @@ import AnalisisGuru from '../views/AnalisisGuru.vue'
 import TunjanganSertifikasi from '../views/TunjanganSertifikasi.vue'
 import PusatBantuan from '../views/PusatBantuan.vue'
 import ComingSoon from '../views/ComingSoon.vue'
+import { SUPER_ADMIN_SECRET_PATH } from '../config/adminSecret.js'
 
 const routes = [
   { path: '/', name: 'Login', component: Login, meta: { requiresAuth: false } },
   { path: '/expired', name: 'Expired', component: ExpiredView, meta: { requiresAuth: false } },
   { path: '/checkout', name: 'Checkout', component: () => import('../views/CheckoutView.vue'), meta: { requiresAuth: false } },
   
-  // SUPER ADMIN
+  // SUPER ADMIN (SECRET OBFUSCATED URL BERISI KODE & SIMBOL)
   {
-    path: '/super-admin',
+    path: SUPER_ADMIN_SECRET_PATH,
     component: SuperAdminDashboard,
     meta: { requiresAuth: true, role: 'SUPER_ADMIN' },
     children: [
       { path: '', name: 'SuperAdminHome', component: SuperAdminDashboard },
     ]
+  },
+  
+  // Blokir dan alihkan jalur '/super-admin' lama agar penyerang tidak bisa menebak
+  {
+    path: '/super-admin',
+    redirect: '/'
   },
   
   // SCHOOL ADMIN (TENANT)
