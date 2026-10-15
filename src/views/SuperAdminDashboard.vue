@@ -104,16 +104,8 @@
           </div>
         </div>
 
-        <div class="flex items-center gap-2 shrink-0">
-          <button 
-            v-if="activeTab === 'manajemen'"
-            @click="showModal = true" 
-            class="px-2.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs font-bold transition-all flex items-center gap-1 shadow-sm cursor-pointer"
-          >
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-            <span>+ Klien</span>
-          </button>
-          <button @click="handleLogout" class="p-2 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-xl transition-colors cursor-pointer" title="Keluar">
+        <div class="flex items-center gap-1 shrink-0">
+          <button @click="handleLogout" class="p-2 text-slate-400 hover:text-rose-400 hover:bg-slate-800 active:scale-95 rounded-xl transition-all cursor-pointer" title="Keluar">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
           </button>
         </div>
