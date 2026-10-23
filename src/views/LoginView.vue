@@ -44,8 +44,8 @@
 
         <!-- Tag branding atas (Bahasa Indonesia) -->
         <div class="relative z-10 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[11px] font-semibold tracking-wider text-blue-100 uppercase">
-          <svg class="w-3.5 h-3.5 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-          <span>Penjadwalan Cerdas GuruKu</span>
+          <svg class="w-3.5 h-3.5 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          <span>Sistem Penjadwalan Sekolah</span>
         </div>
 
         <!-- Konten Slide Tengah dengan Bingkai Kokoh & Rapi -->
@@ -132,13 +132,7 @@
           
           <!-- Logo Aplikasi GuruKu (Rapi dan Elegan) -->
           <div class="flex justify-center mb-3 sm:mb-4">
-            <div class="p-1 rounded-2xl bg-white shadow-md shadow-slate-200/60 border border-slate-100 ring-2 ring-slate-100/50">
-              <img 
-                :src="logoApk" 
-                alt="Logo GuruKu" 
-                class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover"
-              />
-            </div>
+            <AppLogo size="xl" :showText="false" />
           </div>
 
           <!-- Judul "Selamat Datang" -->
@@ -237,7 +231,7 @@
               <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
               <span>Sistem Akses Internal Terproteksi & Terenkripsi</span>
             </div>
-            <p class="text-[10px] text-gray-300 mt-1">© 2026 GuruKu • Sistem Penjadwalan Cerdas Sekolah</p>
+            <p class="text-[10px] text-gray-300 mt-1">© 2026 GuruKu • Platform Penjadwalan & Tata Kelola KBM Sekolah</p>
           </div>
 
         </div>
@@ -496,9 +490,9 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import AppLogo from '../components/AppLogo.vue'
 import animasiImg from '../assets/animasi.png'
 import aduanSuksesImg from '../assets/aduan-sukses.png'
-import logoApk from '../assets/logo-apk.jpg'
 
 // Import 8 Gambar Slide dari folder assets/slides-login
 import slide1 from '../assets/slides-login/1.jpg'
@@ -599,8 +593,8 @@ const slides = [
   {
     id: 1,
     image: slide1,
-    title: 'Perencanaan KBM Cerdas',
-    subtitle: 'Kemudahan menyusun dan mengelola seluruh jadwal pembelajaran sekolah secara otomatis.'
+    title: 'Perencanaan KBM Terstruktur',
+    subtitle: 'Kemudahan menyusun dan mengelola seluruh jadwal pembelajaran sekolah secara otomatis dan rapi.'
   },
   {
     id: 2,
@@ -629,8 +623,8 @@ const slides = [
   {
     id: 6,
     image: slide6,
-    title: 'Otomasi Jadwal Anti Bentrok',
-    subtitle: 'Sistem cerdas memetakan jam mengajar guru, ruang kelas, dan mata pelajaran dalam sekejap.'
+    title: 'Otomasi Jadwal Bebas Bentrok',
+    subtitle: 'Sistem presisi memetakan jam mengajar guru, ruang kelas, dan mata pelajaran secara optimal.'
   },
   {
     id: 7,

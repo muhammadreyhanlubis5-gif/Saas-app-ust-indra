@@ -50,7 +50,7 @@ export const SafeFlow = {
         
         // Memanipulasi respons agar UI menganggapnya sukses seketika (Optimistic UI)
         return new Response(JSON.stringify({ 
-          message: "Operasi diantrekan secara cerdas di latar belakang", 
+          message: "Operasi diantrekan secara otomatis di latar belakang", 
           safeflow_queued: true 
         }), {
           status: 200,

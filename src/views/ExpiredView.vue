@@ -24,7 +24,7 @@
     <div v-else class="w-full max-w-6xl animate-fade-in py-8">
       <div class="text-center mb-12">
         <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">Pilih Paket Eksekutif Anda</h2>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto">Kami merancang paket terbaik untuk memastikan sistem penyusunan jadwal sekolah Anda berjalan mulus, cerdas, dan efisien.</p>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">Kami merancang paket terbaik untuk memastikan sistem penyusunan jadwal sekolah Anda berjalan mulus, presisi, dan efisien.</p>
       </div>
 
       <div class="grid md:grid-cols-3 gap-8 items-center">
@@ -40,7 +40,7 @@
             <li class="flex items-center gap-3 text-gray-700"><svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span>Akses Generate Jadwal Dasar</span></li>
             <li class="flex items-center gap-3 text-gray-700"><svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span>Maksimal 30 Guru Aktif</span></li>
             <li class="flex items-center gap-3 text-gray-700"><svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span>Cetak Laporan PDF / Excel</span></li>
-            <li class="flex items-center gap-3 text-gray-400"><svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> <span class="line-through">AI Anti-Bentrok Cerdas</span></li>
+            <li class="flex items-center gap-3 text-gray-400"><svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> <span class="line-through">Otomasi Bebas Bentrok Lanjutan</span></li>
           </ul>
           <button @click="pilihPaket('Standard')" class="w-full py-3.5 px-4 bg-gray-50 hover:bg-gray-100 text-gray-900 font-bold rounded-xl border border-gray-200 transition-colors">Pilih Standard</button>
         </div>
@@ -51,7 +51,7 @@
             <span class="inline-block bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs font-bold uppercase tracking-wider py-1.5 px-4 rounded-full shadow-md">Paling Populer</span>
           </div>
           <h3 class="text-xl font-bold text-white mb-2">Plus</h3>
-          <p class="text-blue-100 text-sm mb-6">Otomatisasi penuh dengan AI pintar tanpa repot.</p>
+          <p class="text-blue-100 text-sm mb-6">Otomatisasi penuh penjadwalan presisi tanpa repot.</p>
           <div class="mb-6">
             <span class="text-4xl font-extrabold text-white">Rp 899rb</span>
             <span class="text-blue-200 font-medium">/ bulan</span>
@@ -59,7 +59,7 @@
           <ul class="space-y-4 mb-8">
             <li class="flex items-center gap-3 text-white"><svg class="w-5 h-5 text-blue-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span>Semua fitur Standard</span></li>
             <li class="flex items-center gap-3 text-white"><svg class="w-5 h-5 text-blue-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span>Guru & Mapel <b>Unlimited</b></span></li>
-            <li class="flex items-center gap-3 text-white"><svg class="w-5 h-5 text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> <span><b>Sistem AI Anti-Bentrok</b></span></li>
+            <li class="flex items-center gap-3 text-white"><svg class="w-5 h-5 text-emerald-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg> <span><b>Otomasi Penjadwalan Bebas Bentrok</b></span></li>
             <li class="flex items-center gap-3 text-white"><svg class="w-5 h-5 text-blue-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span>Modul Tugas Tambahan</span></li>
           </ul>
           <button @click="pilihPaket('Plus')" class="w-full py-3.5 px-4 bg-white hover:bg-gray-50 text-blue-700 font-extrabold rounded-xl shadow-lg transition-transform active:scale-95">Pilih Plus</button>

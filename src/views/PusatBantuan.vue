@@ -660,7 +660,7 @@ const faqList = ref([
   },
   {
     question: 'Bagaimana jika nama wali kelas di Daftar Kelas belum muncul di Daftar Guru?',
-    answer: 'Sistem telah dilengkapi fitur auto-sinkronisasi. Ketika Anda menambahkan atau mengunggah data kelas beserta wali kelasnya, sistem secara cerdas akan langsung mendaftarkan guru tersebut ke Daftar Guru dan menambahkan tugas tambahan Wali Kelas secara linier.',
+    answer: 'Sistem telah dilengkapi fitur auto-sinkronisasi. Ketika Anda menambahkan atau mengunggah data kelas beserta wali kelasnya, sistem secara otomatis akan langsung mendaftarkan guru tersebut ke Daftar Guru dan menambahkan tugas tambahan Wali Kelas secara linier.',
     open: false
   },
   {

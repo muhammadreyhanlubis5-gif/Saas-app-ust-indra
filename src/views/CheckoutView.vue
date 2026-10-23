@@ -97,7 +97,7 @@
                 </div>
                 <div class="flex items-center gap-2">
                   <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                  <span>Algoritma AI Anti-Bentrok & Ekspor Jadwal (PDF/Excel)</span>
+                  <span>Algoritma Pemetaan Bebas Bentrok & Ekspor Jadwal (PDF/Excel)</span>
                 </div>
                 <div class="flex items-center gap-2">
                   <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>

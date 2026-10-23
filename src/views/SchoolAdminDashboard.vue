@@ -12,11 +12,7 @@
       <!-- Logo & Profile -->
       <div class="p-6 border-b border-gray-100 bg-white sticky top-0 z-10 flex justify-between items-center">
         <div class="flex items-center gap-4">
-          <img src="../assets/logo.png" alt="Logo" class="w-12 h-12 object-contain rounded-xl shadow-sm">
-          <div>
-            <h1 class="text-gray-900 leading-tight" style="font-family: 'Permanent Marker', cursive; font-size: 1.6rem; margin-bottom: -4px;">GuruKu</h1>
-            <p class="text-xs text-blue-600 font-bold tracking-wide uppercase">Admin Sekolah</p>
-          </div>
+          <AppLogo size="md" subtitle="Admin Sekolah" />
         </div>
         <!-- Close button for mobile -->
         <button @click="isSidebarOpen = false" class="md:hidden p-2 text-gray-400 hover:text-red-500 rounded-lg hover:bg-red-50">
@@ -63,8 +59,7 @@
       <!-- Mobile Header -->
       <div class="md:hidden flex items-center justify-between p-4 bg-white border-b border-gray-100 sticky top-0 z-10 shadow-sm">
         <div class="flex items-center gap-3">
-           <img src="../assets/logo.png" alt="Logo" class="w-8 h-8 object-contain">
-           <span class="text-gray-900" style="font-family: 'Permanent Marker', cursive; font-size: 1.3rem;">GuruKu</span>
+          <AppLogo size="xs" :showText="true" />
         </div>
         <button @click="isSidebarOpen = true" class="p-2 text-gray-600 rounded-lg hover:bg-gray-100 border border-gray-200">
            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -191,7 +186,7 @@
                 <span>Alur Penyusunan Jadwal</span>
                 <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700">3 Tahap Otomatis</span>
               </h2>
-              <p class="text-sm text-gray-500 mt-1 font-medium">Ikuti urutan alur cerdas ini untuk menghasilkan jadwal mengajar yang presisi dan bebas bentrok.</p>
+              <p class="text-sm text-gray-500 mt-1 font-medium">Ikuti urutan alur terstruktur ini untuk menghasilkan jadwal mengajar yang presisi dan bebas bentrok.</p>
             </div>
             
             <div class="flex items-center gap-3 bg-gray-50 py-2.5 px-4 rounded-2xl border border-gray-100">
@@ -414,7 +409,7 @@
               <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-inner">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                   </div>
                   <div>
                     <h3 class="font-black text-gray-900 text-lg">Pintasan Aksi Cepat</h3>
@@ -479,6 +474,7 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import AppLogo from '../components/AppLogo.vue'
 import MagicWizard from '../components/MagicWizard.vue'
 import { ROUTES } from '../config/routePaths.js'
 
@@ -551,7 +547,7 @@ const isMasterDataComplete = computed(() => {
 // Sapaan Ramah & Dinamis di Banner
 const dynamicGreeting = computed(() => {
   if (!isMasterDataComplete.value) {
-    return 'Sistem Penjadwalan Cerdas. Lengkapi master data (Kelas, Guru, & Mapel) untuk memulai penyusunan jadwal sekolah.'
+    return 'Sistem Manajemen Penjadwalan Sekolah. Lengkapi master data (Kelas, Guru, & Mapel) untuk memulai penyusunan jadwal sekolah.'
   }
 
   const hour = new Date().getHours()
@@ -563,7 +559,7 @@ const dynamicGreeting = computed(() => {
   return `${greetingTime} untuk memulai kerja kita! Seluruh master data telah siap dan tersinkronisasi untuk penyusunan jadwal sekolah yang optimal.`
 })
 
-// Rekomendasi Cerdas untuk Asisten Kesiapan
+// Rekomendasi Terstruktur untuk Asisten Kesiapan
 const smartRecommendation = computed(() => {
   if (rawStats.value.totalKelas === 0) {
     return {
@@ -696,7 +692,7 @@ const fetchDashboardStats = async () => {
     } catch (e) {}
   }
 
-  // Hitung Progres Keseluruhan secara Cerdas (0 - 100%)
+  // Hitung Progres Keseluruhan secara Otomatis (0 - 100%)
   let p = 0
   // Master data: bobot 35%
   if (classCount > 0) p += 12

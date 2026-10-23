@@ -6,8 +6,8 @@
       <!-- HEADER -->
       <div class="bg-gradient-to-r from-blue-900 to-indigo-900 p-6 flex justify-between items-center flex-shrink-0 text-white">
         <div>
-          <h2 class="text-2xl font-black tracking-tight">Setup Cerdas (1-Click Auto Generate)</h2>
-          <p class="text-blue-200 text-sm mt-1">Sistem akan menyusun seluruh jadwal sekolah Anda secara ajaib.</p>
+          <h2 class="text-2xl font-black tracking-tight">Otomasi Jadwal (1-Click Generator)</h2>
+          <p class="text-blue-200 text-sm mt-1">Sistem akan menyusun dan memetakan jadwal mengajar seluruh sekolah secara terstruktur.</p>
         </div>
         <button @click="$emit('close')" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -182,7 +182,7 @@
         <button v-if="step === 3" @click="generateMagic" :disabled="isGenerating" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-black py-3 px-8 rounded-xl shadow-lg transition-all flex items-center gap-2 transform hover:scale-105" :class="{'opacity-75 cursor-not-allowed': isGenerating}">
           <svg v-if="isGenerating" class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
           <div v-if="!isGenerating" class="flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
             <span>Susun Jadwal Sekarang</span>
           </div>
           <span v-else>Memproses Komputasi...</span>
