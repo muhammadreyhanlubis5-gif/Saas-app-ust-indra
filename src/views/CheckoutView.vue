@@ -82,7 +82,7 @@
                     Paket Dipilih
                   </div>
                   <h3 class="text-2xl font-black text-white">Paket {{ planName }}</h3>
-                  <p class="text-xs text-slate-400 mt-1">Masa aktif langganan: 1 Bulan (30 Hari Kalender)</p>
+                  <p class="text-xs text-slate-400 mt-1">Masa aktif langganan: {{ durationMonths }} Bulan Kalender</p>
                 </div>
                 <div class="text-right">
                   <span class="text-lg font-bold text-white">{{ formattedPrice }}</span>
@@ -847,6 +847,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import aduanSuksesImg from '../assets/aduan-sukses.png'
 import { ROUTES } from '../config/routePaths.js'
+import { findPackage } from '../data/packagesCatalog.js'
 
 import briIcon from '../assets/icon-pay/bri.jpg'
 import livinIcon from '../assets/icon-pay/livin.jpg'
@@ -860,23 +861,32 @@ import ovoIcon from '../assets/icon-pay/ovo.jpg'
 const route = useRoute()
 const router = useRouter()
 
-// Package & Pricing Configuration
-const planName = route.query.plan || 'Plus'
-const planPrices = {
-  'Standard': 499000,
-  'Plus': 899000,
-  'Premium': 2500000
-}
-const price = planPrices[planName] || 899000
+// Package & Pricing Configuration Dinamis Sesuai Etalase Admin
+const planName = computed(() => route.query.plan || 'Lisensi Lengkap 1 Tahun')
+const matchedPkg = computed(() => findPackage(planName.value))
+
+const price = computed(() => {
+  if (route.query.price && !isNaN(Number(route.query.price))) {
+    return Number(route.query.price)
+  }
+  return matchedPkg.value ? matchedPkg.value.price : 480000
+})
+
+const durationMonths = computed(() => {
+  if (route.query.duration && !isNaN(Number(route.query.duration))) {
+    return Number(route.query.duration)
+  }
+  return matchedPkg.value ? (matchedPkg.value.durationMonths || 12) : 12
+})
 
 const formattedPrice = computed(() => {
-  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(price)
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(price.value)
 })
 
 // Generate Formal Invoice Code based on Date
 const invoiceNumber = computed(() => {
   const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '')
-  return `INV-${dateStr}-${(price % 10000).toString().padStart(4, '7')}`
+  return `INV-${dateStr}-${(price.value % 10000).toString().padStart(4, '7')}`
 })
 
 // Admin Center Phone
@@ -1217,7 +1227,7 @@ const copyText = (text, type) => {
 
 // Direct WhatsApp URL for Help Modal
 const whatsappDirectHelpUrl = computed(() => {
-  const msg = encodeURIComponent(`Halo Tim CS Admin GuruKu, saya sedang di halaman pembayaran perpanjangan paket ${planName} (${formattedPrice.value}) dan memerlukan bantuan/konsultasi pembayaran.`)
+  const msg = encodeURIComponent(`Halo Tim CS Admin GuruKu, saya sedang di halaman pembayaran perpanjangan paket ${planName.value} (${formattedPrice.value}) dan memerlukan bantuan/konsultasi pembayaran.`)
   return `https://wa.me/62${adminPhone.substring(1)}?text=${msg}`
 })
 
@@ -1237,7 +1247,7 @@ const submitHelpTicket = () => {
     contact: helpForm.value.contact,
     school: helpForm.value.school || 'Pelanggan Billing',
     category: helpForm.value.category,
-    message: `[KENDALA BILLING - ${planName} / ${formattedPrice.value}]\n${helpForm.value.message}`
+    message: `[KENDALA BILLING - ${planName.value} / ${formattedPrice.value}]\n${helpForm.value.message}`
   }
 
   const now = new Date()
@@ -1250,7 +1260,7 @@ const submitHelpTicket = () => {
     contact: helpForm.value.contact,
     school: helpForm.value.school || 'Pelanggan Billing',
     category: helpForm.value.category,
-    message: `[KENDALA BILLING - ${planName} / ${formattedPrice.value}]\n${helpForm.value.message}`,
+    message: `[KENDALA BILLING - ${planName.value} / ${formattedPrice.value}]\n${helpForm.value.message}`,
     status: 'MENUNGGU',
     date: dateStr
   }
@@ -1295,8 +1305,9 @@ const submitPaymentProof = () => {
 
   const paymentRecord = {
     invoice: invoiceNumber.value,
-    plan: planName,
-    amount: price,
+    plan: planName.value,
+    amount: price.value,
+    durationMonths: durationMonths.value,
     method: selectedMethod.value.fullName,
     senderName: proofForm.value.senderName,
     bankName: proofForm.value.bankName,
@@ -1375,7 +1386,7 @@ const confirmPaymentViaWA = () => {
     `Kami bermaksud mengonfirmasikan pembayaran tagihan perpanjangan lisensi sistem jadwal sekolah dengan rincian berikut:`,
     ``,
     `* No. Invoice: ${invoiceNumber.value}`,
-    `* Paket Layanan: Paket ${planName} (1 Bulan)`,
+    `* Paket Layanan: Paket ${planName.value} (${durationMonths.value} Bulan)`,
     `* Total Tagihan: ${formattedPrice.value}`,
     `* Metode Pembayaran: ${methodTitle}`,
     `* Nomor VA / Akun Tujuan: ${selectedMethod.value?.accountNumber}`,

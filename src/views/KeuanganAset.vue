@@ -189,111 +189,112 @@
         </div>
       </div>
 
-      <!-- 2x2 Grid Kartu Grafik Dark Theme Sesuai Gambar Referensi -->
+      <!-- 2x2 Grid Kartu Grafik Light Executive Theme dengan Tempat Grafik Putih Agak Abu-abu -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
         
         <!-- CHART 1: Pendapatan, biaya, dan laba -->
-        <div class="bg-[#0B132B] rounded-2xl border border-slate-800 p-5 sm:p-6 shadow-xl flex flex-col justify-between text-white">
+        <div class="bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs hover:border-slate-400 transition-all flex flex-col justify-between">
           <div>
             <!-- Header Chart -->
             <div class="flex items-start justify-between gap-2 mb-3">
               <div>
-                <h3 class="text-base sm:text-lg font-bold tracking-tight text-white">Pendapatan, biaya, dan laba</h3>
+                <h3 class="text-base sm:text-lg font-black tracking-tight text-slate-900">Pendapatan, biaya, dan laba</h3>
+                <p class="text-xs text-slate-500 font-medium">Tren perolehan omzet, belanja operasional, dan margin laba bersih</p>
                 <!-- Legend Row -->
-                <div class="flex items-center gap-4 mt-2 text-xs">
+                <div class="flex items-center gap-4 mt-2.5 text-xs">
                   <div class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-xs bg-[#10B981]"></span>
-                    <span class="text-slate-300">Pendapatan</span>
+                    <span class="w-3 h-3 rounded-xs bg-[#10B981] shadow-2xs"></span>
+                    <span class="text-slate-700 font-bold">Pendapatan</span>
                   </div>
                   <div class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-xs bg-[#F97316]"></span>
-                    <span class="text-slate-300">Biaya</span>
+                    <span class="w-3 h-3 rounded-xs bg-[#F97316] shadow-2xs"></span>
+                    <span class="text-slate-700 font-bold">Biaya</span>
                   </div>
                   <div class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-0.5 bg-[#38BDF8]"></span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-[#38BDF8]"></span>
-                    <span class="text-slate-300">Laba/rugi</span>
+                    <span class="w-3 h-0.5 bg-[#0284C7]"></span>
+                    <span class="w-2 h-2 rounded-full bg-[#0284C7]"></span>
+                    <span class="text-slate-700 font-bold">Laba/rugi</span>
                   </div>
                 </div>
               </div>
 
-              <button @click="downloadChartData('pendapatan-biaya')" class="p-1.5 text-slate-400 hover:text-white rounded-lg transition-colors cursor-pointer" title="Unduh data">
+              <button @click="downloadChartData('pendapatan-biaya')" class="p-1.5 text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg transition-colors cursor-pointer" title="Unduh data">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
               </button>
             </div>
 
-            <!-- SVG Multi-Period Chart -->
-            <div class="relative w-full pt-4 pb-2">
+            <!-- Tempat Grafik: Putih Agak Abu-Abu Sedikit (bg-[#F8FAFC]) dengan Border Halus -->
+            <div class="relative w-full pt-3 pb-2 px-2 bg-[#F8FAFC] border border-slate-200 rounded-xl my-2 overflow-hidden shadow-2xs">
               <svg viewBox="0 0 540 220" class="w-full h-auto overflow-visible select-none">
                 <!-- Horizontal Grid lines & Y-Axis Labels: 3M, 2M, 1M, 0, -1M, -2M -->
-                <g class="text-[10px] font-mono fill-slate-400 stroke-slate-800" stroke-dasharray="3 3">
+                <g class="text-[10px] font-mono fill-slate-600 font-bold" stroke-dasharray="3 3">
                   <!-- 3M -->
-                  <text x="30" y="24" text-anchor="end" class="fill-slate-400">3 M</text>
-                  <line x1="38" y1="20" x2="530" y2="20" stroke="#1E293B" stroke-width="1" />
+                  <text x="32" y="24" text-anchor="end" class="fill-slate-600 font-bold">3 M</text>
+                  <line x1="40" y1="20" x2="530" y2="20" stroke="#CBD5E1" stroke-width="1" />
                   
                   <!-- 2M -->
-                  <text x="30" y="60" text-anchor="end" class="fill-slate-400">2 M</text>
-                  <line x1="38" y1="56" x2="530" y2="56" stroke="#1E293B" stroke-width="1" />
+                  <text x="32" y="60" text-anchor="end" class="fill-slate-600 font-bold">2 M</text>
+                  <line x1="40" y1="56" x2="530" y2="56" stroke="#CBD5E1" stroke-width="1" />
                   
                   <!-- 1M -->
-                  <text x="30" y="96" text-anchor="end" class="fill-slate-400">1 M</text>
-                  <line x1="38" y1="92" x2="530" y2="92" stroke="#1E293B" stroke-width="1" />
+                  <text x="32" y="96" text-anchor="end" class="fill-slate-600 font-bold">1 M</text>
+                  <line x1="40" y1="92" x2="530" y2="92" stroke="#CBD5E1" stroke-width="1" />
                   
                   <!-- 0 Line (Solid baseline) -->
-                  <text x="30" y="132" text-anchor="end" class="fill-slate-300 font-bold">0</text>
-                  <line x1="38" y1="128" x2="530" y2="128" stroke="#334155" stroke-width="1.2" stroke-dasharray="0" />
+                  <text x="32" y="132" text-anchor="end" class="fill-slate-800 font-black">0</text>
+                  <line x1="40" y1="128" x2="530" y2="128" stroke="#64748B" stroke-width="1.5" stroke-dasharray="0" />
                   
                   <!-- -1M -->
-                  <text x="30" y="168" text-anchor="end" class="fill-slate-400">-1 M</text>
-                  <line x1="38" y1="164" x2="530" y2="164" stroke="#1E293B" stroke-width="1" />
+                  <text x="32" y="168" text-anchor="end" class="fill-slate-600 font-bold">-1 M</text>
+                  <line x1="40" y1="164" x2="530" y2="164" stroke="#CBD5E1" stroke-width="1" />
                   
                   <!-- -2M -->
-                  <text x="30" y="204" text-anchor="end" class="fill-slate-400">-2 M</text>
-                  <line x1="38" y1="200" x2="530" y2="200" stroke="#1E293B" stroke-width="1" />
+                  <text x="32" y="204" text-anchor="end" class="fill-slate-600 font-bold">-2 M</text>
+                  <line x1="40" y1="200" x2="530" y2="200" stroke="#CBD5E1" stroke-width="1" />
                 </g>
 
                 <!-- Bars (Pendapatan Green & Biaya Orange) -->
                 <!-- Jul 25 (x: 65) -->
-                <rect x="58" y="124" width="7" height="4" rx="1.5" fill="#10B981" />
-                <rect x="67" y="122" width="7" height="6" rx="1.5" fill="#F97316" />
+                <rect x="58" y="124" width="7" height="4" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="67" y="122" width="7" height="6" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
                 <!-- Sep 25 (x: 115) -->
-                <rect x="108" y="125" width="7" height="3" rx="1.5" fill="#10B981" />
-                <rect x="117" y="122" width="7" height="6" rx="1.5" fill="#F97316" />
+                <rect x="108" y="125" width="7" height="3" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="117" y="122" width="7" height="6" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
                 <!-- Nov 25 (x: 165) -->
-                <rect x="158" y="120" width="7" height="8" rx="1.5" fill="#10B981" />
-                <rect x="167" y="118" width="7" height="10" rx="1.5" fill="#F97316" />
+                <rect x="158" y="120" width="7" height="8" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="167" y="118" width="7" height="10" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
                 <!-- Jan 26 (x: 215) -->
-                <rect x="208" y="123" width="7" height="5" rx="1.5" fill="#10B981" />
-                <rect x="217" y="120" width="7" height="8" rx="1.5" fill="#F97316" />
+                <rect x="208" y="123" width="7" height="5" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="217" y="120" width="7" height="8" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
                 <!-- Mar 26 (Peak 1 - Awal Semester Genap) (x: 265) -->
-                <rect x="258" y="25" width="8" height="103" rx="2" fill="#10B981" />
-                <rect x="268" y="80" width="8" height="48" rx="2" fill="#F97316" />
+                <rect x="258" y="25" width="8" height="103" rx="2" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="268" y="80" width="8" height="48" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
                 <!-- Mei 26 (x: 315) -->
-                <rect x="308" y="123" width="7" height="5" rx="1.5" fill="#10B981" />
-                <rect x="317" y="121" width="7" height="7" rx="1.5" fill="#F97316" />
+                <rect x="308" y="123" width="7" height="5" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="317" y="121" width="7" height="7" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
                 <!-- Jul 26 (Peak 2 - Tahun Ajaran Baru) (x: 365) -->
-                <rect x="358" y="28" width="8" height="100" rx="2" fill="#10B981" />
-                <rect x="368" y="92" width="8" height="36" rx="2" fill="#F97316" />
+                <rect x="358" y="28" width="8" height="100" rx="2" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="368" y="92" width="8" height="36" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
                 <!-- Sep 26 (x: 415) -->
-                <rect x="408" y="124" width="7" height="4" rx="1.5" fill="#10B981" />
-                <rect x="417" y="105" width="7" height="23" rx="1.5" fill="#F97316" />
+                <rect x="408" y="124" width="7" height="4" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="417" y="105" width="7" height="23" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
                 <!-- Nov 26 (Sekarang - Smt Ganjil Stabil) (x: 465) -->
-                <rect x="458" y="125" width="7" height="3" rx="1.5" fill="#10B981" />
-                <rect x="467" y="75" width="7" height="53" rx="1.5" fill="#F97316" />
+                <rect x="458" y="125" width="7" height="3" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="467" y="75" width="7" height="53" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
-                <!-- Spline Line Laba/Rugi (Sky Blue with circular nodes) -->
+                <!-- Spline Line Laba/Rugi (Blue with circular nodes) -->
                 <polyline 
                   fill="none" 
-                  stroke="#38BDF8" 
-                  stroke-width="2.2" 
+                  stroke="#0284C7" 
+                  stroke-width="2.5" 
                   points="
                     68,128 
                     118,127 
@@ -308,18 +309,18 @@
                 />
 
                 <!-- Data point nodes -->
-                <circle cx="68" cy="128" r="3.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
-                <circle cx="118" cy="127" r="3.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
-                <circle cx="168" cy="128" r="3.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
-                <circle cx="218" cy="131" r="3.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
-                <circle cx="268" cy="48" r="4.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
-                <circle cx="318" cy="129" r="3.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
-                <circle cx="368" cy="36" r="4.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
-                <circle cx="418" cy="140" r="3.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
-                <circle cx="468" cy="155" r="3.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
+                <circle cx="68" cy="128" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="118" cy="127" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="168" cy="128" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="218" cy="131" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="268" cy="48" r="5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="318" cy="129" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="368" cy="36" r="5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="418" cy="140" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="468" cy="155" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
 
                 <!-- X-Axis Labels -->
-                <g class="text-[9px] fill-slate-400 font-sans" text-anchor="middle">
+                <g class="text-[9.5px] fill-slate-600 font-sans font-bold" text-anchor="middle">
                   <text x="68" y="215">Jul 25</text>
                   <text x="118" y="215">Sep 25</text>
                   <text x="168" y="215">Nov 25</text>
@@ -334,108 +335,109 @@
             </div>
           </div>
 
-          <div class="pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+          <div class="pt-3 border-t border-slate-200 text-[11px] text-slate-500 flex items-center justify-between">
             <span>Puncak Omzet: Semester Ganjil & Genap</span>
-            <span class="text-emerald-400 font-semibold font-mono">Net Profit Maks: +Rp 2.450.000</span>
+            <span class="text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200 font-bold font-mono">Net Profit Maks: +Rp 2.450.000</span>
           </div>
         </div>
 
         <!-- CHART 2: Arus kas -->
-        <div class="bg-[#0B132B] rounded-2xl border border-slate-800 p-5 sm:p-6 shadow-xl flex flex-col justify-between text-white">
+        <div class="bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs hover:border-slate-400 transition-all flex flex-col justify-between">
           <div>
             <!-- Header Chart -->
             <div class="flex items-start justify-between gap-2 mb-3">
               <div>
-                <h3 class="text-base sm:text-lg font-bold tracking-tight text-white">Arus kas</h3>
+                <h3 class="text-base sm:text-lg font-black tracking-tight text-slate-900">Arus kas</h3>
+                <p class="text-xs text-slate-500 font-medium">Likuiditas kas masuk, kas keluar, dan cadangan kas berjalan</p>
                 <!-- Legend Row -->
-                <div class="flex items-center gap-4 mt-2 text-xs">
+                <div class="flex items-center gap-4 mt-2.5 text-xs">
                   <div class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-xs bg-[#10B981]"></span>
-                    <span class="text-slate-300">Kas masuk</span>
+                    <span class="w-3 h-3 rounded-xs bg-[#10B981] shadow-2xs"></span>
+                    <span class="text-slate-700 font-bold">Kas masuk</span>
                   </div>
                   <div class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-xs bg-[#F97316]"></span>
-                    <span class="text-slate-300">Kas keluar</span>
+                    <span class="w-3 h-3 rounded-xs bg-[#F97316] shadow-2xs"></span>
+                    <span class="text-slate-700 font-bold">Kas keluar</span>
                   </div>
                   <div class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-0.5 bg-[#38BDF8]"></span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-[#38BDF8]"></span>
-                    <span class="text-slate-300">Saldo</span>
+                    <span class="w-3 h-0.5 bg-[#0284C7]"></span>
+                    <span class="w-2 h-2 rounded-full bg-[#0284C7]"></span>
+                    <span class="text-slate-700 font-bold">Saldo</span>
                   </div>
                 </div>
               </div>
 
-              <button @click="downloadChartData('arus-kas')" class="p-1.5 text-slate-400 hover:text-white rounded-lg transition-colors cursor-pointer" title="Unduh data">
+              <button @click="downloadChartData('arus-kas')" class="p-1.5 text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg transition-colors cursor-pointer" title="Unduh data">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
               </button>
             </div>
 
-            <!-- SVG Arus Kas Chart -->
-            <div class="relative w-full pt-4 pb-2">
+            <!-- Tempat Grafik: Putih Agak Abu-Abu Sedikit (bg-[#F8FAFC]) -->
+            <div class="relative w-full pt-3 pb-2 px-2 bg-[#F8FAFC] border border-slate-200 rounded-xl my-2 overflow-hidden shadow-2xs">
               <svg viewBox="0 0 540 220" class="w-full h-auto overflow-visible select-none">
                 <!-- Grid Lines: 4M, 3M, 2M, 1M, 0, -1M, -2M -->
-                <g class="text-[10px] font-mono fill-slate-400 stroke-slate-800" stroke-dasharray="3 3">
-                  <text x="30" y="24" text-anchor="end" class="fill-slate-400">4 M</text>
-                  <line x1="38" y1="20" x2="530" y2="20" stroke="#1E293B" stroke-width="1" />
+                <g class="text-[10px] font-mono fill-slate-600 font-bold" stroke-dasharray="3 3">
+                  <text x="32" y="24" text-anchor="end" class="fill-slate-600 font-bold">4 M</text>
+                  <line x1="40" y1="20" x2="530" y2="20" stroke="#CBD5E1" stroke-width="1" />
                   
-                  <text x="30" y="55" text-anchor="end" class="fill-slate-400">3 M</text>
-                  <line x1="38" y1="51" x2="530" y2="51" stroke="#1E293B" stroke-width="1" />
+                  <text x="32" y="55" text-anchor="end" class="fill-slate-600 font-bold">3 M</text>
+                  <line x1="40" y1="51" x2="530" y2="51" stroke="#CBD5E1" stroke-width="1" />
                   
-                  <text x="30" y="86" text-anchor="end" class="fill-slate-400">2 M</text>
-                  <line x1="38" y1="82" x2="530" y2="82" stroke="#1E293B" stroke-width="1" />
+                  <text x="32" y="86" text-anchor="end" class="fill-slate-600 font-bold">2 M</text>
+                  <line x1="40" y1="82" x2="530" y2="82" stroke="#CBD5E1" stroke-width="1" />
                   
-                  <text x="30" y="117" text-anchor="end" class="fill-slate-400">1 M</text>
-                  <line x1="38" y1="113" x2="530" y2="113" stroke="#1E293B" stroke-width="1" />
+                  <text x="32" y="117" text-anchor="end" class="fill-slate-600 font-bold">1 M</text>
+                  <line x1="40" y1="113" x2="530" y2="113" stroke="#CBD5E1" stroke-width="1" />
                   
                   <!-- 0 Line -->
-                  <text x="30" y="148" text-anchor="end" class="fill-slate-300 font-bold">0</text>
-                  <line x1="38" y1="144" x2="530" y2="144" stroke="#334155" stroke-width="1.2" stroke-dasharray="0" />
+                  <text x="32" y="148" text-anchor="end" class="fill-slate-800 font-black">0</text>
+                  <line x1="40" y1="144" x2="530" y2="144" stroke="#64748B" stroke-width="1.5" stroke-dasharray="0" />
                   
-                  <text x="30" y="179" text-anchor="end" class="fill-slate-400">-1 M</text>
-                  <line x1="38" y1="175" x2="530" y2="175" stroke="#1E293B" stroke-width="1" />
+                  <text x="32" y="179" text-anchor="end" class="fill-slate-600 font-bold">-1 M</text>
+                  <line x1="40" y1="175" x2="530" y2="175" stroke="#CBD5E1" stroke-width="1" />
                   
-                  <text x="30" y="210" text-anchor="end" class="fill-slate-400">-2 M</text>
-                  <line x1="38" y1="206" x2="530" y2="206" stroke="#1E293B" stroke-width="1" />
+                  <text x="32" y="210" text-anchor="end" class="fill-slate-600 font-bold">-2 M</text>
+                  <line x1="40" y1="206" x2="530" y2="206" stroke="#CBD5E1" stroke-width="1" />
                 </g>
 
                 <!-- Bars (Kas Masuk vs Kas Keluar) -->
                 <!-- Jul 25: investasi server awal -->
-                <rect x="67" y="132" width="7" height="12" rx="1.5" fill="#F97316" />
+                <rect x="67" y="132" width="7" height="12" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
                 <!-- Sep 25 -->
-                <rect x="117" y="135" width="7" height="9" rx="1.5" fill="#F97316" />
+                <rect x="117" y="135" width="7" height="9" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
                 <!-- Nov 25 -->
-                <rect x="167" y="138" width="7" height="6" rx="1.5" fill="#F97316" />
+                <rect x="167" y="138" width="7" height="6" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
                 <!-- Jan 26: Lisensi semester ganjil bertambah -->
-                <rect x="208" y="72" width="8" height="72" rx="2" fill="#10B981" />
-                <rect x="218" y="136" width="8" height="8" rx="1.5" fill="#F97316" />
+                <rect x="208" y="72" width="8" height="72" rx="2" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="218" y="136" width="8" height="8" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
                 <!-- Mar 26: Puncak Masuk -->
-                <rect x="258" y="32" width="8" height="112" rx="2" fill="#10B981" />
-                <rect x="268" y="52" width="8" height="92" rx="2" fill="#F97316" />
+                <rect x="258" y="32" width="8" height="112" rx="2" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="268" y="52" width="8" height="92" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
                 <!-- Mei 26 -->
-                <rect x="317" y="138" width="7" height="6" rx="1.5" fill="#F97316" />
+                <rect x="317" y="138" width="7" height="6" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
                 <!-- Jul 26: Lisensi Tahun Ajaran Baru -->
-                <rect x="358" y="44" width="8" height="100" rx="2" fill="#10B981" />
-                <rect x="368" y="132" width="8" height="12" rx="1.5" fill="#F97316" />
+                <rect x="358" y="44" width="8" height="100" rx="2" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="368" y="132" width="8" height="12" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
                 <!-- Sep 26 -->
-                <rect x="408" y="135" width="7" height="9" rx="1.5" fill="#10B981" />
-                <rect x="417" y="125" width="7" height="19" rx="1.5" fill="#F97316" />
+                <rect x="408" y="135" width="7" height="9" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="417" y="125" width="7" height="19" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
                 <!-- Nov 26 (Bulan Berjalan) -->
-                <rect x="458" y="126" width="7" height="18" rx="1.5" fill="#10B981" />
-                <rect x="467" y="60" width="7" height="84" rx="2" fill="#F97316" />
+                <rect x="458" y="126" width="7" height="18" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="467" y="60" width="7" height="84" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
 
-                <!-- Saldo Kas Line (Sky Blue with circular points) -->
+                <!-- Saldo Kas Line (Blue with circular points) -->
                 <polyline 
                   fill="none" 
-                  stroke="#38BDF8" 
-                  stroke-width="2.2" 
+                  stroke="#0284C7" 
+                  stroke-width="2.5" 
                   points="
                     68,160 
                     118,172 
@@ -449,18 +451,18 @@
                   "
                 />
 
-                <circle cx="68" cy="160" r="3.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
-                <circle cx="118" cy="172" r="3.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
-                <circle cx="168" cy="185" r="3.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
-                <circle cx="218" cy="142" r="3.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
-                <circle cx="268" cy="135" r="3.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
-                <circle cx="318" cy="147" r="3.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
-                <circle cx="368" cy="52" r="4.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
-                <circle cx="418" cy="68" r="3.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
-                <circle cx="468" cy="110" r="3.5" fill="#38BDF8" stroke="#0B132B" stroke-width="1.5" />
+                <circle cx="68" cy="160" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="118" cy="172" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="168" cy="185" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="218" cy="142" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="268" cy="135" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="318" cy="147" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="368" cy="52" r="5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="418" cy="68" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="468" cy="110" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
 
                 <!-- X-Axis Labels -->
-                <g class="text-[9px] fill-slate-400 font-sans" text-anchor="middle">
+                <g class="text-[9.5px] fill-slate-600 font-sans font-bold" text-anchor="middle">
                   <text x="68" y="215">Jul 25</text>
                   <text x="118" y="215">Sep 25</text>
                   <text x="168" y="215">Nov 25</text>
@@ -475,90 +477,91 @@
             </div>
           </div>
 
-          <div class="pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+          <div class="pt-3 border-t border-slate-200 text-[11px] text-slate-500 flex items-center justify-between">
             <span>Saldo Kas Lancar Tersimpan:</span>
-            <span class="text-sky-400 font-semibold font-mono">{{ formatRupiah(financialData.saldoKas) }}</span>
+            <span class="text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded-md border border-sky-200 font-bold font-mono">{{ formatRupiah(financialData.saldoKas) }}</span>
           </div>
         </div>
 
         <!-- CHART 3: Profit per siklus / Paket Lisensi -->
-        <div class="bg-[#0B132B] rounded-2xl border border-slate-800 p-5 sm:p-6 shadow-xl flex flex-col justify-between text-white">
+        <div class="bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs hover:border-slate-400 transition-all flex flex-col justify-between">
           <div>
             <!-- Header Chart -->
             <div class="flex items-start justify-between gap-2 mb-3">
               <div>
-                <h3 class="text-base sm:text-lg font-bold tracking-tight text-white">Profit per siklus</h3>
+                <h3 class="text-base sm:text-lg font-black tracking-tight text-slate-900">Profit per siklus</h3>
+                <p class="text-xs text-slate-500 font-medium">Margin pendapatan vs beban pada setiap siklus lisensi sekolah</p>
                 <!-- Legend Row -->
-                <div class="flex items-center gap-4 mt-2 text-xs">
+                <div class="flex items-center gap-4 mt-2.5 text-xs">
                   <div class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-xs bg-[#10B981]"></span>
-                    <span class="text-slate-300">Pendapatan</span>
+                    <span class="w-3 h-3 rounded-xs bg-[#10B981] shadow-2xs"></span>
+                    <span class="text-slate-700 font-bold">Pendapatan</span>
                   </div>
                   <div class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-xs bg-[#F97316]"></span>
-                    <span class="text-slate-300">Biaya</span>
+                    <span class="w-3 h-3 rounded-xs bg-[#F97316] shadow-2xs"></span>
+                    <span class="text-slate-700 font-bold">Biaya</span>
                   </div>
                   <div class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-xs bg-[#38BDF8]"></span>
-                    <span class="text-slate-300">Laba/rugi</span>
+                    <span class="w-3 h-3 rounded-xs bg-[#0284C7] shadow-2xs"></span>
+                    <span class="text-slate-700 font-bold">Laba/rugi</span>
                   </div>
                 </div>
               </div>
 
-              <button @click="downloadChartData('profit-siklus')" class="p-1.5 text-slate-400 hover:text-white rounded-lg transition-colors cursor-pointer" title="Unduh data">
+              <button @click="downloadChartData('profit-siklus')" class="p-1.5 text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg transition-colors cursor-pointer" title="Unduh data">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
               </button>
             </div>
 
-            <!-- SVG Grouped Bars Chart per Cycle/Package -->
-            <div class="relative w-full pt-4 pb-2">
+            <!-- Tempat Grafik: Putih Agak Abu-Abu Sedikit (bg-[#F8FAFC]) -->
+            <div class="relative w-full pt-3 pb-2 px-2 bg-[#F8FAFC] border border-slate-200 rounded-xl my-2 overflow-hidden shadow-2xs">
               <svg viewBox="0 0 540 220" class="w-full h-auto overflow-visible select-none">
                 <!-- Y-Axis Grid: 3M, 2M, 1M, 0, -1M -->
-                <g class="text-[10px] font-mono fill-slate-400 stroke-slate-800" stroke-dasharray="3 3">
-                  <text x="30" y="32" text-anchor="end" class="fill-slate-400">3 M</text>
-                  <line x1="38" y1="28" x2="530" y2="28" stroke="#1E293B" stroke-width="1" />
+                <g class="text-[10px] font-mono fill-slate-600 font-bold" stroke-dasharray="3 3">
+                  <text x="32" y="32" text-anchor="end" class="fill-slate-600 font-bold">3 M</text>
+                  <line x1="40" y1="28" x2="530" y2="28" stroke="#CBD5E1" stroke-width="1" />
                   
-                  <text x="30" y="74" text-anchor="end" class="fill-slate-400">2 M</text>
-                  <line x1="38" y1="70" x2="530" y2="70" stroke="#1E293B" stroke-width="1" />
+                  <text x="32" y="74" text-anchor="end" class="fill-slate-600 font-bold">2 M</text>
+                  <line x1="40" y1="70" x2="530" y2="70" stroke="#CBD5E1" stroke-width="1" />
                   
-                  <text x="30" y="116" text-anchor="end" class="fill-slate-400">1 M</text>
-                  <line x1="38" y1="112" x2="530" y2="112" stroke="#1E293B" stroke-width="1" />
+                  <text x="32" y="116" text-anchor="end" class="fill-slate-600 font-bold">1 M</text>
+                  <line x1="40" y1="112" x2="530" y2="112" stroke="#CBD5E1" stroke-width="1" />
                   
                   <!-- 0 Line -->
-                  <text x="30" y="158" text-anchor="end" class="fill-slate-300 font-bold">0</text>
-                  <line x1="38" y1="154" x2="530" y2="154" stroke="#334155" stroke-width="1.2" stroke-dasharray="0" />
+                  <text x="32" y="158" text-anchor="end" class="fill-slate-800 font-black">0</text>
+                  <line x1="40" y1="154" x2="530" y2="154" stroke="#64748B" stroke-width="1.5" stroke-dasharray="0" />
                   
-                  <text x="30" y="200" text-anchor="end" class="fill-slate-400">-1 M</text>
-                  <line x1="38" y1="196" x2="530" y2="196" stroke="#1E293B" stroke-width="1" />
+                  <text x="32" y="200" text-anchor="end" class="fill-slate-600 font-bold">-1 M</text>
+                  <line x1="40" y1="196" x2="530" y2="196" stroke="#CBD5E1" stroke-width="1" />
                 </g>
 
                 <!-- Group 1: Siklus 1 - Semester Ganjil (High Margin) (x center: 105) -->
-                <rect x="85" y="32" width="12" height="122" rx="2" fill="#10B981" />
-                <rect x="99" y="82" width="12" height="72" rx="2" fill="#F97316" />
-                <rect x="113" y="104" width="12" height="50" rx="2" fill="#38BDF8" />
+                <rect x="85" y="32" width="12" height="122" rx="2" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="99" y="82" width="12" height="72" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
+                <rect x="113" y="104" width="12" height="50" rx="2" fill="#0284C7" stroke="#0369A1" stroke-width="0.5" />
 
                 <!-- Group 2: Siklus 2 - Semester Genap (x center: 185) -->
-                <rect x="165" y="42" width="12" height="112" rx="2" fill="#10B981" />
-                <rect x="179" y="88" width="12" height="66" rx="2" fill="#F97316" />
-                <rect x="193" y="108" width="12" height="46" rx="2" fill="#38BDF8" />
+                <rect x="165" y="42" width="12" height="112" rx="2" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="179" y="88" width="12" height="66" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
+                <rect x="193" y="108" width="12" height="46" rx="2" fill="#0284C7" stroke="#0369A1" stroke-width="0.5" />
 
                 <!-- Group 3: Siklus 3 - Add-On Modul Cetak (R&D Cost higher) (x center: 265) -->
-                <rect x="245" y="148" width="12" height="6" rx="1.5" fill="#10B981" />
-                <rect x="259" y="122" width="12" height="32" rx="2" fill="#F97316" />
-                <rect x="273" y="154" width="12" height="26" rx="2" fill="#38BDF8" />
+                <rect x="245" y="148" width="12" height="6" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="259" y="122" width="12" height="32" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
+                <rect x="273" y="154" width="12" height="26" rx="2" fill="#0284C7" stroke="#0369A1" stroke-width="0.5" />
 
                 <!-- Group 4: Siklus 4 - Lisensi Multi-Kampus (x center: 345) -->
-                <rect x="325" y="150" width="12" height="4" rx="1.5" fill="#10B981" />
-                <rect x="339" y="130" width="12" height="24" rx="2" fill="#F97316" />
-                <rect x="353" y="154" width="12" height="20" rx="2" fill="#38BDF8" />
+                <rect x="325" y="150" width="12" height="4" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="339" y="130" width="12" height="24" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
+                <rect x="353" y="154" width="12" height="20" rx="2" fill="#0284C7" stroke="#0369A1" stroke-width="0.5" />
 
                 <!-- Group 5: Siklus 5 - Proyeksi 2026/2027 (x center: 425) -->
-                <rect x="405" y="60" width="12" height="94" rx="2" fill="#10B981" />
-                <rect x="419" y="112" width="12" height="42" rx="2" fill="#F97316" />
-                <rect x="433" y="102" width="12" height="52" rx="2" fill="#38BDF8" />
+                <rect x="405" y="60" width="12" height="94" rx="2" fill="#10B981" stroke="#059669" stroke-width="0.5" />
+                <rect x="419" y="112" width="12" height="42" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
+                <rect x="433" y="102" width="12" height="52" rx="2" fill="#0284C7" stroke="#0369A1" stroke-width="0.5" />
 
-                <!-- X-Axis Labels (Rotated for legibility as in image) -->
-                <g class="text-[8.5px] fill-slate-400 font-sans">
+                <!-- X-Axis Labels -->
+                <g class="text-[9px] fill-slate-700 font-sans font-bold">
                   <text x="105" y="174" text-anchor="middle">Smt Ganjil 25/26</text>
                   <text x="185" y="174" text-anchor="middle">Smt Genap 25/26</text>
                   <text x="265" y="174" text-anchor="middle">Modul Cetak & QR</text>
@@ -569,64 +572,66 @@
             </div>
           </div>
 
-          <div class="pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+          <div class="pt-3 border-t border-slate-200 text-[11px] text-slate-500 flex items-center justify-between">
             <span>Siklus Paling Menguntungkan:</span>
-            <span class="text-emerald-400 font-semibold">Semester Ganjil 2025/2026</span>
+            <span class="text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200 font-bold">Semester Ganjil 2025/2026</span>
           </div>
         </div>
 
         <!-- CHART 4: Komposisi biaya operasional -->
-        <div class="bg-[#0B132B] rounded-2xl border border-slate-800 p-5 sm:p-6 shadow-xl flex flex-col justify-between text-white">
+        <div class="bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs hover:border-slate-400 transition-all flex flex-col justify-between">
           <div>
             <!-- Header Chart -->
             <div class="flex items-start justify-between gap-2 mb-3">
               <div>
-                <h3 class="text-base sm:text-lg font-bold tracking-tight text-white">Komposisi biaya operasional</h3>
-                <p class="text-xs text-slate-400 mt-0.5">Distribusi pengeluaran cloud server & pemeliharaan GuruKu</p>
+                <h3 class="text-base sm:text-lg font-black tracking-tight text-slate-900">Komposisi biaya operasional</h3>
+                <p class="text-xs text-slate-500 mt-0.5 font-medium">Distribusi pengeluaran cloud server & pemeliharaan GuruKu</p>
               </div>
 
-              <button @click="downloadChartData('biaya-operasional')" class="p-1.5 text-slate-400 hover:text-white rounded-lg transition-colors cursor-pointer" title="Unduh data">
+              <button @click="downloadChartData('biaya-operasional')" class="p-1.5 text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg transition-colors cursor-pointer" title="Unduh data">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
               </button>
             </div>
 
-            <!-- Horizontal Ranked Bar Chart (Sesuai Referensi Gambar) -->
-            <div class="space-y-2.5 pt-2">
-              <div v-for="item in operationalCosts" :key="item.name" class="flex items-center gap-3 text-xs">
-                <!-- Label Pos Biaya -->
-                <div class="w-36 sm:w-44 text-right text-slate-300 font-medium truncate shrink-0 text-[11px]">
-                  {{ item.name }}
-                </div>
-                
-                <!-- Bar Container -->
-                <div class="flex-1 bg-slate-800/80 rounded-full h-4 relative overflow-hidden">
-                  <div 
-                    class="h-full bg-gradient-to-r from-[#F97316] to-[#EA580C] rounded-full transition-all duration-700 shadow-xs"
-                    :style="{ width: `${item.percentage}%` }"
-                  ></div>
-                </div>
+            <!-- Tempat Grafik: Putih Agak Abu-Abu Sedikit (bg-[#F8FAFC]) -->
+            <div class="bg-[#F8FAFC] border border-slate-200 rounded-xl p-3.5 sm:p-4 my-2 shadow-2xs">
+              <div class="space-y-2.5">
+                <div v-for="item in operationalCosts" :key="item.name" class="flex items-center gap-3 text-xs">
+                  <!-- Label Pos Biaya (Teks Jelas Tebal) -->
+                  <div class="w-36 sm:w-44 text-right text-slate-700 font-bold truncate shrink-0 text-[11px]">
+                    {{ item.name }}
+                  </div>
+                  
+                  <!-- Bar Container -->
+                  <div class="flex-1 bg-slate-200/90 rounded-full h-4 relative overflow-hidden border border-slate-200">
+                    <div 
+                      class="h-full bg-gradient-to-r from-orange-500 to-amber-500 rounded-full transition-all duration-700 shadow-xs"
+                      :style="{ width: `${item.percentage}%` }"
+                    ></div>
+                  </div>
 
-                <!-- Nominal Value Label -->
-                <div class="w-20 text-right text-slate-300 font-mono text-[11px] shrink-0 font-bold">
-                  {{ item.formatted }}
+                  <!-- Nominal Value Label (Teks Gelap Terbaca) -->
+                  <div class="w-20 text-right text-slate-900 font-mono text-[11px] shrink-0 font-extrabold">
+                    {{ item.formatted }}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- X-Axis Scale Indicator: 0, 500 jt, 1 M, 1,5 M, 2 M, 2,5 M -->
-            <div class="flex justify-between pl-36 sm:pl-44 pr-20 pt-4 text-[9px] text-slate-500 font-mono border-t border-slate-800/80 mt-3">
-              <span>0</span>
-              <span>500 rb</span>
-              <span>1 M</span>
-              <span>1,5 M</span>
-              <span>2 M</span>
-              <span>2,5 M</span>
+              <!-- X-Axis Scale Indicator: 0, 500 rb, 1 M, 1,5 M, 2 M, 2,5 M -->
+              <div class="flex justify-between pl-36 sm:pl-44 pr-20 pt-4 text-[9.5px] text-slate-600 font-mono font-bold border-t border-slate-300 mt-3">
+                <span>0</span>
+                <span>500 rb</span>
+                <span>1 M</span>
+                <span>1,5 M</span>
+                <span>2 M</span>
+                <span>2,5 M</span>
+              </div>
             </div>
           </div>
 
-          <div class="pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+          <div class="pt-3 border-t border-slate-200 text-[11px] text-slate-500 flex items-center justify-between">
             <span>Komponen Terbesar: Cloud Server Neon</span>
-            <span class="text-orange-400 font-semibold font-mono">Rp 2.450.000 / bln</span>
+            <span class="text-orange-700 bg-orange-50 px-2.5 py-0.5 rounded-md border border-orange-200 font-bold font-mono">Rp 2.450.000 / bln</span>
           </div>
         </div>
 

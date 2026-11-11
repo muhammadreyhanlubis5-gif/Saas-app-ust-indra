@@ -1000,7 +1000,7 @@
                   class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-all cursor-pointer active:scale-95"
                 >
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                  <span>Setujui (+30 Hari)</span>
+                  <span>Setujui ({{ p.durationMonths ? `+${p.durationMonths} Bln` : '+Lisensi' }})</span>
                 </button>
                 <button 
                   v-if="p.status === 'MENUNGGU_VERIFIKASI'"
@@ -1099,7 +1099,7 @@
                       title="Setujui dan perpanjang masa aktif sekolah"
                     >
                       <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                      <span>Setujui (+30 Hari)</span>
+                      <span>Setujui ({{ p.durationMonths ? `+${p.durationMonths} Bln` : '+Lisensi' }})</span>
                     </button>
                     <button 
                       v-if="p.status === 'MENUNGGU_VERIFIKASI'"
@@ -1416,8 +1416,18 @@
           
           <!-- Pembayaran & Kontrak -->
           <div class="space-y-3 sm:space-y-4">
-            <h3 class="text-xs font-black text-green-600 uppercase tracking-widest border-b border-green-100 pb-2 pt-2">Kontrak & Pembayaran</h3>
+            <h3 class="text-xs font-black text-green-700 uppercase tracking-widest border-b border-green-200 pb-2 pt-2">Kontrak & Pembayaran</h3>
             
+            <div>
+              <label class="block text-xs sm:text-sm font-bold text-gray-700 mb-1">Pilih Paket Lisensi dari Etalase</label>
+              <select @change="applyPackageToNewSchool($event.target.value)" class="w-full bg-slate-50 text-gray-900 border border-gray-300 rounded-xl px-3.5 sm:px-4 py-2.5 sm:py-3 focus:ring-2 focus:ring-green-500 outline-none transition-all shadow-sm text-xs sm:text-sm font-semibold">
+                <option value="">-- Pilih Paket Lisensi (Otomatis Isi Harga & Batas Waktu) --</option>
+                <option v-for="pkg in availablePackages" :key="pkg.id" :value="pkg.id">
+                  {{ pkg.name }} - {{ formatRupiah(pkg.price) }} ({{ pkg.durationLabel }})
+                </option>
+              </select>
+            </div>
+
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
                  <label class="block text-xs sm:text-sm font-bold text-gray-700 mb-1">Batas Waktu Kontrak *</label>
@@ -1437,7 +1447,7 @@
             
             <div>
                <label class="block text-xs sm:text-sm font-bold text-gray-700 mb-1">Nominal Pembayaran (Rp) *</label>
-               <input v-model="form.payment_amount" type="number" required class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-3.5 sm:px-4 py-2.5 sm:py-3 focus:ring-2 focus:ring-green-500 outline-none transition-all shadow-sm text-sm" placeholder="Nominal pembayaran langganan">
+               <input v-model="form.payment_amount" type="number" required class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-3.5 sm:px-4 py-2.5 sm:py-3 focus:ring-2 focus:ring-green-500 outline-none transition-all shadow-sm text-sm font-mono" placeholder="Nominal pembayaran langganan">
             </div>
           </div>
           
@@ -1500,23 +1510,33 @@
         <form @submit.prevent="saveInvoice" class="p-5 space-y-4">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Nama Klien / Rekan *</label>
-            <input v-model="invoiceForm.clientName" type="text" required class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Contoh: Klien / Rekan Istimewa" />
+            <input v-model="invoiceForm.clientName" type="text" required class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Contoh: Klien / Rekan Istimewa" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Pilih Paket dari Etalase (Otomatis Isi Harga)</label>
+            <select @change="applyPackageToInvoice($event.target.value)" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none font-semibold text-slate-800">
+              <option value="">-- Kustom Manual --</option>
+              <option v-for="pkg in availablePackages" :key="pkg.id" :value="pkg.id">
+                {{ pkg.name }} ({{ formatRupiah(pkg.price) }} - {{ pkg.badge || pkg.tier }})
+              </option>
+            </select>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">Nominal Tagihan (Rp) *</label>
-              <input v-model.number="invoiceForm.amount" type="number" required min="1000" class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="254205" />
+              <input v-model.number="invoiceForm.amount" type="number" required min="1000" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none font-mono" placeholder="254205" />
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">Estimasi HPP (Rp)</label>
-              <input v-model.number="invoiceForm.hpp" type="number" min="0" class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="104205" />
+              <input v-model.number="invoiceForm.hpp" type="number" min="0" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none font-mono" placeholder="104205" />
             </div>
           </div>
 
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Keterangan Layanan</label>
-            <input v-model="invoiceForm.description" type="text" class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Lisensi SaaS GuruKu / Cetak Modul" />
+            <input v-model="invoiceForm.description" type="text" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Lisensi SaaS GuruKu / Cetak Modul" />
           </div>
 
           <div class="pt-3 flex items-center justify-end gap-2.5 border-t border-slate-100">
@@ -1601,6 +1621,7 @@ import KeuanganAset from './KeuanganAset.vue'
 import KalkulatorHPP from './KalkulatorHPP.vue'
 import EtalaseProdukView from './EtalaseProdukView.vue'
 import FilamenView from './FilamenView.vue'
+import { getStoredPackages } from '../data/packagesCatalog.js'
 
 const router = useRouter()
 const activeTab = ref('dashboard')
@@ -1610,6 +1631,7 @@ const loading = ref(true)
 const saving = ref(false)
 const schools = ref([])
 const clientSearch = ref('')
+const availablePackages = ref(getStoredPackages())
 
 // Tanggal hari ini format Indonesia
 const currentDateFormatted = computed(() => {
@@ -1676,6 +1698,26 @@ const invoiceForm = ref({
   hpp: 104205,
   description: 'Lisensi SaaS GuruKu'
 })
+
+const applyPackageToInvoice = (pkgId) => {
+  if (!pkgId) return
+  const pkg = availablePackages.value.find(p => p.id === pkgId)
+  if (pkg) {
+    invoiceForm.value.amount = pkg.price
+    invoiceForm.value.description = `Lisensi SaaS GuruKu: ${pkg.name}`
+  }
+}
+
+const applyPackageToNewSchool = (pkgId) => {
+  if (!pkgId) return
+  const pkg = availablePackages.value.find(p => p.id === pkgId)
+  if (pkg) {
+    form.value.payment_amount = pkg.price
+    const d = new Date()
+    d.setMonth(d.getMonth() + (pkg.durationMonths || 6))
+    form.value.valid_until = d.toISOString().slice(0, 10)
+  }
+}
 
 const saveInvoice = () => {
   if (!invoiceForm.value.amount || invoiceForm.value.amount <= 0) return
@@ -1858,7 +1900,8 @@ const approvePayment = async (payment) => {
   if (matched) {
     const currentExpiry = new Date(matched.valid_until)
     const baseDate = currentExpiry > new Date() ? currentExpiry : new Date()
-    baseDate.setDate(baseDate.getDate() + 30)
+    const months = Number(payment.durationMonths) || 6
+    baseDate.setMonth(baseDate.getMonth() + months)
     matched.valid_until = baseDate.toISOString().slice(0, 10)
   }
 
@@ -2322,6 +2365,16 @@ const handleStorageChange = (e) => {
     loadSupportTickets()
   } else if (e.key === 'guruKu_financial_summary') {
     loadFinancialSummary()
+  } else if (e.key === 'guruKu_packages_catalog') {
+    availablePackages.value = getStoredPackages()
+  }
+}
+
+const handlePackagesUpdate = (e) => {
+  if (e?.detail) {
+    availablePackages.value = e.detail
+  } else {
+    availablePackages.value = getStoredPackages()
   }
 }
 
@@ -2333,6 +2386,7 @@ onMounted(() => {
   loadPendingPayments()
   document.addEventListener('click', handleClickOutside)
   window.addEventListener('storage', handleStorageChange)
+  window.addEventListener('guruKu_packages_updated', handlePackagesUpdate)
   
   // Polling real-time (3 detik) agar tersinkron otomatis dengan database serverless Neon
   reportInterval = setInterval(() => {
@@ -2346,6 +2400,7 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
   window.removeEventListener('storage', handleStorageChange)
+  window.removeEventListener('guruKu_packages_updated', handlePackagesUpdate)
   if (reportInterval) clearInterval(reportInterval)
 })
 
