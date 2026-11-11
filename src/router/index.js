@@ -20,6 +20,12 @@ import AnalisisGuru from '../views/AnalisisGuru.vue'
 import TunjanganSertifikasi from '../views/TunjanganSertifikasi.vue'
 import KeuanganAset from '../views/KeuanganAset.vue'
 import KalkulatorHPP from '../views/KalkulatorHPP.vue'
+import PesananView from '../views/PesananView.vue'
+import CustomRequestView from '../views/CustomRequestView.vue'
+import EtalaseProdukView from '../views/EtalaseProdukView.vue'
+import FilamenView from '../views/FilamenView.vue'
+import LaporanInvestorView from '../views/LaporanInvestorView.vue'
+import PengaturanView from '../views/PengaturanView.vue'
 import PusatBantuan from '../views/PusatBantuan.vue'
 import ComingSoon from '../views/ComingSoon.vue'
 import { ROUTES, SCHOOL_ADMIN_SUB } from '../config/routePaths.js'
@@ -59,6 +65,12 @@ const routes = [
       { path: SCHOOL_ADMIN_SUB.TUNJANGAN_SERTIFIKASI, name: 'TunjanganSertifikasi', component: TunjanganSertifikasi },
       { path: SCHOOL_ADMIN_SUB.KEUANGAN_ASET, name: 'KeuanganAset', component: KeuanganAset },
       { path: SCHOOL_ADMIN_SUB.KALKULATOR_HPP, name: 'KalkulatorHPP', component: KalkulatorHPP },
+      { path: SCHOOL_ADMIN_SUB.PESANAN, name: 'Pesanan', component: PesananView },
+      { path: SCHOOL_ADMIN_SUB.CUSTOM_REQUEST, name: 'CustomRequest', component: CustomRequestView },
+      { path: SCHOOL_ADMIN_SUB.ETALASE_PRODUK, name: 'EtalaseProduk', component: EtalaseProdukView },
+      { path: SCHOOL_ADMIN_SUB.FILAMEN, name: 'Filamen', component: FilamenView },
+      { path: SCHOOL_ADMIN_SUB.LAPORAN_INVESTOR, name: 'LaporanInvestor', component: LaporanInvestorView },
+      { path: SCHOOL_ADMIN_SUB.PENGATURAN, name: 'Pengaturan', component: PengaturanView },
       { path: SCHOOL_ADMIN_SUB.PUSAT_BANTUAN, name: 'PusatBantuan', component: PusatBantuan },
       { path: ':pathMatch(.*)*', name: 'AdminNotFound', component: ComingSoon }
     ]
