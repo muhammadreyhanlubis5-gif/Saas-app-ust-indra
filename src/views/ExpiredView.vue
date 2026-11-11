@@ -42,14 +42,14 @@
         >
           <!-- Badge Ribbon -->
           <div v-if="pkg.isPopular || pkg.tier === 'populer'" class="absolute -top-3.5 left-1/2 -translate-x-1/2">
-            <span class="inline-flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[11px] font-black uppercase tracking-wider py-1 px-4 rounded-full shadow-md border border-blue-400">
-              ★ PALING POPULER
+            <span class="inline-flex items-center bg-blue-600 text-white text-[10px] font-black uppercase tracking-wider py-1 px-3.5 rounded-full shadow-md border border-blue-400">
+              PALING POPULER
             </span>
           </div>
 
           <div v-else-if="pkg.isPremium || pkg.tier === 'premium'" class="absolute -top-3.5 left-1/2 -translate-x-1/2">
-            <span class="inline-flex items-center gap-1.5 bg-gradient-to-r from-purple-700 to-indigo-800 text-white text-[11px] font-black uppercase tracking-wider py-1 px-4 rounded-full shadow-md border border-purple-400">
-              👑 REKOMENDASI YAYASAN
+            <span class="inline-flex items-center bg-purple-700 text-white text-[10px] font-black uppercase tracking-wider py-1 px-3.5 rounded-full shadow-md border border-purple-400">
+              REKOMENDASI YAYASAN
             </span>
           </div>
 
