@@ -264,7 +264,7 @@
 
                 <!-- Bars (Pendapatan Green & Biaya Orange) Dynamic Real-Time -->
                 <g v-for="d in chart1Data" :key="'c1-bar-'+d.label">
-                  <!-- Bar Pendapatan -->
+                  <!-- Bar Pendapatan (Animated over 1.2s) -->
                   <rect 
                     :x="d.pX" 
                     :y="d.pY" 
@@ -276,9 +276,11 @@
                     stroke-width="0.5"
                     class="transition-all duration-300"
                   >
+                    <animate attributeName="height" from="0" :to="d.pH" dur="1.2s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1" />
+                    <animate attributeName="y" from="128" :to="d.pY" dur="1.2s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1" />
                     <title>{{ d.label }} - Pendapatan: {{ formatRupiah(d.pendapatan) }}</title>
                   </rect>
-                  <!-- Bar Biaya -->
+                  <!-- Bar Biaya (Animated over 1.2s) -->
                   <rect 
                     :x="d.bX" 
                     :y="d.bY" 
@@ -290,6 +292,8 @@
                     stroke-width="0.5"
                     class="transition-all duration-300"
                   >
+                    <animate attributeName="height" from="0" :to="d.bH" dur="1.2s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1" begin="0.1s" />
+                    <animate attributeName="y" from="128" :to="d.bY" dur="1.2s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1" begin="0.1s" />
                     <title>{{ d.label }} - Biaya: {{ formatRupiah(d.biaya) }}</title>
                   </rect>
                 </g>
@@ -413,6 +417,8 @@
                     stroke-width="0.5" 
                     class="transition-all duration-300"
                   >
+                    <animate attributeName="height" from="0" :to="d.inH" dur="1.2s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1" />
+                    <animate attributeName="y" from="144" :to="d.inY" dur="1.2s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1" />
                     <title>{{ d.label }} - Kas Masuk: {{ formatRupiah(d.kasMasuk) }}</title>
                   </rect>
                   <rect 
@@ -427,6 +433,8 @@
                     stroke-width="0.5" 
                     class="transition-all duration-300"
                   >
+                    <animate attributeName="height" from="0" :to="d.outH" dur="1.2s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1" begin="0.1s" />
+                    <animate attributeName="y" from="144" :to="d.outY" dur="1.2s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1" begin="0.1s" />
                     <title>{{ d.label }} - Kas Keluar: {{ formatRupiah(d.kasKeluar) }}</title>
                   </rect>
                 </g>
