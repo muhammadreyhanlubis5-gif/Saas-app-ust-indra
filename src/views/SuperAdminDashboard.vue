@@ -124,10 +124,10 @@
     </aside>
 
     <!-- Main Content Area Wrapper -->
-    <div class="flex-1 flex flex-col min-w-0 w-full max-w-full h-full overflow-hidden">
+    <div class="flex-1 flex flex-col min-w-0 w-full max-w-full h-full overflow-hidden bg-[#F8FAFC]">
 
       <!-- Mobile & Tablet Header Bar (Visible on < lg screens) -->
-      <header class="lg:hidden bg-slate-900 text-white border-b border-slate-800 px-3.5 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between shrink-0 z-30 shadow-md">
+      <header class="lg:hidden bg-[#0B132B] text-white border-b border-slate-800 px-3.5 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between shrink-0 z-30 shadow-md">
         <div class="flex items-center gap-2.5 min-w-0">
           <button @click="isSidebarOpen = true" class="p-2 -ml-1 text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 rounded-xl transition-all cursor-pointer" aria-label="Buka Menu">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -135,8 +135,8 @@
           <div class="flex items-center gap-2 min-w-0">
             <AppLogo size="xs" :showText="false" />
             <div class="min-w-0">
-              <span class="font-black text-sm tracking-tight text-white block truncate leading-none">Super Admin</span>
-              <span class="text-[9px] text-blue-400 uppercase tracking-widest font-bold block mt-0.5 truncate">{{ currentTabTitle }}</span>
+              <span class="font-bold text-sm tracking-tight text-white block truncate leading-none">GuruKu Admin</span>
+              <span class="text-[9px] text-blue-400 uppercase tracking-widest font-semibold block mt-0.5 truncate">{{ currentTabTitle }}</span>
             </div>
           </div>
         </div>
@@ -148,179 +148,209 @@
         </div>
       </header>
 
-      <!-- Scrollable Main View -->
-      <main class="flex-1 overflow-y-auto overflow-x-hidden w-full max-w-full bg-slate-50/70 p-3 sm:p-5 md:p-8 lg:p-10 relative custom-scrollbar pb-24 lg:pb-10">
-        <!-- Safely Constrained Background Ornament (Zero Horizontal Overflow Leak) -->
-        <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
-          <div class="absolute -top-24 -right-24 w-80 sm:w-96 h-80 sm:h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
+      <!-- Desktop Top Navbar (Crisp, Executive, Human-Designed) -->
+      <header class="hidden lg:flex items-center justify-between px-8 py-3.5 bg-white border-b border-slate-200/80 shrink-0 z-20">
+        <!-- Breadcrumb & Connection Status -->
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">GuruKu</span>
+          <span class="text-slate-300">/</span>
+          <span class="text-xs font-bold text-slate-900 capitalize">{{ currentTabTitle }}</span>
+          <span class="inline-flex items-center gap-1.5 ml-3 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            Sistem Aktif & Terhubung
+          </span>
         </div>
 
-        <!-- PREMIUM HERO BANNER (Hanya ditampilkan pada Manajemen & Laporan) -->
-        <div v-if="activeTab === 'manajemen' || activeTab === 'laporan'" class="bg-gradient-to-br from-slate-900 via-gray-900 to-indigo-950 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 mb-5 sm:mb-7 shadow-xl relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sm:gap-6 text-white z-10 border border-slate-800/80">
-          <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay pointer-events-none"></div>
-          <div class="relative z-10 min-w-0">
-            <div class="flex items-center gap-2 mb-1">
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/20 text-blue-300 border border-blue-400/30">Pusat Komando</span>
-              <span class="text-[11px] text-slate-400 font-medium hidden sm:inline">&bull; Multi-Tenant SaaS</span>
-            </div>
-            <h1 class="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-white leading-tight">Monitoring & Lisensi Tenant</h1>
-            <p class="text-slate-300 font-medium text-xs sm:text-sm mt-1 max-w-lg leading-relaxed hidden sm:block">Kelola penyewaan aplikasi sekolah, kelancaran pembayaran, dan verifikasi langganan secara terpusat.</p>
+        <!-- Quick Info, Actions, & Profile -->
+        <div class="flex items-center gap-4">
+          <div class="text-xs font-medium text-slate-500 flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <span>{{ currentDateFormatted }}</span>
           </div>
-          <div class="relative z-10 w-full md:w-auto grid grid-cols-2 gap-2.5 sm:gap-3.5 shrink-0">
-            <div class="bg-white/10 backdrop-blur-md border border-white/15 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
-              <p class="text-[10px] sm:text-xs text-slate-300 uppercase tracking-wider font-bold mb-0.5">Klien Aktif</p>
-              <p class="text-lg sm:text-2xl font-black text-white font-mono">{{ activeClientsCount }} <span class="text-xs font-semibold text-slate-300">Sekolah</span></p>
+
+          <div class="h-4 w-px bg-slate-200"></div>
+
+          <button 
+            @click="showInvoiceModal = true" 
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <span>+ Buat invoice</span>
+          </button>
+
+          <!-- Admin Profile Badge -->
+          <div class="flex items-center gap-2.5 pl-2 border-l border-slate-200">
+            <div class="w-8 h-8 rounded-full bg-[#0B132B] text-white font-bold text-xs flex items-center justify-center shadow-xs">
+              AD
             </div>
-            <div class="bg-indigo-600/30 backdrop-blur-md border border-indigo-400/20 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
-              <p class="text-[10px] sm:text-xs text-indigo-200 uppercase tracking-wider font-bold mb-0.5">Total Omzet</p>
-              <p class="text-sm sm:text-lg md:text-xl font-black text-white font-mono truncate" :title="formatRupiah(totalRevenue)">{{ formatRupiah(totalRevenue) }}</p>
+            <div class="text-left">
+              <p class="text-xs font-bold text-slate-800 leading-tight">Admin Master</p>
+              <p class="text-[10px] text-slate-400 font-medium">Owner</p>
             </div>
           </div>
         </div>
+      </header>
+
+      <!-- Scrollable Main Content -->
+      <main class="flex-1 overflow-y-auto overflow-x-hidden w-full max-w-full bg-[#F8FAFC] p-4 sm:p-6 lg:p-8 relative custom-scrollbar pb-24 lg:pb-10">
 
         <!-- DASHBOARD UTAMA (PERSIS TAMPILAN REFERENSI ARUS LAB) -->
         <div v-if="activeTab === 'dashboard'" class="animate-fade-in space-y-6">
+          
           <!-- Header Bar: Title, Indonesian Date, + Buat invoice, Antrean cetak (0) -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
             <div>
-              <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Dashboard</h1>
-              <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">{{ currentDateFormatted }}</p>
+              <h1 class="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tight leading-tight">Dashboard</h1>
+              <p class="text-xs sm:text-[13px] text-slate-400 font-medium mt-0.5">{{ currentDateFormatted }}</p>
             </div>
 
             <div class="flex items-center gap-2.5 flex-wrap">
               <button 
                 @click="showInvoiceModal = true" 
-                class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
+                class="inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 rounded-xl text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
               >
                 <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 <span>+ Buat invoice</span>
               </button>
 
               <button 
-                @click="activeTab = 'manajemen'" 
-                class="inline-flex items-center gap-2 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                @click="showPrintQueueModal = true" 
+                class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer"
               >
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                <span>Antrean cetak (0)</span>
+                <span>Antrean cetak ({{ printQueue.length }})</span>
               </button>
             </div>
           </div>
 
-          <!-- 4 Stat Cards Row -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- 4 Stat Cards Row Sesuai Referensi -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
             <!-- Card 1: PENJUALAN BULAN INI -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
-              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">PENJUALAN BULAN INI</p>
-              <div class="text-2xl font-black text-slate-900 font-mono tracking-tight">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs hover:border-slate-300 transition-all">
+              <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">PENJUALAN BULAN INI</p>
+              <div class="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight font-mono my-1 leading-none">
                 {{ formatRupiah(financialSummary.penjualanBulanIni) }}
               </div>
-              <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">
+              <p class="text-[11px] text-slate-400 font-normal truncate mt-1">
                 semua channel · {{ financialSummary.totalPesananWeb || 1 }} pesanan web
               </p>
             </div>
 
             <!-- Card 2: LABA KOTOR BULAN INI -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
-              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">LABA KOTOR BULAN INI</p>
-              <div class="text-2xl font-black text-slate-900 font-mono tracking-tight">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs hover:border-slate-300 transition-all">
+              <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">LABA KOTOR BULAN INI</p>
+              <div class="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight font-mono my-1 leading-none">
                 {{ formatRupiah(financialSummary.labaKotorBulanIni) }}
               </div>
-              <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">
+              <p class="text-[11px] text-slate-400 font-normal truncate mt-1">
                 setelah HPP {{ formatRupiah(financialSummary.hppBulanIni) }} & potongan Rp 0
               </p>
             </div>
 
             <!-- Card 3: SALDO KAS -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
-              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">SALDO KAS</p>
-              <div class="text-2xl font-black text-slate-900 font-mono tracking-tight">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs hover:border-slate-300 transition-all">
+              <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">SALDO KAS</p>
+              <div class="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight font-mono my-1 leading-none">
                 {{ formatRupiah(financialSummary.saldoKas) }}
               </div>
-              <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">
+              <p class="text-[11px] text-slate-400 font-normal truncate mt-1">
                 belanja bulan ini {{ formatRupiah(financialSummary.belanjaBulanIni) }}
               </p>
             </div>
 
             <!-- Card 4: ANTREAN MESIN -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
-              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">ANTREAN MESIN</p>
-              <div class="text-2xl font-black text-slate-900 font-mono tracking-tight">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs hover:border-slate-300 transition-all">
+              <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">ANTREAN MESIN</p>
+              <div class="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight font-mono my-1 leading-none">
                 {{ financialSummary.antreanMesinJam || '0 jam' }}
               </div>
-              <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">
-                0 pesanan menunggu/dicetak
+              <p class="text-[11px] text-slate-400 font-normal truncate mt-1">
+                {{ printQueue.length }} pesanan menunggu/dicetak
               </p>
             </div>
           </div>
 
-          <!-- Middle Row: Chart & Status Pesanan -->
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            <!-- Left: Penjualan vs belanja · 12 bulan (lg:col-span-2) -->
-            <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
-              <div>
-                <h3 class="text-sm font-bold text-slate-900 tracking-tight">Penjualan vs belanja · 12 bulan</h3>
-                <div class="flex items-center gap-4 mt-2">
-                  <div class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-xs bg-blue-600"></span>
-                    <span class="text-xs text-slate-500 font-medium">Penjualan</span>
+          <!-- Middle Row: Chart & Status Pesanan Sesuai Referensi -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            
+            <!-- Left 8 Cols: Penjualan vs belanja · 12 bulan -->
+            <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+              <!-- Title & Legend -->
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <div>
+                  <h3 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight">Penjualan vs belanja · 12 bulan</h3>
+                  <div class="flex items-center gap-4 mt-1.5">
+                    <div class="flex items-center gap-2">
+                      <span class="w-2.5 h-2.5 rounded-xs bg-blue-600"></span>
+                      <span class="text-xs text-slate-600 font-medium">Penjualan</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="w-2.5 h-2.5 rounded-xs bg-amber-500"></span>
+                      <span class="text-xs text-slate-600 font-medium">Belanja</span>
+                    </div>
                   </div>
-                  <div class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-xs bg-amber-500"></span>
-                    <span class="text-xs text-slate-500 font-medium">Belanja</span>
-                  </div>
+                </div>
+
+                <div class="flex items-center gap-1 bg-slate-50 border border-slate-200/80 p-0.5 rounded-lg text-[11px] font-semibold text-slate-600">
+                  <button class="px-2.5 py-1 rounded-md bg-white text-blue-700 shadow-2xs font-bold">12 Bulan</button>
+                  <button @click="activeTab = 'keuangan'" class="px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 transition-colors cursor-pointer">Buku Kas</button>
                 </div>
               </div>
 
-              <!-- Graphic area with Y-axis 300rb scale and 12 month columns -->
-              <div class="mt-6 pt-4 relative">
+              <!-- Chart Graphic Area (Skala 300rb, 225rb, 150rb, 75rb, 0) -->
+              <div class="relative w-full pt-4 pb-2">
                 <!-- Y-Axis labels & Grid lines -->
-                <div class="space-y-7 relative">
+                <div class="space-y-6 sm:space-y-7 relative select-none">
                   <div class="flex items-center gap-3">
-                    <span class="text-[11px] text-slate-400 font-mono w-10 text-right shrink-0">300rb</span>
+                    <span class="text-[11px] text-slate-400 font-mono w-11 text-right shrink-0">300rb</span>
                     <div class="flex-1 border-b border-slate-100"></div>
                   </div>
                   <div class="flex items-center gap-3">
-                    <span class="text-[11px] text-slate-400 font-mono w-10 text-right shrink-0">225rb</span>
+                    <span class="text-[11px] text-slate-400 font-mono w-11 text-right shrink-0">225rb</span>
                     <div class="flex-1 border-b border-slate-100"></div>
                   </div>
                   <div class="flex items-center gap-3">
-                    <span class="text-[11px] text-slate-400 font-mono w-10 text-right shrink-0">150rb</span>
+                    <span class="text-[11px] text-slate-400 font-mono w-11 text-right shrink-0">150rb</span>
                     <div class="flex-1 border-b border-slate-100"></div>
                   </div>
                   <div class="flex items-center gap-3">
-                    <span class="text-[11px] text-slate-400 font-mono w-10 text-right shrink-0">75rb</span>
+                    <span class="text-[11px] text-slate-400 font-mono w-11 text-right shrink-0">75rb</span>
                     <div class="flex-1 border-b border-slate-100"></div>
                   </div>
                   <div class="flex items-center gap-3">
-                    <span class="text-[11px] text-slate-400 font-mono w-10 text-right shrink-0">0</span>
+                    <span class="text-[11px] text-slate-400 font-mono w-11 text-right shrink-0">0</span>
                     <div class="flex-1 border-b border-slate-100"></div>
                   </div>
                 </div>
 
-                <!-- Overlay for vertical bars -->
-                <div class="absolute inset-0 left-13 right-2 flex items-end justify-between pb-6 pointer-events-none">
+                <!-- Overlay Bar Elements Aligned with Month Columns -->
+                <div class="absolute inset-0 left-14 right-2 flex items-end justify-between pb-6 pointer-events-none">
                   <div 
-                    v-for="item in chartMonths" 
+                    v-for="(item, idx) in chartMonths" 
                     :key="item.month" 
-                    class="flex-1 flex justify-center items-end h-[160px] pointer-events-auto group relative cursor-pointer"
+                    class="flex-1 flex justify-center items-end h-[170px] pointer-events-auto group relative cursor-pointer"
                   >
-                    <!-- Tooltip on hover -->
-                    <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full mb-2 bg-slate-900 text-white text-[10px] font-medium py-1 px-2.5 rounded-lg pointer-events-none whitespace-nowrap z-20 shadow-md">
-                      <div>{{ item.month }}: {{ formatRupiah(item.penjualan) }}</div>
+                    <!-- Interactive Tooltip -->
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full mb-2 bg-slate-900 text-white text-[11px] font-medium py-1.5 px-3 rounded-xl pointer-events-none whitespace-nowrap z-30 shadow-xl border border-slate-700">
+                      <div class="font-bold text-white mb-0.5">{{ item.month }} 2026</div>
+                      <div class="text-blue-400">Penjualan: {{ formatRupiah(item.penjualan) }}</div>
                       <div class="text-amber-400">Belanja: {{ formatRupiah(item.belanja) }}</div>
+                      <div v-if="item.penjualan > 0" class="text-emerald-400 text-[10px] mt-0.5 border-t border-slate-700 pt-0.5">
+                        Laba: {{ formatRupiah(item.penjualan - item.belanja) }}
+                      </div>
                     </div>
 
-                    <!-- Bar for month (Nov has ~85% height for 254.205) -->
+                    <!-- Blue Bar (Nov = ~85% height) -->
                     <div 
                       v-if="item.penjualan > 0"
-                      class="w-4 sm:w-5 md:w-6 bg-blue-600 rounded-t-sm transition-all duration-500 hover:brightness-110"
-                      :style="{ height: `${Math.min(100, (item.penjualan / 300000) * 100)}%` }"
+                      class="w-4 sm:w-5 md:w-6 bg-blue-600 rounded-t-sm transition-all duration-500 hover:brightness-110 shadow-xs"
+                      :style="{ height: `${Math.min(100, Math.max(10, (item.penjualan / 300000) * 100))}%` }"
                     ></div>
                   </div>
                 </div>
 
-                <!-- X-Axis Labels (12 Months) -->
-                <div class="flex justify-between pl-13 pr-2 mt-2 text-[11px] text-slate-400 font-medium">
+                <!-- X-Axis Labels (12 Bulan) -->
+                <div class="flex justify-between pl-14 pr-2 mt-2 text-[11px] text-slate-400 font-medium">
                   <span v-for="item in chartMonths" :key="'label-'+item.month" class="flex-1 text-center truncate">
                     {{ item.month }}
                   </span>
@@ -328,110 +358,169 @@
               </div>
             </div>
 
-            <!-- Right: Status pesanan (lg:col-span-1) -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
+            <!-- Right 4 Cols: Status pesanan Sesuai Referensi -->
+            <div class="lg:col-span-4 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
               <div>
-                <h3 class="text-sm font-bold text-slate-900 tracking-tight mb-3.5">Status pesanan</h3>
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight">Status pesanan</h3>
+                  <span class="text-[11px] text-slate-400 font-medium">Total: 1</span>
+                </div>
+
                 <div class="space-y-2.5">
                   <!-- 1. Menunggu pembayaran -->
-                  <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-50 text-amber-800 text-xs font-medium border border-amber-200/60">
-                      <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                  <div class="flex items-center justify-between py-1 border-b border-slate-50 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#FEF6E9] text-[#B45309] border border-[#FDE68A]/60 text-xs font-semibold">
                       Menunggu pembayaran
                     </span>
                     <span class="text-xs font-bold text-slate-700 font-mono">0</span>
                   </div>
 
                   <!-- 2. Dibayar · antre produksi -->
-                  <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium border border-blue-200/60">
-                      <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                  <div class="flex items-center justify-between py-1 border-b border-slate-50 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE]/60 text-xs font-semibold">
                       Dibayar · antre produksi
                     </span>
                     <span class="text-xs font-bold text-slate-700 font-mono">0</span>
                   </div>
 
-                  <!-- 3. Sedang dicetak (Dark Navy pill from reference) -->
-                  <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0B132B] text-white text-xs font-medium">
-                      <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                  <!-- 3. Sedang dicetak (Dark Navy Pill dari Gambar Referensi) -->
+                  <div class="flex items-center justify-between py-1 border-b border-slate-50 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#0B132B] text-white text-xs font-semibold shadow-2xs">
                       Sedang dicetak
                     </span>
                     <span class="text-xs font-bold text-slate-700 font-mono">0</span>
                   </div>
 
                   <!-- 4. Quality control -->
-                  <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 text-xs font-medium border border-indigo-200/60">
-                      <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                  <div class="flex items-center justify-between py-1 border-b border-slate-50 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#EEF2FF] text-[#4F46E5] border border-[#C7D2FE]/60 text-xs font-semibold">
                       Quality control
                     </span>
                     <span class="text-xs font-bold text-slate-700 font-mono">0</span>
                   </div>
 
                   <!-- 5. Dikirim -->
-                  <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-sky-50 text-sky-700 text-xs font-medium border border-sky-200/60">
-                      <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
+                  <div class="flex items-center justify-between py-1 border-b border-slate-50 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#F0F9FF] text-[#0284C7] border border-[#BAE6FD]/60 text-xs font-semibold">
                       Dikirim
                     </span>
                     <span class="text-xs font-bold text-slate-700 font-mono">0</span>
                   </div>
 
-                  <!-- 6. Selesai (Green pill with count 1) -->
-                  <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200">
-                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  <!-- 6. Selesai (Emerald Pill dengan Angka 1 dari Gambar Referensi) -->
+                  <div class="flex items-center justify-between py-1 border-b border-slate-50 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]/60 text-xs font-semibold">
                       Selesai
                     </span>
                     <span class="text-xs font-black text-slate-900 font-mono">1</span>
                   </div>
 
                   <!-- 7. Dibatalkan -->
-                  <div class="flex items-center justify-between py-1">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-rose-50 text-rose-700 text-xs font-medium border border-rose-200/60">
-                      <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                  <div class="flex items-center justify-between py-1 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#FFF1F2] text-[#E11D48] border border-[#FECDD3]/60 text-xs font-semibold">
                       Dibatalkan
                     </span>
                     <span class="text-xs font-bold text-slate-700 font-mono">0</span>
                   </div>
                 </div>
               </div>
+
+              <div class="pt-3 border-t border-slate-100 text-center">
+                <button @click="activeTab = 'manajemen'" class="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors inline-flex items-center gap-1 cursor-pointer">
+                  <span>Kelola semua pesanan klien</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+              </div>
             </div>
+
           </div>
 
-          <!-- Bottom Row: Antrean produksi & Pesanan terbaru -->
+          <!-- Bottom Row: Antrean produksi & Pesanan terbaru Sesuai Referensi -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <!-- Left: Antrean produksi -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
-              <h3 class="text-sm font-bold text-slate-900 tracking-tight mb-3">Antrean produksi</h3>
-              <div class="py-6 text-center sm:text-left">
-                <p class="text-xs text-slate-400 font-medium">Tidak ada pesanan di antrean</p>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight">Antrean produksi</h3>
+                  <span class="text-xs font-semibold text-slate-400">0 Antrean</span>
+                </div>
+                
+                <div class="py-10 text-center flex flex-col items-center justify-center">
+                  <div class="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 text-slate-400 flex items-center justify-center mb-3">
+                    <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                  </div>
+                  <p class="text-xs text-slate-400 font-normal">Tidak ada pesanan di antrean</p>
+                  <p class="text-[11px] text-slate-400 mt-1 max-w-xs">Semua cetakan modul & lisensi telah selesai diproses.</p>
+                </div>
+              </div>
+
+              <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                <span class="text-[11px] text-slate-400">Kapasitas mesin: 100% siap</span>
+                <button @click="showPrintQueueModal = true" class="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors cursor-pointer">
+                  + Tambah Antrean Baru
+                </button>
               </div>
             </div>
 
             <!-- Right: Pesanan terbaru -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
-              <h3 class="text-sm font-bold text-slate-900 tracking-tight mb-3">Pesanan terbaru</h3>
-              <div class="flex items-center justify-between py-2 border-b border-slate-50">
-                <div>
-                  <p class="text-xs font-bold text-slate-800">Klien / Rekan Istimewa</p>
-                  <p class="text-[11px] text-slate-400 font-medium mt-0.5">2 Nov, 12.00</p>
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight">Pesanan terbaru</h3>
+                  <button @click="activeTab = 'manajemen'" class="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors cursor-pointer">
+                    Lihat semua →
+                  </button>
                 </div>
-                <div class="text-right">
-                  <p class="text-xs font-bold text-slate-900 font-mono">Rp 254.205</p>
-                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-semibold border border-emerald-200 mt-0.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    Selesai
-                  </span>
+
+                <!-- Latest order row matching reference image -->
+                <div class="flex items-center justify-between py-3 border-b border-slate-50 hover:bg-slate-50/50 px-2 rounded-xl transition-colors">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs">
+                      KI
+                    </div>
+                    <div>
+                      <p class="text-xs sm:text-sm font-bold text-slate-800">Klien / Rekan Istimewa</p>
+                      <p class="text-[11px] text-slate-400 font-medium mt-0.5">2 Nov, 12.00</p>
+                    </div>
+                  </div>
+                  
+                  <div class="text-right">
+                    <p class="text-xs sm:text-sm font-black text-slate-900 font-mono">Rp 254.205</p>
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]/60 text-[10px] font-bold mt-0.5">
+                      <span class="w-1 h-1 rounded-full bg-emerald-500"></span>
+                      Selesai
+                    </span>
+                  </div>
                 </div>
+              </div>
+
+              <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+                <span>Channel: Web Portal</span>
+                <span>Metode: Otomatis</span>
               </div>
             </div>
           </div>
+
         </div>
 
-        <!-- MANAJEMEN KLIEN TAB -->
-        <div v-else-if="activeTab === 'manajemen'" class="animate-fade-in">
+        <!-- MANAJEMEN KLIEN (PESANAN) TAB -->
+        <div v-else-if="activeTab === 'manajemen'" class="animate-fade-in space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/80">
+            <div>
+              <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Pesanan Klien Sekolah</h1>
+              <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Kelola penyewaan aplikasi sekolah, kelancaran pembayaran, dan verifikasi langganan secara terpusat.</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="bg-white border border-slate-200 px-4 py-2 rounded-xl shadow-2xs text-right">
+                <p class="text-[10px] text-slate-400 uppercase font-bold">Klien Aktif</p>
+                <p class="text-base font-black text-slate-900 font-mono">{{ activeClientsCount }} Sekolah</p>
+              </div>
+              <div class="bg-white border border-slate-200 px-4 py-2 rounded-xl shadow-2xs text-right">
+                <p class="text-[10px] text-slate-400 uppercase font-bold">Total Omzet</p>
+                <p class="text-base font-black text-blue-600 font-mono">{{ formatRupiah(totalRevenue) }}</p>
+              </div>
+            </div>
+          </div>
           <div class="bg-white rounded-2xl sm:rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200/80 overflow-hidden">
             <!-- Header Card Section -->
             <div class="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3.5 bg-white">
@@ -1448,6 +1537,67 @@
       </div>
     </div>
 
+    <!-- Modal Antrean Cetak & Produksi -->
+    <div v-if="showPrintQueueModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 animate-fade-in" @click.self="showPrintQueueModal = false">
+      <div class="bg-white rounded-2xl sm:rounded-3xl w-full max-w-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+        <div class="flex items-center justify-between p-5 border-b border-slate-100 bg-slate-50/50">
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base">Antrean Produksi & Mesin Cetak</h3>
+            <p class="text-xs text-slate-500 font-medium">Monitoring status mesin cetak dan antrean produksi berkas</p>
+          </div>
+          <button @click="showPrintQueueModal = false" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <div class="p-5 space-y-4 overflow-y-auto custom-scrollbar flex-1">
+          <!-- Status Mesin (4 Unit) -->
+          <div>
+            <p class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Status Unit Mesin (4 Unit)</p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div v-for="unit in ['Unit 1', 'Unit 2', 'Unit 3', 'Unit 4']" :key="unit" class="bg-slate-50 border border-slate-200/80 p-3 rounded-xl text-center">
+                <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 mb-1"></span>
+                <p class="text-xs font-bold text-slate-800">{{ unit }}</p>
+                <p class="text-[10px] text-emerald-600 font-semibold">Siap / Standby</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Daftar Antrean -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Daftar Antrean</p>
+              <span class="text-xs font-semibold text-slate-400">{{ printQueue.length }} Pesanan</span>
+            </div>
+
+            <div v-if="printQueue.length === 0" class="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-slate-400">
+              <svg class="w-8 h-8 mx-auto mb-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+              <p class="text-xs font-semibold text-slate-600">Tidak ada pesanan di antrean</p>
+              <p class="text-[11px] text-slate-400 mt-0.5">Semua proses cetak telah selesai.</p>
+            </div>
+
+            <div v-else class="space-y-2">
+              <div v-for="(item, idx) in printQueue" :key="idx" class="p-3 bg-white border border-slate-200 rounded-xl flex items-center justify-between">
+                <div>
+                  <p class="text-xs font-bold text-slate-800">{{ item.name }}</p>
+                  <p class="text-[11px] text-slate-400">{{ item.client }} • Estimasi {{ item.hours }} jam</p>
+                </div>
+                <span class="text-[10px] font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full border border-blue-200">
+                  Antre Mesin
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 border-t border-slate-100 flex items-center justify-end bg-slate-50/50">
+          <button @click="showPrintQueueModal = false" class="px-5 py-2 text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer">
+            Tutup
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -1526,8 +1676,10 @@ const loadFinancialSummary = () => {
   }
 }
 
-// Modal Invoice
+// Modal Invoice & Antrean Cetak
 const showInvoiceModal = ref(false)
+const showPrintQueueModal = ref(false)
+const printQueue = ref([])
 const invoiceForm = ref({
   clientName: '',
   amount: 254205,
