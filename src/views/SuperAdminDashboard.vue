@@ -197,11 +197,11 @@
               </button>
 
               <button 
-                @click="showPrintQueueModal = true" 
+                @click="showRentalQueueModal = true" 
                 class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer"
               >
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                <span>Antrean cetak ({{ printQueue.length }})</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                <span>Antrean sewa ({{ rentalQueue.length }})</span>
               </button>
             </div>
           </div>
@@ -241,14 +241,14 @@
               </p>
             </div>
 
-            <!-- Card 4: ANTREAN MESIN -->
+            <!-- Card 4: ANTREAN SEWA APLIKASI -->
             <div class="bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs hover:border-slate-400 transition-all">
-              <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">ANTREAN MESIN</p>
+              <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">ANTREAN SEWA APLIKASI</p>
               <div class="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight font-mono my-1 leading-none">
-                {{ financialSummary.antreanMesinJam || '0 jam' }}
+                {{ rentalQueue.length }} Sekolah
               </div>
               <p class="text-[11px] text-slate-400 font-normal truncate mt-1">
-                {{ printQueue.length }} pesanan menunggu/dicetak
+                {{ rentalQueue.length === 0 ? 'Semua pesanan sewa aktif & berjalan' : rentalQueue.length + ' pengajuan menunggu aktivasi' }}
               </p>
             </div>
           </div>
@@ -256,85 +256,98 @@
           <!-- Middle Row: Chart & Status Pesanan Sesuai Referensi -->
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
             
-            <!-- Left 8 Cols: Penjualan vs belanja · 12 bulan -->
+            <!-- Left 8 Cols: Jumlah Pengguna Aplikasi GuruKu · 12 bulan -->
             <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
               <!-- Title & Legend -->
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                 <div>
-                  <h3 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight">Penjualan vs belanja · 12 bulan</h3>
-                  <div class="flex items-center gap-4 mt-1.5">
+                  <h3 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight">Jumlah Pengguna Aplikasi GuruKu · 12 bulan</h3>
+                  <div class="flex items-center gap-4 mt-1.5 flex-wrap">
                     <div class="flex items-center gap-2">
-                      <span class="w-2.5 h-2.5 rounded-xs bg-blue-600"></span>
-                      <span class="text-xs text-slate-600 font-medium">Penjualan</span>
+                      <span class="w-2.5 h-2.5 rounded-xs bg-emerald-500"></span>
+                      <span class="text-xs text-slate-600 font-medium">Pengguna Aktif</span>
                     </div>
                     <div class="flex items-center gap-2">
                       <span class="w-2.5 h-2.5 rounded-xs bg-amber-500"></span>
-                      <span class="text-xs text-slate-600 font-medium">Belanja</span>
+                      <span class="text-xs text-slate-600 font-medium">Dalam Penangguhan (Habis Limit)</span>
                     </div>
                   </div>
                 </div>
 
                 <div class="flex items-center gap-1 bg-slate-50 border border-slate-300 p-0.5 rounded-lg text-[11px] font-semibold text-slate-600">
-                  <button class="px-2.5 py-1 rounded-md bg-white text-blue-700 shadow-2xs font-bold">12 Bulan</button>
-                  <button @click="activeTab = 'keuangan'" class="px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 transition-colors cursor-pointer">Buku Kas</button>
+                  <button class="px-2.5 py-1 rounded-md bg-white text-emerald-700 shadow-2xs font-bold">12 Bulan</button>
+                  <button @click="activeTab = 'manajemen'" class="px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 transition-colors cursor-pointer">Data Klien</button>
                 </div>
               </div>
 
-              <!-- Chart Graphic Area (Skala 300rb, 225rb, 150rb, 75rb, 0) -->
+              <!-- Chart Graphic Area (Skala 350 user, 260 user, 175 user, 90 user, 0) -->
               <div class="relative w-full pt-4 pb-2">
                 <!-- Y-Axis labels & Grid lines -->
                 <div class="space-y-6 sm:space-y-7 relative select-none">
                   <div class="flex items-center gap-3">
-                    <span class="text-[11px] text-slate-400 font-mono w-11 text-right shrink-0">300rb</span>
+                    <span class="text-[11px] text-slate-400 font-mono w-14 text-right shrink-0">350 user</span>
                     <div class="flex-1 border-b border-slate-200"></div>
                   </div>
                   <div class="flex items-center gap-3">
-                    <span class="text-[11px] text-slate-400 font-mono w-11 text-right shrink-0">225rb</span>
+                    <span class="text-[11px] text-slate-400 font-mono w-14 text-right shrink-0">260 user</span>
                     <div class="flex-1 border-b border-slate-200"></div>
                   </div>
                   <div class="flex items-center gap-3">
-                    <span class="text-[11px] text-slate-400 font-mono w-11 text-right shrink-0">150rb</span>
+                    <span class="text-[11px] text-slate-400 font-mono w-14 text-right shrink-0">175 user</span>
                     <div class="flex-1 border-b border-slate-200"></div>
                   </div>
                   <div class="flex items-center gap-3">
-                    <span class="text-[11px] text-slate-400 font-mono w-11 text-right shrink-0">75rb</span>
+                    <span class="text-[11px] text-slate-400 font-mono w-14 text-right shrink-0">90 user</span>
                     <div class="flex-1 border-b border-slate-200"></div>
                   </div>
                   <div class="flex items-center gap-3">
-                    <span class="text-[11px] text-slate-400 font-mono w-11 text-right shrink-0">0</span>
+                    <span class="text-[11px] text-slate-400 font-mono w-14 text-right shrink-0">0</span>
                     <div class="flex-1 border-b border-slate-200"></div>
                   </div>
                 </div>
 
                 <!-- Overlay Bar Elements Aligned with Month Columns -->
-                <div class="absolute inset-0 left-14 right-2 flex items-end justify-between pb-6 pointer-events-none">
+                <div class="absolute inset-0 left-16 right-2 flex items-end justify-between pb-6 pointer-events-none">
                   <div 
-                    v-for="(item, idx) in chartMonths" 
+                    v-for="(item, idx) in userStatsMonths" 
                     :key="item.month" 
-                    class="flex-1 flex justify-center items-end h-[170px] pointer-events-auto group relative cursor-pointer"
+                    class="flex-1 flex justify-center items-end gap-1 h-[170px] pointer-events-auto group relative cursor-pointer px-0.5"
                   >
                     <!-- Interactive Tooltip -->
-                    <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full mb-2 bg-slate-900 text-white text-[11px] font-medium py-1.5 px-3 rounded-xl pointer-events-none whitespace-nowrap z-30 shadow-xl border border-slate-700">
-                      <div class="font-bold text-white mb-0.5">{{ item.month }} 2026</div>
-                      <div class="text-blue-400">Penjualan: {{ formatRupiah(item.penjualan) }}</div>
-                      <div class="text-amber-400">Belanja: {{ formatRupiah(item.belanja) }}</div>
-                      <div v-if="item.penjualan > 0" class="text-emerald-400 text-[10px] mt-0.5 border-t border-slate-700 pt-0.5">
-                        Laba: {{ formatRupiah(item.penjualan - item.belanja) }}
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full mb-2 bg-slate-900 text-white text-[11px] font-medium py-2 px-3 rounded-xl pointer-events-none whitespace-nowrap z-30 shadow-xl border border-slate-700">
+                      <div class="font-bold text-white mb-1">{{ item.month }} 2026</div>
+                      <div class="text-emerald-400 font-semibold flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        Pengguna Aktif: {{ item.penggunaAktif }} user
+                      </div>
+                      <div class="text-amber-400 font-semibold flex items-center gap-1.5 mt-0.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                        Dalam Penangguhan: {{ item.penangguhan }} user
+                      </div>
+                      <div class="text-slate-400 text-[10px] mt-1 border-t border-slate-700 pt-1">
+                        Total Terdaftar: {{ item.penggunaAktif + item.penangguhan }} user
                       </div>
                     </div>
 
-                    <!-- Blue Bar (Nov = ~85% height) -->
+                    <!-- Green Bar (Pengguna Aktif) -->
                     <div 
-                      v-if="item.penjualan > 0"
-                      class="w-4 sm:w-5 md:w-6 bg-blue-600 rounded-t-sm transition-all duration-500 hover:brightness-110 shadow-xs"
-                      :style="{ height: `${Math.min(100, Math.max(10, (item.penjualan / 300000) * 100))}%` }"
+                      class="w-2 sm:w-2.5 md:w-3.5 bg-emerald-500 rounded-t-sm transition-all duration-500 hover:brightness-110 shadow-xs"
+                      :style="{ height: `${Math.min(100, Math.max(6, (item.penggunaAktif / 350) * 100))}%` }"
+                      title="Pengguna Aktif"
+                    ></div>
+
+                    <!-- Orange Bar (Dalam Penangguhan / Habis Limit) -->
+                    <div 
+                      class="w-2 sm:w-2.5 md:w-3.5 bg-amber-500 rounded-t-sm transition-all duration-500 hover:brightness-110 shadow-xs"
+                      :style="{ height: `${Math.min(100, Math.max(item.penangguhan > 0 ? 5 : 0, (item.penangguhan / 350) * 100))}%` }"
+                      title="Dalam Penangguhan (Habis Limit)"
                     ></div>
                   </div>
                 </div>
 
                 <!-- X-Axis Labels (12 Bulan) -->
-                <div class="flex justify-between pl-14 pr-2 mt-2 text-[11px] text-slate-400 font-medium">
-                  <span v-for="item in chartMonths" :key="'label-'+item.month" class="flex-1 text-center truncate">
+                <div class="flex justify-between pl-16 pr-2 mt-2 text-[11px] text-slate-400 font-medium">
+                  <span v-for="item in userStatsMonths" :key="'label-'+item.month" class="flex-1 text-center truncate">
                     {{ item.month }}
                   </span>
                 </div>
@@ -346,7 +359,7 @@
               <div>
                 <div class="flex items-center justify-between mb-4">
                   <h3 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight">Status pesanan</h3>
-                  <span class="text-[11px] text-slate-400 font-medium">Total: 1</span>
+                  <span class="text-[11px] text-slate-400 font-medium">Total: {{ orderStatusCounts.total }}</span>
                 </div>
 
                 <div class="space-y-2.5">
@@ -355,55 +368,39 @@
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#FEF6E9] text-[#B45309] border border-[#FDE68A] text-xs font-semibold">
                       Menunggu pembayaran
                     </span>
-                    <span class="text-xs font-bold text-slate-700 font-mono">0</span>
+                    <span class="text-xs font-bold text-slate-700 font-mono">{{ orderStatusCounts.menungguPembayaran }}</span>
                   </div>
 
-                  <!-- 2. Dibayar · antre produksi -->
+                  <!-- 2. Berhasil dibayar -->
                   <div class="flex items-center justify-between py-1.5 border-b border-slate-200 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE] text-xs font-semibold">
-                      Dibayar · antre produksi
+                      Berhasil dibayar
                     </span>
-                    <span class="text-xs font-bold text-slate-700 font-mono">0</span>
+                    <span class="text-xs font-bold text-slate-700 font-mono">{{ orderStatusCounts.berhasilDibayar }}</span>
                   </div>
 
-                  <!-- 3. Sedang dicetak (Dark Navy Pill dari Gambar Referensi) -->
+                  <!-- 3. Dalam penangguhan (Habis limit) -->
                   <div class="flex items-center justify-between py-1.5 border-b border-slate-200 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#0B132B] text-white text-xs font-semibold shadow-2xs">
-                      Sedang dicetak
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A] text-xs font-semibold">
+                      Dalam penangguhan (Habis limit)
                     </span>
-                    <span class="text-xs font-bold text-slate-700 font-mono">0</span>
+                    <span class="text-xs font-bold text-slate-700 font-mono">{{ orderStatusCounts.penangguhan }}</span>
                   </div>
 
-                  <!-- 4. Quality control -->
-                  <div class="flex items-center justify-between py-1.5 border-b border-slate-200 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#EEF2FF] text-[#4F46E5] border border-[#C7D2FE] text-xs font-semibold">
-                      Quality control
-                    </span>
-                    <span class="text-xs font-bold text-slate-700 font-mono">0</span>
-                  </div>
-
-                  <!-- 5. Dikirim -->
-                  <div class="flex items-center justify-between py-1.5 border-b border-slate-200 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#F0F9FF] text-[#0284C7] border border-[#BAE6FD] text-xs font-semibold">
-                      Dikirim
-                    </span>
-                    <span class="text-xs font-bold text-slate-700 font-mono">0</span>
-                  </div>
-
-                  <!-- 6. Selesai (Emerald Pill dengan Angka 1 dari Gambar Referensi) -->
+                  <!-- 4. Selesai -->
                   <div class="flex items-center justify-between py-1.5 border-b border-slate-200 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] text-xs font-semibold">
                       Selesai
                     </span>
-                    <span class="text-xs font-black text-slate-900 font-mono">1</span>
+                    <span class="text-xs font-black text-slate-900 font-mono">{{ orderStatusCounts.selesai }}</span>
                   </div>
 
-                  <!-- 7. Dibatalkan -->
+                  <!-- 5. Dibatalkan -->
                   <div class="flex items-center justify-between py-1.5 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#FFF1F2] text-[#E11D48] border border-[#FECDD3] text-xs font-semibold">
                       Dibatalkan
                     </span>
-                    <span class="text-xs font-bold text-slate-700 font-mono">0</span>
+                    <span class="text-xs font-bold text-slate-700 font-mono">{{ orderStatusCounts.dibatalkan }}</span>
                   </div>
                 </div>
               </div>
@@ -418,68 +415,120 @@
 
           </div>
 
-          <!-- Bottom Row: Antrean produksi & Pesanan terbaru Sesuai Referensi -->
+          <!-- Bottom Row: Antrean sewa aplikasi & Pesanan terbaru Sesuai Referensi -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            <!-- Left: Antrean produksi -->
+            <!-- Left: Antrean sewa aplikasi -->
             <div class="bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
               <div>
                 <div class="flex items-center justify-between mb-4">
-                  <h3 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight">Antrean produksi</h3>
-                  <span class="text-xs font-semibold text-slate-400">0 Antrean</span>
+                  <div>
+                    <h3 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight">Antrean sewa aplikasi</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Permohonan sewa & aktivasi lisensi sekolah baru</p>
+                  </div>
+                  <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full" :class="rentalQueue.length > 0 ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-slate-100 text-slate-500'">
+                    {{ rentalQueue.length }} Antrean
+                  </span>
                 </div>
                 
-                <div class="py-10 text-center flex flex-col items-center justify-center">
-                  <div class="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-200 text-slate-400 flex items-center justify-center mb-3">
-                    <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                <!-- Empty State -->
+                <div v-if="rentalQueue.length === 0" class="py-8 text-center flex flex-col items-center justify-center">
+                  <div class="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center mb-3">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                   </div>
-                  <p class="text-xs text-slate-500 font-medium">Tidak ada pesanan di antrean</p>
-                  <p class="text-[11px] text-slate-400 mt-1 max-w-xs">Semua cetakan modul & lisensi telah selesai diproses.</p>
+                  <p class="text-xs text-slate-700 font-bold">Tidak ada pesanan di antrean</p>
+                  <p class="text-[11px] text-slate-400 mt-1 max-w-xs leading-relaxed">Semua permohonan sewa aplikasi dan aktivasi lisensi sekolah telah selesai diproses.</p>
+                </div>
+
+                <!-- Antrean List if any -->
+                <div v-else class="space-y-2.5 py-2">
+                  <div 
+                    v-for="item in rentalQueue" 
+                    :key="item.id" 
+                    class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between hover:bg-slate-100/70 transition-colors"
+                  >
+                    <div class="min-w-0 pr-2">
+                      <p class="text-xs font-bold text-slate-800 truncate">{{ item.schoolName }}</p>
+                      <p class="text-[10px] text-slate-400 mt-0.5 truncate">{{ item.packageName }} &bull; {{ item.requestedAt }}</p>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                      <span class="text-xs font-mono font-bold text-slate-700">{{ formatRupiah(item.amount) }}</span>
+                      <button 
+                        @click="activateRentalQueueItem(item)" 
+                        class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold shadow-xs cursor-pointer transition-colors"
+                        title="Aktivasi lisensi sekolah sekarang"
+                      >
+                        Aktivasi
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               <div class="pt-3 border-t border-slate-200 flex items-center justify-between">
-                <span class="text-[11px] text-slate-400">Kapasitas mesin: 100% siap</span>
-                <button @click="showPrintQueueModal = true" class="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors cursor-pointer">
-                  + Tambah Antrean Baru
+                <span class="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  Server aktivasi: 100% siap
+                </span>
+                <button @click="showRentalQueueModal = true" class="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors cursor-pointer inline-flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                  <span>Kelola Antrean Sewa</span>
                 </button>
               </div>
             </div>
 
-            <!-- Right: Pesanan terbaru -->
+            <!-- Right: Pesanan terbaru (Structured List) -->
             <div class="bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
               <div>
-                <div class="flex items-center justify-between mb-4">
-                  <h3 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight">Pesanan terbaru</h3>
-                  <button @click="activeTab = 'manajemen'" class="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors cursor-pointer">
-                    Lihat semua →
+                <div class="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-200">
+                  <div>
+                    <h3 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight">Pesanan terbaru</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Daftar transaksi lisensi dan penyewaan SaaS terkini</p>
+                  </div>
+                  <button @click="activeTab = 'manajemen'" class="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors cursor-pointer inline-flex items-center gap-1">
+                    <span>Lihat semua</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                   </button>
                 </div>
 
-                <!-- Latest order row matching reference image -->
-                <div class="flex items-center justify-between py-3 border-b border-slate-200 hover:bg-slate-50/50 px-2 rounded-xl transition-colors">
-                  <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs border border-blue-200">
-                      KI
+                <!-- Structured List of Recent Orders -->
+                <div class="divide-y divide-slate-100">
+                  <div 
+                    v-for="order in recentOrders.slice(0, 4)" 
+                    :key="order.id" 
+                    class="py-2.5 px-1.5 flex items-center justify-between hover:bg-slate-50/70 rounded-xl transition-colors group"
+                  >
+                    <div class="flex items-center gap-3 min-w-0 pr-3">
+                      <!-- Initials Avatar -->
+                      <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-700 font-bold text-xs flex items-center justify-center border border-blue-200 shrink-0">
+                        {{ getInitials(order.clientName) }}
+                      </div>
+                      <div class="min-w-0">
+                        <p class="text-xs sm:text-sm font-bold text-slate-800 truncate group-hover:text-blue-700 transition-colors">
+                          {{ order.clientName }}
+                        </p>
+                        <p class="text-[11px] text-slate-400 font-medium truncate mt-0.5">
+                          {{ order.packageName || 'Lisensi SaaS GuruKu' }} &bull; {{ order.date }}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p class="text-xs sm:text-sm font-bold text-slate-800">Klien / Rekan Istimewa</p>
-                      <p class="text-[11px] text-slate-400 font-medium mt-0.5">2 Nov, 12.00</p>
+                    
+                    <div class="text-right shrink-0">
+                      <p class="text-xs sm:text-sm font-black text-slate-900 font-mono">{{ formatRupiah(order.amount) }}</p>
+                      <span 
+                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold mt-0.5"
+                        :class="getOrderStatusBadgeClass(order.status)"
+                      >
+                        <span class="w-1 h-1 rounded-full" :class="getOrderStatusDotClass(order.status)"></span>
+                        {{ order.status }}
+                      </span>
                     </div>
-                  </div>
-                  
-                  <div class="text-right">
-                    <p class="text-xs sm:text-sm font-black text-slate-900 font-mono">Rp 254.205</p>
-                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] text-[10px] font-bold mt-0.5">
-                      <span class="w-1 h-1 rounded-full bg-emerald-500"></span>
-                      Selesai
-                    </span>
                   </div>
                 </div>
               </div>
 
-              <div class="pt-3 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-400">
-                <span>Channel: Web Portal</span>
-                <span>Metode: Otomatis</span>
+              <div class="pt-3 mt-2 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-400">
+                <span>Channel: Web Portal & Bank Transfer</span>
+                <span class="text-emerald-600 font-medium">Metode: Otomatis & Terverifikasi</span>
               </div>
             </div>
           </div>
@@ -1535,61 +1584,124 @@
       </div>
     </div>
 
-    <!-- Modal Antrean Cetak & Produksi -->
-    <div v-if="showPrintQueueModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 animate-fade-in" @click.self="showPrintQueueModal = false">
+    <!-- Modal Antrean Sewa & Aktivasi Lisensi GuruKu -->
+    <div v-if="showRentalQueueModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 animate-fade-in" @click.self="showRentalQueueModal = false">
       <div class="bg-white rounded-2xl sm:rounded-3xl w-full max-w-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
-        <div class="flex items-center justify-between p-5 border-b border-slate-100 bg-slate-50/50">
+        <div class="flex items-center justify-between p-5 border-b border-slate-200 bg-slate-50/70">
           <div>
-            <h3 class="font-extrabold text-slate-900 text-base">Antrean Produksi & Mesin Cetak</h3>
-            <p class="text-xs text-slate-500 font-medium">Monitoring status mesin cetak dan antrean produksi berkas</p>
+            <h3 class="font-extrabold text-slate-900 text-base">Antrean Sewa & Aktivasi Lisensi</h3>
+            <p class="text-xs text-slate-500 font-medium">Monitoring permohonan penyewaan aplikasi sekolah & aktivasi akun tenant</p>
           </div>
-          <button @click="showPrintQueueModal = false" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer">
+          <button @click="showRentalQueueModal = false" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
           </button>
         </div>
 
-        <div class="p-5 space-y-4 overflow-y-auto custom-scrollbar flex-1">
-          <!-- Status Mesin (4 Unit) -->
+        <div class="p-5 space-y-5 overflow-y-auto custom-scrollbar flex-1">
+          <!-- Status Server SaaS -->
           <div>
-            <p class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Status Unit Mesin (4 Unit)</p>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Status Node Server SaaS (GuruKu Cloud)</p>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-              <div v-for="unit in ['Unit 1', 'Unit 2', 'Unit 3', 'Unit 4']" :key="unit" class="bg-slate-50 border border-slate-200/80 p-3 rounded-xl text-center">
+              <div v-for="node in [
+                { name: 'DB Neon Postgres', status: 'Tersambung' },
+                { name: 'KBM Engine AI', status: 'Optimal' },
+                { name: 'WhatsApp Gateway', status: 'Aktif' },
+                { name: 'Auto-Provisioning', status: 'Siap 100%' }
+              ]" :key="node.name" class="bg-slate-50 border border-slate-200 p-2.5 rounded-xl text-center">
                 <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 mb-1"></span>
-                <p class="text-xs font-bold text-slate-800">{{ unit }}</p>
-                <p class="text-[10px] text-emerald-600 font-semibold">Siap / Standby</p>
+                <p class="text-xs font-bold text-slate-800">{{ node.name }}</p>
+                <p class="text-[10px] text-emerald-600 font-semibold">{{ node.status }}</p>
               </div>
             </div>
           </div>
 
-          <!-- Daftar Antrean -->
+          <!-- Form Tambah Antrean Sewa Baru -->
+          <div class="bg-blue-50/50 border border-blue-200 p-4 rounded-2xl">
+            <p class="text-xs font-bold text-blue-900 uppercase tracking-wider mb-2.5 flex items-center justify-between">
+              <span>+ Masukkan Sekolah ke Antrean Sewa</span>
+            </p>
+            <div class="space-y-3">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">Nama Sekolah</label>
+                  <input v-model="newRentalForm.schoolName" type="text" placeholder="Contoh: SMA Negeri 1 Unggulan" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 outline-none" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">Pilih Paket Lisensi</label>
+                  <select v-model="newRentalForm.packageId" @change="applyPackageToRental($event.target.value)" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500 outline-none">
+                    <option v-for="pkg in availablePackages" :key="pkg.id" :value="pkg.id">
+                      {{ pkg.name }} ({{ formatRupiah(pkg.price) }})
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">Nomor WhatsApp</label>
+                  <input v-model="newRentalForm.contact" type="text" placeholder="08xxxxxxxxxx" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 outline-none" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">Username Admin</label>
+                  <input v-model="newRentalForm.adminUsername" type="text" placeholder="admin_sekolah" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 outline-none" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 mb-1">Nominal Sewa</label>
+                  <input v-model.number="newRentalForm.amount" type="number" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-mono font-bold focus:ring-2 focus:ring-blue-500 outline-none" />
+                </div>
+              </div>
+              <button 
+                @click="addRentalToQueue" 
+                type="button" 
+                class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs transition-colors cursor-pointer mt-1"
+              >
+                + Masukkan ke Antrean Sewa
+              </button>
+            </div>
+          </div>
+
+          <!-- Daftar Antrean Sewa Aktif -->
           <div>
             <div class="flex items-center justify-between mb-2">
-              <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Daftar Antrean</p>
-              <span class="text-xs font-semibold text-slate-400">{{ printQueue.length }} Pesanan</span>
+              <p class="text-[11px] font-bold text-slate-700 uppercase tracking-wider">Daftar Antrean Menunggu Aktivasi</p>
+              <span class="text-xs font-semibold text-slate-400">{{ rentalQueue.length }} Antrean</span>
             </div>
 
-            <div v-if="printQueue.length === 0" class="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-slate-400">
-              <svg class="w-8 h-8 mx-auto mb-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            <div v-if="rentalQueue.length === 0" class="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-slate-400">
+              <svg class="w-8 h-8 mx-auto mb-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
               <p class="text-xs font-semibold text-slate-600">Tidak ada pesanan di antrean</p>
-              <p class="text-[11px] text-slate-400 mt-0.5">Semua proses cetak telah selesai.</p>
+              <p class="text-[11px] text-slate-400 mt-0.5">Semua permohonan sewa aplikasi telah berhasil diproses dan aktif.</p>
             </div>
 
             <div v-else class="space-y-2">
-              <div v-for="(item, idx) in printQueue" :key="idx" class="p-3 bg-white border border-slate-200 rounded-xl flex items-center justify-between">
+              <div v-for="item in rentalQueue" :key="item.id" class="p-3 bg-white border border-slate-200 rounded-xl flex items-center justify-between shadow-2xs">
                 <div>
-                  <p class="text-xs font-bold text-slate-800">{{ item.name }}</p>
-                  <p class="text-[11px] text-slate-400">{{ item.client }} • Estimasi {{ item.hours }} jam</p>
+                  <p class="text-xs font-bold text-slate-800">{{ item.schoolName }}</p>
+                  <p class="text-[11px] text-slate-400">{{ item.packageName }} &bull; {{ item.requestedAt }} &bull; WA: {{ item.contact || '-' }}</p>
                 </div>
-                <span class="text-[10px] font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full border border-blue-200">
-                  Antre Mesin
-                </span>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-mono font-bold text-slate-800">{{ formatRupiah(item.amount) }}</span>
+                  <button 
+                    @click="activateRentalQueueItem(item)" 
+                    class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs cursor-pointer transition-colors"
+                  >
+                    Aktivasi
+                  </button>
+                  <button 
+                    @click="removeRentalQueueItem(item.id)" 
+                    class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
+                    title="Batalkan dari antrean"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="p-4 border-t border-slate-100 flex items-center justify-end bg-slate-50/50">
-          <button @click="showPrintQueueModal = false" class="px-5 py-2 text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer">
+        <div class="p-4 border-t border-slate-200 flex items-center justify-between bg-slate-50/70">
+          <span class="text-xs text-slate-500 font-medium">Sistem lisensi otomatis tersinkronisasi</span>
+          <button @click="showRentalQueueModal = false" class="px-5 py-2 text-xs font-bold text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer">
             Tutup
           </button>
         </div>
@@ -1639,9 +1751,26 @@ const financialSummary = ref({
   hppBulanIni: 104205,
   saldoKas: 8365958,
   belanjaBulanIni: 0,
-  antreanMesinJam: '0 jam',
   totalPesananWeb: 1
 })
+
+// Data Jumlah Pengguna Aplikasi GuruKu · 12 Bulan (Diagram Batang Hijau: Aktif, Oranye: Penangguhan)
+const defaultUserStatsMonths = [
+  { month: 'Des', penggunaAktif: 45, penangguhan: 2 },
+  { month: 'Jan', penggunaAktif: 68, penangguhan: 4 },
+  { month: 'Feb', penggunaAktif: 85, penangguhan: 5 },
+  { month: 'Mar', penggunaAktif: 120, penangguhan: 8 },
+  { month: 'Apr', penggunaAktif: 145, penangguhan: 6 },
+  { month: 'Mei', penggunaAktif: 170, penangguhan: 9 },
+  { month: 'Jun', penggunaAktif: 195, penangguhan: 14 },
+  { month: 'Jul', penggunaAktif: 240, penangguhan: 12 },
+  { month: 'Agu', penggunaAktif: 265, penangguhan: 15 },
+  { month: 'Sep', penggunaAktif: 290, penangguhan: 18 },
+  { month: 'Okt', penggunaAktif: 310, penangguhan: 20 },
+  { month: 'Nov', penggunaAktif: 325, penangguhan: 24 }
+]
+
+const userStatsMonths = ref(JSON.parse(localStorage.getItem('guruKu_user_stats_months') || JSON.stringify(defaultUserStatsMonths)))
 
 const chartMonths = ref([
   { month: 'Des', penjualan: 0, belanja: 0 },
@@ -1675,15 +1804,235 @@ const loadFinancialSummary = () => {
   }
 }
 
-// Modal Invoice & Antrean Cetak
+// Modal Invoice
 const showInvoiceModal = ref(false)
-const showPrintQueueModal = ref(false)
-const printQueue = ref([])
 const invoiceForm = ref({
   clientName: '',
   amount: 254205,
   hpp: 104205,
   description: 'Lisensi SaaS GuruKu'
+})
+
+// Antrean Sewa & Aktivasi Lisensi GuruKu
+const showRentalQueueModal = ref(false)
+const defaultRentalQueue = [
+  {
+    id: 101,
+    schoolName: 'SMP Swasta Budi Utomo',
+    packageName: 'Lisensi Lengkap 1 Tahun',
+    packageId: 2,
+    contact: '081298765432',
+    adminUsername: 'admin_budiutomo',
+    requestedAt: '11 Nov, 11.30',
+    amount: 480000,
+    status: 'Menunggu Aktivasi'
+  }
+]
+
+const rentalQueue = ref(JSON.parse(localStorage.getItem('guruKu_rental_queue') || JSON.stringify(defaultRentalQueue)))
+
+const newRentalForm = ref({
+  schoolName: '',
+  packageId: 1,
+  packageName: 'Lisensi Semester Ganjil',
+  contact: '',
+  adminUsername: '',
+  amount: 254205
+})
+
+const applyPackageToRental = (pkgId) => {
+  const pkg = availablePackages.value.find(p => p.id === Number(pkgId) || p.id === pkgId)
+  if (pkg) {
+    newRentalForm.value.packageId = pkg.id
+    newRentalForm.value.packageName = pkg.name
+    newRentalForm.value.amount = pkg.price
+  }
+}
+
+const addRentalToQueue = () => {
+  if (!newRentalForm.value.schoolName.trim()) {
+    alert('Mohon isi nama sekolah yang mengajukan sewa aplikasi.')
+    return
+  }
+
+  const pkg = availablePackages.value.find(p => p.id === newRentalForm.value.packageId)
+  const now = new Date()
+  const timeStr = `${now.getDate()} Nov, ${String(now.getHours()).padStart(2, '0')}.${String(now.getMinutes()).padStart(2, '0')}`
+
+  rentalQueue.value.push({
+    id: Date.now(),
+    schoolName: newRentalForm.value.schoolName.trim(),
+    packageId: newRentalForm.value.packageId,
+    packageName: pkg?.name || newRentalForm.value.packageName || 'Lisensi SaaS GuruKu',
+    contact: newRentalForm.value.contact.trim(),
+    adminUsername: newRentalForm.value.adminUsername.trim() || 'admin_' + newRentalForm.value.schoolName.toLowerCase().replace(/[^a-z0-9]/g, ''),
+    requestedAt: timeStr,
+    amount: Number(newRentalForm.value.amount) || 254205,
+    status: 'Menunggu Aktivasi'
+  })
+
+  localStorage.setItem('guruKu_rental_queue', JSON.stringify(rentalQueue.value))
+  
+  newRentalForm.value = {
+    schoolName: '',
+    packageId: 1,
+    packageName: 'Lisensi Semester Ganjil',
+    contact: '',
+    adminUsername: '',
+    amount: 254205
+  }
+}
+
+const activateRentalQueueItem = (item) => {
+  if (confirm(`Aktivasi lisensi untuk sekolah "${item.schoolName}" sekarang?`)) {
+    // Catat di pesanan terbaru
+    recentOrders.value.unshift({
+      id: Date.now(),
+      clientName: item.schoolName,
+      packageName: item.packageName,
+      date: item.requestedAt,
+      amount: item.amount,
+      status: 'Berhasil Dibayar'
+    })
+    localStorage.setItem('guruKu_recent_orders', JSON.stringify(recentOrders.value))
+
+    // Tambah finansial omzet
+    financialSummary.value.penjualanBulanIni += item.amount
+    financialSummary.value.labaKotorBulanIni += item.amount
+    financialSummary.value.saldoKas += item.amount
+    localStorage.setItem('guruKu_financial_summary', JSON.stringify(financialSummary.value))
+
+    // Tambah sekolah ke schools jika belum ada
+    const exists = schools.value.some(s => s.name.toLowerCase() === item.schoolName.toLowerCase())
+    if (!exists) {
+      const validUntil = new Date()
+      validUntil.setFullYear(validUntil.getFullYear() + 1)
+      schools.value.unshift({
+        id: Date.now(),
+        name: item.schoolName,
+        admin_username: item.adminUsername || 'admin',
+        contact_number: item.contact || '',
+        payment_method: 'TRANSFER',
+        payment_amount: item.amount,
+        valid_until: validUntil.toISOString()
+      })
+    }
+
+    // Hapus dari antrean
+    rentalQueue.value = rentalQueue.value.filter(q => q.id !== item.id)
+    localStorage.setItem('guruKu_rental_queue', JSON.stringify(rentalQueue.value))
+
+    // Update nov bar in userStatsMonths
+    const novStats = userStatsMonths.value.find(m => m.month === 'Nov')
+    if (novStats) {
+      novStats.penggunaAktif += 12
+      localStorage.setItem('guruKu_user_stats_months', JSON.stringify(userStatsMonths.value))
+    }
+
+    window.dispatchEvent(new CustomEvent('guruKu_finance_updated'))
+    alert(`Lisensi untuk "${item.schoolName}" berhasil diaktifkan!`)
+  }
+}
+
+const removeRentalQueueItem = (id) => {
+  rentalQueue.value = rentalQueue.value.filter(q => q.id !== id)
+  localStorage.setItem('guruKu_rental_queue', JSON.stringify(rentalQueue.value))
+}
+
+// Data Pesanan Terbaru (List Terstruktur Reaktif)
+const defaultRecentOrders = [
+  {
+    id: 1,
+    clientName: 'MAS Darularafah',
+    packageName: 'Lisensi Semester Ganjil',
+    date: '11 Nov, 14.20',
+    amount: 199998,
+    status: 'Berhasil Dibayar'
+  },
+  {
+    id: 2,
+    clientName: 'MAS Darularafah (Kampus B)',
+    packageName: 'Lisensi Lengkap 1 Tahun',
+    date: '10 Nov, 09.15',
+    amount: 250000,
+    status: 'Selesai'
+  },
+  {
+    id: 3,
+    clientName: 'Klien / Rekan Istimewa',
+    packageName: 'Lisensi SaaS GuruKu',
+    date: '2 Nov, 12.00',
+    amount: 254205,
+    status: 'Selesai'
+  },
+  {
+    id: 4,
+    clientName: 'SMA Unggul Terpadu',
+    packageName: 'Lisensi Lengkap 1 Tahun',
+    date: '28 Okt, 16.45',
+    amount: 480000,
+    status: 'Selesai'
+  }
+]
+
+const recentOrders = ref(JSON.parse(localStorage.getItem('guruKu_recent_orders') || JSON.stringify(defaultRecentOrders)))
+
+const getInitials = (name) => {
+  if (!name) return 'GK'
+  const parts = name.trim().split(/\s+/)
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+  return (parts[0][0] + parts[1][0]).toUpperCase()
+}
+
+const getOrderStatusBadgeClass = (status) => {
+  switch (status) {
+    case 'Selesai':
+      return 'bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]'
+    case 'Berhasil Dibayar':
+      return 'bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE]'
+    case 'Menunggu Pembayaran':
+      return 'bg-[#FEF6E9] text-[#B45309] border border-[#FDE68A]'
+    case 'Dalam Penangguhan':
+      return 'bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A]'
+    default:
+      return 'bg-slate-100 text-slate-700 border border-slate-200'
+  }
+}
+
+const getOrderStatusDotClass = (status) => {
+  switch (status) {
+    case 'Selesai': return 'bg-emerald-500'
+    case 'Berhasil Dibayar': return 'bg-blue-600'
+    case 'Menunggu Pembayaran': return 'bg-amber-500'
+    case 'Dalam Penangguhan': return 'bg-orange-500'
+    default: return 'bg-slate-400'
+  }
+}
+
+const orderStatusCounts = computed(() => {
+  const pendingPay = pendingPayments.value?.length || 0
+  let expired = 0
+  let active = 0
+
+  schools.value.forEach(s => {
+    if (isExpired(s.valid_until)) {
+      expired++
+    } else {
+      active++
+    }
+  })
+
+  const paidCount = recentOrders.value.filter(o => o.status === 'Berhasil Dibayar').length
+  const selesaiCount = Math.max(active, recentOrders.value.filter(o => o.status === 'Selesai').length, 1)
+
+  return {
+    menungguPembayaran: pendingPay,
+    berhasilDibayar: paidCount,
+    penangguhan: expired,
+    selesai: selesaiCount,
+    dibatalkan: 0,
+    total: pendingPay + paidCount + expired + selesaiCount
+  }
 })
 
 const applyPackageToInvoice = (pkgId) => {
@@ -1755,6 +2104,17 @@ const saveInvoice = () => {
   } catch (e) {
     console.error('Error saving invoice:', e)
   }
+
+  // Masukkan ke daftar pesanan terbaru
+  recentOrders.value.unshift({
+    id: Date.now(),
+    clientName: invoiceForm.value.clientName,
+    packageName: invoiceForm.value.description || 'Lisensi SaaS GuruKu',
+    date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) + ', ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':'),
+    amount: amount,
+    status: 'Berhasil Dibayar'
+  })
+  localStorage.setItem('guruKu_recent_orders', JSON.stringify(recentOrders.value))
 
   showInvoiceModal.value = false
   invoiceForm.value = {
@@ -2302,6 +2662,25 @@ const submitKlien = async () => {
     if (res.ok) {
       alert("Klien baru berhasil ditambahkan!")
       showModal.value = false
+      
+      // Catat ke daftar pesanan terbaru
+      recentOrders.value.unshift({
+        id: Date.now(),
+        clientName: form.value.name,
+        packageName: 'Lisensi SaaS Sekolah',
+        date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) + ', ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':'),
+        amount: parseFloat(form.value.payment_amount) || 0,
+        status: 'Berhasil Dibayar'
+      })
+      localStorage.setItem('guruKu_recent_orders', JSON.stringify(recentOrders.value))
+
+      // Update grafik pengguna aktif di bulan berjalan
+      const novStats = userStatsMonths.value.find(m => m.month === 'Nov')
+      if (novStats) {
+        novStats.penggunaAktif += 15
+        localStorage.setItem('guruKu_user_stats_months', JSON.stringify(userStatsMonths.value))
+      }
+
       // Reset form
       form.value = { name: '', valid_until: '', payment_method: 'BCA', payment_amount: '', address: '', contact_number: '', username: '', password: '' }
       fetchSchools() // Refresh data realtime
@@ -2324,6 +2703,15 @@ const blockSchool = async (id) => {
       if (target) {
         target.valid_until = new Date(Date.now() - 86400000).toISOString()
       }
+
+      // Update grafik bulan berjalan: kurangi aktif, tambah penangguhan
+      const novStats = userStatsMonths.value.find(m => m.month === 'Nov')
+      if (novStats) {
+        novStats.penggunaAktif = Math.max(10, novStats.penggunaAktif - 15)
+        novStats.penangguhan += 15
+        localStorage.setItem('guruKu_user_stats_months', JSON.stringify(userStatsMonths.value))
+      }
+
       const res = await SafeFlow.fetch(`/api/v1/super/schools/${id}/block`, { method: 'PUT' })
     } catch (err) {
       alert("Terjadi kesalahan jaringan.")
