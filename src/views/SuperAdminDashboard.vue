@@ -64,14 +64,7 @@
           <span>Etalase produk</span>
         </button>
 
-        <!-- 5. Filamen -->
-        <button @click="activeTab = 'filamen'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
-          :class="activeTab === 'filamen' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-          <span>Filamen</span>
-        </button>
-
-        <!-- 6. Keuangan & aset -->
+        <!-- 5. Keuangan & aset -->
         <button @click="activeTab = 'keuangan'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
           :class="activeTab === 'keuangan' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
@@ -1319,11 +1312,6 @@
         <EtalaseProdukView />
       </div>
 
-      <!-- FILAMEN TAB -->
-      <div v-else-if="activeTab === 'filamen'" class="animate-fade-in">
-        <FilamenView />
-      </div>
-
       </main>
 
       <!-- Mobile Bottom Navigation Bar (Fixed on screens < lg) -->
@@ -1620,7 +1608,6 @@ import indonesiaSchools from '../data/schools_indonesia.json'
 import KeuanganAset from './KeuanganAset.vue'
 import KalkulatorHPP from './KalkulatorHPP.vue'
 import EtalaseProdukView from './EtalaseProdukView.vue'
-import FilamenView from './FilamenView.vue'
 import { getStoredPackages } from '../data/packagesCatalog.js'
 
 const router = useRouter()
@@ -1739,17 +1726,32 @@ const saveInvoice = () => {
 
   try {
     localStorage.setItem('guruKu_financial_summary', JSON.stringify(financialSummary.value))
-    const existingTx = JSON.parse(localStorage.getItem('guruKu_transactions') || '[]')
-    existingTx.unshift({
+    
+    // Simpan ke riwayat transaksi finansial yang tersinkronisasi
+    const finTx = JSON.parse(localStorage.getItem('guruKu_finance_transactions') || '[]')
+    finTx.unshift({
       id: Date.now(),
       date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
       ref: `INV-${Date.now().toString().slice(-6)}`,
-      category: 'Penjualan Lisensi',
+      category: 'Penjualan Lisensi Sekolah',
       description: invoiceForm.value.description || `Invoice untuk ${invoiceForm.value.clientName}`,
       type: 'in',
-      amount: amount
+      amount: amount,
+      period: 'Nov 26'
     })
-    localStorage.setItem('guruKu_transactions', JSON.stringify(existingTx))
+    localStorage.setItem('guruKu_finance_transactions', JSON.stringify(finTx))
+
+    // Update periode grafik
+    const periods = JSON.parse(localStorage.getItem('guruKu_chart_periods') || '[]')
+    const targetPeriod = periods.find(p => p.label === 'Nov 26')
+    if (targetPeriod) {
+      targetPeriod.pendapatan += amount
+      targetPeriod.kasMasuk += amount
+      targetPeriod.saldo += amount
+      localStorage.setItem('guruKu_chart_periods', JSON.stringify(periods))
+    }
+
+    window.dispatchEvent(new CustomEvent('guruKu_finance_updated'))
   } catch (e) {
     console.error('Error saving invoice:', e)
   }
@@ -1802,7 +1804,6 @@ const currentTabTitle = computed(() => {
     case 'verifikasi': return 'Verifikasi Bayar'
     case 'aduan': return 'Custom Request'
     case 'etalase': return 'Etalase Produk'
-    case 'filamen': return 'Filamen'
     case 'keuangan': return 'Keuangan & Aset'
     case 'hpp': return 'Kalkulator HPP'
     case 'pengaturan': return 'Pengaturan Sistem'
@@ -2387,6 +2388,7 @@ onMounted(() => {
   document.addEventListener('click', handleClickOutside)
   window.addEventListener('storage', handleStorageChange)
   window.addEventListener('guruKu_packages_updated', handlePackagesUpdate)
+  window.addEventListener('guruKu_finance_updated', loadFinancialSummary)
   
   // Polling real-time (3 detik) agar tersinkron otomatis dengan database serverless Neon
   reportInterval = setInterval(() => {
@@ -2401,6 +2403,7 @@ onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
   window.removeEventListener('storage', handleStorageChange)
   window.removeEventListener('guruKu_packages_updated', handlePackagesUpdate)
+  window.removeEventListener('guruKu_finance_updated', loadFinancialSummary)
   if (reportInterval) clearInterval(reportInterval)
 })
 

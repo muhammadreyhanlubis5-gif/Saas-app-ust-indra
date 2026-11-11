@@ -22,6 +22,15 @@
 
       <div class="flex items-center gap-2.5 flex-wrap">
         <button 
+          @click="openAdjustChartModal" 
+          class="inline-flex items-center gap-2 px-3.5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+          title="Sesuaikan angka dan parameter grafik secara langsung"
+        >
+          <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+          <span>Sesuaikan Angka Grafik</span>
+        </button>
+
+        <button 
           @click="showAddTxModal = true" 
           class="inline-flex items-center gap-2 px-3.5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer"
         >
@@ -253,71 +262,61 @@
                   <line x1="40" y1="200" x2="530" y2="200" stroke="#CBD5E1" stroke-width="1" />
                 </g>
 
-                <!-- Bars (Pendapatan Green & Biaya Orange) -->
-                <!-- Jul 25 (x: 65) -->
-                <rect x="58" y="124" width="7" height="4" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="67" y="122" width="7" height="6" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
+                <!-- Bars (Pendapatan Green & Biaya Orange) Dynamic Real-Time -->
+                <g v-for="d in chart1Data" :key="'c1-bar-'+d.label">
+                  <!-- Bar Pendapatan -->
+                  <rect 
+                    :x="d.pX" 
+                    :y="d.pY" 
+                    width="8" 
+                    :height="d.pH" 
+                    rx="1.5" 
+                    fill="#10B981" 
+                    stroke="#059669" 
+                    stroke-width="0.5"
+                    class="transition-all duration-300"
+                  >
+                    <title>{{ d.label }} - Pendapatan: {{ formatRupiah(d.pendapatan) }}</title>
+                  </rect>
+                  <!-- Bar Biaya -->
+                  <rect 
+                    :x="d.bX" 
+                    :y="d.bY" 
+                    width="8" 
+                    :height="d.bH" 
+                    rx="1.5" 
+                    fill="#F97316" 
+                    stroke="#EA580C" 
+                    stroke-width="0.5"
+                    class="transition-all duration-300"
+                  >
+                    <title>{{ d.label }} - Biaya: {{ formatRupiah(d.biaya) }}</title>
+                  </rect>
+                </g>
 
-                <!-- Sep 25 (x: 115) -->
-                <rect x="108" y="125" width="7" height="3" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="117" y="122" width="7" height="6" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-
-                <!-- Nov 25 (x: 165) -->
-                <rect x="158" y="120" width="7" height="8" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="167" y="118" width="7" height="10" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-
-                <!-- Jan 26 (x: 215) -->
-                <rect x="208" y="123" width="7" height="5" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="217" y="120" width="7" height="8" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-
-                <!-- Mar 26 (Peak 1 - Awal Semester Genap) (x: 265) -->
-                <rect x="258" y="25" width="8" height="103" rx="2" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="268" y="80" width="8" height="48" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-
-                <!-- Mei 26 (x: 315) -->
-                <rect x="308" y="123" width="7" height="5" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="317" y="121" width="7" height="7" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-
-                <!-- Jul 26 (Peak 2 - Tahun Ajaran Baru) (x: 365) -->
-                <rect x="358" y="28" width="8" height="100" rx="2" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="368" y="92" width="8" height="36" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-
-                <!-- Sep 26 (x: 415) -->
-                <rect x="408" y="124" width="7" height="4" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="417" y="105" width="7" height="23" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-
-                <!-- Nov 26 (Sekarang - Smt Ganjil Stabil) (x: 465) -->
-                <rect x="458" y="125" width="7" height="3" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="467" y="75" width="7" height="53" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-
-                <!-- Spline Line Laba/Rugi (Blue with circular nodes) -->
+                <!-- Spline Line Laba/Rugi (Blue with circular nodes) Dynamic Real-Time -->
                 <polyline 
                   fill="none" 
                   stroke="#0284C7" 
                   stroke-width="2.5" 
-                  points="
-                    68,128 
-                    118,127 
-                    168,128 
-                    218,131 
-                    268,48 
-                    318,129 
-                    368,36 
-                    418,140 
-                    468,155
-                  "
+                  :points="chart1Polyline"
+                  class="transition-all duration-300"
                 />
 
-                <!-- Data point nodes -->
-                <circle cx="68" cy="128" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
-                <circle cx="118" cy="127" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
-                <circle cx="168" cy="128" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
-                <circle cx="218" cy="131" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
-                <circle cx="268" cy="48" r="5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
-                <circle cx="318" cy="129" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
-                <circle cx="368" cy="36" r="5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
-                <circle cx="418" cy="140" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
-                <circle cx="468" cy="155" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <!-- Data point nodes Dynamic -->
+                <circle 
+                  v-for="d in chart1Data" 
+                  :key="'c1-node-'+d.label"
+                  :cx="d.lX" 
+                  :cy="d.lY" 
+                  :r="d.label === 'Nov 26' || d.label === 'Mar 26' || d.label === 'Jul 26' ? 5 : 3.5" 
+                  fill="#0284C7" 
+                  stroke="#FFFFFF" 
+                  stroke-width="2" 
+                  class="transition-all duration-300 cursor-pointer hover:scale-125"
+                >
+                  <title>{{ d.label }} - Laba/Rugi: {{ formatRupiah(d.laba) }}</title>
+                </circle>
 
                 <!-- X-Axis Labels -->
                 <g class="text-[9.5px] fill-slate-600 font-sans font-bold" text-anchor="middle">
@@ -400,66 +399,60 @@
                   <line x1="40" y1="206" x2="530" y2="206" stroke="#CBD5E1" stroke-width="1" />
                 </g>
 
-                <!-- Bars (Kas Masuk vs Kas Keluar) -->
-                <!-- Jul 25: investasi server awal -->
-                <rect x="67" y="132" width="7" height="12" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
+                <!-- Bars (Kas Masuk vs Kas Keluar) Dynamic Reactive -->
+                <g v-for="d in chart2Data" :key="'c2-bar-'+d.label">
+                  <rect 
+                    v-if="d.inH > 0"
+                    :x="d.inX" 
+                    :y="d.inY" 
+                    width="8" 
+                    :height="d.inH" 
+                    rx="1.5" 
+                    fill="#10B981" 
+                    stroke="#059669" 
+                    stroke-width="0.5" 
+                    class="transition-all duration-300"
+                  >
+                    <title>{{ d.label }} - Kas Masuk: {{ formatRupiah(d.kasMasuk) }}</title>
+                  </rect>
+                  <rect 
+                    v-if="d.outH > 0"
+                    :x="d.outX" 
+                    :y="d.outY" 
+                    width="8" 
+                    :height="d.outH" 
+                    rx="1.5" 
+                    fill="#F97316" 
+                    stroke="#EA580C" 
+                    stroke-width="0.5" 
+                    class="transition-all duration-300"
+                  >
+                    <title>{{ d.label }} - Kas Keluar: {{ formatRupiah(d.kasKeluar) }}</title>
+                  </rect>
+                </g>
 
-                <!-- Sep 25 -->
-                <rect x="117" y="135" width="7" height="9" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-
-                <!-- Nov 25 -->
-                <rect x="167" y="138" width="7" height="6" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-
-                <!-- Jan 26: Lisensi semester ganjil bertambah -->
-                <rect x="208" y="72" width="8" height="72" rx="2" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="218" y="136" width="8" height="8" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-
-                <!-- Mar 26: Puncak Masuk -->
-                <rect x="258" y="32" width="8" height="112" rx="2" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="268" y="52" width="8" height="92" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-
-                <!-- Mei 26 -->
-                <rect x="317" y="138" width="7" height="6" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-
-                <!-- Jul 26: Lisensi Tahun Ajaran Baru -->
-                <rect x="358" y="44" width="8" height="100" rx="2" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="368" y="132" width="8" height="12" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-
-                <!-- Sep 26 -->
-                <rect x="408" y="135" width="7" height="9" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="417" y="125" width="7" height="19" rx="1.5" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-
-                <!-- Nov 26 (Bulan Berjalan) -->
-                <rect x="458" y="126" width="7" height="18" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="467" y="60" width="7" height="84" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-
-                <!-- Saldo Kas Line (Blue with circular points) -->
+                <!-- Saldo Kas Line Dynamic -->
                 <polyline 
                   fill="none" 
                   stroke="#0284C7" 
                   stroke-width="2.5" 
-                  points="
-                    68,160 
-                    118,172 
-                    168,185 
-                    218,142 
-                    268,135 
-                    318,147 
-                    368,52 
-                    418,68 
-                    468,110
-                  "
+                  :points="chart2Polyline"
+                  class="transition-all duration-300"
                 />
 
-                <circle cx="68" cy="160" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
-                <circle cx="118" cy="172" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
-                <circle cx="168" cy="185" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
-                <circle cx="218" cy="142" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
-                <circle cx="268" cy="135" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
-                <circle cx="318" cy="147" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
-                <circle cx="368" cy="52" r="5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
-                <circle cx="418" cy="68" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
-                <circle cx="468" cy="110" r="3.5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2" />
+                <circle 
+                  v-for="d in chart2Data" 
+                  :key="'c2-node-'+d.label"
+                  :cx="d.sX" 
+                  :cy="d.sY" 
+                  :r="d.label === 'Nov 26' || d.label === 'Jul 26' ? 5 : 3.5" 
+                  fill="#0284C7" 
+                  stroke="#FFFFFF" 
+                  stroke-width="2" 
+                  class="transition-all duration-300 cursor-pointer hover:scale-125"
+                >
+                  <title>{{ d.label }} - Saldo Kas: {{ formatRupiah(d.saldo) }}</title>
+                </circle>
 
                 <!-- X-Axis Labels -->
                 <g class="text-[9.5px] fill-slate-600 font-sans font-bold" text-anchor="middle">
@@ -535,30 +528,18 @@
                   <line x1="40" y1="196" x2="530" y2="196" stroke="#CBD5E1" stroke-width="1" />
                 </g>
 
-                <!-- Group 1: Siklus 1 - Semester Ganjil (High Margin) (x center: 105) -->
-                <rect x="85" y="32" width="12" height="122" rx="2" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="99" y="82" width="12" height="72" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-                <rect x="113" y="104" width="12" height="50" rx="2" fill="#0284C7" stroke="#0369A1" stroke-width="0.5" />
-
-                <!-- Group 2: Siklus 2 - Semester Genap (x center: 185) -->
-                <rect x="165" y="42" width="12" height="112" rx="2" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="179" y="88" width="12" height="66" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-                <rect x="193" y="108" width="12" height="46" rx="2" fill="#0284C7" stroke="#0369A1" stroke-width="0.5" />
-
-                <!-- Group 3: Siklus 3 - Add-On Modul Cetak (R&D Cost higher) (x center: 265) -->
-                <rect x="245" y="148" width="12" height="6" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="259" y="122" width="12" height="32" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-                <rect x="273" y="154" width="12" height="26" rx="2" fill="#0284C7" stroke="#0369A1" stroke-width="0.5" />
-
-                <!-- Group 4: Siklus 4 - Lisensi Multi-Kampus (x center: 345) -->
-                <rect x="325" y="150" width="12" height="4" rx="1.5" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="339" y="130" width="12" height="24" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-                <rect x="353" y="154" width="12" height="20" rx="2" fill="#0284C7" stroke="#0369A1" stroke-width="0.5" />
-
-                <!-- Group 5: Siklus 5 - Proyeksi 2026/2027 (x center: 425) -->
-                <rect x="405" y="60" width="12" height="94" rx="2" fill="#10B981" stroke="#059669" stroke-width="0.5" />
-                <rect x="419" y="112" width="12" height="42" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" />
-                <rect x="433" y="102" width="12" height="52" rx="2" fill="#0284C7" stroke="#0369A1" stroke-width="0.5" />
+                <!-- Group Siklus Dynamic Reactive -->
+                <g v-for="d in chart3Data" :key="'c3-bar-'+d.name">
+                  <rect :x="d.pX" :y="d.pY" width="11" :height="d.pH" rx="2" fill="#10B981" stroke="#059669" stroke-width="0.5" class="transition-all duration-300">
+                    <title>{{ d.name }} - Pendapatan: {{ formatRupiah(d.pendapatan) }}</title>
+                  </rect>
+                  <rect :x="d.bX" :y="d.bY" width="11" :height="d.bH" rx="2" fill="#F97316" stroke="#EA580C" stroke-width="0.5" class="transition-all duration-300">
+                    <title>{{ d.name }} - Biaya: {{ formatRupiah(d.biaya) }}</title>
+                  </rect>
+                  <rect :x="d.lX" :y="d.lY" width="11" :height="d.lH" rx="2" fill="#0284C7" stroke="#0369A1" stroke-width="0.5" class="transition-all duration-300">
+                    <title>{{ d.name }} - Laba: {{ formatRupiah(d.laba) }}</title>
+                  </rect>
+                </g>
 
                 <!-- X-Axis Labels -->
                 <g class="text-[9px] fill-slate-700 font-sans font-bold">
@@ -1135,11 +1116,20 @@
           </div>
 
           <div>
+            <label class="block font-semibold text-slate-700 mb-1">Periode Bulan Transaksi</label>
+            <select v-model="newTx.period" class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold text-slate-800 bg-slate-50">
+              <option v-for="p in chartPeriods" :key="'tx-opt-'+p.label" :value="p.label">
+                {{ p.label }} {{ p.label === 'Nov 26' ? '(Bulan Berjalan / Aktif)' : '' }}
+              </option>
+            </select>
+          </div>
+
+          <div>
             <label class="block font-semibold text-slate-700 mb-1">Kategori</label>
             <input 
               v-model="newTx.category" 
               type="text" 
-              placeholder="Cth: Penjualan Lisensi Sekolah / Biaya Cloud Server" 
+              placeholder="Cth: Penjualan Lisensi Sekolah / Server Cloud & DB Neon" 
               class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -1228,11 +1218,76 @@
       </div>
     </div>
 
+    <!-- MODAL SESUAIKAN ANGKA GRAFIK REAL-TIME -->
+    <div v-if="showAdjustChartModal" class="fixed inset-0 bg-slate-950/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
+      <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 border border-slate-300 animate-fade-in">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
+          <div>
+            <h3 class="text-base font-black text-slate-900">Sesuaikan Angka Grafik (Real-Time)</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Ubah angka omzet, biaya, atau saldo untuk melihat grafik langsung bergerak otomatis.</p>
+          </div>
+          <button @click="showAdjustChartModal = false" class="text-slate-400 hover:text-slate-600 cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+
+        <form @submit.prevent="saveAdjustedChart" class="space-y-3.5 text-xs">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Pilih Periode Grafik</label>
+            <select v-model="selectedAdjustPeriod" @change="onSelectAdjustPeriod" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-800">
+              <option v-for="p in chartPeriods" :key="'adj-'+p.label" :value="p.label">
+                {{ p.label }} {{ p.label === 'Nov 26' ? '(Bulan Berjalan / Aktif)' : '' }}
+              </option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Pendapatan / Omzet (Rp)</label>
+              <input v-model.number="adjustForm.pendapatan" type="number" required min="0" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl font-mono font-bold text-slate-900" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Biaya Operasional (Rp)</label>
+              <input v-model.number="adjustForm.biaya" type="number" required min="0" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl font-mono font-bold text-slate-900" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Kas Masuk (Rp)</label>
+              <input v-model.number="adjustForm.kasMasuk" type="number" required min="0" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl font-mono text-slate-800" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Kas Keluar (Rp)</label>
+              <input v-model.number="adjustForm.kasKeluar" type="number" required min="0" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl font-mono text-slate-800" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Saldo Kas (Rp)</label>
+              <input v-model.number="adjustForm.saldo" type="number" required class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl font-mono font-bold text-blue-700" />
+            </div>
+          </div>
+
+          <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 text-[11px] leading-relaxed">
+            <span class="font-bold">Estimasi Laba/Rugi:</span>
+            <span class="font-mono font-bold ml-1" :class="adjustForm.pendapatan - adjustForm.biaya >= 0 ? 'text-emerald-700' : 'text-rose-700'">
+              {{ formatRupiah(adjustForm.pendapatan - adjustForm.biaya) }}
+            </span>
+            <span class="block text-slate-500 text-[10px] mt-0.5">Grafik akan langsung bergerak dan menyesuaikan koordinatnya begitu tombol disimpan ditekan.</span>
+          </div>
+
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-200">
+            <button type="button" @click="showAdjustChartModal = false" class="px-4 py-2 font-semibold text-slate-600 hover:text-slate-800 cursor-pointer">Batal</button>
+            <button type="submit" class="px-5 py-2 font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-xs cursor-pointer">Simpan & Update Grafik</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { ROUTES } from '../config/routePaths.js'
 
 // Tab aktif default: Analisis Grafik Finansial sesuai gambar referensi
@@ -1242,9 +1297,11 @@ const searchKeyword = ref('')
 const trafficTimeframe = ref('month')
 const showAddTxModal = ref(false)
 const showAddAssetModal = ref(false)
+const showAdjustChartModal = ref(false)
 
 const newTx = ref({
   type: 'in',
+  period: 'Nov 26',
   category: '',
   amount: null,
   description: ''
@@ -1265,18 +1322,237 @@ const financialData = ref({
   saldoKas: 8365958
 })
 
-// Komposisi Biaya Operasional (Sesuai Referensi Gambar 3 Chart 4)
-const operationalCosts = [
-  { name: 'Server Cloud & DB Neon', percentage: 92, formatted: '2,45 M' },
-  { name: 'Jaringan CDN Cloudflare', percentage: 34, formatted: '850 rb' },
-  { name: 'Gaji Maintenance Engine', percentage: 18, formatted: '450 rb' },
-  { name: 'WhatsApp Gateway API', percentage: 16, formatted: '420 rb' },
-  { name: 'Disaster Recovery S3', percentage: 14, formatted: '380 rb' },
-  { name: 'CS Support & Operator', percentage: 13, formatted: '350 rb' },
-  { name: 'Lisensi Domain & SSL', percentage: 12, formatted: '310 rb' },
-  { name: 'Pajak & Legalitas SaaS', percentage: 9, formatted: '220 rb' },
-  { name: 'Demo Onsite Sekolah', percentage: 7, formatted: '180 rb' }
+// DATA GRAFIK 9 PERIODE (REAKTIF REAL-TIME)
+const defaultChartPeriods = [
+  { label: 'Jul 25', pendapatan: 120000, biaya: 180000, kasMasuk: 0, kasKeluar: 350000, saldo: -350000 },
+  { label: 'Sep 25', pendapatan: 100000, biaya: 190000, kasMasuk: 0, kasKeluar: 280000, saldo: -630000 },
+  { label: 'Nov 25', pendapatan: 240000, biaya: 300000, kasMasuk: 0, kasKeluar: 220000, saldo: -850000 },
+  { label: 'Jan 26', pendapatan: 150000, biaya: 250000, kasMasuk: 2200000, kasKeluar: 250000, saldo: 1100000 },
+  { label: 'Mar 26', pendapatan: 3100000, biaya: 1450000, kasMasuk: 3800000, kasKeluar: 2700000, saldo: 2200000 },
+  { label: 'Mei 26', pendapatan: 160000, biaya: 220000, kasMasuk: 0, kasKeluar: 180000, saldo: 2020000 },
+  { label: 'Jul 26', pendapatan: 3000000, biaya: 1100000, kasMasuk: 3200000, kasKeluar: 380000, saldo: 4840000 },
+  { label: 'Sep 26', pendapatan: 130000, biaya: 700000, kasMasuk: 250000, kasKeluar: 580000, saldo: 4510000 },
+  { label: 'Nov 26', pendapatan: 254205, biaya: 104205, kasMasuk: 254205, kasKeluar: 104205, saldo: 8365958 }
 ]
+
+const chartPeriods = ref(JSON.parse(JSON.stringify(defaultChartPeriods)))
+
+// Form Penyesuaian Grafik
+const selectedAdjustPeriod = ref('Nov 26')
+const adjustForm = ref({
+  pendapatan: 254205,
+  biaya: 104205,
+  kasMasuk: 254205,
+  kasKeluar: 104205,
+  saldo: 8365958
+})
+
+const openAdjustChartModal = () => {
+  selectedAdjustPeriod.value = 'Nov 26'
+  onSelectAdjustPeriod()
+  showAdjustChartModal.value = true
+}
+
+const onSelectAdjustPeriod = () => {
+  const target = chartPeriods.value.find(p => p.label === selectedAdjustPeriod.value)
+  if (target) {
+    adjustForm.value = {
+      pendapatan: target.pendapatan,
+      biaya: target.biaya,
+      kasMasuk: target.kasMasuk,
+      kasKeluar: target.kasKeluar,
+      saldo: target.saldo
+    }
+  }
+}
+
+const saveAdjustedChart = () => {
+  const target = chartPeriods.value.find(p => p.label === selectedAdjustPeriod.value)
+  if (target) {
+    target.pendapatan = Number(adjustForm.value.pendapatan) || 0
+    target.biaya = Number(adjustForm.value.biaya) || 0
+    target.kasMasuk = Number(adjustForm.value.kasMasuk) || 0
+    target.kasKeluar = Number(adjustForm.value.kasKeluar) || 0
+    target.saldo = Number(adjustForm.value.saldo) || 0
+  }
+  
+  if (selectedAdjustPeriod.value === 'Nov 26') {
+    financialData.value.penjualanBulanIni = target.pendapatan
+    financialData.value.pengeluaranBulanIni = target.biaya
+    financialData.value.labaKotorBulanIni = Math.max(target.pendapatan - target.biaya, 0)
+    financialData.value.saldoKas = target.saldo
+    localStorage.setItem('guruKu_financial_summary', JSON.stringify(financialData.value))
+  }
+  
+  localStorage.setItem('guruKu_chart_periods', JSON.stringify(chartPeriods.value))
+  window.dispatchEvent(new CustomEvent('guruKu_finance_updated'))
+  showAdjustChartModal.value = false
+}
+
+// Perhitungan Koordinat Dinamis Chart 1: Pendapatan, Biaya, dan Laba
+const chart1Data = computed(() => {
+  const xCenters = [68, 118, 168, 218, 268, 318, 368, 418, 468]
+  return chartPeriods.value.map((p, idx) => {
+    const x = xCenters[idx] || (68 + idx * 50)
+    const laba = p.pendapatan - p.biaya
+    
+    // Scale: baseline 0 at y = 128, 1M = 36px
+    const pHeight = Math.max(2, Math.min(115, (p.pendapatan / 1000000) * 36))
+    const pY = 128 - pHeight
+    
+    const bHeight = Math.max(2, Math.min(115, (p.biaya / 1000000) * 36))
+    const bY = 128 - bHeight
+    
+    const lY = laba >= 0 
+      ? Math.max(15, 128 - (laba / 1000000) * 36)
+      : Math.min(205, 128 + (Math.abs(laba) / 1000000) * 36)
+      
+    return {
+      label: p.label,
+      x,
+      pendapatan: p.pendapatan,
+      biaya: p.biaya,
+      laba,
+      pX: x - 10,
+      pY,
+      pH: pHeight,
+      bX: x + 1,
+      bY,
+      bH: bHeight,
+      lX: x,
+      lY
+    }
+  })
+})
+
+const chart1Polyline = computed(() => {
+  return chart1Data.value.map(d => `${d.lX},${Math.round(d.lY)}`).join(' ')
+})
+
+// Perhitungan Koordinat Dinamis Chart 2: Arus Kas & Saldo
+const chart2Data = computed(() => {
+  const xCenters = [68, 118, 168, 218, 268, 318, 368, 418, 468]
+  return chartPeriods.value.map((p, idx) => {
+    const x = xCenters[idx] || (68 + idx * 50)
+    
+    // Scale: baseline 0 at y = 144, 1M = 31px
+    const inH = Math.max(p.kasMasuk > 0 ? 3 : 0, Math.min(125, (p.kasMasuk / 1000000) * 31))
+    const inY = 144 - inH
+    
+    const outH = Math.max(p.kasKeluar > 0 ? 3 : 0, Math.min(125, (p.kasKeluar / 1000000) * 31))
+    const outY = 144 - outH
+    
+    const saldoY = p.saldo >= 0
+      ? Math.max(15, 144 - (p.saldo / 2000000) * 31)
+      : Math.min(205, 144 + (Math.abs(p.saldo) / 2000000) * 31)
+      
+    return {
+      label: p.label,
+      x,
+      kasMasuk: p.kasMasuk,
+      kasKeluar: p.kasKeluar,
+      saldo: p.saldo,
+      inX: x - 10,
+      inY,
+      inH,
+      outX: x + 1,
+      outY,
+      outH,
+      sX: x,
+      sY: saldoY
+    }
+  })
+})
+
+const chart2Polyline = computed(() => {
+  return chart2Data.value.map(d => `${d.sX},${Math.round(d.sY)}`).join(' ')
+})
+
+// Perhitungan Koordinat Dinamis Chart 3: Profit Per Siklus Lisensi
+const defaultCycleData = [
+  { name: 'Smt Ganjil 25/26', pendapatan: 2900000, biaya: 1700000 },
+  { name: 'Smt Genap 25/26', pendapatan: 2650000, biaya: 1600000 },
+  { name: 'Modul Cetak & QR', pendapatan: 150000, biaya: 750000 },
+  { name: 'Custom Multi-Kampus', pendapatan: 100000, biaya: 550000 },
+  { name: 'Proyeksi 26/27', pendapatan: 2200000, biaya: 1000000 }
+]
+
+const cycleData = ref(JSON.parse(JSON.stringify(defaultCycleData)))
+
+const chart3Data = computed(() => {
+  const centers = [105, 185, 265, 345, 425]
+  return cycleData.value.map((c, idx) => {
+    const x = centers[idx]
+    const laba = c.pendapatan - c.biaya
+    
+    // Baseline 0 is y = 154, 1M = 42px
+    const pH = Math.max(3, Math.min(130, (c.pendapatan / 1000000) * 42))
+    const pY = 154 - pH
+    
+    const bH = Math.max(3, Math.min(130, (c.biaya / 1000000) * 42))
+    const bY = 154 - bH
+    
+    const lH = Math.max(3, Math.min(120, (Math.abs(laba) / 1000000) * 42))
+    const lY = laba >= 0 ? 154 - lH : 154
+    
+    return {
+      name: c.name,
+      pendapatan: c.pendapatan,
+      biaya: c.biaya,
+      laba,
+      pX: x - 18,
+      pY,
+      pH,
+      bX: x - 5,
+      bY,
+      bH,
+      lX: x + 8,
+      lY,
+      lH
+    }
+  })
+})
+
+// Komposisi Biaya Operasional (Dinamis dari Transaksi Pengeluaran)
+const defaultOperationalCosts = [
+  { name: 'Server Cloud & DB Neon', baseAmount: 2450000 },
+  { name: 'Jaringan CDN Cloudflare', baseAmount: 850000 },
+  { name: 'Gaji Maintenance Engine', baseAmount: 450000 },
+  { name: 'WhatsApp Gateway API', baseAmount: 420000 },
+  { name: 'Disaster Recovery S3', baseAmount: 380000 },
+  { name: 'CS Support & Operator', baseAmount: 350000 },
+  { name: 'Lisensi Domain & SSL', baseAmount: 310000 },
+  { name: 'Pajak & Legalitas SaaS', baseAmount: 220000 },
+  { name: 'Demo Onsite Sekolah', baseAmount: 180000 }
+]
+
+const operationalCosts = computed(() => {
+  const map = {}
+  defaultOperationalCosts.forEach(item => {
+    map[item.name] = item.baseAmount
+  })
+  
+  // Agregasi dari transaksi pengeluaran riil
+  transactions.value.filter(t => t.type === 'out').forEach(t => {
+    const cat = t.category || 'Biaya Operasional Lainnya'
+    map[cat] = (map[cat] || 0) + Number(t.amount || 0)
+  })
+  
+  const list = Object.keys(map).map(k => ({
+    name: k,
+    amount: map[k]
+  }))
+  
+  list.sort((a, b) => b.amount - a.amount)
+  const max = list[0]?.amount || 1
+  
+  return list.map(item => ({
+    name: item.name,
+    amount: item.amount,
+    percentage: Math.min(100, Math.max(5, Math.round((item.amount / max) * 100))),
+    formatted: formatRupiah(item.amount)
+  }))
+})
 
 // Data Trafik & Pengguna Aktif Reaktif Berdasarkan Rentang Waktu (1 Minggu, 1 Bulan, 1 Tahun)
 const trafficDataset = {
@@ -1465,6 +1741,18 @@ const defaultAssets = [
 const assetsList = ref([])
 
 const loadData = () => {
+  const savedPeriods = localStorage.getItem('guruKu_chart_periods')
+  if (savedPeriods) {
+    try {
+      chartPeriods.value = JSON.parse(savedPeriods)
+    } catch (e) {
+      chartPeriods.value = JSON.parse(JSON.stringify(defaultChartPeriods))
+    }
+  } else {
+    chartPeriods.value = JSON.parse(JSON.stringify(defaultChartPeriods))
+    localStorage.setItem('guruKu_chart_periods', JSON.stringify(defaultChartPeriods))
+  }
+
   const savedTx = localStorage.getItem('guruKu_finance_transactions')
   if (savedTx) {
     try {
@@ -1501,11 +1789,21 @@ const recalculateFinancials = () => {
     else if (t.type === 'out') totalOut += Number(t.amount) || 0
   })
 
-  // Sinkronkan data
+  // Sinkronkan data ringkasan kartu
   financialData.value.penjualanBulanIni = totalIn > 0 ? totalIn : 254205
   financialData.value.pengeluaranBulanIni = totalOut > 0 ? totalOut : 104205
   financialData.value.labaKotorBulanIni = Math.max(financialData.value.penjualanBulanIni - financialData.value.pengeluaranBulanIni, 0)
   financialData.value.saldoKas = 8365958 + (totalIn - 254205) - (totalOut - 104205)
+
+  // Sinkronkan periode Nov 26
+  const novPeriod = chartPeriods.value.find(p => p.label === 'Nov 26')
+  if (novPeriod) {
+    novPeriod.pendapatan = financialData.value.penjualanBulanIni
+    novPeriod.biaya = financialData.value.pengeluaranBulanIni
+    novPeriod.kasMasuk = financialData.value.penjualanBulanIni
+    novPeriod.kasKeluar = financialData.value.pengeluaranBulanIni
+    novPeriod.saldo = financialData.value.saldoKas
+  }
 
   // Simpan ke localStorage agar Dashboard Utama bisa membaca
   localStorage.setItem('guruKu_financial_summary', JSON.stringify(financialData.value))
@@ -1534,6 +1832,21 @@ const saveNewTransaction = () => {
   const dateStr = `${now.getDate()} Nov ${now.getFullYear()}`
   const refStr = `TRX-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 900) + 100)}`
 
+  const targetPeriodLabel = newTx.value.period || 'Nov 26'
+  const targetPeriod = chartPeriods.value.find(p => p.label === targetPeriodLabel)
+  const amt = Number(newTx.value.amount) || 0
+  if (targetPeriod) {
+    if (newTx.value.type === 'in') {
+      targetPeriod.pendapatan += amt
+      targetPeriod.kasMasuk += amt
+      targetPeriod.saldo += amt
+    } else {
+      targetPeriod.biaya += amt
+      targetPeriod.kasKeluar += amt
+      targetPeriod.saldo -= amt
+    }
+  }
+
   transactions.value.unshift({
     id: Date.now(),
     date: dateStr,
@@ -1541,20 +1854,41 @@ const saveNewTransaction = () => {
     category: newTx.value.category,
     description: newTx.value.description || '-',
     type: newTx.value.type,
-    amount: Number(newTx.value.amount)
+    amount: amt,
+    period: targetPeriodLabel
   })
 
   localStorage.setItem('guruKu_finance_transactions', JSON.stringify(transactions.value))
+  localStorage.setItem('guruKu_chart_periods', JSON.stringify(chartPeriods.value))
   recalculateFinancials()
+  window.dispatchEvent(new CustomEvent('guruKu_finance_updated'))
 
-  newTx.value = { type: 'in', category: '', amount: null, description: '' }
+  newTx.value = { type: 'in', period: 'Nov 26', category: '', amount: null, description: '' }
   showAddTxModal.value = false
 }
 
 const deleteTransaction = (id) => {
+  const targetTx = transactions.value.find(t => t.id === id)
+  if (targetTx) {
+    const targetPeriod = chartPeriods.value.find(p => p.label === (targetTx.period || 'Nov 26'))
+    const amt = Number(targetTx.amount) || 0
+    if (targetPeriod) {
+      if (targetTx.type === 'in') {
+        targetPeriod.pendapatan = Math.max(0, targetPeriod.pendapatan - amt)
+        targetPeriod.kasMasuk = Math.max(0, targetPeriod.kasMasuk - amt)
+        targetPeriod.saldo -= amt
+      } else {
+        targetPeriod.biaya = Math.max(0, targetPeriod.biaya - amt)
+        targetPeriod.kasKeluar = Math.max(0, targetPeriod.kasKeluar - amt)
+        targetPeriod.saldo += amt
+      }
+    }
+  }
   transactions.value = transactions.value.filter(t => t.id !== id)
   localStorage.setItem('guruKu_finance_transactions', JSON.stringify(transactions.value))
+  localStorage.setItem('guruKu_chart_periods', JSON.stringify(chartPeriods.value))
   recalculateFinancials()
+  window.dispatchEvent(new CustomEvent('guruKu_finance_updated'))
 }
 
 const saveNewAsset = () => {
@@ -1614,5 +1948,12 @@ const formatRupiah = (val) => {
 
 onMounted(() => {
   loadData()
+  window.addEventListener('guruKu_finance_updated', loadData)
+  window.addEventListener('storage', loadData)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('guruKu_finance_updated', loadData)
+  window.removeEventListener('storage', loadData)
 })
 </script>
