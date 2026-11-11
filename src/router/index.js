@@ -18,6 +18,8 @@ import JadwalKelas from '../views/JadwalKelas.vue'
 import MataPelajaran from '../views/MataPelajaran.vue'
 import AnalisisGuru from '../views/AnalisisGuru.vue'
 import TunjanganSertifikasi from '../views/TunjanganSertifikasi.vue'
+import KeuanganAset from '../views/KeuanganAset.vue'
+import KalkulatorHPP from '../views/KalkulatorHPP.vue'
 import PusatBantuan from '../views/PusatBantuan.vue'
 import ComingSoon from '../views/ComingSoon.vue'
 import { ROUTES, SCHOOL_ADMIN_SUB } from '../config/routePaths.js'
@@ -55,6 +57,8 @@ const routes = [
       { path: SCHOOL_ADMIN_SUB.MATA_PELAJARAN, name: 'MataPelajaran', component: MataPelajaran },
       { path: SCHOOL_ADMIN_SUB.ANALISIS_GURU, name: 'AnalisisGuru', component: AnalisisGuru },
       { path: SCHOOL_ADMIN_SUB.TUNJANGAN_SERTIFIKASI, name: 'TunjanganSertifikasi', component: TunjanganSertifikasi },
+      { path: SCHOOL_ADMIN_SUB.KEUANGAN_ASET, name: 'KeuanganAset', component: KeuanganAset },
+      { path: SCHOOL_ADMIN_SUB.KALKULATOR_HPP, name: 'KalkulatorHPP', component: KalkulatorHPP },
       { path: SCHOOL_ADMIN_SUB.PUSAT_BANTUAN, name: 'PusatBantuan', component: PusatBantuan },
       { path: ':pathMatch(.*)*', name: 'AdminNotFound', component: ComingSoon }
     ]

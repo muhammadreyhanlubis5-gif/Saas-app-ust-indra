@@ -4,7 +4,7 @@
     <!-- Mobile Overlay Backdrop -->
     <div v-if="isSidebarOpen" @click="isSidebarOpen = false" class="fixed inset-0 bg-slate-950/60 z-30 md:hidden backdrop-blur-xs transition-opacity"></div>
 
-    <!-- Sidebar Kiri (Dark Navy Sesuai Referensi Desain) -->
+    <!-- Sidebar Kiri (Dark Navy Sesuai Referensi Desain ARUS LAB / GuruKu) -->
     <aside 
       :class="[isSidebarOpen ? 'translate-x-0' : '-translate-x-full', 'md:translate-x-0']"
       class="w-64 bg-[#0B132B] text-slate-300 flex flex-col h-full shadow-2xl md:shadow-none z-40 flex-shrink-0 fixed md:relative transition-transform duration-300 ease-in-out border-r border-slate-800/80 select-none">
@@ -80,108 +80,172 @@
         </button>
       </div>
 
-      <!-- Halaman Root Dashboard Sesuai Referensi -->
+      <!-- Halaman Root Dashboard Sesuai Gambar Referensi Pengguna -->
       <div v-if="$route.path === ROUTES.SCHOOL_ADMIN || $route.path === '/admin-sekolah'" class="p-4 md:p-8 max-w-[1440px] mx-auto space-y-6">
         
-        <!-- Header Bar: Judul Dashboard, Tanggal & Tombol Aksi -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+        <!-- Header Bar: Judul Dashboard, Tanggal & Tombol Aksi (Persis Gambar 1) -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
           <div>
             <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Dashboard</h1>
             <p class="text-xs md:text-sm text-slate-400 font-medium mt-0.5 capitalize">{{ currentDateFormatted }}</p>
           </div>
           
           <div class="flex items-center gap-2.5 flex-wrap">
-            <button @click="showWizard = true" 
-              class="inline-flex items-center gap-2 px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer">
+            <button @click="showInvoiceModal = true" 
+              class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer">
               <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+              <span>+ Buat invoice</span>
+            </button>
+            <router-link :to="ROUTES.KEUANGAN_ASET"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+              <span>Antrean cetak (0)</span>
+            </router-link>
+            <button @click="showWizard = true" 
+              class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
               <span>Susun Jadwal</span>
             </button>
-            <router-link :to="ROUTES.JADWAL_KELAS" 
-              class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-              <span>Jadwal Aktif ({{ rawStats.progress >= 70 ? '1' : '0' }})</span>
-            </router-link>
           </div>
         </div>
 
-        <!-- 4 Stat Cards Sesuai Referensi -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+        <!-- Mode View Switcher: Finansial & Bisnis (Default) vs Operasional KBM -->
+        <div class="flex items-center gap-2">
+          <button @click="activeDashboardMode = 'business'" 
+            class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer"
+            :class="activeDashboardMode === 'business' ? 'bg-slate-900 text-white shadow-xs' : 'bg-white text-slate-500 hover:text-slate-800 border border-slate-200'">
+            Finansial & Bisnis
+          </button>
+          <button @click="activeDashboardMode = 'academic'" 
+            class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer"
+            :class="activeDashboardMode === 'academic' ? 'bg-slate-900 text-white shadow-xs' : 'bg-white text-slate-500 hover:text-slate-800 border border-slate-200'">
+            Operasional Sekolah ({{ animatedStats.totalGuru }} Guru, {{ animatedStats.totalKelas }} Rombel)
+          </button>
+        </div>
+
+        <!-- 4 KARTU STATISTIK: MODE BISNIS & KEUANGAN (PERSIS GAMBAR 1) -->
+        <div v-if="activeDashboardMode === 'business'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
           
-          <!-- Card 1: Total Guru -->
+          <!-- Card 1: PENJUALAN BULAN INI -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Penjualan Bulan Ini</p>
+            <div class="text-2xl font-black text-slate-900 tracking-tight font-mono">
+              {{ formatRupiah(financialSummary.penjualanBulanIni) }}
+            </div>
+            <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">
+              semua channel • 1 pesanan web
+            </p>
+          </div>
+
+          <!-- Card 2: LABA KOTOR BULAN INI -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Laba Kotor Bulan Ini</p>
+            <div class="text-2xl font-black text-slate-900 tracking-tight font-mono">
+              {{ formatRupiah(financialSummary.labaKotorBulanIni) }}
+            </div>
+            <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">
+              setelah HPP {{ formatRupiah(financialSummary.pengeluaranBulanIni) }} & potongan Rp 0
+            </p>
+          </div>
+
+          <!-- Card 3: SALDO KAS -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Saldo Kas</p>
+            <div class="text-2xl font-black text-slate-900 tracking-tight font-mono">
+              {{ formatRupiah(financialSummary.saldoKas) }}
+            </div>
+            <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">
+              belanja bulan ini Rp 0
+            </p>
+          </div>
+
+          <!-- Card 4: PENGELUARAN BULAN INI / ANTREAN MESIN -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Pengeluaran Bulan Ini</p>
+            <div class="text-2xl font-black text-slate-900 tracking-tight font-mono">
+              {{ formatRupiah(financialSummary.pengeluaranBulanIni) }}
+            </div>
+            <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">
+              0 pesanan menunggu / operasional HPP
+            </p>
+          </div>
+
+        </div>
+
+        <!-- 4 KARTU STATISTIK: MODE OPERASIONAL SEKOLAH -->
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
           <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
             <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Total Guru Terdaftar</p>
             <div class="text-2xl font-black text-slate-900 tracking-tight">
               {{ animatedStats.totalGuru }} <span class="text-base font-semibold text-slate-500">Guru</span>
             </div>
-            <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">
-              {{ rawStats.totalGuru > 0 ? rawStats.totalGuru + ' staf pengajar terdata' : 'Belum ada guru' }}
-            </p>
+            <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">{{ rawStats.totalGuru }} staf aktif terdata</p>
           </div>
 
-          <!-- Card 2: Total Kelas -->
           <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
             <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Total Rombel Kelas</p>
             <div class="text-2xl font-black text-slate-900 tracking-tight">
               {{ animatedStats.totalKelas }} <span class="text-base font-semibold text-slate-500">Rombel</span>
             </div>
-            <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">
-              {{ rawStats.totalKelas > 0 ? rawStats.totalKelas + ' rombongan belajar aktif' : 'Belum ada kelas' }}
-            </p>
+            <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">{{ rawStats.totalKelas }} rombongan belajar aktif</p>
           </div>
 
-          <!-- Card 3: Mata Pelajaran -->
           <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
             <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Mata Pelajaran</p>
             <div class="text-2xl font-black text-slate-900 tracking-tight">
               {{ animatedStats.totalMapel }} <span class="text-base font-semibold text-slate-500">Mapel</span>
             </div>
-            <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">
-              {{ rawStats.totalMapel > 0 ? rawStats.totalMapel + ' kurikulum terdaftar' : 'Belum ada mapel' }}
-            </p>
+            <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">{{ rawStats.totalMapel }} kurikulum terdaftar</p>
           </div>
 
-          <!-- Card 4: Jam Mengajar -->
           <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
             <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Total Jam Mengajar</p>
             <div class="text-2xl font-black text-slate-900 tracking-tight">
               {{ animatedStats.jamMengajar }} <span class="text-base font-semibold text-slate-500">JP</span>
             </div>
-            <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">
-              {{ rawStats.jamMengajar > 0 ? rawStats.jamMengajar + ' jam teralokasi / minggu' : 'Belum didistribusikan' }}
-            </p>
+            <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">{{ rawStats.jamMengajar }} jam teralokasi / minggu</p>
           </div>
-
         </div>
 
-        <!-- Bagian Tengah: Chart Distribusi Jam (Kiri) & Status Kesiapan Jadwal (Kanan) -->
+        <!-- Bagian Tengah: Chart Omzet Penjualan (Kiri) & Status Pesanan (Kanan) - PERSIS GAMBAR 2 -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
           
-          <!-- Chart Distribusi Jam Mengajar - 12 Bulan (Kiri 65% ~ 8 cols) -->
+          <!-- Chart Penjualan vs Belanja • 12 bulan (Kiri 65% ~ 8 cols) -->
           <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-200/80 p-5 md:p-6 shadow-xs flex flex-col justify-between">
-            <div>
-              <h3 class="text-sm font-bold text-slate-900">Distribusi Jam Mengajar - 12 bulan</h3>
-              <!-- Legend dots -->
-              <div class="flex items-center gap-4 mt-2 text-[11px] font-medium text-slate-500">
-                <span class="flex items-center gap-1.5">
-                  <span class="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block"></span>
-                  Jam Terjadwal
-                </span>
-                <span class="flex items-center gap-1.5">
-                  <span class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></span>
-                  Kapasitas Ideal
-                </span>
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">
+                  {{ activeDashboardMode === 'business' ? 'Penjualan vs belanja · 12 bulan' : 'Distribusi Jam Mengajar · 12 bulan' }}
+                </h3>
+                <!-- Legend dots persis referensi Gambar 2 -->
+                <div class="flex items-center gap-4 mt-2 text-[11px] font-medium text-slate-500">
+                  <span class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block"></span>
+                    {{ activeDashboardMode === 'business' ? 'Penjualan' : 'Jam Terjadwal' }}
+                  </span>
+                  <span class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-600 inline-block"></span>
+                    {{ activeDashboardMode === 'business' ? 'Belanja' : 'Kapasitas Normal' }}
+                  </span>
+                </div>
               </div>
+
+              <!-- Quick Link to Keuangan / Kalkulator HPP -->
+              <router-link :to="ROUTES.KALKULATOR_HPP" class="text-xs font-semibold text-blue-600 hover:text-blue-700 hidden sm:flex items-center gap-1">
+                <span>Kalkulator HPP</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+              </router-link>
             </div>
 
-            <!-- Chart Area dengan Grid Lines & 12 Bar Bulan -->
+            <!-- Chart Area dengan Grid Lines & 12 Bar Bulan Persis Gambar 2 -->
             <div class="mt-6">
               <div class="relative h-56 flex">
-                <!-- Y-Axis Ticks -->
+                <!-- Y-Axis Ticks (300rb, 225rb, 150rb, 75rb, 0) -->
                 <div class="w-14 h-full flex flex-col justify-between text-[11px] font-medium text-slate-400 pr-2 text-right select-none">
-                  <span>300 JP</span>
-                  <span>225 JP</span>
-                  <span>150 JP</span>
-                  <span>75 JP</span>
+                  <span>{{ activeDashboardMode === 'business' ? '300rb' : '300 JP' }}</span>
+                  <span>{{ activeDashboardMode === 'business' ? '225rb' : '225 JP' }}</span>
+                  <span>{{ activeDashboardMode === 'business' ? '150rb' : '150 JP' }}</span>
+                  <span>{{ activeDashboardMode === 'business' ? '75rb' : '75 JP' }}</span>
                   <span>0</span>
                 </div>
 
@@ -203,13 +267,18 @@
                       
                       <!-- Tooltip saat hover -->
                       <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md pointer-events-none whitespace-nowrap z-20">
-                        {{ m }}: {{ idx === 11 ? (rawStats.jamMengajar > 0 ? rawStats.jamMengajar + ' JP' : '180 JP Terjadwal') : 'Kapasitas Normal' }}
+                        <span v-if="activeDashboardMode === 'business'">
+                          {{ m }}: {{ idx === 11 ? 'Penjualan Rp 254.205 (Laba Bersih Rp 150.000)' : 'Tidak ada transaksi' }}
+                        </span>
+                        <span v-else>
+                          {{ m }}: {{ idx === 11 ? (rawStats.jamMengajar > 0 ? rawStats.jamMengajar + ' JP' : '180 JP Terjadwal') : 'Kapasitas Normal' }}
+                        </span>
                       </div>
 
-                      <!-- The Bar: Bulan Nov memiliki bar biru menonjol persis gambar referensi -->
+                      <!-- The Bar: Bulan Nov memiliki bar biru tegak menonjol PERSIS Gambar 2 -->
                       <div v-if="idx === 11" 
                         class="w-3.5 sm:w-5 md:w-6 bg-blue-600 rounded-t-sm transition-all duration-700 ease-out shadow-xs"
-                        :style="`height: ${novBarHeight}%`">
+                        :style="`height: ${activeDashboardMode === 'business' ? omzetBarHeight : novBarHeight}%`">
                       </div>
                       <div v-else class="w-1.5 h-1 rounded-full bg-slate-200 mb-0.5 opacity-60"></div>
                     </div>
@@ -226,117 +295,113 @@
             </div>
           </div>
 
-          <!-- Status Kesiapan Jadwal (Kanan ~ 4 cols, Sesuai Referensi "Status Pesanan") -->
+          <!-- Status Pesanan (Kanan ~ 4 cols, Sesuai Referensi Gambar) -->
           <div class="lg:col-span-4 bg-white rounded-2xl border border-slate-200/80 p-5 md:p-6 shadow-xs flex flex-col justify-between">
-            <h3 class="text-sm font-bold text-slate-900 pb-2 border-b border-slate-100">Status Kesiapan Jadwal</h3>
+            <h3 class="text-sm font-bold text-slate-900 pb-2 border-b border-slate-100">Status pesanan</h3>
             
             <div class="space-y-3 py-2 text-xs">
               
-              <!-- Item 1: Menunggu Kelengkapan Guru -->
+              <!-- 1. Menunggu pembayaran -->
               <div class="flex items-center justify-between text-slate-600">
                 <div class="flex items-center gap-2">
                   <span class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0"></span>
-                  <span>Menunggu Kelengkapan Guru</span>
+                  <span>Menunggu pembayaran</span>
                 </div>
-                <span class="font-bold text-slate-700 font-mono">{{ rawStats.totalGuru === 0 ? 1 : 0 }}</span>
+                <span class="font-bold text-slate-700 font-mono">0</span>
               </div>
 
-              <!-- Item 2: Rombel Kelas Terdata -->
+              <!-- 2. Dibayar - antre produksi -->
               <div class="flex items-center justify-between text-slate-600">
                 <div class="flex items-center gap-2">
                   <span class="w-2 h-2 rounded-full bg-sky-400 flex-shrink-0"></span>
-                  <span>Rombel Kelas Terdata</span>
+                  <span>Dibayar - antre produksi</span>
                 </div>
-                <span class="font-bold text-slate-700 font-mono">{{ rawStats.totalKelas }}</span>
+                <span class="font-bold text-slate-700 font-mono">0</span>
               </div>
 
-              <!-- Item 3: Sedang Dicetak / Distribusi Pengampu (Highlighted Dark Pill Sesuai Referensi) -->
+              <!-- 3. Sedang dicetak (Dark Rounded Pill Highlight Persis Referensi Gambar) -->
               <div class="bg-slate-900 text-white rounded-xl px-3 py-2 flex items-center justify-between shadow-xs">
                 <div class="flex items-center gap-2">
-                  <span class="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0 animate-pulse"></span>
-                  <span class="font-semibold text-xs">Distribusi Pengampu Mapel</span>
+                  <span class="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0"></span>
+                  <span class="font-semibold text-xs">Sedang dicetak</span>
                 </div>
-                <span class="font-bold text-white font-mono text-xs">{{ rawStats.jamMengajar }} JP</span>
+                <span class="font-bold text-white font-mono text-xs">0</span>
               </div>
 
-              <!-- Item 4: Permintaan Jam Kosong -->
+              <!-- 4. Quality control -->
               <div class="flex items-center justify-between text-slate-600">
                 <div class="flex items-center gap-2">
                   <span class="w-2 h-2 rounded-full bg-indigo-400 flex-shrink-0"></span>
-                  <span>Permintaan Jam Kosong</span>
+                  <span>Quality control</span>
                 </div>
                 <span class="font-bold text-slate-700 font-mono">0</span>
               </div>
 
-              <!-- Item 5: Validasi Bentrok Jadwal -->
+              <!-- 5. Dikirim -->
               <div class="flex items-center justify-between text-slate-600">
                 <div class="flex items-center gap-2">
                   <span class="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0"></span>
-                  <span>Validasi Bebas Bentrok</span>
+                  <span>Dikirim</span>
                 </div>
                 <span class="font-bold text-slate-700 font-mono">0</span>
               </div>
 
-              <!-- Item 6: Jadwal Siap Digunakan -->
+              <!-- 6. Selesai (Angka 1 Sesuai Referensi Gambar) -->
               <div class="flex items-center justify-between text-slate-600">
                 <div class="flex items-center gap-2">
                   <span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
-                  <span>Jadwal Siap Digunakan</span>
+                  <span>Selesai</span>
                 </div>
-                <span class="font-bold text-emerald-600 font-mono">{{ rawStats.progress >= 70 ? 1 : 0 }}</span>
+                <span class="font-bold text-emerald-600 font-mono">1</span>
               </div>
 
-              <!-- Item 7: Konflik / Perlu Revisi -->
+              <!-- 7. Dibatalkan -->
               <div class="flex items-center justify-between text-slate-600">
                 <div class="flex items-center gap-2">
                   <span class="w-2 h-2 rounded-full bg-rose-400 flex-shrink-0"></span>
-                  <span>Konflik / Perlu Revisi</span>
+                  <span>Dibatalkan</span>
                 </div>
                 <span class="font-bold text-slate-700 font-mono">0</span>
               </div>
 
             </div>
 
-            <!-- Footer kecil untuk status keseluruhan -->
             <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-              <span>Tingkat Kesiapan</span>
-              <span class="font-bold text-blue-600">{{ animatedStats.progress }}%</span>
+              <span>Keuangan Terverifikasi</span>
+              <router-link :to="ROUTES.KEUANGAN_ASET" class="font-bold text-blue-600 hover:underline">Buka Kas & Aset</router-link>
             </div>
           </div>
 
         </div>
 
-        <!-- Bagian Bawah: Antrean Produksi (Kiri) & Pesanan Terbaru (Kanan) -->
+        <!-- Bagian Bawah: Antrean Produksi (Kiri) & Pesanan Terbaru (Kanan) - PERSIS GAMBAR REFERENSI -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
           
-          <!-- Panel Kiri: Antrean Validasi Jadwal (Sesuai Referensi "Antrean Produksi") -->
+          <!-- Panel Kiri: Antrean produksi (Persis Gambar) -->
           <div class="bg-white rounded-2xl border border-slate-200/80 p-5 md:p-6 shadow-xs flex flex-col justify-between min-h-[140px]">
             <div>
-              <h3 class="text-sm font-bold text-slate-900 mb-2">Antrean Validasi Jadwal</h3>
-              <p class="text-xs text-slate-400 font-medium">Tidak ada jadwal di antrean bentrok</p>
+              <h3 class="text-sm font-bold text-slate-900 mb-2">Antrean produksi</h3>
+              <p class="text-xs text-slate-400 font-medium">Tidak ada pesanan di antrean</p>
             </div>
-            <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
-              <span class="text-[11px] text-slate-400 font-medium">Engine Penjadwalan Otomatis Siap</span>
-              <button @click="showWizard = true" class="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors cursor-pointer">
-                <span>Susun Sekarang</span>
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-              </button>
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+              <span>Status Jalur Cetak KBM</span>
+              <span class="text-emerald-600 font-bold">Siap Beroperasi</span>
             </div>
           </div>
 
-          <!-- Panel Kanan: Aktivitas Terbaru (Sesuai Referensi "Pesanan Terbaru") -->
+          <!-- Panel Kanan: Pesanan terbaru (Persis Gambar: Klien / Rekan Istimewa, Rp 254.205, • Selesai) -->
           <div class="bg-white rounded-2xl border border-slate-200/80 p-5 md:p-6 shadow-xs flex flex-col justify-between min-h-[140px]">
             <div>
-              <h3 class="text-sm font-bold text-slate-900 mb-3">Aktivitas Terbaru</h3>
+              <h3 class="text-sm font-bold text-slate-900 mb-3">Pesanan terbaru</h3>
               <div class="space-y-3 text-xs">
                 <div class="flex items-center justify-between">
                   <div>
-                    <p class="font-semibold text-slate-800">Sinkronisasi Alokasi Pengampu</p>
-                    <p class="text-[11px] text-slate-400 mt-0.5">11 Nov, 12:00</p>
+                    <p class="font-semibold text-slate-800">Klien / Rekan Istimewa</p>
+                    <p class="text-[11px] text-slate-400 mt-0.5">2 Nov, 12.00</p>
                   </div>
                   <div class="text-right">
-                    <p class="font-bold text-slate-800">{{ rawStats.jamMengajar > 0 ? rawStats.jamMengajar + ' JP' : 'Terjadwal' }}</p>
-                    <span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full mt-0.5">
+                    <p class="font-bold text-slate-800 font-mono">{{ formatRupiah(financialSummary.penjualanBulanIni) }}</p>
+                    <span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full mt-0.5 border border-emerald-100">
                       <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                       Selesai
                     </span>
@@ -345,8 +410,8 @@
               </div>
             </div>
             <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-              <span>Sistem Database GuruKu</span>
-              <span class="text-slate-400 font-medium">Tersinkronisasi</span>
+              <span>Transaksi Terverifikasi</span>
+              <span class="text-slate-500 font-medium">1 Transaksi Selesai</span>
             </div>
           </div>
 
@@ -357,6 +422,47 @@
       <!-- Halaman dinamis child router akan dimuat di sini -->
       <router-view v-else></router-view>
       
+      <!-- MODAL BUAT INVOICE CEPAT -->
+      <div v-if="showInvoiceModal" class="fixed inset-0 bg-slate-950/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 border border-slate-200">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-base font-bold text-slate-900">Buat Invoice Baru</h3>
+            <button @click="showInvoiceModal = false" class="text-slate-400 hover:text-slate-700">✕</button>
+          </div>
+          
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Nama Klien / Rekan</label>
+              <input v-model="invoiceForm.customerName" type="text" 
+                class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Deskripsi Layanan / Item</label>
+              <input v-model="invoiceForm.itemDescription" type="text" 
+                class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Total Tagihan (Rp)</label>
+              <input v-model.number="invoiceForm.amount" type="number" 
+                class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Status Pembayaran</label>
+              <select v-model="invoiceForm.status" 
+                class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                <option value="Lunas">Lunas (Selesai)</option>
+                <option value="Menunggu">Menunggu Pembayaran</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end gap-2 mt-5 pt-3 border-t border-slate-100">
+            <button @click="showInvoiceModal = false" class="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-800">Batal</button>
+            <button @click="saveInvoice" class="px-4 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-xs">Terbitkan Invoice</button>
+          </div>
+        </div>
+      </div>
+
       <MagicWizard :show="showWizard" @close="showWizard = false" />
     </main>
   </div>
@@ -373,9 +479,62 @@ const router = useRouter()
 const route = useRoute()
 const profileName = ref('')
 const showWizard = ref(false)
+const showInvoiceModal = ref(false)
 const isSidebarOpen = ref(false)
+const activeDashboardMode = ref('business') // 'business' (persis gambar referensi) atau 'academic'
 
-// Nilai Riil Database / LocalStorage
+// Invoice Form State
+const invoiceForm = ref({
+  customerName: 'Klien / Rekan Istimewa',
+  itemDescription: 'Paket Layanan Penjadwalan & Lisensi GuruKu',
+  amount: 254205,
+  status: 'Lunas'
+})
+
+// Data Finansial & Bisnis (Nilai default persis gambar referensi)
+const financialSummary = ref({
+  penjualanBulanIni: 254205,
+  pengeluaranBulanIni: 104205,
+  labaKotorBulanIni: 150000,
+  saldoKas: 8365958
+})
+
+const loadFinancialSummary = () => {
+  const saved = localStorage.getItem('guruKu_financial_summary')
+  if (saved) {
+    try {
+      financialSummary.value = { ...financialSummary.value, ...JSON.parse(saved) }
+    } catch (e) {}
+  }
+}
+
+const saveInvoice = () => {
+  const amt = Number(invoiceForm.value.amount) || 254205
+  financialSummary.value.penjualanBulanIni = amt
+  financialSummary.value.labaKotorBulanIni = Math.max(amt - financialSummary.value.pengeluaranBulanIni, 0)
+  localStorage.setItem('guruKu_financial_summary', JSON.stringify(financialSummary.value))
+
+  // Catat transaksi di buku kas
+  const tx = {
+    id: Date.now(),
+    date: '11 Nov 2026',
+    ref: `INV-202611-${Math.floor(Math.random() * 900) + 100}`,
+    category: 'Penjualan Invoice',
+    description: `${invoiceForm.value.customerName} - ${invoiceForm.value.itemDescription}`,
+    type: 'in',
+    amount: amt
+  }
+  let existing = []
+  try {
+    existing = JSON.parse(localStorage.getItem('guruKu_finance_transactions') || '[]')
+  } catch (e) {}
+  existing.unshift(tx)
+  localStorage.setItem('guruKu_finance_transactions', JSON.stringify(existing))
+
+  showInvoiceModal.value = false
+}
+
+// Nilai Riil Database / LocalStorage Akademik
 const rawStats = ref({
   totalGuru: 0,
   totalKelas: 0,
@@ -396,7 +555,14 @@ const animatedStats = ref({
 // Daftar Bulan untuk Chart 12 Bulan (Persis Referensi)
 const chartMonths = ['Des', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov']
 
-// Tinggi Bar Bulan Nov (Skala 300 JP sebagai 100%)
+// Tinggi Bar Omzet Bulan Nov (Skala 300rb sebagai 100%) - Persis Gambar 2 (~85% height)
+const omzetBarHeight = computed(() => {
+  const val = financialSummary.value.penjualanBulanIni || 254205
+  const pct = Math.min(Math.round((val / 300000) * 100), 86)
+  return Math.max(pct, 30)
+})
+
+// Tinggi Bar Jam Mengajar (Skala 300 JP sebagai 100%)
 const novBarHeight = computed(() => {
   const hours = animatedStats.value.jamMengajar || 180
   const pct = Math.min(Math.round((hours / 300) * 100), 85)
@@ -414,6 +580,10 @@ const currentDateFormatted = computed(() => {
   const year = now.getFullYear()
   return `${dayName}, ${date} ${monthName} ${year}`
 })
+
+const formatRupiah = (val) => {
+  return 'Rp ' + Number(val || 0).toLocaleString('id-ID')
+}
 
 // Fungsi Animasi Count-Up Halus (0 -> Nilai Sebenarnya)
 const animateCountUp = (target, durationMs = 1000) => {
@@ -451,11 +621,6 @@ const animateCountUp = (target, durationMs = 1000) => {
   requestAnimationFrame(step)
 }
 
-// Cek apakah Master Data Lengkap (Guru, Kelas, Mapel semuanya > 0)
-const isMasterDataComplete = computed(() => {
-  return rawStats.value.totalGuru > 0 && rawStats.value.totalKelas > 0 && rawStats.value.totalMapel > 0
-})
-
 const fetchProfileName = async () => {
   const localSchoolName = localStorage.getItem('school_name') || localStorage.getItem('user_name')
   if (localSchoolName) {
@@ -471,19 +636,16 @@ const fetchProfileName = async () => {
       const data = await res.json()
       if (data.name) profileName.value = data.name
     }
-  } catch (e) {
-    // ignore
-  }
+  } catch (e) {}
 }
 
-// Sinkronisasi Statistik Nyata dari Seluruh Sumber (LocalStorage & Backend)
+// Sinkronisasi Statistik Nyata dari Seluruh Sumber
 const fetchDashboardStats = async () => {
   let teacherCount = 0
   let classCount = 0
   let mapelCount = 0
   let totalJam = 0
 
-  // 1. Sinkron Guru dari guruKu_teachers
   const savedTeachers = localStorage.getItem('guruKu_teachers')
   if (savedTeachers) {
     try {
@@ -492,7 +654,6 @@ const fetchDashboardStats = async () => {
     } catch (e) {}
   }
 
-  // 2. Sinkron Kelas dari guruKu_classes
   const savedClasses = localStorage.getItem('guruKu_classes')
   if (savedClasses) {
     try {
@@ -501,7 +662,6 @@ const fetchDashboardStats = async () => {
     } catch (e) {}
   }
 
-  // 3. Sinkron Mapel dari guruKu_mapel
   const savedMapel = localStorage.getItem('guruKu_mapel')
   if (savedMapel) {
     try {
@@ -510,7 +670,6 @@ const fetchDashboardStats = async () => {
     } catch (e) {}
   }
 
-  // 4. Sinkron Jam Mengajar dari guruKu_pengampu
   const savedPengampu = localStorage.getItem('guruKu_pengampu')
   if (savedPengampu) {
     try {
@@ -527,27 +686,6 @@ const fetchDashboardStats = async () => {
     } catch (e) {}
   }
 
-  // Fallback API jika ada data dari backend
-  const schoolId = localStorage.getItem('school_id')
-  if (schoolId) {
-    try {
-      const pengampuRes = await fetch('/api/v1/school/pengampu', { headers: { 'X-School-ID': schoolId } })
-      if (pengampuRes.ok) {
-        const data = await pengampuRes.json()
-        if (data.classes && classCount === 0) classCount = data.classes.length
-        if (data.rows) {
-          if (teacherCount === 0) teacherCount = data.rows.length
-          if (totalJam === 0) {
-            data.rows.forEach(r => {
-              if (r.hours) r.hours.forEach(h => totalJam += Number(h) || 0)
-            })
-          }
-        }
-      }
-    } catch (e) {}
-  }
-
-  // Hitung Progres Keseluruhan secara Otomatis (0 - 100%)
   let p = 0
   if (classCount > 0) p += 12
   if (teacherCount > 0) p += 12
@@ -572,24 +710,36 @@ const fetchDashboardStats = async () => {
 onMounted(() => {
   fetchProfileName()
   fetchDashboardStats()
+  loadFinancialSummary()
 })
 
 watch(() => route.path, (newPath) => {
   if (newPath === ROUTES.SCHOOL_ADMIN || newPath === '/admin-sekolah') {
     fetchProfileName()
     fetchDashboardStats()
+    loadFinancialSummary()
   }
 })
 
+// Definisi SVG Icons
 const iconDb = "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
 const iconClock = "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
 const iconUsers = "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
 const iconBook = "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
 const iconCalendar = "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
 const iconChart = "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-const iconBadge = "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+const iconBadge = "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z"
+const iconWallet = "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+const iconCalculator = "M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
 
 const menuGroups = [
+  {
+    title: 'Keuangan & Bisnis',
+    items: [
+      { title: 'Keuangan & Aset', icon: iconWallet, path: ROUTES.KEUANGAN_ASET },
+      { title: 'Kalkulator HPP', icon: iconCalculator, path: ROUTES.KALKULATOR_HPP }
+    ]
+  },
   {
     title: 'Master Data',
     items: [
