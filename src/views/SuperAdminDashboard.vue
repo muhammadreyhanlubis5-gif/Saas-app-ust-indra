@@ -23,48 +23,81 @@
         </button>
       </div>
 
-      <!-- Navigation Links -->
-      <div class="flex-1 overflow-y-auto py-5 px-3 space-y-2 custom-scrollbar">
+      <!-- Navigation Links (Persis Gambar Referensi) -->
+      <div class="flex-1 overflow-y-auto py-5 px-3 space-y-1.5 custom-scrollbar">
         
-        <button @click="activeTab = 'manajemen'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all cursor-pointer text-sm"
-          :class="activeTab === 'manajemen' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
-          <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-          <span>Manajemen Klien</span>
-        </button>
-        
-        <button @click="activeTab = 'laporan'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all cursor-pointer text-sm"
-          :class="activeTab === 'laporan' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
-          <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-          <span>Laporan Pendapatan</span>
+        <!-- 1. Dashboard -->
+        <button @click="activeTab = 'dashboard'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
+          :class="activeTab === 'dashboard' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span>Dashboard</span>
         </button>
 
-        <button @click="activeTab = 'verifikasi'; isSidebarOpen = false" class="w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition-all relative cursor-pointer text-sm"
-          :class="activeTab === 'verifikasi' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
+        <!-- 2. Pesanan -->
+        <button @click="activeTab = 'manajemen'; isSidebarOpen = false" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
+          :class="activeTab === 'manajemen' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
           <div class="flex items-center gap-3">
-            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <span>Verifikasi Bayar</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            <span>Pesanan</span>
           </div>
           <span v-if="pendingPaymentsCount > 0" class="bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs animate-pulse">
             {{ pendingPaymentsCount }}
           </span>
         </button>
 
-        <button @click="activeTab = 'aduan'; isSidebarOpen = false" class="w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition-all relative cursor-pointer text-sm"
-          :class="activeTab === 'aduan' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
+        <!-- 3. Custom request -->
+        <button @click="activeTab = 'aduan'; isSidebarOpen = false" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
+          :class="activeTab === 'aduan' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
           <div class="flex items-center gap-3">
-            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-            <span>Aduan & Saran</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+            <span>Custom request</span>
           </div>
           <span v-if="unreadTicketsCount > 0" class="bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs">
             {{ unreadTicketsCount }}
           </span>
         </button>
 
-        <button @click="activeTab = 'pengaturan'; isSidebarOpen = false" class="w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition-all relative cursor-pointer text-sm"
-          :class="activeTab === 'pengaturan' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/50' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
+        <!-- 4. Etalase produk -->
+        <button @click="activeTab = 'etalase'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
+          :class="activeTab === 'etalase' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          <span>Etalase produk</span>
+        </button>
+
+        <!-- 5. Filamen -->
+        <button @click="activeTab = 'filamen'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
+          :class="activeTab === 'filamen' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          <span>Filamen</span>
+        </button>
+
+        <!-- 6. Keuangan & aset -->
+        <button @click="activeTab = 'keuangan'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
+          :class="activeTab === 'keuangan' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+          <span>Keuangan & aset</span>
+        </button>
+
+        <!-- 7. Kalkulator HPP -->
+        <button @click="activeTab = 'hpp'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
+          :class="activeTab === 'hpp' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          <span>Kalkulator HPP</span>
+        </button>
+
+        <!-- 8. Laporan investor -->
+        <button @click="activeTab = 'laporan'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
+          :class="activeTab === 'laporan' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          <span>Laporan investor</span>
+        </button>
+
+        <!-- 9. Pengaturan -->
+        <button @click="activeTab = 'pengaturan'; isSidebarOpen = false" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
+          :class="activeTab === 'pengaturan' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
           <div class="flex items-center gap-3">
-            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-            <span>Pengaturan Sistem</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span>Pengaturan</span>
           </div>
           <span v-if="forgotPasswordReports.length > 0" class="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs">
             {{ forgotPasswordReports.length }}
@@ -73,11 +106,19 @@
         
       </div>
 
-      <!-- Sidebar Footer / Logout -->
-      <div class="p-4 border-t border-slate-800">
-        <button @click="handleLogout" class="flex items-center justify-center w-full gap-2 px-4 py-3 font-bold text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all cursor-pointer text-sm">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-          <span>Keluar (Log Out)</span>
+      <!-- Footer Sidebar: Lihat toko & Keluar (Persis Gambar Referensi) -->
+      <div class="p-3.5 border-t border-slate-800/80 bg-[#080E20] space-y-1">
+        <a href="/" target="_blank" class="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-xl transition-colors no-underline">
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+          </svg>
+          <span>Lihat toko</span>
+        </a>
+        <button @click="handleLogout" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-colors text-left cursor-pointer">
+          <svg class="w-4 h-4 text-slate-400 group-hover:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+          </svg>
+          <span>Keluar</span>
         </button>
       </div>
     </aside>
@@ -114,8 +155,8 @@
           <div class="absolute -top-24 -right-24 w-80 sm:w-96 h-80 sm:h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
         </div>
 
-        <!-- PREMIUM HERO BANNER -->
-        <div class="bg-gradient-to-br from-slate-900 via-gray-900 to-indigo-950 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 mb-5 sm:mb-7 shadow-xl relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sm:gap-6 text-white z-10 border border-slate-800/80">
+        <!-- PREMIUM HERO BANNER (Hanya ditampilkan pada Manajemen & Laporan) -->
+        <div v-if="activeTab === 'manajemen' || activeTab === 'laporan'" class="bg-gradient-to-br from-slate-900 via-gray-900 to-indigo-950 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 mb-5 sm:mb-7 shadow-xl relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sm:gap-6 text-white z-10 border border-slate-800/80">
           <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay pointer-events-none"></div>
           <div class="relative z-10 min-w-0">
             <div class="flex items-center gap-2 mb-1">
@@ -137,8 +178,260 @@
           </div>
         </div>
 
+        <!-- DASHBOARD UTAMA (PERSIS TAMPILAN REFERENSI ARUS LAB) -->
+        <div v-if="activeTab === 'dashboard'" class="animate-fade-in space-y-6">
+          <!-- Header Bar: Title, Indonesian Date, + Buat invoice, Antrean cetak (0) -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Dashboard</h1>
+              <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">{{ currentDateFormatted }}</p>
+            </div>
+
+            <div class="flex items-center gap-2.5 flex-wrap">
+              <button 
+                @click="showInvoiceModal = true" 
+                class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
+              >
+                <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                <span>+ Buat invoice</span>
+              </button>
+
+              <button 
+                @click="activeTab = 'manajemen'" 
+                class="inline-flex items-center gap-2 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                <span>Antrean cetak (0)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 4 Stat Cards Row -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Card 1: PENJUALAN BULAN INI -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
+              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">PENJUALAN BULAN INI</p>
+              <div class="text-2xl font-black text-slate-900 font-mono tracking-tight">
+                {{ formatRupiah(financialSummary.penjualanBulanIni) }}
+              </div>
+              <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">
+                semua channel · {{ financialSummary.totalPesananWeb || 1 }} pesanan web
+              </p>
+            </div>
+
+            <!-- Card 2: LABA KOTOR BULAN INI -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
+              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">LABA KOTOR BULAN INI</p>
+              <div class="text-2xl font-black text-slate-900 font-mono tracking-tight">
+                {{ formatRupiah(financialSummary.labaKotorBulanIni) }}
+              </div>
+              <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">
+                setelah HPP {{ formatRupiah(financialSummary.hppBulanIni) }} & potongan Rp 0
+              </p>
+            </div>
+
+            <!-- Card 3: SALDO KAS -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
+              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">SALDO KAS</p>
+              <div class="text-2xl font-black text-slate-900 font-mono tracking-tight">
+                {{ formatRupiah(financialSummary.saldoKas) }}
+              </div>
+              <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">
+                belanja bulan ini {{ formatRupiah(financialSummary.belanjaBulanIni) }}
+              </p>
+            </div>
+
+            <!-- Card 4: ANTREAN MESIN -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
+              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">ANTREAN MESIN</p>
+              <div class="text-2xl font-black text-slate-900 font-mono tracking-tight">
+                {{ financialSummary.antreanMesinJam || '0 jam' }}
+              </div>
+              <p class="text-[11px] text-slate-400 font-medium mt-1 truncate">
+                0 pesanan menunggu/dicetak
+              </p>
+            </div>
+          </div>
+
+          <!-- Middle Row: Chart & Status Pesanan -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <!-- Left: Penjualan vs belanja · 12 bulan (lg:col-span-2) -->
+            <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900 tracking-tight">Penjualan vs belanja · 12 bulan</h3>
+                <div class="flex items-center gap-4 mt-2">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-xs bg-blue-600"></span>
+                    <span class="text-xs text-slate-500 font-medium">Penjualan</span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-xs bg-amber-500"></span>
+                    <span class="text-xs text-slate-500 font-medium">Belanja</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Graphic area with Y-axis 300rb scale and 12 month columns -->
+              <div class="mt-6 pt-4 relative">
+                <!-- Y-Axis labels & Grid lines -->
+                <div class="space-y-7 relative">
+                  <div class="flex items-center gap-3">
+                    <span class="text-[11px] text-slate-400 font-mono w-10 text-right shrink-0">300rb</span>
+                    <div class="flex-1 border-b border-slate-100"></div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-[11px] text-slate-400 font-mono w-10 text-right shrink-0">225rb</span>
+                    <div class="flex-1 border-b border-slate-100"></div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-[11px] text-slate-400 font-mono w-10 text-right shrink-0">150rb</span>
+                    <div class="flex-1 border-b border-slate-100"></div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-[11px] text-slate-400 font-mono w-10 text-right shrink-0">75rb</span>
+                    <div class="flex-1 border-b border-slate-100"></div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-[11px] text-slate-400 font-mono w-10 text-right shrink-0">0</span>
+                    <div class="flex-1 border-b border-slate-100"></div>
+                  </div>
+                </div>
+
+                <!-- Overlay for vertical bars -->
+                <div class="absolute inset-0 left-13 right-2 flex items-end justify-between pb-6 pointer-events-none">
+                  <div 
+                    v-for="item in chartMonths" 
+                    :key="item.month" 
+                    class="flex-1 flex justify-center items-end h-[160px] pointer-events-auto group relative cursor-pointer"
+                  >
+                    <!-- Tooltip on hover -->
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full mb-2 bg-slate-900 text-white text-[10px] font-medium py-1 px-2.5 rounded-lg pointer-events-none whitespace-nowrap z-20 shadow-md">
+                      <div>{{ item.month }}: {{ formatRupiah(item.penjualan) }}</div>
+                      <div class="text-amber-400">Belanja: {{ formatRupiah(item.belanja) }}</div>
+                    </div>
+
+                    <!-- Bar for month (Nov has ~85% height for 254.205) -->
+                    <div 
+                      v-if="item.penjualan > 0"
+                      class="w-4 sm:w-5 md:w-6 bg-blue-600 rounded-t-sm transition-all duration-500 hover:brightness-110"
+                      :style="{ height: `${Math.min(100, (item.penjualan / 300000) * 100)}%` }"
+                    ></div>
+                  </div>
+                </div>
+
+                <!-- X-Axis Labels (12 Months) -->
+                <div class="flex justify-between pl-13 pr-2 mt-2 text-[11px] text-slate-400 font-medium">
+                  <span v-for="item in chartMonths" :key="'label-'+item.month" class="flex-1 text-center truncate">
+                    {{ item.month }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Status pesanan (lg:col-span-1) -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900 tracking-tight mb-3.5">Status pesanan</h3>
+                <div class="space-y-2.5">
+                  <!-- 1. Menunggu pembayaran -->
+                  <div class="flex items-center justify-between py-1 border-b border-slate-50">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-50 text-amber-800 text-xs font-medium border border-amber-200/60">
+                      <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                      Menunggu pembayaran
+                    </span>
+                    <span class="text-xs font-bold text-slate-700 font-mono">0</span>
+                  </div>
+
+                  <!-- 2. Dibayar · antre produksi -->
+                  <div class="flex items-center justify-between py-1 border-b border-slate-50">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium border border-blue-200/60">
+                      <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                      Dibayar · antre produksi
+                    </span>
+                    <span class="text-xs font-bold text-slate-700 font-mono">0</span>
+                  </div>
+
+                  <!-- 3. Sedang dicetak (Dark Navy pill from reference) -->
+                  <div class="flex items-center justify-between py-1 border-b border-slate-50">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0B132B] text-white text-xs font-medium">
+                      <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                      Sedang dicetak
+                    </span>
+                    <span class="text-xs font-bold text-slate-700 font-mono">0</span>
+                  </div>
+
+                  <!-- 4. Quality control -->
+                  <div class="flex items-center justify-between py-1 border-b border-slate-50">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 text-xs font-medium border border-indigo-200/60">
+                      <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                      Quality control
+                    </span>
+                    <span class="text-xs font-bold text-slate-700 font-mono">0</span>
+                  </div>
+
+                  <!-- 5. Dikirim -->
+                  <div class="flex items-center justify-between py-1 border-b border-slate-50">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-sky-50 text-sky-700 text-xs font-medium border border-sky-200/60">
+                      <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
+                      Dikirim
+                    </span>
+                    <span class="text-xs font-bold text-slate-700 font-mono">0</span>
+                  </div>
+
+                  <!-- 6. Selesai (Green pill with count 1) -->
+                  <div class="flex items-center justify-between py-1 border-b border-slate-50">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                      Selesai
+                    </span>
+                    <span class="text-xs font-black text-slate-900 font-mono">1</span>
+                  </div>
+
+                  <!-- 7. Dibatalkan -->
+                  <div class="flex items-center justify-between py-1">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-rose-50 text-rose-700 text-xs font-medium border border-rose-200/60">
+                      <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                      Dibatalkan
+                    </span>
+                    <span class="text-xs font-bold text-slate-700 font-mono">0</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Row: Antrean produksi & Pesanan terbaru -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <!-- Left: Antrean produksi -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
+              <h3 class="text-sm font-bold text-slate-900 tracking-tight mb-3">Antrean produksi</h3>
+              <div class="py-6 text-center sm:text-left">
+                <p class="text-xs text-slate-400 font-medium">Tidak ada pesanan di antrean</p>
+              </div>
+            </div>
+
+            <!-- Right: Pesanan terbaru -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
+              <h3 class="text-sm font-bold text-slate-900 tracking-tight mb-3">Pesanan terbaru</h3>
+              <div class="flex items-center justify-between py-2 border-b border-slate-50">
+                <div>
+                  <p class="text-xs font-bold text-slate-800">Klien / Rekan Istimewa</p>
+                  <p class="text-[11px] text-slate-400 font-medium mt-0.5">2 Nov, 12.00</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-xs font-bold text-slate-900 font-mono">Rp 254.205</p>
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-semibold border border-emerald-200 mt-0.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    Selesai
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- MANAJEMEN KLIEN TAB -->
-        <div v-if="activeTab === 'manajemen'" class="animate-fade-in">
+        <div v-else-if="activeTab === 'manajemen'" class="animate-fade-in">
           <div class="bg-white rounded-2xl sm:rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200/80 overflow-hidden">
             <!-- Header Card Section -->
             <div class="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3.5 bg-white">
@@ -932,6 +1225,26 @@
         </div>
       </div>
 
+      <!-- KEUANGAN & ASET TAB -->
+      <div v-else-if="activeTab === 'keuangan'" class="animate-fade-in">
+        <KeuanganAset />
+      </div>
+
+      <!-- KALKULATOR HPP TAB -->
+      <div v-else-if="activeTab === 'hpp'" class="animate-fade-in">
+        <KalkulatorHPP />
+      </div>
+
+      <!-- ETALASE PRODUK TAB -->
+      <div v-else-if="activeTab === 'etalase'" class="animate-fade-in">
+        <EtalaseProdukView />
+      </div>
+
+      <!-- FILAMEN TAB -->
+      <div v-else-if="activeTab === 'filamen'" class="animate-fade-in">
+        <FilamenView />
+      </div>
+
       </main>
 
       <!-- Mobile Bottom Navigation Bar (Fixed on screens < lg) -->
@@ -1092,6 +1405,49 @@
       </div>
     </div>
 
+    <!-- Modal Buat Invoice (+ Buat invoice di Dashboard) -->
+    <div v-if="showInvoiceModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 animate-fade-in" @click.self="showInvoiceModal = false">
+      <div class="bg-white rounded-2xl sm:rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col">
+        <div class="flex items-center justify-between p-5 border-b border-slate-100 bg-slate-50/50">
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base">Buat Invoice Baru</h3>
+            <p class="text-xs text-slate-500 font-medium">Terbitkan tagihan baru untuk klien atau sekolah</p>
+          </div>
+          <button @click="showInvoiceModal = false" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <form @submit.prevent="saveInvoice" class="p-5 space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Klien / Rekan *</label>
+            <input v-model="invoiceForm.clientName" type="text" required class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Contoh: Klien / Rekan Istimewa" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Nominal Tagihan (Rp) *</label>
+              <input v-model.number="invoiceForm.amount" type="number" required min="1000" class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="254205" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Estimasi HPP (Rp)</label>
+              <input v-model.number="invoiceForm.hpp" type="number" min="0" class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="104205" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Keterangan Layanan</label>
+            <input v-model="invoiceForm.description" type="text" class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Lisensi SaaS GuruKu / Cetak Modul" />
+          </div>
+
+          <div class="pt-3 flex items-center justify-end gap-2.5 border-t border-slate-100">
+            <button type="button" @click="showInvoiceModal = false" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer">Batal</button>
+            <button type="submit" class="px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition-colors cursor-pointer">Simpan & Terbitkan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -1101,15 +1457,127 @@ import { useRouter } from 'vue-router'
 import AppLogo from '../components/AppLogo.vue'
 import { SafeFlow } from '../core/SafeFlow.js'
 import indonesiaSchools from '../data/schools_indonesia.json'
+import KeuanganAset from './KeuanganAset.vue'
+import KalkulatorHPP from './KalkulatorHPP.vue'
+import EtalaseProdukView from './EtalaseProdukView.vue'
+import FilamenView from './FilamenView.vue'
 
 const router = useRouter()
-const activeTab = ref('manajemen')
+const activeTab = ref('dashboard')
 const isSidebarOpen = ref(false)
 const showModal = ref(false)
 const loading = ref(true)
 const saving = ref(false)
 const schools = ref([])
 const clientSearch = ref('')
+
+// Tanggal hari ini format Indonesia
+const currentDateFormatted = computed(() => {
+  const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+  const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+  const now = new Date()
+  const dayName = days[now.getDay()]
+  const date = now.getDate()
+  const monthName = months[now.getMonth()]
+  const year = now.getFullYear()
+  return `${dayName}, ${date} ${monthName} ${year}`
+})
+
+// Data Keuangan & Statistik Dashboard (Default sesuai tampilan referensi)
+const financialSummary = ref({
+  penjualanBulanIni: 254205,
+  labaKotorBulanIni: 150000,
+  hppBulanIni: 104205,
+  saldoKas: 8365958,
+  belanjaBulanIni: 0,
+  antreanMesinJam: '0 jam',
+  totalPesananWeb: 1
+})
+
+const chartMonths = ref([
+  { month: 'Des', penjualan: 0, belanja: 0 },
+  { month: 'Jan', penjualan: 0, belanja: 0 },
+  { month: 'Feb', penjualan: 0, belanja: 0 },
+  { month: 'Mar', penjualan: 0, belanja: 0 },
+  { month: 'Apr', penjualan: 0, belanja: 0 },
+  { month: 'Mei', penjualan: 0, belanja: 0 },
+  { month: 'Jun', penjualan: 0, belanja: 0 },
+  { month: 'Jul', penjualan: 0, belanja: 0 },
+  { month: 'Agu', penjualan: 0, belanja: 0 },
+  { month: 'Sep', penjualan: 0, belanja: 0 },
+  { month: 'Okt', penjualan: 0, belanja: 0 },
+  { month: 'Nov', penjualan: 254205, belanja: 0 }
+])
+
+const loadFinancialSummary = () => {
+  try {
+    const saved = localStorage.getItem('guruKu_financial_summary')
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      financialSummary.value = { ...financialSummary.value, ...parsed }
+      // Update chart Nov if penjualan exists
+      if (parsed.penjualanBulanIni) {
+        const nov = chartMonths.value.find(m => m.month === 'Nov')
+        if (nov) nov.penjualan = parsed.penjualanBulanIni
+      }
+    }
+  } catch (e) {
+    console.error('Failed to load financial summary:', e)
+  }
+}
+
+// Modal Invoice
+const showInvoiceModal = ref(false)
+const invoiceForm = ref({
+  clientName: '',
+  amount: 254205,
+  hpp: 104205,
+  description: 'Lisensi SaaS GuruKu'
+})
+
+const saveInvoice = () => {
+  if (!invoiceForm.value.amount || invoiceForm.value.amount <= 0) return
+
+  const amount = Number(invoiceForm.value.amount)
+  const hpp = Number(invoiceForm.value.hpp || 0)
+  const laba = amount - hpp
+
+  financialSummary.value.penjualanBulanIni += amount
+  financialSummary.value.hppBulanIni += hpp
+  financialSummary.value.labaKotorBulanIni += laba
+  financialSummary.value.saldoKas += amount
+  financialSummary.value.totalPesananWeb = (financialSummary.value.totalPesananWeb || 1) + 1
+
+  const nov = chartMonths.value.find(m => m.month === 'Nov')
+  if (nov) {
+    nov.penjualan += amount
+  }
+
+  try {
+    localStorage.setItem('guruKu_financial_summary', JSON.stringify(financialSummary.value))
+    const existingTx = JSON.parse(localStorage.getItem('guruKu_transactions') || '[]')
+    existingTx.unshift({
+      id: Date.now(),
+      date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
+      ref: `INV-${Date.now().toString().slice(-6)}`,
+      category: 'Penjualan Lisensi',
+      description: invoiceForm.value.description || `Invoice untuk ${invoiceForm.value.clientName}`,
+      type: 'in',
+      amount: amount
+    })
+    localStorage.setItem('guruKu_transactions', JSON.stringify(existingTx))
+  } catch (e) {
+    console.error('Error saving invoice:', e)
+  }
+
+  showInvoiceModal.value = false
+  invoiceForm.value = {
+    clientName: '',
+    amount: 254205,
+    hpp: 104205,
+    description: 'Lisensi SaaS GuruKu'
+  }
+}
 
 const filteredSchools = computed(() => {
   if (!clientSearch.value.trim()) return schools.value
@@ -1144,21 +1612,26 @@ const contactSchool = (school) => {
 
 const currentTabTitle = computed(() => {
   switch (activeTab.value) {
-    case 'manajemen': return 'Manajemen Klien'
-    case 'laporan': return 'Laporan Pendapatan'
+    case 'dashboard': return 'Dashboard'
+    case 'manajemen': return 'Pesanan'
+    case 'laporan': return 'Laporan Investor'
     case 'verifikasi': return 'Verifikasi Bayar'
-    case 'aduan': return 'Aduan & Saran'
+    case 'aduan': return 'Custom Request'
+    case 'etalase': return 'Etalase Produk'
+    case 'filamen': return 'Filamen'
+    case 'keuangan': return 'Keuangan & Aset'
+    case 'hpp': return 'Kalkulator HPP'
     case 'pengaturan': return 'Pengaturan Sistem'
     default: return 'Super Admin'
   }
 })
 
 const tabItems = computed(() => [
-  { id: 'manajemen', label: 'Manajemen Klien', shortLabel: 'Klien', badge: 0 },
-  { id: 'laporan', label: 'Laporan Pendapatan', shortLabel: 'Laporan', badge: 0 },
-  { id: 'verifikasi', label: 'Verifikasi Bayar', shortLabel: 'Verifikasi', badge: pendingPaymentsCount.value },
-  { id: 'aduan', label: 'Aduan & Saran', shortLabel: 'Aduan', badge: unreadTicketsCount.value },
-  { id: 'pengaturan', label: 'Pengaturan', shortLabel: 'Pengaturan', badge: forgotPasswordReports.value?.length || 0 }
+  { id: 'dashboard', label: 'Dashboard', shortLabel: 'Dashboard', badge: 0 },
+  { id: 'manajemen', label: 'Pesanan', shortLabel: 'Pesanan', badge: pendingPaymentsCount.value },
+  { id: 'keuangan', label: 'Keuangan', shortLabel: 'Keuangan', badge: 0 },
+  { id: 'hpp', label: 'HPP', shortLabel: 'HPP', badge: 0 },
+  { id: 'aduan', label: 'Request', shortLabel: 'Request', badge: unreadTicketsCount.value },
 ])
 
 const totalRevenue = computed(() => {
@@ -1705,10 +2178,13 @@ const handleStorageChange = (e) => {
     loadPendingPayments()
   } else if (e.key === 'guruKu_support_tickets') {
     loadSupportTickets()
+  } else if (e.key === 'guruKu_financial_summary') {
+    loadFinancialSummary()
   }
 }
 
 onMounted(() => {
+  loadFinancialSummary()
   fetchSchools()
   loadForgotPasswordReports()
   loadSupportTickets()
@@ -1721,6 +2197,7 @@ onMounted(() => {
     loadForgotPasswordReports()
     loadSupportTickets()
     loadPendingPayments()
+    loadFinancialSummary()
   }, 3000)
 })
 
