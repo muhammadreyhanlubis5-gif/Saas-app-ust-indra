@@ -27,11 +27,12 @@ func GenerateJWTLogin(c *gin.Context) {
 
 	// Cari user di database berdasarkan username
 	var user struct {
-		ID         string
-		SchoolID   *string
-		Password   string
-		Role       string
-		ValidUntil *time.Time
+		ID           string
+		SchoolID     *string
+		Password     string
+		Role         string
+		ValidUntil   *time.Time
+		SchoolStatus *string
 	}
 
 	cleanUsername := strings.TrimSpace(req.Username)
@@ -44,11 +45,11 @@ func GenerateJWTLogin(c *gin.Context) {
 	}
 
 	err := database.DB.QueryRow(`
-		SELECT u.id, u.school_id, u.password, u.role, s.valid_until
+		SELECT u.id, u.school_id, u.password, u.role, s.valid_until, s.status
 		FROM users u
 		LEFT JOIN schools s ON u.school_id = s.id
 		WHERE u.username = $1 OR u.username = $2
-	`, cleanUsername, altUsername).Scan(&user.ID, &user.SchoolID, &user.Password, &user.Role, &user.ValidUntil)
+	`, cleanUsername, altUsername).Scan(&user.ID, &user.SchoolID, &user.Password, &user.Role, &user.ValidUntil, &user.SchoolStatus)
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Username tidak ditemukan"})
@@ -59,6 +60,25 @@ func GenerateJWTLogin(c *gin.Context) {
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Password salah"})
 		return
+	}
+
+	// Cek status lisensi dan suspensi untuk tenant (SCHOOL_ADMIN / TEACHER)
+	if user.Role != "SUPER_ADMIN" {
+		if user.SchoolStatus != nil && *user.SchoolStatus == "SUSPENDED" {
+			c.JSON(http.StatusForbidden, gin.H{
+				"error": "Akses login institusi Anda ditangguhkan oleh Super Admin (Suspended). Silakan hubungi manajemen GuruKu.",
+				"code":  "TENANT_SUSPENDED",
+			})
+			return
+		}
+
+		if user.ValidUntil != nil && user.ValidUntil.Before(time.Now()) {
+			c.JSON(http.StatusForbidden, gin.H{
+				"error": "Masa langganan lisensi sekolah Anda telah kedaluwarsa (Expired). Akses masuk ditangguhkan sampai perpanjangan lisensi diproses.",
+				"code":  "SUBSCRIPTION_EXPIRED",
+			})
+			return
+		}
 	}
 
 	schoolIDStr := ""

@@ -23,74 +23,92 @@
         </button>
       </div>
 
-      <!-- Navigation Links (Persis Gambar Referensi) -->
+      <!-- Navigation Links: Standarisasi Multi-Tenant SaaS Management -->
       <div class="flex-1 overflow-y-auto py-5 px-3 space-y-1.5 custom-scrollbar">
         
-        <!-- 1. Dashboard -->
+        <!-- 1. Dashboard (Overview metrics) -->
         <button @click="activeTab = 'dashboard'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
           :class="activeTab === 'dashboard' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
           <span>Dashboard</span>
         </button>
 
-        <!-- 2. Pesanan -->
+        <!-- 2. Manajemen Klien (Replaces "Pesanan") -->
         <button @click="activeTab = 'manajemen'; isSidebarOpen = false" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
           :class="activeTab === 'manajemen' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
           <div class="flex items-center gap-3">
-            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-            <span>Pesanan</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+            <span>Manajemen Klien</span>
           </div>
-          <span v-if="pendingPaymentsCount > 0" class="bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs animate-pulse">
-            {{ pendingPaymentsCount }}
+          <span v-if="dashboardMetrics.activeClientsCount > 0" class="bg-blue-500/30 text-blue-200 border border-blue-400/40 text-[10px] font-black px-2 py-0.5 rounded-full shadow-2xs">
+            {{ dashboardMetrics.activeClientsCount }}
           </span>
         </button>
 
-        <!-- 3. Custom request -->
+        <!-- 3. Paket Lisensi (Replaces "Etalase produk") -->
+        <button @click="activeTab = 'etalase'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
+          :class="activeTab === 'etalase' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <span>Paket Lisensi</span>
+        </button>
+
+        <!-- 4. Tagihan & Keuangan (Replaces "Keuangan & aset" + Submenus: Buku Kas, Kalkulator HPP) -->
+        <div class="space-y-1">
+          <button @click="toggleKeuanganMenu" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
+            :class="(activeTab === 'keuangan' || activeTab === 'hpp') ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
+            <div class="flex items-center gap-3">
+              <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+              <span>Tagihan & Keuangan</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span v-if="dashboardMetrics.activationQueueCount > 0" class="bg-rose-500 text-white text-[10px] font-black px-1.5 py-0.2 rounded-full shadow-xs">
+                {{ dashboardMetrics.activationQueueCount }}
+              </span>
+              <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="isKeuanganMenuOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+          </button>
+          
+          <!-- Sub-menu: Buku Kas & Kalkulator HPP -->
+          <div v-show="isKeuanganMenuOpen || activeTab === 'keuangan' || activeTab === 'hpp'" class="pl-6 pr-2 pt-1 pb-1 space-y-1 border-l border-slate-800 ml-5">
+            <button @click="selectKeuanganSubTab('tagihan'); isSidebarOpen = false" 
+              class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all text-left cursor-pointer"
+              :class="(activeTab === 'keuangan' && keuanganSubTab === 'tagihan') ? 'bg-blue-500/20 text-blue-300 font-bold' : 'text-slate-400 hover:text-white hover:bg-slate-800/60'">
+              <span>Faktur & Invoicing</span>
+              <span v-if="pendingPaymentsCount > 0" class="text-[9px] bg-rose-500 text-white px-1.5 py-0.2 rounded-full font-bold">
+                {{ pendingPaymentsCount }}
+              </span>
+            </button>
+            <button @click="selectKeuanganSubTab('bukukas'); isSidebarOpen = false" 
+              class="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all text-left cursor-pointer"
+              :class="(activeTab === 'keuangan' && keuanganSubTab === 'bukukas') ? 'bg-blue-500/20 text-blue-300 font-bold' : 'text-slate-400 hover:text-white hover:bg-slate-800/60'">
+              <span>Buku Kas</span>
+            </button>
+            <button @click="selectKeuanganSubTab('hpp'); isSidebarOpen = false" 
+              class="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all text-left cursor-pointer"
+              :class="(activeTab === 'hpp' || (activeTab === 'keuangan' && keuanganSubTab === 'hpp')) ? 'bg-blue-500/20 text-blue-300 font-bold' : 'text-slate-400 hover:text-white hover:bg-slate-800/60'">
+              <span>Kalkulator HPP</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 5. Pusat Bantuan (Replaces "Custom request") -->
         <button @click="activeTab = 'aduan'; isSidebarOpen = false" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
           :class="activeTab === 'aduan' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
           <div class="flex items-center gap-3">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-            <span>Custom request</span>
+            <span>Pusat Bantuan</span>
           </div>
           <span v-if="unreadTicketsCount > 0" class="bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs">
             {{ unreadTicketsCount }}
           </span>
         </button>
 
-        <!-- 4. Etalase produk -->
-        <button @click="activeTab = 'etalase'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
-          :class="activeTab === 'etalase' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-          <span>Etalase produk</span>
-        </button>
-
-        <!-- 5. Keuangan & aset -->
-        <button @click="activeTab = 'keuangan'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
-          :class="activeTab === 'keuangan' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-          <span>Keuangan & aset</span>
-        </button>
-
-        <!-- 7. Kalkulator HPP -->
-        <button @click="activeTab = 'hpp'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
-          :class="activeTab === 'hpp' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-          <span>Kalkulator HPP</span>
-        </button>
-
-        <!-- 8. Laporan investor -->
-        <button @click="activeTab = 'laporan'; isSidebarOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
-          :class="activeTab === 'laporan' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-          <span>Laporan investor</span>
-        </button>
-
-        <!-- 9. Pengaturan -->
+        <!-- 6. Pengaturan Sistem -->
         <button @click="activeTab = 'pengaturan'; isSidebarOpen = false" class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl font-bold transition-all cursor-pointer text-xs"
           :class="activeTab === 'pengaturan' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-400 hover:bg-slate-800 hover:text-white'">
           <div class="flex items-center gap-3">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            <span>Pengaturan</span>
+            <span>Pengaturan Sistem</span>
           </div>
           <span v-if="forgotPasswordReports.length > 0" class="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs">
             {{ forgotPasswordReports.length }}
@@ -99,13 +117,13 @@
         
       </div>
 
-      <!-- Footer Sidebar: Lihat toko & Keluar (Persis Gambar Referensi) -->
+      <!-- Footer Sidebar: Portal Klien & Keluar -->
       <div class="p-3.5 border-t border-slate-800/80 bg-[#080E20] space-y-1">
         <a href="/" target="_blank" class="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/60 rounded-xl transition-colors no-underline">
           <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
           </svg>
-          <span>Lihat toko</span>
+          <span>Portal Klien</span>
         </a>
         <button @click="handleLogout" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-colors text-left cursor-pointer">
           <svg class="w-4 h-4 text-slate-400 group-hover:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -206,49 +224,69 @@
             </div>
           </div>
 
-          <!-- 4 Stat Cards Row Sesuai Referensi -->
+          <!-- 4 Stat Cards: Real-time SaaS Metrics Aggregation -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-            <!-- Card 1: PENJUALAN BULAN INI -->
+            <!-- Card 1: PENDAPATAN BULAN INI -->
             <div class="bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs hover:border-slate-400 transition-all">
-              <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">PENJUALAN BULAN INI</p>
-              <div class="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight font-mono my-1 leading-none">
-                {{ formatRupiah(financialSummary.penjualanBulanIni) }}
+              <div class="flex items-center justify-between mb-2">
+                <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">PENDAPATAN BULAN INI</p>
+                <span class="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
               </div>
-              <p class="text-[11px] text-slate-400 font-normal truncate mt-1">
-                semua channel · {{ financialSummary.totalPesananWeb || 1 }} pesanan web
+              <div class="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight font-mono my-1 leading-none">
+                {{ formatRupiah(dashboardMetrics.revenueThisMonth) }}
+              </div>
+              <p class="text-[11px] text-slate-500 font-normal truncate mt-1">
+                Total pelunasan invoice & perpanjangan
               </p>
             </div>
 
-            <!-- Card 2: LABA KOTOR BULAN INI -->
+            <!-- Card 2: MARGIN OPERASIONAL -->
             <div class="bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs hover:border-slate-400 transition-all">
-              <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">LABA KOTOR BULAN INI</p>
-              <div class="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight font-mono my-1 leading-none">
-                {{ formatRupiah(financialSummary.labaKotorBulanIni) }}
+              <div class="flex items-center justify-between mb-2">
+                <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">MARGIN OPERASIONAL</p>
+                <span class="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                </span>
               </div>
-              <p class="text-[11px] text-slate-400 font-normal truncate mt-1">
-                setelah HPP {{ formatRupiah(financialSummary.hppBulanIni) }} & potongan Rp 0
+              <div class="text-2xl sm:text-[26px] font-black tracking-tight font-mono my-1 leading-none" :class="dashboardMetrics.operationalMargin >= 0 ? 'text-emerald-700' : 'text-rose-600'">
+                {{ formatRupiah(dashboardMetrics.operationalMargin) }}
+              </div>
+              <p class="text-[11px] text-slate-500 font-normal truncate mt-1">
+                Setelah beban operasional {{ formatRupiah(dashboardMetrics.operationalCosts) }}
               </p>
             </div>
 
-            <!-- Card 3: SALDO KAS -->
+            <!-- Card 3: TOTAL KLIEN AKTIF -->
             <div class="bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs hover:border-slate-400 transition-all">
-              <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">SALDO KAS</p>
-              <div class="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight font-mono my-1 leading-none">
-                {{ formatRupiah(financialSummary.saldoKas) }}
+              <div class="flex items-center justify-between mb-2">
+                <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">TOTAL KLIEN AKTIF</p>
+                <span class="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                </span>
               </div>
-              <p class="text-[11px] text-slate-400 font-normal truncate mt-1">
-                belanja bulan ini {{ formatRupiah(financialSummary.belanjaBulanIni) }}
+              <div class="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight font-mono my-1 leading-none">
+                {{ dashboardMetrics.activeClientsCount }} Sekolah
+              </div>
+              <p class="text-[11px] text-slate-500 font-normal truncate mt-1">
+                Lembaga dengan lisensi berstatus Active
               </p>
             </div>
 
-            <!-- Card 4: ANTREAN SEWA APLIKASI -->
+            <!-- Card 4: ANTREAN AKTIVASI -->
             <div class="bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs hover:border-slate-400 transition-all">
-              <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">ANTREAN SEWA APLIKASI</p>
-              <div class="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight font-mono my-1 leading-none">
-                {{ rentalQueue.length }} Sekolah
+              <div class="flex items-center justify-between mb-2">
+                <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider">ANTREAN AKTIVASI</p>
+                <span class="w-6 h-6 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
               </div>
-              <p class="text-[11px] text-slate-400 font-normal truncate mt-1">
-                {{ rentalQueue.length === 0 ? 'Semua pesanan sewa aktif & berjalan' : rentalQueue.length + ' pengajuan menunggu aktivasi' }}
+              <div class="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight font-mono my-1 leading-none">
+                {{ dashboardMetrics.activationQueueCount }} Tenant
+              </div>
+              <p class="text-[11px] text-slate-500 font-normal truncate mt-1">
+                {{ dashboardMetrics.activationQueueCount === 0 ? 'Semua pesanan sewa aktif & berjalan' : dashboardMetrics.activationQueueCount + ' tagihan menunggu verifikasi' }}
               </p>
             </div>
           </div>
@@ -261,15 +299,15 @@
               <!-- Title & Legend -->
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                 <div>
-                  <h3 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight">Jumlah Pengguna Aplikasi GuruKu · 12 bulan</h3>
+                  <h3 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight">Pertumbuhan Pengguna: Active Users vs Churned/Expired Users · 12 Bulan</h3>
                   <div class="flex items-center gap-4 mt-1.5 flex-wrap">
                     <div class="flex items-center gap-2">
                       <span class="w-2.5 h-2.5 rounded-xs bg-emerald-500"></span>
-                      <span class="text-xs text-slate-600 font-medium">Pengguna Aktif</span>
+                      <span class="text-xs text-slate-600 font-medium">Active Users</span>
                     </div>
                     <div class="flex items-center gap-2">
                       <span class="w-2.5 h-2.5 rounded-xs bg-amber-500"></span>
-                      <span class="text-xs text-slate-600 font-medium">Dalam Penangguhan (Habis Limit)</span>
+                      <span class="text-xs text-slate-600 font-medium">Churned / Expired Users</span>
                     </div>
                   </div>
                 </div>
@@ -583,8 +621,8 @@
               <span class="text-xs font-bold text-slate-500 shrink-0 px-2">{{ filteredSchools.length }} Klien</span>
             </div>
             
-            <!-- Mobile Cards View (< md) -->
-            <div class="md:hidden p-3 sm:p-4 space-y-3 bg-slate-50/40">
+            <!-- Mobile Cards View (< md): Relational SaaS Tenant Cards -->
+            <div class="md:hidden p-3 sm:p-4 space-y-3.5 bg-slate-50/40">
               <div v-if="loading" class="p-8 text-center text-slate-400 font-bold animate-pulse text-xs sm:text-sm">
                 Memuat Data Klien...
               </div>
@@ -597,103 +635,133 @@
                 :key="'m-'+school.id" 
                 class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs hover:shadow-md transition-all space-y-3.5"
               >
-                <!-- Card Header -->
+                <!-- Card Header with Tenant ID & Dynamic Badges -->
                 <div class="flex items-start justify-between gap-2.5">
                   <div class="flex items-start gap-2.5 min-w-0">
                     <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 mt-0.5">
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                     </div>
                     <div class="min-w-0">
-                      <h3 class="font-extrabold text-slate-900 text-sm leading-snug">{{ school.name }}</h3>
-                      <p class="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5 line-clamp-1" :title="school.address">
-                        <svg class="w-3 h-3 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-                        <span>{{ school.address || 'Alamat belum disetel' }}</span>
-                      </p>
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <button 
+                          @click="copyToClipboard(school.id, 'Tenant ID')" 
+                          class="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[10px] font-bold border border-slate-300 transition-colors inline-flex items-center gap-1 cursor-pointer"
+                          title="Klik salin full Tenant UUID"
+                        >
+                          <span>{{ formatTenantId(school.id) }}</span>
+                          <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        </button>
+                        <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                          Limit {{ school.database_limit || 100 }} MB
+                        </span>
+                      </div>
+                      <h3 class="font-extrabold text-slate-900 text-sm leading-snug mt-1">{{ school.name || school.school_name }}</h3>
+                      <p class="text-[11px] text-slate-500 line-clamp-1 mt-0.5" :title="school.address">{{ school.address || 'Alamat belum disetel' }}</p>
                     </div>
                   </div>
+
+                  <!-- Dynamic Status Badge -->
                   <span 
-                    v-if="isExpired(school.valid_until)" 
-                    class="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-black rounded-full bg-rose-50 text-rose-700 border border-rose-200 uppercase tracking-wider shrink-0"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-black rounded-full uppercase tracking-wider shrink-0 border shadow-2xs"
+                    :class="{
+                      'bg-emerald-50 text-emerald-700 border-emerald-300': school.status === 'Active',
+                      'bg-amber-50 text-amber-700 border-amber-300': school.status === 'Grace Period',
+                      'bg-rose-50 text-rose-700 border-rose-300': school.status === 'Expired',
+                      'bg-slate-100 text-slate-700 border-slate-300': school.status === 'Suspended'
+                    }"
                   >
-                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-                    Expired
-                  </span>
-                  <span 
-                    v-else 
-                    class="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-black rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-wider shrink-0"
-                  >
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    Aktif
+                    <span 
+                      class="w-1.5 h-1.5 rounded-full" 
+                      :class="{
+                        'bg-emerald-500 animate-pulse': school.status === 'Active',
+                        'bg-amber-500': school.status === 'Grace Period',
+                        'bg-rose-500': school.status === 'Expired',
+                        'bg-slate-500': school.status === 'Suspended'
+                      }"
+                    ></span>
+                    {{ school.status }}
                   </span>
                 </div>
 
                 <!-- Info Grid -->
                 <div class="grid grid-cols-2 gap-2 text-xs bg-slate-50/80 p-3 rounded-xl border border-slate-200">
                   <div>
-                    <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Username Admin</span>
-                    <span class="font-mono font-bold text-blue-700 truncate block mt-0.5">{{ formatGurukuUsername(school.admin_username) }}</span>
+                    <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Admin Contact</span>
+                    <span class="font-semibold text-slate-800 truncate block mt-0.5">{{ school.admin_contact || school.contact_number || '-' }}</span>
+                    <span class="font-mono text-[11px] text-blue-700 truncate block">{{ formatGurukuUsername(school.admin_username) }}</span>
                   </div>
                   <div>
-                    <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">No. Kontak</span>
-                    <span class="font-semibold text-slate-700 truncate block mt-0.5">{{ school.contact_number || '-' }}</span>
-                  </div>
-                  <div>
-                    <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Batas Masa Aktif</span>
-                    <span class="font-bold block mt-0.5" :class="isExpired(school.valid_until) ? 'text-rose-600' : 'text-slate-700'">
-                      {{ formatDate(school.valid_until) }}
+                    <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Batas Lisensi</span>
+                    <span class="font-bold block mt-0.5 text-slate-800">{{ formatDate(school.subscription_end_date || school.valid_until) }}</span>
+                    <span 
+                      class="text-[10px] font-semibold block"
+                      :class="{
+                        'text-emerald-600': school.status === 'Active',
+                        'text-amber-600 font-bold': school.status === 'Grace Period',
+                        'text-rose-600 font-bold': school.status === 'Expired' || school.status === 'Suspended'
+                      }"
+                    >
+                      {{ getDaysRemainingText(school.days_remaining) }}
                     </span>
-                  </div>
-                  <div>
-                    <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Nilai Kontrak</span>
-                    <span class="font-black text-slate-900 block mt-0.5">{{ school.payment_method }} &bull; {{ formatRupiah(school.payment_amount) }}</span>
                   </div>
                 </div>
 
-                <!-- Action Footer -->
-                <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-200">
+                <!-- Action Toolbar: Detail, Limit DB, Perpanjang, Suspend -->
+                <div class="flex items-center gap-1.5 pt-2 border-t border-slate-200 flex-wrap">
+                  <button 
+                    @click="openClientDetail(school)"
+                    class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 transition-colors cursor-pointer"
+                  >
+                    Detail
+                  </button>
+                  <button 
+                    @click="openEditLimit(school)"
+                    class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 transition-colors cursor-pointer"
+                  >
+                    Limit DB
+                  </button>
+                  <button 
+                    @click="openManualRenew(school)"
+                    class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors cursor-pointer"
+                  >
+                    Perpanjang
+                  </button>
+                  <button 
+                    @click="toggleSuspendSchool(school)"
+                    class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                    :class="school.status === 'Suspended' ? 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200' : 'text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200'"
+                  >
+                    {{ school.status === 'Suspended' ? 'Buka Suspend' : 'Suspend' }}
+                  </button>
                   <a 
-                    v-if="school.contact_number"
-                    :href="getWaUrl(school.contact_number, school.name, `Halo Pengelola ${school.name}, kami dari Tim Super Admin GuruKu.`)"
+                    v-if="school.admin_contact || school.contact_number"
+                    :href="getWaUrl(school.admin_contact || school.contact_number, school.name, 'Halo Pengelola ' + school.name + ', kami dari Tim Super Admin GuruKu.')"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-all cursor-pointer active:scale-95 no-underline"
+                    class="p-1.5 rounded-lg text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 ml-auto transition-colors cursor-pointer"
+                    title="Hubungi via WhatsApp"
                   >
-                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-                    <span>Chat WA</span>
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
                   </a>
-                  <div class="flex items-center gap-1.5 ml-auto">
-                    <button 
-                      @click="blockSchool(school.id)" 
-                      class="px-3 py-1.5 rounded-xl text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 transition-colors cursor-pointer active:scale-95"
-                    >
-                      Blokir
-                    </button>
-                    <button 
-                      @click="deleteSchool(school.id, school.name)" 
-                      class="px-3 py-1.5 rounded-xl text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors cursor-pointer active:scale-95"
-                    >
-                      Hapus
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Desktop Table (>= md) -->
+            <!-- Desktop Table (>= md): Relational Multi-Tenant SaaS Table -->
             <div class="hidden md:block overflow-x-auto custom-scrollbar">
               <table class="min-w-full bg-white">
                 <thead>
                   <tr class="bg-slate-50 text-left border-y border-slate-300">
-                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-500 tracking-wider">Nama Sekolah</th>
-                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-500 tracking-wider">Kontak & Asal</th>
-                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-500 tracking-wider">Username Admin</th>
-                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-500 tracking-wider">Status & Batas Waktu</th>
-                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-500 tracking-wider text-right">Aksi</th>
+                    <th class="py-4 px-5 uppercase font-black text-[11px] text-slate-500 tracking-wider">Tenant ID & Nama Sekolah</th>
+                    <th class="py-4 px-5 uppercase font-black text-[11px] text-slate-500 tracking-wider">Kontak Admin (WhatsApp & User)</th>
+                    <th class="py-4 px-5 uppercase font-black text-[11px] text-slate-500 tracking-wider">Batas Waktu Lisensi</th>
+                    <th class="py-4 px-4 uppercase font-black text-[11px] text-slate-500 tracking-wider text-center">Status Lisensi</th>
+                    <th class="py-4 px-5 uppercase font-black text-[11px] text-slate-500 tracking-wider text-right">Aksi Kelola</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200">
                   <tr v-if="loading" class="animate-pulse">
-                    <td colspan="5" class="py-10 text-center text-slate-400 font-bold">Memuat Data Klien...</td>
+                    <td colspan="5" class="py-10 text-center text-slate-400 font-bold">Memuat Data Relasional Klien...</td>
                   </tr>
                   <tr v-else-if="filteredSchools.length === 0">
                     <td colspan="5" class="py-16 text-center text-slate-400 font-medium">
@@ -701,35 +769,126 @@
                       {{ clientSearch ? 'Tidak ada sekolah yang cocok dengan pencarian.' : 'Belum ada klien sekolah yang terdaftar.' }}
                     </td>
                   </tr>
-                  <tr v-for="school in filteredSchools" :key="school.id" class="hover:bg-blue-50/30 transition-colors group">
-                    <td class="py-4 px-6">
-                      <p class="font-bold text-slate-900 text-sm mb-1 group-hover:text-blue-700 transition-colors">{{ school.name }}</p>
-                      <p class="text-[11px] text-slate-500 font-medium flex items-center gap-1">
-                        <svg class="w-3.5 h-3.5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-                        {{ school.payment_method }} ({{ formatRupiah(school.payment_amount) }})
-                      </p>
+                  <tr v-for="school in filteredSchools" :key="school.id" class="hover:bg-blue-50/20 transition-colors group">
+                    <!-- Column 1: Tenant ID & School Name -->
+                    <td class="py-4 px-5">
+                      <div class="flex items-center gap-1.5 mb-1">
+                        <button 
+                          @click="copyToClipboard(school.id, 'Tenant ID')"
+                          class="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[10px] font-bold border border-slate-300 inline-flex items-center gap-1 transition-colors cursor-pointer"
+                          title="Klik salin full Tenant UUID"
+                        >
+                          <span>{{ formatTenantId(school.id) }}</span>
+                          <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        </button>
+                        <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                          DB Limit: {{ school.database_limit || 100 }} MB
+                        </span>
+                      </div>
+                      <p class="font-bold text-slate-900 text-sm group-hover:text-blue-700 transition-colors">{{ school.name || school.school_name }}</p>
+                      <p class="text-[11px] text-slate-500 font-medium max-w-[220px] truncate" :title="school.address">{{ school.address || 'Alamat belum disetel' }}</p>
                     </td>
-                    <td class="py-4 px-6">
-                      <p class="text-sm font-bold text-slate-700 mb-0.5">{{ school.contact_number || '-' }}</p>
-                      <p class="text-[11px] text-slate-500 font-medium max-w-[200px] truncate" :title="school.address">{{ school.address || '-' }}</p>
-                    </td>
-                    <td class="py-4 px-6">
-                      <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-slate-100 text-slate-800 border border-slate-200 shadow-2xs">
-                        <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        <span class="font-mono">{{ formatGurukuUsername(school.admin_username) }}</span>
-                      </span>
-                    </td>
-                    <td class="py-4 px-6">
-                      <div class="flex flex-col gap-1">
-                        <span v-if="isExpired(school.valid_until)" class="inline-flex w-max px-2.5 py-0.5 text-[10px] font-black rounded-md bg-rose-100 text-rose-700 border border-rose-200 uppercase tracking-wider">Expired</span>
-                        <span v-else class="inline-flex w-max px-2.5 py-0.5 text-[10px] font-black rounded-md bg-emerald-100 text-emerald-700 border border-emerald-200 uppercase tracking-wider">Active</span>
-                        <span class="text-xs font-bold text-slate-500">{{ formatDate(school.valid_until) }}</span>
+
+                    <!-- Column 2: Admin Contact & Username -->
+                    <td class="py-4 px-5">
+                      <p class="text-sm font-bold text-slate-800">{{ school.admin_contact || school.contact_number || '-' }}</p>
+                      <div class="mt-1 flex items-center gap-1.5">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                          <svg class="w-3 h-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                          <span class="font-mono text-[11px]">{{ formatGurukuUsername(school.admin_username) }}</span>
+                        </span>
+                        <a 
+                          v-if="school.admin_contact || school.contact_number" 
+                          :href="getWaUrl(school.admin_contact || school.contact_number, school.name, 'Halo Pengelola ' + school.name + ', kami dari Tim Super Admin GuruKu.')"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="p-1 rounded bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200 transition-colors cursor-pointer"
+                          title="Chat WhatsApp Admin"
+                        >
+                          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                        </a>
                       </div>
                     </td>
-                    <td class="py-4 px-6 text-right space-x-3 whitespace-nowrap">
-                      <a v-if="school.contact_number" :href="getWaUrl(school.contact_number, school.name, `Halo Pengelola ${school.name}, kami dari Tim Super Admin GuruKu.`)" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-emerald-600 hover:text-emerald-800 transition-colors cursor-pointer no-underline inline-block">Chat WA</a>
-                      <button @click="blockSchool(school.id)" class="text-xs font-bold text-amber-600 hover:text-amber-800 transition-colors cursor-pointer">Blokir</button>
-                      <button @click="deleteSchool(school.id, school.name)" class="text-xs font-bold text-rose-600 hover:text-rose-800 transition-colors cursor-pointer">Hapus</button>
+
+                    <!-- Column 3: Subscription End Date & Days Remaining -->
+                    <td class="py-4 px-5">
+                      <p class="font-bold text-slate-900 text-sm">{{ formatDate(school.subscription_end_date || school.valid_until) }}</p>
+                      <p 
+                        class="text-xs font-semibold mt-0.5"
+                        :class="{
+                          'text-emerald-600': school.status === 'Active',
+                          'text-amber-600 font-bold': school.status === 'Grace Period',
+                          'text-rose-600 font-bold': school.status === 'Expired' || school.status === 'Suspended'
+                        }"
+                      >
+                        {{ getDaysRemainingText(school.days_remaining) }}
+                      </p>
+                    </td>
+
+                    <!-- Column 4: Dynamic Status Badges (Green: Active, Yellow: Grace Period, Red: Expired, Slate: Suspended) -->
+                    <td class="py-4 px-4 text-center whitespace-nowrap">
+                      <span 
+                        class="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-bold rounded-full border shadow-2xs"
+                        :class="{
+                          'bg-emerald-50 text-emerald-700 border-emerald-300': school.status === 'Active',
+                          'bg-amber-50 text-amber-700 border-amber-300': school.status === 'Grace Period',
+                          'bg-rose-50 text-rose-700 border-rose-300': school.status === 'Expired',
+                          'bg-slate-100 text-slate-700 border-slate-300': school.status === 'Suspended'
+                        }"
+                      >
+                        <span 
+                          class="w-1.5 h-1.5 rounded-full" 
+                          :class="{
+                            'bg-emerald-500 animate-pulse': school.status === 'Active',
+                            'bg-amber-500': school.status === 'Grace Period',
+                            'bg-rose-500': school.status === 'Expired',
+                            'bg-slate-500': school.status === 'Suspended'
+                          }"
+                        ></span>
+                        {{ school.status }}
+                      </span>
+                    </td>
+
+                    <!-- Column 5: Action Menu (Detail Klien, Edit Limit DB, Perpanjang Manual, Suspend) -->
+                    <td class="py-4 px-5 text-right whitespace-nowrap">
+                      <div class="flex items-center justify-end gap-1.5">
+                        <button 
+                          @click="openClientDetail(school)"
+                          class="px-2.5 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                          title="Lihat Detail Klien & Statistik"
+                        >
+                          Detail
+                        </button>
+                        <button 
+                          @click="openEditLimit(school)"
+                          class="px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                          title="Atur Limit Kuota Database"
+                        >
+                          Limit DB
+                        </button>
+                        <button 
+                          @click="openManualRenew(school)"
+                          class="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                          title="Perpanjang Lisensi Manual"
+                        >
+                          Perpanjang
+                        </button>
+                        <button 
+                          @click="toggleSuspendSchool(school)"
+                          class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer border"
+                          :class="school.status === 'Suspended' ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600' : 'bg-amber-50 hover:bg-amber-100 text-amber-700 border-amber-200'"
+                          :title="school.status === 'Suspended' ? 'Buka Penangguhan Akses Tenant' : 'Tangguhkan Login Tenant Ini'"
+                        >
+                          {{ school.status === 'Suspended' ? 'Buka' : 'Suspend' }}
+                        </button>
+                        <button 
+                          @click="deleteSchool(school.id, school.name)" 
+                          class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
+                          title="Hapus Klien Permanen"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -1168,19 +1327,24 @@
 
       <!-- ADUAN & SARAN KLIEN TAB -->
       <div v-else-if="activeTab === 'aduan'" class="animate-fade-in space-y-6">
-        <div class="bg-white rounded-2xl sm:rounded-3xl shadow-xl shadow-gray-200/40 border border-gray-100 overflow-hidden">
-          <div class="p-4 sm:p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white/50 backdrop-blur-xl">
+        <div class="bg-white rounded-2xl sm:rounded-3xl shadow-xs border border-slate-300 overflow-hidden">
+          <div class="p-4 sm:p-6 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3.5 bg-white">
             <div>
-              <h2 class="text-lg sm:text-xl font-black text-gray-800 tracking-tight">Pusat Layanan Aduan & Saran Klien</h2>
-              <p class="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1 font-medium">Laporan kendala login, pesan keluhan, dan saran pengguna dari seluruh sekolah.</p>
+              <h2 class="text-lg sm:text-xl font-black text-slate-900 tracking-tight">Pusat Bantuan & Layanan Kendala Klien (SaaS)</h2>
+              <p class="text-xs text-slate-500 mt-0.5 font-medium">Tiket bantuan resmi yang terhubung dengan Tenant ID sekolah untuk penanganan kendala teknis dan administrasi.</p>
             </div>
             <div class="w-full sm:w-auto flex items-center justify-between sm:justify-end gap-2">
-              <select v-model="filterTicketStatus" class="flex-1 sm:flex-initial px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 outline-none">
-                <option value="ALL">Semua Status</option>
-                <option value="MENUNGGU">Menunggu</option>
-                <option value="DIPROSES">Diproses</option>
-                <option value="SELESAI">Selesai</option>
-              </select>
+              <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold">
+                <button 
+                  v-for="st in ['ALL', 'Open', 'In Progress', 'Resolved']" 
+                  :key="'f-'+st"
+                  @click="filterTicketStatus = st"
+                  class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+                  :class="filterTicketStatus === st ? 'bg-white text-blue-700 shadow-2xs' : 'text-slate-500 hover:text-slate-800'"
+                >
+                  {{ st === 'ALL' ? 'Semua' : st }}
+                </button>
+              </div>
               <button @click="loadSupportTickets" class="p-2 bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-700 transition-colors cursor-pointer shrink-0" title="Perbarui Data">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
               </button>
@@ -1199,22 +1363,27 @@
             >
               <div class="flex items-start justify-between gap-2">
                 <div class="min-w-0">
-                  <h4 class="font-extrabold text-slate-900 text-sm leading-tight">{{ t.name }}</h4>
+                  <div class="flex items-center gap-2">
+                    <span v-if="t.tenant_id" class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-mono text-[10px] font-bold border border-blue-200">
+                      {{ formatTenantId(t.tenant_id) }}
+                    </span>
+                    <h4 class="font-extrabold text-slate-900 text-sm leading-tight">{{ t.name }}</h4>
+                  </div>
                   <p class="text-xs text-indigo-600 font-semibold mt-0.5">{{ t.contact || '-' }}</p>
                   <p class="text-[10px] text-slate-400 font-medium mt-0.5">{{ t.date }}</p>
                 </div>
                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold shrink-0"
                   :class="{
-                    'bg-amber-50 text-amber-800 border border-amber-200': t.status === 'MENUNGGU',
-                    'bg-blue-50 text-blue-800 border border-blue-200': t.status === 'DIPROSES',
-                    'bg-emerald-50 text-emerald-800 border border-emerald-200': t.status === 'SELESAI'
+                    'bg-amber-50 text-amber-800 border border-amber-200': (t.status === 'Open' || t.status === 'MENUNGGU'),
+                    'bg-blue-50 text-blue-800 border border-blue-200': (t.status === 'In Progress' || t.status === 'DIPROSES'),
+                    'bg-emerald-50 text-emerald-800 border border-emerald-200': (t.status === 'Resolved' || t.status === 'SELESAI')
                   }"
                 >
                   <span class="w-1.5 h-1.5 rounded-full"
                     :class="{
-                      'bg-amber-500': t.status === 'MENUNGGU',
-                      'bg-blue-500': t.status === 'DIPROSES',
-                      'bg-emerald-500': t.status === 'SELESAI'
+                      'bg-amber-500': (t.status === 'Open' || t.status === 'MENUNGGU'),
+                      'bg-blue-500': (t.status === 'In Progress' || t.status === 'DIPROSES'),
+                      'bg-emerald-500': (t.status === 'Resolved' || t.status === 'SELESAI')
                     }"
                   ></span>
                   {{ t.status }}
@@ -1244,7 +1413,7 @@
                   <span>WhatsApp</span>
                 </a>
                 <button 
-                  v-if="t.status !== 'SELESAI'"
+                  v-if="(t.status !== 'Resolved' && t.status !== 'SELESAI')"
                   @click="resolveSupportTicket(t.id)"
                   class="px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs border border-blue-200 transition-colors cursor-pointer active:scale-95"
                 >
@@ -1297,16 +1466,16 @@
                   <td class="py-4 px-6 text-center">
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold"
                       :class="{
-                        'bg-amber-100 text-amber-800': t.status === 'MENUNGGU',
-                        'bg-blue-100 text-blue-800': t.status === 'DIPROSES',
-                        'bg-emerald-100 text-emerald-800': t.status === 'SELESAI'
+                        'bg-amber-100 text-amber-800': (t.status === 'Open' || t.status === 'MENUNGGU'),
+                        'bg-blue-100 text-blue-800': (t.status === 'In Progress' || t.status === 'DIPROSES'),
+                        'bg-emerald-100 text-emerald-800': (t.status === 'Resolved' || t.status === 'SELESAI')
                       }"
                     >
                       <span class="w-1.5 h-1.5 rounded-full"
                         :class="{
-                          'bg-amber-500': t.status === 'MENUNGGU',
-                          'bg-blue-500': t.status === 'DIPROSES',
-                          'bg-emerald-500': t.status === 'SELESAI'
+                          'bg-amber-500': (t.status === 'Open' || t.status === 'MENUNGGU'),
+                          'bg-blue-500': (t.status === 'In Progress' || t.status === 'DIPROSES'),
+                          'bg-emerald-500': (t.status === 'Resolved' || t.status === 'SELESAI')
                         }"
                       ></span>
                       {{ t.status }}
@@ -1325,7 +1494,7 @@
                       <span>WhatsApp</span>
                     </a>
                     <button 
-                      v-if="t.status !== 'SELESAI'"
+                      v-if="(t.status !== 'Resolved' && t.status !== 'SELESAI')"
                       @click="resolveSupportTicket(t.id)"
                       class="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs border border-blue-200 transition-colors cursor-pointer"
                     >
@@ -1346,12 +1515,168 @@
         </div>
       </div>
 
-      <!-- KEUANGAN & ASET TAB -->
-      <div v-else-if="activeTab === 'keuangan'" class="animate-fade-in">
-        <KeuanganAset />
+      <!-- TAGIHAN & KEUANGAN TAB: Multi-Tenant Billing Hub -->
+      <div v-else-if="activeTab === 'keuangan'" class="animate-fade-in space-y-6">
+        
+        <!-- Header Sub-Navigasi Tagihan & Keuangan -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-300">
+          <div>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Tagihan & Keuangan SaaS</h1>
+            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Kelola penagihan lisensi sekolah, verifikasi pembayaran Virtual Account, dan pantau buku kas.</p>
+          </div>
+
+          <div class="flex items-center gap-2 flex-wrap">
+            <button 
+              @click="showInvoiceModal = true" 
+              class="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-xs transition-colors cursor-pointer"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              <span>+ Terbitkan Faktur</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sub-menu Nav Pills: Faktur & Invoicing, Buku Kas, Kalkulator HPP -->
+        <div class="flex items-center gap-2 border-b border-slate-300 pb-3 overflow-x-auto custom-scrollbar">
+          <button 
+            @click="keuanganSubTab = 'tagihan'" 
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 border"
+            :class="keuanganSubTab === 'tagihan' ? 'bg-slate-900 text-white border-slate-900 shadow-xs' : 'text-slate-600 border-slate-300 bg-white hover:bg-slate-50'"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            <span>Faktur & Invoicing ({{ pendingPayments.length }})</span>
+            <span v-if="pendingPaymentsCount > 0" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-500 text-white">
+              {{ pendingPaymentsCount }} Baru
+            </span>
+          </button>
+
+          <button 
+            @click="keuanganSubTab = 'bukukas'" 
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 border"
+            :class="keuanganSubTab === 'bukukas' ? 'bg-slate-900 text-white border-slate-900 shadow-xs' : 'text-slate-600 border-slate-300 bg-white hover:bg-slate-50'"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+            <span>Buku Kas & Arus Kas</span>
+          </button>
+
+          <button 
+            @click="keuanganSubTab = 'hpp'" 
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 border"
+            :class="keuanganSubTab === 'hpp' ? 'bg-slate-900 text-white border-slate-900 shadow-xs' : 'text-slate-600 border-slate-300 bg-white hover:bg-slate-50'"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            <span>Kalkulator HPP</span>
+          </button>
+        </div>
+
+        <!-- Subtab 1: Faktur & Invoicing -->
+        <div v-if="keuanganSubTab === 'tagihan'" class="space-y-6">
+          <div class="bg-white rounded-2xl sm:rounded-3xl shadow-xs border border-slate-300 overflow-hidden">
+            <div class="p-4 sm:p-6 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3.5 bg-white">
+              <div>
+                <h2 class="text-base sm:text-xl font-black text-slate-800 tracking-tight">Daftar Tagihan & Status Pembayaran Lisensi</h2>
+                <p class="text-xs text-slate-500 font-medium mt-0.5">Status pembayaran resmi: Menunggu Pembayaran, Berhasil Dibayar, dan Dibatalkan.</p>
+              </div>
+
+              <!-- Filter Status Pembayaran -->
+              <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold">
+                <button 
+                  v-for="st in ['Semua', 'Menunggu Pembayaran', 'Berhasil Dibayar', 'Dibatalkan']" 
+                  :key="'pf-'+st"
+                  @click="invoiceStatusFilter = st"
+                  class="px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer text-[11px]"
+                  :class="invoiceStatusFilter === st ? 'bg-white text-blue-700 shadow-2xs font-extrabold' : 'text-slate-500 hover:text-slate-800'"
+                >
+                  {{ st }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Table Invoices -->
+            <div class="overflow-x-auto custom-scrollbar">
+              <table class="min-w-full bg-white">
+                <thead>
+                  <tr class="bg-slate-50 text-left border-y border-slate-300">
+                    <th class="py-4 px-4 uppercase font-black text-[11px] text-slate-500 tracking-wider">No. Invoice & Paket</th>
+                    <th class="py-4 px-5 uppercase font-black text-[11px] text-slate-500 tracking-wider">Tenant & Pembayar</th>
+                    <th class="py-4 px-5 uppercase font-black text-[11px] text-slate-500 tracking-wider">Metode & Nominal</th>
+                    <th class="py-4 px-4 uppercase font-black text-[11px] text-slate-500 tracking-wider">Status Pembayaran</th>
+                    <th class="py-4 px-4 uppercase font-black text-[11px] text-slate-500 tracking-wider text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200">
+                  <tr v-if="filteredInvoices.length === 0">
+                    <td colspan="5" class="py-16 text-center text-slate-400 font-medium text-xs">
+                      Tidak ada catatan tagihan untuk filter yang dipilih.
+                    </td>
+                  </tr>
+                  <tr v-for="p in filteredInvoices" :key="'inv-'+p.id" class="hover:bg-blue-50/20 transition-colors">
+                    <td class="py-4 px-4">
+                      <p class="font-bold text-slate-900 text-sm font-mono">{{ p.invoice }}</p>
+                      <p class="text-xs text-blue-600 font-semibold mt-0.5">{{ p.plan }} &bull; {{ p.formattedDate || '11 Nov 2026' }}</p>
+                    </td>
+                    <td class="py-4 px-5">
+                      <p class="text-sm font-bold text-slate-800">{{ p.school_name || p.senderName }}</p>
+                      <p class="text-[11px] text-slate-500 font-medium">Bank / VA: {{ p.bankName || 'BCA' }}</p>
+                      <p v-if="p.notes" class="text-[10px] text-slate-400 italic mt-0.5 max-w-xs truncate" :title="p.notes">"{{ p.notes }}"</p>
+                    </td>
+                    <td class="py-4 px-5">
+                      <p class="font-black text-slate-900 text-sm font-mono">{{ formatRupiah(p.amount) }}</p>
+                      <p class="text-[11px] text-slate-500 font-medium">{{ p.method || 'Virtual Account' }}</p>
+                    </td>
+                    <td class="py-4 px-4 whitespace-nowrap">
+                      <span 
+                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold border shadow-2xs"
+                        :class="getPaymentStatusClass(p.status)"
+                      >
+                        <span class="w-1.5 h-1.5 rounded-full" :class="getPaymentStatusDot(p.status)"></span>
+                        <span>{{ p.status }}</span>
+                      </span>
+                    </td>
+                    <td class="py-4 px-4 text-right whitespace-nowrap">
+                      <div class="flex items-center justify-end gap-1.5">
+                        <button 
+                          v-if="p.status === 'Menunggu Pembayaran' || p.status === 'MENUNGGU_VERIFIKASI'"
+                          @click="approvePayment(p)"
+                          class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                        >
+                          Setujui
+                        </button>
+                        <button 
+                          v-if="p.status === 'Menunggu Pembayaran' || p.status === 'MENUNGGU_VERIFIKASI'"
+                          @click="rejectPayment(p)"
+                          class="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                        >
+                          Tolak
+                        </button>
+                        <button 
+                          @click="deletePaymentRecord(p.invoice, p.id)"
+                          class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
+                          title="Hapus Faktur"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subtab 2: Buku Kas -->
+        <div v-else-if="keuanganSubTab === 'bukukas'">
+          <KeuanganAset />
+        </div>
+
+        <!-- Subtab 3: Kalkulator HPP -->
+        <div v-else-if="keuanganSubTab === 'hpp'">
+          <KalkulatorHPP />
+        </div>
       </div>
 
-      <!-- KALKULATOR HPP TAB -->
+      <!-- KALKULATOR HPP STANDALONE (Navigasi Langsung) -->
       <div v-else-if="activeTab === 'hpp'" class="animate-fade-in">
         <KalkulatorHPP />
       </div>
@@ -1758,6 +2083,220 @@ const saving = ref(false)
 const schools = ref([])
 const clientSearch = ref('')
 const availablePackages = ref(getStoredPackages())
+
+// Multi-Tenant SaaS State & Data Aggregation
+const isKeuanganMenuOpen = ref(false)
+const keuanganSubTab = ref('tagihan')
+const invoiceStatusFilter = ref('Semua')
+
+const toggleKeuanganMenu = () => {
+  isKeuanganMenuOpen.value = !isKeuanganMenuOpen.value
+  if (isKeuanganMenuOpen.value && activeTab.value !== 'keuangan' && activeTab.value !== 'hpp') {
+    activeTab.value = 'keuangan'
+  }
+}
+
+const selectKeuanganSubTab = (sub) => {
+  keuanganSubTab.value = sub
+  if (sub === 'hpp') {
+    activeTab.value = 'hpp'
+  } else {
+    activeTab.value = 'keuangan'
+  }
+}
+
+const dashboardMetrics = ref({
+  revenueThisMonth: 8470163,
+  operationalCosts: 104205,
+  operationalMargin: 8365958,
+  activeClientsCount: 2,
+  activationQueueCount: 0,
+  userGrowth12Months: []
+})
+
+const fetchDashboardMetrics = async () => {
+  try {
+    const res = await fetch('/api/v1/super/metrics')
+    if (res.ok) {
+      const data = await res.json()
+      dashboardMetrics.value = data
+      if (Array.isArray(data.userGrowth12Months) && data.userGrowth12Months.length > 0) {
+        userStatsMonths.value = data.userGrowth12Months.map(m => ({
+          month: m.label || m.month,
+          penggunaAktif: m.activeUsers || 0,
+          penangguhan: m.churnedUsers || 0
+        }))
+      }
+    }
+  } catch (err) {
+    console.warn('Dashboard metrics API fallback:', err)
+  }
+}
+
+const filteredInvoices = computed(() => {
+  if (invoiceStatusFilter.value === 'Semua') {
+    return pendingPayments.value
+  }
+  return pendingPayments.value.filter(p => {
+    if (invoiceStatusFilter.value === 'Menunggu Pembayaran') {
+      return p.status === 'Menunggu Pembayaran' || p.status === 'MENUNGGU_VERIFIKASI'
+    }
+    if (invoiceStatusFilter.value === 'Berhasil Dibayar') {
+      return p.status === 'Berhasil Dibayar' || p.status === 'LUNAS' || p.status === 'DISETUJUI' || p.status === 'TERVERIFIKASI'
+    }
+    if (invoiceStatusFilter.value === 'Dibatalkan') {
+      return p.status === 'Dibatalkan' || p.status === 'DITOLAK'
+    }
+    return p.status === invoiceStatusFilter.value
+  })
+})
+
+const getPaymentStatusClass = (status) => {
+  if (status === 'Berhasil Dibayar' || status === 'LUNAS' || status === 'DISETUJUI' || status === 'TERVERIFIKASI') {
+    return 'bg-emerald-50 text-emerald-700 border-emerald-200'
+  }
+  if (status === 'Menunggu Pembayaran' || status === 'MENUNGGU_VERIFIKASI') {
+    return 'bg-amber-50 text-amber-700 border-amber-200'
+  }
+  if (status === 'Dibatalkan' || status === 'DITOLAK') {
+    return 'bg-rose-50 text-rose-700 border-rose-200'
+  }
+  return 'bg-slate-100 text-slate-700 border-slate-200'
+}
+
+const getPaymentStatusDot = (status) => {
+  if (status === 'Berhasil Dibayar' || status === 'LUNAS' || status === 'DISETUJUI' || status === 'TERVERIFIKASI') {
+    return 'bg-emerald-500'
+  }
+  if (status === 'Menunggu Pembayaran' || status === 'MENUNGGU_VERIFIKASI') {
+    return 'bg-amber-500 animate-pulse'
+  }
+  if (status === 'Dibatalkan' || status === 'DITOLAK') {
+    return 'bg-rose-500'
+  }
+  return 'bg-slate-400'
+}
+
+// Client Management Action Modals & Methods
+const selectedClient = ref(null)
+const showClientDetailModal = ref(false)
+const showEditLimitModal = ref(false)
+const showManualRenewModal = ref(false)
+const limitForm = ref({ databaseLimit: 100 })
+const renewForm = ref({ months: 12 })
+const actionLoading = ref(false)
+
+const formatTenantId = (id) => {
+  if (!id) return 'TEN-000000'
+  return 'TEN-' + String(id).replace(/-/g, '').substring(0, 8).toUpperCase()
+}
+
+const getDaysRemainingText = (days) => {
+  if (days === undefined || days === null) return '-'
+  if (days < 0) return Math.abs(days) + ' hari lewat (Expired)'
+  if (days === 0) return 'Hari ini habis'
+  return 'Sisa ' + days + ' hari'
+}
+
+const copyToClipboard = (text, label = 'Data') => {
+  if (!text) return
+  if (navigator?.clipboard?.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      alert(label + ' [' + text + '] berhasil disalin ke clipboard!')
+    }).catch(() => {
+      prompt('Salin ' + label + ':', text)
+    })
+  } else {
+    prompt('Salin ' + label + ':', text)
+  }
+}
+
+const openClientDetail = (school) => {
+  selectedClient.value = school
+  showClientDetailModal.value = true
+}
+
+const openEditLimit = (school) => {
+  selectedClient.value = school
+  limitForm.value.databaseLimit = school.database_limit || 100
+  showEditLimitModal.value = true
+}
+
+const saveLimit = async () => {
+  if (!selectedClient.value) return
+  actionLoading.value = true
+  try {
+    const res = await SafeFlow.fetch('/api/v1/super/schools/' + selectedClient.value.id + '/limit', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ database_limit: Number(limitForm.value.databaseLimit) })
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || 'Gagal menyimpan limit')
+    selectedClient.value.database_limit = Number(limitForm.value.databaseLimit)
+    const idx = schools.value.findIndex(s => s.id === selectedClient.value.id)
+    if (idx !== -1) {
+      schools.value[idx].database_limit = Number(limitForm.value.databaseLimit)
+    }
+    showEditLimitModal.value = false
+    alert('Limit database untuk ' + selectedClient.value.name + ' berhasil diperbarui menjadi ' + limitForm.value.databaseLimit + ' MB!')
+  } catch (err) {
+    alert(err.message)
+  } finally {
+    actionLoading.value = false
+  }
+}
+
+const openManualRenew = (school) => {
+  selectedClient.value = school
+  renewForm.value.months = 12
+  showManualRenewModal.value = true
+}
+
+const saveManualRenew = async () => {
+  if (!selectedClient.value) return
+  actionLoading.value = true
+  try {
+    const res = await SafeFlow.fetch('/api/v1/super/schools/' + selectedClient.value.id + '/renew', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ months: Number(renewForm.value.months) })
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || 'Gagal memperpanjang lisensi')
+    await fetchSchools()
+    await fetchDashboardMetrics()
+    showManualRenewModal.value = false
+    alert('Lisensi untuk ' + selectedClient.value.name + ' berhasil diperpanjang (+' + renewForm.value.months + ' bulan)!')
+  } catch (err) {
+    alert(err.message)
+  } finally {
+    actionLoading.value = false
+  }
+}
+
+const toggleSuspendSchool = async (school) => {
+  const isSuspended = school.status === 'Suspended'
+  const warningText = isSuspended 
+    ? 'Aktifkan kembali akses tenant untuk ' + school.name + '?' 
+    : 'PERINGATAN: Apakah Anda yakin ingin MENANGGUHKAN akses login tenant ' + school.name + '? Semua guru dan admin sekolah tidak dapat login sampai diaktifkan kembali.'
+  
+  if (!confirm(warningText)) return
+  try {
+    const res = await SafeFlow.fetch('/api/v1/super/schools/' + school.id + '/suspend', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ suspend: !isSuspended })
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || 'Gagal mengubah status tenant')
+    await fetchSchools()
+    await fetchDashboardMetrics()
+    alert(data.message || 'Status tenant berhasil diperbarui')
+  } catch (err) {
+    alert(err.message)
+  }
+}
 
 // Tanggal hari ini format Indonesia
 const currentDateFormatted = computed(() => {
@@ -2279,11 +2818,11 @@ const loadPendingPayments = async () => {
 }
 
 const pendingPaymentsCount = computed(() => {
-  return pendingPayments.value.filter(p => p.status === 'MENUNGGU_VERIFIKASI').length
+  return pendingPayments.value.filter(p => p.status === 'Menunggu Pembayaran' || p.status === 'MENUNGGU_VERIFIKASI').length
 })
 
 const approvePayment = async (payment) => {
-  payment.status = 'TERVERIFIKASI'
+  payment.status = 'Berhasil Dibayar'
   try {
     localStorage.setItem('guruKu_pending_payments', JSON.stringify(pendingPayments.value))
   } catch (e) {}
@@ -2314,12 +2853,12 @@ const approvePayment = async (payment) => {
     matched.valid_until = baseDate.toISOString().slice(0, 10)
   }
 
-  alert(`Pembayaran [${payment.invoice}] berhasil disetujui! Status diperbarui menjadi TERVERIFIKASI.`)
+  alert(`Pembayaran [${payment.invoice}] berhasil disetujui! Status diperbarui menjadi Berhasil Dibayar.`)
 }
 
 const rejectPayment = async (payment) => {
   if (confirm(`Tolak konfirmasi pembayaran [${payment.invoice}]?`)) {
-    payment.status = 'DITOLAK'
+    payment.status = 'Dibatalkan'
     try {
       localStorage.setItem('guruKu_pending_payments', JSON.stringify(pendingPayments.value))
     } catch (e) {}
@@ -2386,7 +2925,7 @@ const saveSupportTickets = () => {
 }
 
 const unreadTicketsCount = computed(() => {
-  return supportTickets.value.filter(t => t.status === 'MENUNGGU').length
+  return supportTickets.value.filter(t => (t.status === 'Open' || t.status === 'MENUNGGU')).length
 })
 
 const filteredSupportTickets = computed(() => {
@@ -2819,6 +3358,7 @@ const handlePackagesUpdate = (e) => {
 onMounted(() => {
   loadFinancialSummary()
   fetchSchools()
+  fetchDashboardMetrics()
   loadForgotPasswordReports()
   loadSupportTickets()
   loadPendingPayments()
@@ -2833,6 +3373,7 @@ onMounted(() => {
     loadSupportTickets()
     loadPendingPayments()
     loadFinancialSummary()
+    fetchDashboardMetrics()
   }, 3000)
 })
 

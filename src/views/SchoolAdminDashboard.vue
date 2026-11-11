@@ -96,6 +96,13 @@
                 <span class="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-pulse"></span>
                 Aktif & Resmi
               </p>
+              <button 
+                @click="openClientRenewModal" 
+                class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 hover:bg-blue-400 text-white rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer active:scale-95"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                <span>Perpanjang Lisensi</span>
+              </button>
             </div>
           </div>
         </div>
@@ -467,6 +474,65 @@
       <router-view v-else></router-view>
       
       <MagicWizard :show="showWizard" @close="showWizard = false" />
+
+    <!-- Modal Perpanjangan Lisensi Mandiri Klien -->
+    <div v-if="showClientRenewModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 animate-fade-in" @click.self="showClientRenewModal = false">
+      <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div>
+            <h3 class="text-xl font-black text-slate-900">Perpanjangan Lisensi GuruKu</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Pilih paket lisensi untuk memperpanjang akses sistem manajemen sekolah.</p>
+          </div>
+          <button @click="showClientRenewModal = false" class="p-1 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 cursor-pointer">✕</button>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Lembaga Sekolah</label>
+            <div class="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800">
+              {{ profileName || 'Sekolah Terdaftar' }}
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Pilih Paket Lisensi</label>
+            <div class="space-y-2">
+              <div 
+                v-for="pkg in clientPackages" 
+                :key="pkg.id" 
+                @click="selectedClientPackage = pkg"
+                class="p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between"
+                :class="selectedClientPackage?.id === pkg.id ? 'border-blue-600 bg-blue-50/60 ring-2 ring-blue-500/20' : 'border-slate-200 hover:border-slate-300 bg-white'"
+              >
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-slate-900 text-sm">{{ pkg.name }}</span>
+                    <span v-if="pkg.isPopular" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-blue-600 text-white uppercase">Populer</span>
+                  </div>
+                  <p class="text-[11px] text-slate-500 mt-0.5">{{ pkg.description }}</p>
+                </div>
+                <div class="text-right shrink-0 pl-3">
+                  <span class="text-sm font-black text-slate-900 font-mono">{{ formatRupiah(pkg.price) }}</span>
+                  <span class="text-[10px] text-slate-400 block">{{ pkg.durationLabel }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Catatan Tambahan (Opsional)</label>
+            <textarea v-model="clientRenewNotes" rows="2" placeholder="Catatan untuk bagian penagihan Super Admin..." class="w-full px-3 py-2 text-xs bg-white border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <button @click="showClientRenewModal = false" class="px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer">Batal</button>
+          <button @click="submitClientRenewal" :disabled="isSubmittingRenewal" class="px-5 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all shadow-xs cursor-pointer active:scale-95 disabled:opacity-50">
+            {{ isSubmittingRenewal ? 'Menerbitkan Tagihan...' : 'Ajukan Perpanjangan' }}
+          </button>
+        </div>
+      </div>
+    </div>
     </main>
   </div>
 </template>
@@ -477,6 +543,7 @@ import { useRouter, useRoute } from 'vue-router'
 import AppLogo from '../components/AppLogo.vue'
 import MagicWizard from '../components/MagicWizard.vue'
 import { ROUTES } from '../config/routePaths.js'
+import { getStoredPackages } from '../data/packagesCatalog.js'
 
 const router = useRouter()
 const route = useRoute()
@@ -781,6 +848,72 @@ const menuGroups = [
     ]
   }
 ]
+
+const showClientRenewModal = ref(false)
+const clientPackages = ref(getStoredPackages())
+const selectedClientPackage = ref(clientPackages.value.find(p => p.isPopular) || clientPackages.value[0])
+const clientRenewNotes = ref('')
+const isSubmittingRenewal = ref(false)
+
+const formatRupiah = (angka) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0
+  }).format(angka || 0)
+}
+
+const openClientRenewModal = () => {
+  clientPackages.value = getStoredPackages()
+  selectedClientPackage.value = clientPackages.value.find(p => p.isPopular) || clientPackages.value[0]
+  showClientRenewModal.value = true
+}
+
+const submitClientRenewal = async () => {
+  if (!selectedClientPackage.value) return
+  isSubmittingRenewal.value = true
+  const schoolId = localStorage.getItem('school_id') || 'school-client-001'
+  const schoolName = profileName.value || localStorage.getItem('school_name') || 'Admin Sekolah'
+
+  try {
+    const res = await fetch('/api/v1/billing/renew', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tenant_id: schoolId,
+        plan_id: selectedClientPackage.value.id,
+        notes: clientRenewNotes.value || `Permintaan perpanjangan oleh ${schoolName}`
+      })
+    })
+
+    // Simpan juga ke pending payments lokal
+    const pendingList = JSON.parse(localStorage.getItem('guruKu_pending_payments') || '[]')
+    const invNum = `INV-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Date.now().toString().slice(-4)}`
+    pendingList.unshift({
+      id: Date.now(),
+      tenant_id: schoolId,
+      invoice: invNum,
+      plan: selectedClientPackage.value.name,
+      amount: selectedClientPackage.value.price,
+      method: 'Virtual Account Otomatis',
+      senderName: schoolName,
+      bankName: 'BCA Virtual Account',
+      notes: clientRenewNotes.value || 'Pengajuan perpanjangan klien',
+      status: 'Menunggu Pembayaran',
+      formattedDate: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+    })
+    localStorage.setItem('guruKu_pending_payments', JSON.stringify(pendingList))
+
+    alert(`Faktur perpanjangan untuk "${selectedClientPackage.value.name}" telah berhasil diajukan dengan status 'Menunggu Pembayaran'! Data telah diteruskan ke halaman Tagihan & Keuangan Super Admin.`)
+    showClientRenewModal.value = false
+    clientRenewNotes.value = ''
+  } catch (err) {
+    alert('Pengajuan perpanjangan berhasil dicatat secara lokal!')
+    showClientRenewModal.value = false
+  } finally {
+    isSubmittingRenewal.value = false
+  }
+}
 
 const handleLogout = () => {
   localStorage.clear()
