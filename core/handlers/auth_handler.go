@@ -35,13 +35,20 @@ func GenerateJWTLogin(c *gin.Context) {
 	}
 
 	cleanUsername := strings.TrimSpace(req.Username)
+	var altUsername string
+	domain := "@guruku.id"
+	if strings.HasSuffix(cleanUsername, domain) {
+		altUsername = strings.TrimSuffix(cleanUsername, domain)
+	} else {
+		altUsername = cleanUsername + domain
+	}
 
 	err := database.DB.QueryRow(`
 		SELECT u.id, u.school_id, u.password, u.role, s.valid_until
 		FROM users u
 		LEFT JOIN schools s ON u.school_id = s.id
-		WHERE u.username = $1
-	`, cleanUsername).Scan(&user.ID, &user.SchoolID, &user.Password, &user.Role, &user.ValidUntil)
+		WHERE u.username = $1 OR u.username = $2
+	`, cleanUsername, altUsername).Scan(&user.ID, &user.SchoolID, &user.Password, &user.Role, &user.ValidUntil)
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Username tidak ditemukan"})

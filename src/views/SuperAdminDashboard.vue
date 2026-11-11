@@ -631,7 +631,7 @@
                 <div class="grid grid-cols-2 gap-2 text-xs bg-slate-50/80 p-3 rounded-xl border border-slate-200">
                   <div>
                     <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Username Admin</span>
-                    <span class="font-mono font-bold text-indigo-700 truncate block mt-0.5">@{{ school.admin_username }}</span>
+                    <span class="font-mono font-bold text-blue-700 truncate block mt-0.5">{{ formatGurukuUsername(school.admin_username) }}</span>
                   </div>
                   <div>
                     <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">No. Kontak</span>
@@ -714,9 +714,9 @@
                       <p class="text-[11px] text-slate-500 font-medium max-w-[200px] truncate" :title="school.address">{{ school.address || '-' }}</p>
                     </td>
                     <td class="py-4 px-6">
-                      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        {{ school.admin_username }}
+                      <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-slate-100 text-slate-800 border border-slate-200 shadow-2xs">
+                        <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        <span class="font-mono">{{ formatGurukuUsername(school.admin_username) }}</span>
                       </span>
                     </td>
                     <td class="py-4 px-6">
@@ -796,7 +796,7 @@
                 <div class="flex items-start justify-between gap-2">
                   <div class="min-w-0">
                     <h4 class="font-bold text-slate-900 text-sm leading-tight truncate">{{ school.name }}</h4>
-                    <p class="text-[11px] text-slate-400 font-medium">Admin: @{{ school.admin_username }}</p>
+                    <p class="text-[11px] text-slate-400 font-medium">Admin: {{ formatGurukuUsername(school.admin_username) }}</p>
                   </div>
                   <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-black bg-blue-50 text-blue-700 border border-blue-100 uppercase shrink-0">
                     {{ school.payment_method }}
@@ -831,7 +831,7 @@
                   <tr v-for="school in schools" :key="'tx'+school.id" class="hover:bg-gray-50 transition-colors">
                     <td class="py-4 px-6">
                       <p class="font-bold text-gray-800 text-sm">{{ school.name }}</p>
-                      <p class="text-[11px] text-gray-400 mt-0.5">Admin: {{ school.admin_username }}</p>
+                      <p class="text-[11px] text-gray-400 mt-0.5">Admin: {{ formatGurukuUsername(school.admin_username) }}</p>
                     </td>
                     <td class="py-4 px-6">
                       <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-black bg-blue-50 text-blue-700 uppercase">
@@ -1494,9 +1494,23 @@
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                <div>
-                  <label class="block text-xs sm:text-sm font-bold text-gray-700 mb-1">Username Klien *</label>
-                  <input v-model="form.username" type="text" required class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-3.5 sm:px-4 py-2.5 sm:py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition-all shadow-sm text-sm" placeholder="Username unik sekolah">
-                  <p class="text-[10px] text-gray-500 mt-1 font-medium">Username unik untuk login.</p>
+                  <label class="block text-xs sm:text-sm font-bold text-gray-700 mb-1">Username Admin Sekolah *</label>
+                  <div class="relative flex items-center">
+                    <input 
+                      v-model="form.username" 
+                      type="text" 
+                      required 
+                      class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl pl-3.5 pr-28 sm:pr-32 py-2.5 sm:py-3 focus:ring-2 focus:ring-blue-500 outline-none transition-all shadow-xs text-xs sm:text-sm font-mono" 
+                      placeholder="nama_sekolah"
+                    >
+                    <span class="absolute right-2.5 text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border border-blue-200 pointer-events-none select-none">
+                      @guruku.id
+                    </span>
+                  </div>
+                  <p class="text-[11px] text-slate-500 mt-1.5 font-medium flex items-center gap-1.5">
+                    <span>Format login:</span>
+                    <span class="font-mono font-bold text-blue-700">{{ getFullUsername(form.username) }}</span>
+                  </p>
                </div>
 
                <div>
@@ -1642,7 +1656,20 @@
                 </div>
                 <div>
                   <label class="block text-[11px] font-bold text-slate-700 mb-1">Username Admin</label>
-                  <input v-model="newRentalForm.adminUsername" type="text" placeholder="admin_sekolah" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 outline-none" />
+                  <div class="relative flex items-center">
+                    <input 
+                      v-model="newRentalForm.adminUsername" 
+                      type="text" 
+                      placeholder="admin_sekolah" 
+                      class="w-full px-3 pr-20 py-2 bg-white border border-slate-300 rounded-xl text-xs font-mono focus:ring-2 focus:ring-blue-500 outline-none" 
+                    />
+                    <span class="absolute right-2 text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200 pointer-events-none select-none">
+                      @guruku.id
+                    </span>
+                  </div>
+                  <p class="text-[9px] text-slate-400 mt-0.5 font-mono">
+                    {{ getFullUsername(newRentalForm.adminUsername) }}
+                  </p>
                 </div>
                 <div>
                   <label class="block text-[11px] font-bold text-slate-700 mb-1">Nominal Sewa</label>
@@ -1859,13 +1886,16 @@ const addRentalToQueue = () => {
   const now = new Date()
   const timeStr = `${now.getDate()} Nov, ${String(now.getHours()).padStart(2, '0')}.${String(now.getMinutes()).padStart(2, '0')}`
 
+  const rawAdmin = newRentalForm.value.adminUsername.trim() || 'admin_' + newRentalForm.value.schoolName.toLowerCase().replace(/[^a-z0-9]/g, '')
+  const fullAdmin = formatGurukuUsername(rawAdmin)
+
   rentalQueue.value.push({
     id: Date.now(),
     schoolName: newRentalForm.value.schoolName.trim(),
     packageId: newRentalForm.value.packageId,
     packageName: pkg?.name || newRentalForm.value.packageName || 'Lisensi SaaS GuruKu',
     contact: newRentalForm.value.contact.trim(),
-    adminUsername: newRentalForm.value.adminUsername.trim() || 'admin_' + newRentalForm.value.schoolName.toLowerCase().replace(/[^a-z0-9]/g, ''),
+    adminUsername: fullAdmin,
     requestedAt: timeStr,
     amount: Number(newRentalForm.value.amount) || 254205,
     status: 'Menunggu Aktivasi'
@@ -1910,7 +1940,7 @@ const activateRentalQueueItem = (item) => {
       schools.value.unshift({
         id: Date.now(),
         name: item.schoolName,
-        admin_username: item.adminUsername || 'admin',
+        admin_username: formatGurukuUsername(item.adminUsername || 'admin'),
         contact_number: item.contact || '',
         payment_method: 'TRANSFER',
         payment_amount: item.amount,
@@ -1976,6 +2006,19 @@ const defaultRecentOrders = [
 ]
 
 const recentOrders = ref(JSON.parse(localStorage.getItem('guruKu_recent_orders') || JSON.stringify(defaultRecentOrders)))
+
+const formatGurukuUsername = (username) => {
+  if (!username) return '-'
+  const clean = username.trim()
+  if (clean.toLowerCase().endsWith('@guruku.id')) return clean
+  return `${clean}@guruku.id`
+}
+
+const getFullUsername = (raw) => {
+  if (!raw) return '@guruku.id'
+  const clean = raw.trim().replace(/@guruku\.id$/i, '')
+  return `${clean}@guruku.id`
+}
 
 const getInitials = (name) => {
   if (!name) return 'GK'
@@ -2128,12 +2171,17 @@ const saveInvoice = () => {
 const filteredSchools = computed(() => {
   if (!clientSearch.value.trim()) return schools.value
   const q = clientSearch.value.toLowerCase().trim()
-  return schools.value.filter(s => 
-    (s.name && s.name.toLowerCase().includes(q)) ||
-    (s.admin_username && s.admin_username.toLowerCase().includes(q)) ||
-    (s.address && s.address.toLowerCase().includes(q)) ||
-    (s.contact_number && s.contact_number.includes(q))
-  )
+  const qClean = q.replace(/@guruku\.id$/i, '')
+  return schools.value.filter(s => {
+    const rawUname = (s.admin_username || '').toLowerCase()
+    const formattedUname = formatGurukuUsername(rawUname).toLowerCase()
+    return (s.name && s.name.toLowerCase().includes(q)) ||
+      rawUname.includes(q) ||
+      rawUname.includes(qClean) ||
+      formattedUname.includes(q) ||
+      (s.address && s.address.toLowerCase().includes(q)) ||
+      (s.contact_number && s.contact_number.includes(q))
+  })
 })
 
 const getWaUrl = (phone, name, customMsg) => {
@@ -2643,6 +2691,7 @@ const fetchSchools = async () => {
 
 const submitKlien = async () => {
   saving.value = true
+  const finalUsername = getFullUsername(form.value.username)
   try {
     const res = await SafeFlow.fetch('/api/v1/super/schools', {
       method: 'POST',
@@ -2654,7 +2703,7 @@ const submitKlien = async () => {
         payment_amount: parseFloat(form.value.payment_amount) || 0,
         address: form.value.address,
         contact_number: form.value.contact_number,
-        username: form.value.username,
+        username: finalUsername,
         password: form.value.password
       })
     })

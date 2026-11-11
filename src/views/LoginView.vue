@@ -156,8 +156,8 @@
                   type="text" 
                   id="username" 
                   v-model.trim="username" 
-                  placeholder="Username" 
-                  class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-800 placeholder-gray-400 text-sm focus:outline-none focus:border-[#263D9B] focus:ring-4 focus:ring-[#263D9B]/10 transition-all shadow-sm"
+                  placeholder="Username (@guruku.id)" 
+                  class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-800 placeholder-gray-400 text-sm focus:outline-none focus:border-[#263D9B] focus:ring-4 focus:ring-[#263D9B]/10 transition-all shadow-sm font-medium"
                   required
                 />
               </div>
@@ -712,11 +712,36 @@ const handleLogin = async () => {
   isSubmitting.value = true
 
   try {
-    const response = await fetch('/api/v1/login', {
+    let cleanUsername = username.value.trim()
+
+    let response = await fetch('/api/v1/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: username.value, password: password.value })
+      body: JSON.stringify({ username: cleanUsername, password: password.value })
     })
+
+    // Jika gagal dan username belum memiliki akhiran @guruku.id (bukan super admin), coba dengan @guruku.id
+    if (!response.ok && !cleanUsername.includes('@') && !['admin', 'superadmin', 'master'].includes(cleanUsername.toLowerCase())) {
+      const retryResponse = await fetch('/api/v1/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: `${cleanUsername}@guruku.id`, password: password.value })
+      })
+      if (retryResponse.ok) {
+        response = retryResponse
+      }
+    } else if (!response.ok && cleanUsername.toLowerCase().endsWith('@guruku.id')) {
+      // Fallback jika database masih menyimpan username lama tanpa suffix
+      const stripped = cleanUsername.replace(/@guruku\.id$/i, '')
+      const retryResponse = await fetch('/api/v1/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: stripped, password: password.value })
+      })
+      if (retryResponse.ok) {
+        response = retryResponse
+      }
+    }
     
     const data = await response.json()
     

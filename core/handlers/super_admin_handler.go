@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -49,6 +50,9 @@ func GetSchools(c *gin.Context) {
 		if err != nil {
 			log.Println("Error scan school:", err)
 			continue
+		}
+		if s.AdminUsername != "" && !strings.HasSuffix(s.AdminUsername, "@guruku.id") {
+			s.AdminUsername = s.AdminUsername + "@guruku.id"
 		}
 		schools = append(schools, s)
 	}
@@ -100,10 +104,15 @@ func CreateSchool(c *gin.Context) {
 		return
 	}
 
+	cleanUsername := strings.TrimSpace(req.Username)
+	if !strings.HasSuffix(cleanUsername, "@guruku.id") {
+		cleanUsername = cleanUsername + "@guruku.id"
+	}
+
 	_, err = tx.Exec(`
 		INSERT INTO users (school_id, name, username, password, role)
 		VALUES ($1, $2, $3, $4, 'SCHOOL_ADMIN')
-	`, schoolID, "Admin " + req.Name, req.Username, string(hashedPassword))
+	`, schoolID, "Admin " + req.Name, cleanUsername, string(hashedPassword))
 
 	if err != nil {
 		tx.Rollback()
