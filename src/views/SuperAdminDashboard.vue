@@ -149,37 +149,27 @@
       </header>
 
       <!-- Desktop Top Navbar (Crisp, Executive, Human-Designed) -->
-      <header class="hidden lg:flex items-center justify-between px-8 py-3.5 bg-white border-b border-slate-200/80 shrink-0 z-20">
+      <header class="hidden lg:flex items-center justify-between px-8 py-3.5 bg-white border-b border-slate-200 shrink-0 z-20">
         <!-- Breadcrumb & Connection Status -->
         <div class="flex items-center gap-3">
           <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">GuruKu</span>
           <span class="text-slate-300">/</span>
           <span class="text-xs font-bold text-slate-900 capitalize">{{ currentTabTitle }}</span>
-          <span class="inline-flex items-center gap-1.5 ml-3 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+          <span class="inline-flex items-center gap-1.5 ml-3 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
             Sistem Aktif & Terhubung
           </span>
         </div>
 
-        <!-- Quick Info, Actions, & Profile -->
+        <!-- Quick Info & Profile -->
         <div class="flex items-center gap-4">
           <div class="text-xs font-medium text-slate-500 flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             <span>{{ currentDateFormatted }}</span>
           </div>
 
-          <div class="h-4 w-px bg-slate-200"></div>
-
-          <button 
-            @click="showInvoiceModal = true" 
-            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer"
-          >
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            <span>+ Buat invoice</span>
-          </button>
-
           <!-- Admin Profile Badge -->
-          <div class="flex items-center gap-2.5 pl-2 border-l border-slate-200">
+          <div class="flex items-center gap-2.5 pl-3 border-l border-slate-200">
             <div class="w-8 h-8 rounded-full bg-[#0B132B] text-white font-bold text-xs flex items-center justify-center shadow-xs">
               AD
             </div>
@@ -207,10 +197,10 @@
             <div class="flex items-center gap-2.5 flex-wrap">
               <button 
                 @click="showInvoiceModal = true" 
-                class="inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 rounded-xl text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
+                class="inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
               >
                 <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                <span>+ Buat invoice</span>
+                <span>Buat invoice</span>
               </button>
 
               <button 
@@ -226,7 +216,7 @@
           <!-- 4 Stat Cards Row Sesuai Referensi -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
             <!-- Card 1: PENJUALAN BULAN INI -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs hover:border-slate-300 transition-all">
+            <div class="bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs hover:border-slate-400 transition-all">
               <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">PENJUALAN BULAN INI</p>
               <div class="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight font-mono my-1 leading-none">
                 {{ formatRupiah(financialSummary.penjualanBulanIni) }}
@@ -237,7 +227,7 @@
             </div>
 
             <!-- Card 2: LABA KOTOR BULAN INI -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs hover:border-slate-300 transition-all">
+            <div class="bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs hover:border-slate-400 transition-all">
               <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">LABA KOTOR BULAN INI</p>
               <div class="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight font-mono my-1 leading-none">
                 {{ formatRupiah(financialSummary.labaKotorBulanIni) }}
@@ -248,7 +238,7 @@
             </div>
 
             <!-- Card 3: SALDO KAS -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs hover:border-slate-300 transition-all">
+            <div class="bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs hover:border-slate-400 transition-all">
               <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">SALDO KAS</p>
               <div class="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight font-mono my-1 leading-none">
                 {{ formatRupiah(financialSummary.saldoKas) }}
@@ -259,7 +249,7 @@
             </div>
 
             <!-- Card 4: ANTREAN MESIN -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs hover:border-slate-300 transition-all">
+            <div class="bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs hover:border-slate-400 transition-all">
               <p class="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">ANTREAN MESIN</p>
               <div class="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight font-mono my-1 leading-none">
                 {{ financialSummary.antreanMesinJam || '0 jam' }}
@@ -274,7 +264,7 @@
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
             
             <!-- Left 8 Cols: Penjualan vs belanja · 12 bulan -->
-            <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+            <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
               <!-- Title & Legend -->
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                 <div>
@@ -291,7 +281,7 @@
                   </div>
                 </div>
 
-                <div class="flex items-center gap-1 bg-slate-50 border border-slate-200/80 p-0.5 rounded-lg text-[11px] font-semibold text-slate-600">
+                <div class="flex items-center gap-1 bg-slate-50 border border-slate-300 p-0.5 rounded-lg text-[11px] font-semibold text-slate-600">
                   <button class="px-2.5 py-1 rounded-md bg-white text-blue-700 shadow-2xs font-bold">12 Bulan</button>
                   <button @click="activeTab = 'keuangan'" class="px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 transition-colors cursor-pointer">Buku Kas</button>
                 </div>
@@ -303,23 +293,23 @@
                 <div class="space-y-6 sm:space-y-7 relative select-none">
                   <div class="flex items-center gap-3">
                     <span class="text-[11px] text-slate-400 font-mono w-11 text-right shrink-0">300rb</span>
-                    <div class="flex-1 border-b border-slate-100"></div>
+                    <div class="flex-1 border-b border-slate-200"></div>
                   </div>
                   <div class="flex items-center gap-3">
                     <span class="text-[11px] text-slate-400 font-mono w-11 text-right shrink-0">225rb</span>
-                    <div class="flex-1 border-b border-slate-100"></div>
+                    <div class="flex-1 border-b border-slate-200"></div>
                   </div>
                   <div class="flex items-center gap-3">
                     <span class="text-[11px] text-slate-400 font-mono w-11 text-right shrink-0">150rb</span>
-                    <div class="flex-1 border-b border-slate-100"></div>
+                    <div class="flex-1 border-b border-slate-200"></div>
                   </div>
                   <div class="flex items-center gap-3">
                     <span class="text-[11px] text-slate-400 font-mono w-11 text-right shrink-0">75rb</span>
-                    <div class="flex-1 border-b border-slate-100"></div>
+                    <div class="flex-1 border-b border-slate-200"></div>
                   </div>
                   <div class="flex items-center gap-3">
                     <span class="text-[11px] text-slate-400 font-mono w-11 text-right shrink-0">0</span>
-                    <div class="flex-1 border-b border-slate-100"></div>
+                    <div class="flex-1 border-b border-slate-200"></div>
                   </div>
                 </div>
 
@@ -359,7 +349,7 @@
             </div>
 
             <!-- Right 4 Cols: Status pesanan Sesuai Referensi -->
-            <div class="lg:col-span-4 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+            <div class="lg:col-span-4 bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
               <div>
                 <div class="flex items-center justify-between mb-4">
                   <h3 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight">Status pesanan</h3>
@@ -368,23 +358,23 @@
 
                 <div class="space-y-2.5">
                   <!-- 1. Menunggu pembayaran -->
-                  <div class="flex items-center justify-between py-1 border-b border-slate-50 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#FEF6E9] text-[#B45309] border border-[#FDE68A]/60 text-xs font-semibold">
+                  <div class="flex items-center justify-between py-1.5 border-b border-slate-200 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#FEF6E9] text-[#B45309] border border-[#FDE68A] text-xs font-semibold">
                       Menunggu pembayaran
                     </span>
                     <span class="text-xs font-bold text-slate-700 font-mono">0</span>
                   </div>
 
                   <!-- 2. Dibayar · antre produksi -->
-                  <div class="flex items-center justify-between py-1 border-b border-slate-50 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE]/60 text-xs font-semibold">
+                  <div class="flex items-center justify-between py-1.5 border-b border-slate-200 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE] text-xs font-semibold">
                       Dibayar · antre produksi
                     </span>
                     <span class="text-xs font-bold text-slate-700 font-mono">0</span>
                   </div>
 
                   <!-- 3. Sedang dicetak (Dark Navy Pill dari Gambar Referensi) -->
-                  <div class="flex items-center justify-between py-1 border-b border-slate-50 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
+                  <div class="flex items-center justify-between py-1.5 border-b border-slate-200 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#0B132B] text-white text-xs font-semibold shadow-2xs">
                       Sedang dicetak
                     </span>
@@ -392,32 +382,32 @@
                   </div>
 
                   <!-- 4. Quality control -->
-                  <div class="flex items-center justify-between py-1 border-b border-slate-50 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#EEF2FF] text-[#4F46E5] border border-[#C7D2FE]/60 text-xs font-semibold">
+                  <div class="flex items-center justify-between py-1.5 border-b border-slate-200 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#EEF2FF] text-[#4F46E5] border border-[#C7D2FE] text-xs font-semibold">
                       Quality control
                     </span>
                     <span class="text-xs font-bold text-slate-700 font-mono">0</span>
                   </div>
 
                   <!-- 5. Dikirim -->
-                  <div class="flex items-center justify-between py-1 border-b border-slate-50 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#F0F9FF] text-[#0284C7] border border-[#BAE6FD]/60 text-xs font-semibold">
+                  <div class="flex items-center justify-between py-1.5 border-b border-slate-200 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#F0F9FF] text-[#0284C7] border border-[#BAE6FD] text-xs font-semibold">
                       Dikirim
                     </span>
                     <span class="text-xs font-bold text-slate-700 font-mono">0</span>
                   </div>
 
                   <!-- 6. Selesai (Emerald Pill dengan Angka 1 dari Gambar Referensi) -->
-                  <div class="flex items-center justify-between py-1 border-b border-slate-50 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]/60 text-xs font-semibold">
+                  <div class="flex items-center justify-between py-1.5 border-b border-slate-200 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] text-xs font-semibold">
                       Selesai
                     </span>
                     <span class="text-xs font-black text-slate-900 font-mono">1</span>
                   </div>
 
                   <!-- 7. Dibatalkan -->
-                  <div class="flex items-center justify-between py-1 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#FFF1F2] text-[#E11D48] border border-[#FECDD3]/60 text-xs font-semibold">
+                  <div class="flex items-center justify-between py-1.5 hover:bg-slate-50/50 px-1 rounded-lg transition-colors">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#FFF1F2] text-[#E11D48] border border-[#FECDD3] text-xs font-semibold">
                       Dibatalkan
                     </span>
                     <span class="text-xs font-bold text-slate-700 font-mono">0</span>
@@ -425,7 +415,7 @@
                 </div>
               </div>
 
-              <div class="pt-3 border-t border-slate-100 text-center">
+              <div class="pt-3 border-t border-slate-200 text-center">
                 <button @click="activeTab = 'manajemen'" class="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors inline-flex items-center gap-1 cursor-pointer">
                   <span>Kelola semua pesanan klien</span>
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -438,7 +428,7 @@
           <!-- Bottom Row: Antrean produksi & Pesanan terbaru Sesuai Referensi -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <!-- Left: Antrean produksi -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+            <div class="bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
               <div>
                 <div class="flex items-center justify-between mb-4">
                   <h3 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight">Antrean produksi</h3>
@@ -446,15 +436,15 @@
                 </div>
                 
                 <div class="py-10 text-center flex flex-col items-center justify-center">
-                  <div class="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-100 text-slate-400 flex items-center justify-center mb-3">
+                  <div class="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-200 text-slate-400 flex items-center justify-center mb-3">
                     <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                   </div>
-                  <p class="text-xs text-slate-400 font-normal">Tidak ada pesanan di antrean</p>
+                  <p class="text-xs text-slate-500 font-medium">Tidak ada pesanan di antrean</p>
                   <p class="text-[11px] text-slate-400 mt-1 max-w-xs">Semua cetakan modul & lisensi telah selesai diproses.</p>
                 </div>
               </div>
 
-              <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+              <div class="pt-3 border-t border-slate-200 flex items-center justify-between">
                 <span class="text-[11px] text-slate-400">Kapasitas mesin: 100% siap</span>
                 <button @click="showPrintQueueModal = true" class="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors cursor-pointer">
                   + Tambah Antrean Baru
@@ -463,7 +453,7 @@
             </div>
 
             <!-- Right: Pesanan terbaru -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+            <div class="bg-white rounded-2xl border border-slate-300 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
               <div>
                 <div class="flex items-center justify-between mb-4">
                   <h3 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight">Pesanan terbaru</h3>
@@ -473,9 +463,9 @@
                 </div>
 
                 <!-- Latest order row matching reference image -->
-                <div class="flex items-center justify-between py-3 border-b border-slate-50 hover:bg-slate-50/50 px-2 rounded-xl transition-colors">
+                <div class="flex items-center justify-between py-3 border-b border-slate-200 hover:bg-slate-50/50 px-2 rounded-xl transition-colors">
                   <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs">
+                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs border border-blue-200">
                       KI
                     </div>
                     <div>
@@ -486,7 +476,7 @@
                   
                   <div class="text-right">
                     <p class="text-xs sm:text-sm font-black text-slate-900 font-mono">Rp 254.205</p>
-                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]/60 text-[10px] font-bold mt-0.5">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0] text-[10px] font-bold mt-0.5">
                       <span class="w-1 h-1 rounded-full bg-emerald-500"></span>
                       Selesai
                     </span>
@@ -494,7 +484,7 @@
                 </div>
               </div>
 
-              <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+              <div class="pt-3 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-400">
                 <span>Channel: Web Portal</span>
                 <span>Metode: Otomatis</span>
               </div>
@@ -505,44 +495,44 @@
 
         <!-- MANAJEMEN KLIEN (PESANAN) TAB -->
         <div v-else-if="activeTab === 'manajemen'" class="animate-fade-in space-y-6">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/80">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-300">
             <div>
               <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Pesanan Klien Sekolah</h1>
               <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Kelola penyewaan aplikasi sekolah, kelancaran pembayaran, dan verifikasi langganan secara terpusat.</p>
             </div>
             <div class="flex items-center gap-3">
-              <div class="bg-white border border-slate-200 px-4 py-2 rounded-xl shadow-2xs text-right">
+              <div class="bg-white border border-slate-300 px-4 py-2 rounded-xl shadow-2xs text-right">
                 <p class="text-[10px] text-slate-400 uppercase font-bold">Klien Aktif</p>
                 <p class="text-base font-black text-slate-900 font-mono">{{ activeClientsCount }} Sekolah</p>
               </div>
-              <div class="bg-white border border-slate-200 px-4 py-2 rounded-xl shadow-2xs text-right">
+              <div class="bg-white border border-slate-300 px-4 py-2 rounded-xl shadow-2xs text-right">
                 <p class="text-[10px] text-slate-400 uppercase font-bold">Total Omzet</p>
                 <p class="text-base font-black text-blue-600 font-mono">{{ formatRupiah(totalRevenue) }}</p>
               </div>
             </div>
           </div>
-          <div class="bg-white rounded-2xl sm:rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200/80 overflow-hidden">
+          <div class="bg-white rounded-2xl sm:rounded-3xl shadow-xs border border-slate-300 overflow-hidden">
             <!-- Header Card Section -->
-            <div class="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3.5 bg-white">
+            <div class="p-4 sm:p-6 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3.5 bg-white">
               <div>
                 <h2 class="text-base sm:text-xl font-black text-slate-800 tracking-tight">Daftar Klien Sekolah (Tenants)</h2>
                 <p class="text-xs text-slate-500 font-medium mt-0.5">Kelola batas waktu lisensi, kontak, dan kredensial akses sekolah.</p>
               </div>
-              <button @click="showModal = true" class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl shadow-md shadow-blue-500/20 font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98">
+              <button @click="showModal = true" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl shadow-xs font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98">
                 <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 <span>Tambah Klien Baru</span>
               </button>
             </div>
 
             <!-- Live Search Bar -->
-            <div class="px-4 py-3 bg-slate-50/80 border-b border-slate-100 flex items-center gap-2.5">
+            <div class="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center gap-2.5">
               <div class="relative flex-1">
                 <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 <input 
                   v-model="clientSearch" 
                   type="text" 
                   placeholder="Cari nama sekolah, username, atau alamat..." 
-                  class="w-full pl-9 pr-8 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400"
+                  class="w-full pl-9 pr-8 py-2 text-xs sm:text-sm bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-slate-400"
                 />
                 <button v-if="clientSearch" @click="clientSearch = ''" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -596,7 +586,7 @@
                 </div>
 
                 <!-- Info Grid -->
-                <div class="grid grid-cols-2 gap-2 text-xs bg-slate-50/80 p-3 rounded-xl border border-slate-100">
+                <div class="grid grid-cols-2 gap-2 text-xs bg-slate-50/80 p-3 rounded-xl border border-slate-200">
                   <div>
                     <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Username Admin</span>
                     <span class="font-mono font-bold text-indigo-700 truncate block mt-0.5">@{{ school.admin_username }}</span>
@@ -618,13 +608,13 @@
                 </div>
 
                 <!-- Action Footer -->
-                <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-100">
+                <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-200">
                   <a 
                     v-if="school.contact_number"
                     :href="getWaUrl(school.contact_number, school.name, `Halo Pengelola ${school.name}, kami dari Tim Super Admin GuruKu.`)"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 transition-all cursor-pointer active:scale-95 no-underline"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-all cursor-pointer active:scale-95 no-underline"
                   >
                     <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
                     <span>Chat WA</span>
@@ -632,13 +622,13 @@
                   <div class="flex items-center gap-1.5 ml-auto">
                     <button 
                       @click="blockSchool(school.id)" 
-                      class="px-3 py-1.5 rounded-xl text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 transition-colors cursor-pointer active:scale-95"
+                      class="px-3 py-1.5 rounded-xl text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 transition-colors cursor-pointer active:scale-95"
                     >
                       Blokir
                     </button>
                     <button 
                       @click="deleteSchool(school.id, school.name)" 
-                      class="px-3 py-1.5 rounded-xl text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200/80 transition-colors cursor-pointer active:scale-95"
+                      class="px-3 py-1.5 rounded-xl text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors cursor-pointer active:scale-95"
                     >
                       Hapus
                     </button>
@@ -651,15 +641,15 @@
             <div class="hidden md:block overflow-x-auto custom-scrollbar">
               <table class="min-w-full bg-white">
                 <thead>
-                  <tr class="bg-slate-50 text-left border-y border-slate-100">
-                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-400 tracking-wider">Nama Sekolah</th>
-                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-400 tracking-wider">Kontak & Asal</th>
-                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-400 tracking-wider">Username Admin</th>
-                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-400 tracking-wider">Status & Batas Waktu</th>
-                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-400 tracking-wider text-right">Aksi</th>
+                  <tr class="bg-slate-50 text-left border-y border-slate-300">
+                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-500 tracking-wider">Nama Sekolah</th>
+                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-500 tracking-wider">Kontak & Asal</th>
+                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-500 tracking-wider">Username Admin</th>
+                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-500 tracking-wider">Status & Batas Waktu</th>
+                    <th class="py-4 px-6 uppercase font-black text-[11px] text-slate-500 tracking-wider text-right">Aksi</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100">
+                <tbody class="divide-y divide-slate-200">
                   <tr v-if="loading" class="animate-pulse">
                     <td colspan="5" class="py-10 text-center text-slate-400 font-bold">Memuat Data Klien...</td>
                   </tr>

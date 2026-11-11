@@ -25,7 +25,7 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
           <span>Terapkan ke Dashboard</span>
         </button>
-        <button @click="resetDefault" class="inline-flex items-center gap-2 px-3.5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer">
+        <button @click="resetDefault" class="inline-flex items-center gap-2 px-3.5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-semibold shadow-xs transition-colors cursor-pointer">
           <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
           <span>Reset Standar</span>
         </button>
@@ -48,7 +48,7 @@
       <div class="lg:col-span-7 space-y-5">
         
         <!-- Section 1: Informasi Layanan / Produk -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
+        <div class="bg-white rounded-2xl border border-slate-300 p-5 shadow-xs">
           <h3 class="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-blue-600"></span>
             1. Informasi Layanan & Volume
@@ -57,18 +57,18 @@
             <div>
               <label class="block font-semibold text-slate-700 mb-1">Nama Layanan / Paket</label>
               <input v-model="form.productName" type="text" 
-                class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
             </div>
             <div>
               <label class="block font-semibold text-slate-700 mb-1">Target Volume (Paket / Sekolah)</label>
               <input v-model.number="form.volume" type="number" min="1" 
-                class="w-full px-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono">
+                class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono">
             </div>
           </div>
         </div>
 
         <!-- Section 2: Biaya Bahan Baku Langsung (BBL) / Server & Cloud -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
+        <div class="bg-white rounded-2xl border border-slate-300 p-5 shadow-xs">
           <div class="flex items-center justify-between mb-3">
             <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
@@ -83,7 +83,7 @@
               <div class="w-1/2 relative">
                 <span class="absolute left-3 top-2 text-slate-400 font-mono text-[11px]">Rp</span>
                 <input v-model.number="form.bbl_server" type="number" 
-                  class="w-full pl-9 pr-3 py-1.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 font-mono text-right">
+                  class="w-full pl-9 pr-3 py-1.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 font-mono text-right">
               </div>
             </div>
 
@@ -92,7 +92,7 @@
               <div class="w-1/2 relative">
                 <span class="absolute left-3 top-2 text-slate-400 font-mono text-[11px]">Rp</span>
                 <input v-model.number="form.bbl_domain" type="number" 
-                  class="w-full pl-9 pr-3 py-1.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 font-mono text-right">
+                  class="w-full pl-9 pr-3 py-1.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 font-mono text-right">
               </div>
             </div>
 
@@ -101,14 +101,14 @@
               <div class="w-1/2 relative">
                 <span class="absolute left-3 top-2 text-slate-400 font-mono text-[11px]">Rp</span>
                 <input v-model.number="form.bbl_cetak" type="number" 
-                  class="w-full pl-9 pr-3 py-1.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 font-mono text-right">
+                  class="w-full pl-9 pr-3 py-1.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 font-mono text-right">
               </div>
             </div>
           </div>
         </div>
 
         <!-- Section 3: Biaya Tenaga Kerja Langsung (BTKL) -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
+        <div class="bg-white rounded-2xl border border-slate-300 p-5 shadow-xs">
           <div class="flex items-center justify-between mb-3">
             <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
@@ -123,14 +123,14 @@
               <div class="w-1/2 relative">
                 <span class="absolute left-3 top-2 text-slate-400 font-mono text-[11px]">Rp</span>
                 <input v-model.number="form.btkl_operator" type="number" 
-                  class="w-full pl-9 pr-3 py-1.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 font-mono text-right">
+                  class="w-full pl-9 pr-3 py-1.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 font-mono text-right">
               </div>
             </div>
           </div>
         </div>
 
         <!-- Section 4: Biaya Overhead Operasional (BOP) -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
+        <div class="bg-white rounded-2xl border border-slate-300 p-5 shadow-xs">
           <div class="flex items-center justify-between mb-3">
             <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-amber-600"></span>
@@ -145,14 +145,14 @@
               <div class="w-1/2 relative">
                 <span class="absolute left-3 top-2 text-slate-400 font-mono text-[11px]">Rp</span>
                 <input v-model.number="form.bop_operasional" type="number" 
-                  class="w-full pl-9 pr-3 py-1.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 font-mono text-right">
+                  class="w-full pl-9 pr-3 py-1.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 font-mono text-right">
               </div>
             </div>
           </div>
         </div>
 
         <!-- Section 5: Target Laba Kotor / Margin Markup -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
+        <div class="bg-white rounded-2xl border border-slate-300 p-5 shadow-xs">
           <h3 class="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-rose-600"></span>
             5. Target Margin Keuntungan
@@ -164,13 +164,13 @@
               <div class="relative">
                 <span class="absolute left-3 top-2 text-slate-400 font-mono text-[11px]">Rp</span>
                 <input v-model.number="form.targetLaba" type="number" 
-                  class="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 font-mono font-bold text-blue-700">
+                  class="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 font-mono font-bold text-blue-700">
               </div>
             </div>
 
             <div>
               <label class="block font-semibold text-slate-700 mb-1">Margin Persentase Laba</label>
-              <div class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono font-bold text-slate-800 text-sm">
+              <div class="px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold text-slate-800 text-sm">
                 {{ marginPercent }}%
               </div>
             </div>
@@ -246,12 +246,12 @@
         </div>
 
         <!-- Analisis Break Even Point (BEP) -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs space-y-3">
+        <div class="bg-white rounded-2xl border border-slate-300 p-5 shadow-xs space-y-3">
           <h3 class="text-sm font-bold text-slate-900">Analisis Break-Even Point (BEP)</h3>
           <p class="text-xs text-slate-500 leading-relaxed">
             Dengan HPP sebesar <strong>{{ formatRupiah(totalHPP) }}</strong> dan harga jual <strong>{{ formatRupiah(hargaJual) }}</strong>, Anda mencapai titik impas pada volume 1 paket dan menghasilkan keuntungan langsung pada setiap penambahan unit berikutnya.
           </p>
-          <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between text-xs">
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-300 flex items-center justify-between text-xs">
             <span class="text-slate-600 font-medium">Estimasi Omzet {{ form.volume }} Unit:</span>
             <span class="font-bold text-slate-900 font-mono">{{ formatRupiah(hargaJual * form.volume) }}</span>
           </div>
