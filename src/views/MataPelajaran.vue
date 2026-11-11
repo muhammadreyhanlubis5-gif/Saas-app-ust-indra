@@ -61,13 +61,45 @@
       </div>
     </div>
 
-    <!-- Data Table -->
+    <!-- Data Table Container with Toolbar -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-      <div v-if="loading" class="text-center py-12">
+      <!-- Table Toolbar (Total Data & Right-Aligned Search Bar) -->
+      <div class="px-6 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white">
+        <div class="flex items-center gap-3">
+          <h3 class="font-bold text-gray-800 text-base">Daftar Kurikulum Mapel</h3>
+          <span class="text-xs px-2.5 py-0.5 rounded-full font-bold bg-blue-50 text-blue-700 border border-blue-100">
+            {{ filteredSubjects.length }} Mapel
+          </span>
+        </div>
+        
+        <!-- Search bar aligned to the right -->
+        <div class="relative w-full sm:w-72">
+          <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </span>
+          <input 
+            v-model="searchQuery"
+            type="text" 
+            placeholder="Cari kode atau nama mapel..." 
+            class="w-full pl-10 pr-8 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+          />
+          <button 
+            v-if="searchQuery" 
+            @click="searchQuery = ''"
+            type="button"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <div v-if="loading" class="text-center py-16">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
         <p class="text-gray-500 font-medium">Memuat data pelajaran...</p>
       </div>
 
+      <!-- Empty State: Data Benar-Benar Kosong -->
       <div v-else-if="subjects.length === 0" class="text-center py-20 px-4">
         <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-100">
           <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
@@ -77,44 +109,112 @@
           Silakan tambah pelajaran secara manual atau unduh template Excel untuk mengimpor daftar mata pelajaran sekaligus.
         </p>
         <div class="flex flex-wrap justify-center gap-3">
-          <button @click="downloadTemplate" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold transition-colors text-sm flex items-center gap-2">
+          <button @click="downloadTemplate" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold transition-colors text-sm flex items-center gap-2 cursor-pointer shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
             Unduh Template Excel
           </button>
-          <button @click="triggerUpload" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold transition-colors text-sm flex items-center gap-2">
+          <button @click="triggerUpload" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold transition-colors text-sm flex items-center gap-2 cursor-pointer shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
             Upload File Excel
           </button>
-          <button @click="showAddModal = true" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-bold transition-colors text-sm">
+          <button @click="showAddModal = true" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-bold transition-colors text-sm cursor-pointer">
             + Tambah Manual
           </button>
         </div>
       </div>
 
-      <table v-else class="w-full text-left border-collapse">
-        <thead>
-          <tr class="bg-gray-50 border-b border-gray-100 text-gray-500 uppercase text-xs tracking-wider">
-            <th class="px-6 py-4 font-bold">No</th>
-            <th class="px-6 py-4 font-bold">Kode Pelajaran</th>
-            <th class="px-6 py-4 font-bold">Nama Mata Pelajaran</th>
-            <th class="px-6 py-4 font-bold text-right">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(subject, index) in subjects" :key="subject.id || index" class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-            <td class="px-6 py-4 text-gray-500">{{ index + 1 }}</td>
-            <td class="px-6 py-4">
-              <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded font-mono font-bold text-xs">{{ subject.code }}</span>
-            </td>
-            <td class="px-6 py-4 font-medium text-gray-800">{{ subject.name }}</td>
-            <td class="px-6 py-4 text-right">
-              <button @click="deleteSubject(index)" class="text-red-400 hover:text-red-600 p-2 hover:bg-red-50 rounded-lg transition-colors" title="Hapus Pelajaran">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- Empty State: Hasil Pencarian Nihil -->
+      <div v-else-if="filteredSubjects.length === 0" class="text-center py-16 px-4">
+        <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3 text-gray-400">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+        <h4 class="font-bold text-gray-700 text-sm">Tidak ditemukan mata pelajaran yang cocok</h4>
+        <p class="text-xs text-gray-400 mt-1">Tidak ada mapel yang sesuai dengan kata kunci "{{ searchQuery }}"</p>
+        <button @click="searchQuery = ''" class="mt-3 px-4 py-2 bg-blue-50 text-blue-700 text-xs font-bold rounded-xl hover:bg-blue-100 transition-colors cursor-pointer">
+          Reset Pencarian
+        </button>
+      </div>
+
+      <!-- Tabel Data dengan Padding Luas & Action Buttons Lengkap -->
+      <div v-else class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-gray-50/80 border-b border-gray-100 text-gray-500 uppercase text-xs tracking-wider">
+              <th class="px-6 py-4 font-bold w-16">No</th>
+              <th class="px-6 py-4 font-bold">Kode Pelajaran</th>
+              <th class="px-6 py-4 font-bold">Nama Mata Pelajaran</th>
+              <th class="px-6 py-4 font-bold text-right w-32">Aksi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-50">
+            <tr v-for="(subject, index) in paginatedSubjects" :key="subject.id || index" class="border-b border-gray-50 hover:bg-blue-50/20 transition-colors group">
+              <td class="px-6 py-4 text-gray-500 text-xs font-mono">{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
+              <td class="px-6 py-4">
+                <span class="bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg font-mono font-bold text-xs border border-blue-100/60 inline-block shadow-2xs">{{ subject.code }}</span>
+              </td>
+              <td class="px-6 py-4 font-medium text-gray-800 text-sm">{{ subject.name }}</td>
+              <td class="px-6 py-4 text-right">
+                <div class="flex items-center justify-end gap-2 whitespace-nowrap">
+                  <!-- Tombol Edit (Pencil) -->
+                  <button 
+                    @click="openEditModal(subject)" 
+                    class="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-blue-200" 
+                    title="Edit Mata Pelajaran"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                  </button>
+                  <!-- Tombol Delete (Trash) -->
+                  <button 
+                    @click="deleteSubject(subject)" 
+                    class="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-rose-200" 
+                    title="Hapus Pelajaran"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Client-Side -->
+      <div v-if="filteredSubjects.length > 0" class="px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600 bg-gray-50/50">
+        <p class="font-medium">
+          Menampilkan <span class="font-bold text-gray-900">{{ paginationStart }}</span> - <span class="font-bold text-gray-900">{{ paginationEnd }}</span> dari <span class="font-bold text-gray-900">{{ filteredSubjects.length }}</span> data
+        </p>
+        <div class="flex items-center gap-1.5">
+          <button 
+            @click="currentPage--" 
+            :disabled="currentPage === 1"
+            class="px-3 py-1.5 rounded-xl border border-gray-200 bg-white font-semibold hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-1 cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            <span>Sebelumnya</span>
+          </button>
+
+          <div class="flex items-center gap-1">
+            <button 
+              v-for="page in totalPages" 
+              :key="page"
+              @click="currentPage = page"
+              class="w-7 h-7 rounded-xl text-xs font-bold transition-all cursor-pointer"
+              :class="currentPage === page ? 'bg-blue-600 text-white shadow-xs' : 'text-gray-600 hover:bg-gray-100'"
+            >
+              {{ page }}
+            </button>
+          </div>
+
+          <button 
+            @click="currentPage++" 
+            :disabled="currentPage >= totalPages"
+            class="px-3 py-1.5 rounded-xl border border-gray-200 bg-white font-semibold hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-1 cursor-pointer"
+          >
+            <span>Selanjutnya</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Form Modal Tambah Pelajaran Manual -->
@@ -164,6 +264,52 @@
       </div>
     </div>
 
+    <!-- Form Modal Edit Pelajaran Manual -->
+    <div v-if="showEditModal" class="fixed inset-0 z-40 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
+      <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-fade-in-up">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+          <h3 class="font-bold text-gray-800 text-lg">Edit Mata Pelajaran</h3>
+          <button @click="showEditModal = false" class="text-gray-400 hover:text-gray-600 bg-white hover:bg-gray-100 rounded-full p-1.5 transition-colors shadow-sm cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        
+        <form @submit.prevent="updateSubject" class="p-6 space-y-5">
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-1">Kode Pelajaran</label>
+            <input 
+              v-model="editForm.code" 
+              type="text" 
+              required 
+              placeholder="Contoh: PAI, BING, MAT" 
+              class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none uppercase font-mono transition-shadow"
+            >
+            <p class="text-xs text-gray-400 mt-1">Kode pelajaran harus unik dan belum pernah dipakai.</p>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-1">Nama Mata Pelajaran</label>
+            <input 
+              v-model="editForm.name" 
+              type="text" 
+              required 
+              placeholder="Contoh: Pendidikan Agama Islam" 
+              class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none transition-shadow"
+            >
+          </div>
+          
+          <div class="pt-4 flex gap-3">
+            <button type="button" @click="showEditModal = false" class="flex-1 bg-gray-100 text-gray-700 hover:bg-gray-200 font-bold py-3 px-4 rounded-xl transition-colors cursor-pointer">
+              Batal
+            </button>
+            <button type="submit" :disabled="saving" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+              <svg v-if="saving" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+              <span>{{ saving ? 'Memproses...' : 'Simpan Perubahan' }}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <!-- Success Modal -->
     <div v-if="showSuccessModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
       <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative animate-bounce-in text-center border-t-8 border-emerald-500">
@@ -200,21 +346,59 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import * as XLSX from 'xlsx'
 
 const loading = ref(true)
 const saving = ref(false)
 const importing = ref(false)
 const showAddModal = ref(false)
+const showEditModal = ref(false)
 const showSuccessModal = ref(false)
 const showErrorModal = ref(false)
 const successMessage = ref('Mata Pelajaran berhasil ditambahkan ke database.')
 const errorMessage = ref('')
 
+const searchQuery = ref('')
+const currentPage = ref(1)
+const itemsPerPage = 10
+
 const fileInput = ref(null)
 const subjects = ref([])
 const form = ref({ code: '', name: '' })
+const editForm = ref({ id: null, originalCode: '', originalName: '', code: '', name: '' })
+
+// Client-Side Search & Pagination Computed
+const filteredSubjects = computed(() => {
+  const q = searchQuery.value.trim().toLowerCase()
+  if (!q) return subjects.value
+  return subjects.value.filter(s => 
+    (s.name && s.name.toLowerCase().includes(q)) ||
+    (s.code && s.code.toLowerCase().includes(q))
+  )
+})
+
+const totalPages = computed(() => {
+  return Math.ceil(filteredSubjects.value.length / itemsPerPage) || 1
+})
+
+const paginatedSubjects = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  return filteredSubjects.value.slice(start, start + itemsPerPage)
+})
+
+const paginationStart = computed(() => {
+  if (filteredSubjects.value.length === 0) return 0
+  return (currentPage.value - 1) * itemsPerPage + 1
+})
+
+const paginationEnd = computed(() => {
+  return Math.min(currentPage.value * itemsPerPage, filteredSubjects.value.length)
+})
+
+watch(searchQuery, () => {
+  currentPage.value = 1
+})
 
 onMounted(() => {
   const saved = localStorage.getItem('guruKu_mapel');
@@ -466,9 +650,68 @@ const saveSubject = () => {
   }, 400)
 }
 
-const deleteSubject = (index) => {
-  if (confirm('Yakin ingin menghapus mata pelajaran ini?')) {
-    subjects.value.splice(index, 1)
+const openEditModal = (subject) => {
+  editForm.value = {
+    id: subject.id,
+    originalCode: subject.code,
+    originalName: subject.name,
+    code: subject.code,
+    name: subject.name
+  }
+  showEditModal.value = true
+}
+
+const updateSubject = () => {
+  const code = editForm.value.code.trim().toUpperCase()
+  const name = editForm.value.name.trim()
+
+  if (!code || !name) return
+
+  // Validasi kode unik
+  const isDuplicateCode = subjects.value.some(s => 
+    s.code.toUpperCase() === code && 
+    s.code.toUpperCase() !== editForm.value.originalCode.toUpperCase()
+  )
+  if (isDuplicateCode) {
+    errorMessage.value = `Kode Mata Pelajaran "${code}" sudah digunakan oleh mata pelajaran lain.`
+    showErrorModal.value = true
+    return
+  }
+
+  // Validasi nama unik
+  const isDuplicateName = subjects.value.some(s => 
+    s.name.toLowerCase() === name.toLowerCase() && 
+    s.name.toLowerCase() !== editForm.value.originalName.toLowerCase()
+  )
+  if (isDuplicateName) {
+    errorMessage.value = `Mata Pelajaran "${name}" sudah ada dalam daftar.`
+    showErrorModal.value = true
+    return
+  }
+
+  saving.value = true
+  setTimeout(() => {
+    const targetIdx = subjects.value.findIndex(s => (s.id && s.id === editForm.value.id) || s.code === editForm.value.originalCode)
+    if (targetIdx !== -1) {
+      subjects.value[targetIdx].code = code
+      subjects.value[targetIdx].name = name
+    }
+    saving.value = false
+    showEditModal.value = false
+    successMessage.value = `Mata Pelajaran "${name}" (${code}) berhasil diperbarui!`
+    showSuccessModal.value = true
+  }, 400)
+}
+
+const deleteSubject = (subject) => {
+  if (confirm(`Yakin ingin menghapus mata pelajaran "${subject.name}" (${subject.code})?`)) {
+    const idx = subjects.value.findIndex(s => (s.id && s.id === subject.id) || s.code === subject.code)
+    if (idx !== -1) {
+      subjects.value.splice(idx, 1)
+      if (currentPage.value > totalPages.value) {
+        currentPage.value = Math.max(1, totalPages.value)
+      }
+    }
   }
 }
 </script>

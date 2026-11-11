@@ -60,13 +60,45 @@
       </div>
     </div>
 
-    <!-- Data Table -->
+    <!-- Data Table Container with Toolbar -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-      <div v-if="loading" class="text-center py-12">
+      <!-- Table Toolbar (Total Data & Right-Aligned Search Bar) -->
+      <div class="px-6 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white">
+        <div class="flex items-center gap-3">
+          <h3 class="font-bold text-gray-800 text-base">Daftar Rombongan Belajar</h3>
+          <span class="text-xs px-2.5 py-0.5 rounded-full font-bold bg-blue-50 text-blue-700 border border-blue-100">
+            {{ filteredClasses.length }} Kelas
+          </span>
+        </div>
+        
+        <!-- Search bar aligned to the right -->
+        <div class="relative w-full sm:w-72">
+          <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </span>
+          <input 
+            v-model="searchQuery"
+            type="text" 
+            placeholder="Cari nama kelas atau wali..." 
+            class="w-full pl-10 pr-8 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+          />
+          <button 
+            v-if="searchQuery" 
+            @click="searchQuery = ''"
+            type="button"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <div v-if="loading" class="text-center py-16">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
         <p class="text-gray-500 font-medium">Memuat data kelas...</p>
       </div>
 
+      <!-- Empty State: Data Benar-Benar Kosong -->
       <div v-else-if="classes.length === 0" class="text-center py-20 px-4">
         <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-100">
           <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
@@ -76,46 +108,118 @@
           Silakan tambah kelas secara manual atau unduh template Excel kami untuk mengimpor banyak kelas sekaligus.
         </p>
         <div class="flex flex-wrap justify-center gap-3">
-          <button @click="downloadTemplate" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold transition-colors text-sm flex items-center gap-2">
+          <button @click="downloadTemplate" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold transition-colors text-sm flex items-center gap-2 cursor-pointer shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
             Unduh Template Excel
           </button>
-          <button @click="triggerUpload" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold transition-colors text-sm flex items-center gap-2">
+          <button @click="triggerUpload" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold transition-colors text-sm flex items-center gap-2 cursor-pointer shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
             Upload File Excel
           </button>
-          <button @click="showAddModal = true" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-bold transition-colors text-sm">
+          <button @click="showAddModal = true" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-bold transition-colors text-sm cursor-pointer">
             + Tambah Manual
           </button>
         </div>
       </div>
 
-      <table v-else class="w-full text-left border-collapse">
-        <thead>
-          <tr class="bg-gray-50 border-b border-gray-100 text-gray-500 uppercase text-xs tracking-wider">
-            <th class="px-6 py-4 font-bold">No</th>
-            <th class="px-6 py-4 font-bold">Nama Kelas</th>
-            <th class="px-6 py-4 font-bold">Wali Kelas</th>
-            <th class="px-6 py-4 font-bold text-center">Jumlah Siswa</th>
-            <th class="px-6 py-4 font-bold text-right">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(cls, index) in classes" :key="cls.id || index" class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-            <td class="px-6 py-4 text-gray-500">{{ index + 1 }}</td>
-            <td class="px-6 py-4">
-              <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded font-bold text-sm">{{ cls.name }}</span>
-            </td>
-            <td class="px-6 py-4 font-medium text-gray-800">{{ cls.homeroom_teacher || '-' }}</td>
-            <td class="px-6 py-4 text-center font-bold text-gray-600">{{ cls.student_count }} Siswa</td>
-            <td class="px-6 py-4 text-right">
-              <button @click="deleteClass(index)" class="text-red-400 hover:text-red-600 p-2 hover:bg-red-50 rounded-lg transition-colors" title="Hapus Kelas">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- Empty State: Hasil Pencarian Nihil -->
+      <div v-else-if="filteredClasses.length === 0" class="text-center py-16 px-4">
+        <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3 text-gray-400">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+        <h4 class="font-bold text-gray-700 text-sm">Tidak ditemukan kelas yang cocok</h4>
+        <p class="text-xs text-gray-400 mt-1">Tidak ada rombel yang sesuai dengan kata kunci "{{ searchQuery }}"</p>
+        <button @click="searchQuery = ''" class="mt-3 px-4 py-2 bg-blue-50 text-blue-700 text-xs font-bold rounded-xl hover:bg-blue-100 transition-colors cursor-pointer">
+          Reset Pencarian
+        </button>
+      </div>
+
+      <!-- Tabel Data dengan Padding Luas & Action Buttons Lengkap -->
+      <div v-else class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-gray-50/80 border-b border-gray-100 text-gray-500 uppercase text-xs tracking-wider">
+              <th class="px-6 py-4 font-bold w-16">No</th>
+              <th class="px-6 py-4 font-bold">Nama Kelas</th>
+              <th class="px-6 py-4 font-bold">Wali Kelas</th>
+              <th class="px-6 py-4 font-bold text-center">Jumlah Siswa</th>
+              <th class="px-6 py-4 font-bold text-right w-32">Aksi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-50">
+            <tr v-for="(cls, index) in paginatedClasses" :key="cls.id || index" class="border-b border-gray-50 hover:bg-blue-50/20 transition-colors group">
+              <td class="px-6 py-4 text-gray-500 text-xs font-mono">{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
+              <td class="px-6 py-4">
+                <span class="bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg font-bold text-sm border border-blue-100/60 inline-block shadow-2xs">{{ cls.name }}</span>
+              </td>
+              <td class="px-6 py-4 font-medium text-gray-800 text-sm">{{ cls.homeroom_teacher || '-' }}</td>
+              <td class="px-6 py-4 text-center font-bold text-gray-600 text-sm">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">
+                  {{ cls.student_count || 32 }} Siswa
+                </span>
+              </td>
+              <td class="px-6 py-4 text-right">
+                <div class="flex items-center justify-end gap-2 whitespace-nowrap">
+                  <!-- Tombol Edit (Pencil) -->
+                  <button 
+                    @click="openEditModal(cls)" 
+                    class="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-blue-200" 
+                    title="Edit Data Kelas"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                  </button>
+                  <!-- Tombol Delete (Trash) -->
+                  <button 
+                    @click="deleteClass(cls)" 
+                    class="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-rose-200" 
+                    title="Hapus Kelas"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Client-Side -->
+      <div v-if="filteredClasses.length > 0" class="px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600 bg-gray-50/50">
+        <p class="font-medium">
+          Menampilkan <span class="font-bold text-gray-900">{{ paginationStart }}</span> - <span class="font-bold text-gray-900">{{ paginationEnd }}</span> dari <span class="font-bold text-gray-900">{{ filteredClasses.length }}</span> data
+        </p>
+        <div class="flex items-center gap-1.5">
+          <button 
+            @click="currentPage--" 
+            :disabled="currentPage === 1"
+            class="px-3 py-1.5 rounded-xl border border-gray-200 bg-white font-semibold hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-1 cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            <span>Sebelumnya</span>
+          </button>
+
+          <div class="flex items-center gap-1">
+            <button 
+              v-for="page in totalPages" 
+              :key="page"
+              @click="currentPage = page"
+              class="w-7 h-7 rounded-xl text-xs font-bold transition-all cursor-pointer"
+              :class="currentPage === page ? 'bg-blue-600 text-white shadow-xs' : 'text-gray-600 hover:bg-gray-100'"
+            >
+              {{ page }}
+            </button>
+          </div>
+
+          <button 
+            @click="currentPage++" 
+            :disabled="currentPage >= totalPages"
+            class="px-3 py-1.5 rounded-xl border border-gray-200 bg-white font-semibold hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-1 cursor-pointer"
+          >
+            <span>Selanjutnya</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Form Modal Tambah Kelas Manual -->
@@ -149,6 +253,43 @@
             <button type="submit" :disabled="saving" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
               <svg v-if="saving" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
               <span>{{ saving ? 'Memproses...' : 'Simpan' }}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Form Modal Edit Kelas Manual -->
+    <div v-if="showEditModal" class="fixed inset-0 z-40 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
+      <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-fade-in-up">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+          <h3 class="font-bold text-gray-800 text-lg">Edit Rombongan Belajar</h3>
+          <button @click="showEditModal = false" class="text-gray-400 hover:text-gray-600 bg-white hover:bg-gray-100 rounded-full p-1.5 transition-colors shadow-sm cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        
+        <form @submit.prevent="updateClass" class="p-6 space-y-5">
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-1">Nama Kelas</label>
+            <input v-model="editForm.name" type="text" required placeholder="Contoh: 4 A, X IPA 1" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none uppercase transition-shadow">
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-1">Wali Kelas</label>
+            <input v-model="editForm.homeroom_teacher" type="text" placeholder="Masukkan Nama Wali Kelas" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none transition-shadow">
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-1">Jumlah Siswa</label>
+            <input v-model.number="editForm.student_count" type="number" min="1" required placeholder="Contoh: 32" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none transition-shadow">
+          </div>
+          
+          <div class="pt-4 flex gap-3">
+            <button type="button" @click="showEditModal = false" class="flex-1 bg-gray-100 text-gray-700 hover:bg-gray-200 font-bold py-3 px-4 rounded-xl transition-colors cursor-pointer">
+              Batal
+            </button>
+            <button type="submit" :disabled="saving" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+              <svg v-if="saving" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+              <span>{{ saving ? 'Memproses...' : 'Simpan Perubahan' }}</span>
             </button>
           </div>
         </form>
@@ -191,21 +332,60 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import * as XLSX from 'xlsx'
 
 const loading = ref(true)
 const saving = ref(false)
 const importing = ref(false)
 const showAddModal = ref(false)
+const showEditModal = ref(false)
 const showSuccessModal = ref(false)
 const showErrorModal = ref(false)
 const successMessage = ref('Data Kelas (Rombel) berhasil ditambahkan ke database.')
 const errorMessage = ref('')
 
+const searchQuery = ref('')
+const currentPage = ref(1)
+const itemsPerPage = 10
+
 const fileInput = ref(null)
 const classes = ref([])
 const form = ref({ name: '', student_count: null, homeroom_teacher: '' })
+const editForm = ref({ id: null, originalName: '', name: '', homeroom_teacher: '', student_count: null })
+
+// Client-Side Search & Pagination Computed
+const filteredClasses = computed(() => {
+  const q = searchQuery.value.trim().toLowerCase()
+  if (!q) return classes.value
+  return classes.value.filter(c => 
+    (c.name && c.name.toLowerCase().includes(q)) ||
+    (c.homeroom_teacher && c.homeroom_teacher.toLowerCase().includes(q)) ||
+    (c.student_count && String(c.student_count).includes(q))
+  )
+})
+
+const totalPages = computed(() => {
+  return Math.ceil(filteredClasses.value.length / itemsPerPage) || 1
+})
+
+const paginatedClasses = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  return filteredClasses.value.slice(start, start + itemsPerPage)
+})
+
+const paginationStart = computed(() => {
+  if (filteredClasses.value.length === 0) return 0
+  return (currentPage.value - 1) * itemsPerPage + 1
+})
+
+const paginationEnd = computed(() => {
+  return Math.min(currentPage.value * itemsPerPage, filteredClasses.value.length)
+})
+
+watch(searchQuery, () => {
+  currentPage.value = 1
+})
 
 onMounted(() => {
   const saved = localStorage.getItem('guruKu_classes');
@@ -504,9 +684,56 @@ const saveClass = () => {
   }, 600)
 }
 
-const deleteClass = (index) => {
-  if (confirm('Yakin ingin menghapus kelas ini? Semua penugasan guru di kelas ini juga akan terhapus nantinya.')) {
-    classes.value.splice(index, 1)
+const openEditModal = (cls) => {
+  editForm.value = {
+    id: cls.id,
+    originalName: cls.name,
+    name: cls.name,
+    homeroom_teacher: cls.homeroom_teacher || '',
+    student_count: cls.student_count || 32
+  }
+  showEditModal.value = true
+}
+
+const updateClass = () => {
+  const newName = editForm.value.name.trim().toUpperCase()
+  if (!newName) return
+
+  // Cek duplikasi jika nama diubah
+  const isDuplicate = classes.value.some(c => 
+    c.name.toUpperCase() === newName && 
+    c.name.toUpperCase() !== editForm.value.originalName.toUpperCase()
+  )
+  if (isDuplicate) {
+    errorMessage.value = `Kelas "${newName}" sudah ada dalam daftar. Nama kelas tidak boleh sama.`
+    showErrorModal.value = true
+    return
+  }
+
+  saving.value = true
+  setTimeout(() => {
+    const targetIdx = classes.value.findIndex(c => (c.id && c.id === editForm.value.id) || c.name === editForm.value.originalName)
+    if (targetIdx !== -1) {
+      classes.value[targetIdx].name = newName
+      classes.value[targetIdx].homeroom_teacher = editForm.value.homeroom_teacher.trim()
+      classes.value[targetIdx].student_count = editForm.value.student_count
+    }
+    saving.value = false
+    showEditModal.value = false
+    successMessage.value = `Data kelas "${newName}" berhasil diperbarui!`
+    showSuccessModal.value = true
+  }, 400)
+}
+
+const deleteClass = (cls) => {
+  if (confirm(`Yakin ingin menghapus kelas "${cls.name}"? Semua penugasan guru di kelas ini juga akan terhapus nantinya.`)) {
+    const idx = classes.value.findIndex(c => (c.id && c.id === cls.id) || c.name === cls.name)
+    if (idx !== -1) {
+      classes.value.splice(idx, 1)
+      if (currentPage.value > totalPages.value) {
+        currentPage.value = Math.max(1, totalPages.value)
+      }
+    }
   }
 }
 </script>

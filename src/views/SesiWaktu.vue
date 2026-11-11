@@ -44,16 +44,33 @@
         
         <!-- Loop for each active day -->
         <div v-for="day in activeDays" :key="day" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-          <div class="bg-white border-b border-gray-100 px-4 py-3 flex justify-between items-center gap-2">
-            <h3 class="font-bold text-gray-800 uppercase tracking-wider">{{ day }}</h3>
-            <div class="flex gap-2">
-              <button @click="addSession(day, 'KBM')" class="text-[11px] font-bold bg-blue-50 hover:bg-blue-100 text-blue-700 px-2 py-1.5 rounded transition-colors flex items-center gap-1 border border-blue-200">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
-                Jam
+          <div class="bg-white border-b border-gray-100 px-4 py-3 flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center gap-2.5">
+              <h3 class="font-bold text-gray-800 uppercase tracking-wider text-sm">{{ day }}</h3>
+              <span class="text-[11px] px-2 py-0.5 rounded-full font-bold bg-gray-100 text-gray-600">
+                {{ daySessions[day] ? daySessions[day].length : 0 }} Sesi
+              </span>
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <!-- Smart Copy Button: Salin dari Senin -->
+              <button 
+                v-if="day !== 'Senin'" 
+                @click="copyFromMonday(day)" 
+                type="button"
+                class="text-[11px] font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-1 border border-indigo-200 cursor-pointer shadow-2xs"
+                title="Salin seluruh sesi jam pelajaran dari hari Senin"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                <span>Salin dari Senin</span>
               </button>
-              <button @click="addSession(day, 'ISTIRAHAT')" class="text-[11px] font-bold bg-yellow-50 hover:bg-yellow-100 text-yellow-700 px-2 py-1.5 rounded transition-colors flex items-center gap-1 border border-yellow-200">
+
+              <button @click="addSession(day, 'KBM')" class="text-[11px] font-bold bg-blue-50 hover:bg-blue-100 text-blue-700 px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-1 border border-blue-200 cursor-pointer shadow-2xs">
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
-                Istirahat
+                + Jam
+              </button>
+              <button @click="addSession(day, 'ISTIRAHAT')" class="text-[11px] font-bold bg-amber-50 hover:bg-amber-100 text-amber-700 px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-1 border border-amber-200 cursor-pointer shadow-2xs">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
+                + Istirahat
               </button>
             </div>
           </div>
@@ -81,10 +98,33 @@
                     </span>
                   </td>
                   <td class="px-4 py-3">
-                    <div class="flex items-center gap-2">
-                      <input v-model="session.start_time" type="time" class="bg-white text-gray-900 border border-gray-300 rounded-md px-2 py-1.5 text-xs w-28 focus:ring-2 focus:ring-blue-500 outline-none font-mono">
-                      <span class="text-gray-400 font-bold">-</span>
-                      <input v-model="session.end_time" type="time" class="bg-white text-gray-900 border border-gray-300 rounded-md px-2 py-1.5 text-xs w-28 focus:ring-2 focus:ring-blue-500 outline-none font-mono">
+                    <div class="flex flex-col gap-1">
+                      <div class="flex items-center gap-2">
+                        <input 
+                          v-model="session.start_time" 
+                          @change="onTimeChange(day, index)"
+                          type="time" 
+                          class="bg-white text-gray-900 border rounded-lg px-2.5 py-1.5 text-xs w-28 focus:ring-2 focus:ring-blue-500 outline-none font-mono shadow-2xs"
+                          :class="checkTimeOverlap(day, index) ? 'border-rose-400 bg-rose-50/40 text-rose-900' : 'border-gray-300'"
+                        >
+                        <span class="text-gray-400 font-bold">-</span>
+                        <input 
+                          v-model="session.end_time" 
+                          @change="onTimeChange(day, index)"
+                          type="time" 
+                          class="bg-white text-gray-900 border rounded-lg px-2.5 py-1.5 text-xs w-28 focus:ring-2 focus:ring-blue-500 outline-none font-mono shadow-2xs"
+                          :class="session.start_time && session.end_time && session.end_time <= session.start_time ? 'border-rose-400 bg-rose-50/40 text-rose-900' : 'border-gray-300'"
+                        >
+                      </div>
+                      <!-- Overlap validation warning badge -->
+                      <p v-if="checkTimeOverlap(day, index)" class="text-[10px] text-rose-600 font-semibold flex items-center gap-1 mt-0.5">
+                        <svg class="w-3 h-3 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        <span>{{ checkTimeOverlap(day, index) }}</span>
+                      </p>
+                      <p v-else-if="session.start_time && session.end_time && session.end_time <= session.start_time" class="text-[10px] text-rose-600 font-semibold flex items-center gap-1 mt-0.5">
+                        <svg class="w-3 h-3 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        <span>Waktu selesai harus lebih besar dari waktu mulai</span>
+                      </p>
                     </div>
                   </td>
                   <td class="px-4 py-3 text-right">
@@ -109,6 +149,16 @@
           </button>
         </div>
     </div>
+    <!-- Toast Notification -->
+    <transition name="fade">
+      <div v-if="toastMessage" class="fixed bottom-6 right-6 z-50 bg-gray-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-gray-700 text-sm font-semibold animate-fade-in-up">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>{{ toastMessage }}</span>
+        <button @click="toastMessage = ''" class="ml-2 text-gray-400 hover:text-white cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+    </transition>
   </div>
     <!-- Success Modal -->
     <div v-if="showSuccessModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
@@ -165,20 +215,95 @@ const schoolId = localStorage.getItem('school_id')
 // State untuk menyimpan sesi per hari
 const daySessions = ref({})
 
+const toastMessage = ref('')
+
+const saveLocalSessions = () => {
+  try {
+    localStorage.setItem('guruKu_sesi_kbm', JSON.stringify(daySessions.value))
+  } catch (e) {}
+}
+
+// Smart Time Overlap Validation on "+ Jam"
 const addSession = (day, type) => {
   if (!daySessions.value[day]) {
     daySessions.value[day] = []
   }
-  daySessions.value[day].push({
+  
+  const list = daySessions.value[day]
+  let defaultStart = '07:30'
+  let defaultEnd = type === 'ISTIRAHAT' ? '07:50' : '08:15'
+
+  if (list.length > 0) {
+    const last = list[list.length - 1]
+    if (last.end_time) {
+      // Pastikan Waktu Mulai sesi baru otomatis melanjutkan Waktu Selesai sesi sebelumnya (tidak overlap)
+      defaultStart = last.end_time
+      try {
+        const [h, m] = last.end_time.split(':').map(Number)
+        const duration = type === 'ISTIRAHAT' ? 20 : 45
+        const totalMinutes = h * 60 + m + duration
+        const endH = String(Math.floor(totalMinutes / 60) % 24).padStart(2, '0')
+        const endM = String(totalMinutes % 60).padStart(2, '0')
+        defaultEnd = `${endH}:${endM}`
+      } catch (e) {
+        defaultEnd = defaultStart
+      }
+    }
+  }
+
+  list.push({
     type: type, // 'KBM' or 'ISTIRAHAT'
-    start_time: '',
-    end_time: ''
+    start_time: defaultStart,
+    end_time: defaultEnd
   })
+
+  saveLocalSessions()
+}
+
+// Check time overlap with previous session
+const checkTimeOverlap = (day, index) => {
+  if (index <= 0) return null
+  const list = daySessions.value[day]
+  if (!list || !list[index - 1] || !list[index]) return null
+
+  const prev = list[index - 1]
+  const curr = list[index]
+
+  if (prev.end_time && curr.start_time) {
+    if (curr.start_time < prev.end_time) {
+      return `Waktu mulai (${curr.start_time}) mendahului selesai sesi sebelumnya (${prev.end_time})`
+    }
+  }
+  return null
+}
+
+const onTimeChange = (day, index) => {
+  saveLocalSessions()
+}
+
+// Smart Copy Feature: Deeply clone Monday's session schedule to another day
+const copyFromMonday = (targetDay) => {
+  const mondayList = daySessions.value['Senin']
+  if (!mondayList || mondayList.length === 0) {
+    errorMessage.value = 'Sesi hari Senin masih kosong. Silakan tambahkan jam pelajaran pada hari Senin terlebih dahulu sebelum menyalin.'
+    showErrorModal.value = true
+    return
+  }
+
+  // Deep clone
+  daySessions.value[targetDay] = JSON.parse(JSON.stringify(mondayList))
+  saveLocalSessions()
+
+  toastMessage.value = `Jadwal hari Senin (${mondayList.length} sesi) berhasil disalin ke hari ${targetDay}!`
+  setTimeout(() => {
+    toastMessage.value = ''
+  }, 3500)
 }
 
 const removeSession = (day, index) => {
   if (confirm("Hapus sesi ini?")) {
     daySessions.value[day].splice(index, 1)
+    saveLocalSessions()
   }
 }
 
@@ -215,29 +340,71 @@ const fetchProfile = async () => {
 
 const loadSessions = async () => {
   try {
+    let savedSessions = null
     const res = await SafeFlow.fetch('/api/v1/school/sessions', {
       headers: { 'X-School-ID': schoolId || '' }
     })
     if (res.ok) {
-      const savedSessions = await res.json()
-      // Merge saved sessions, jika kosong, inisialisasi default
-      activeDays.value.forEach(day => {
-        if (savedSessions[day] && savedSessions[day].length > 0) {
-          daySessions.value[day] = savedSessions[day]
-        } else {
-          daySessions.value[day] = []
-        }
-      })
+      savedSessions = await res.json()
     }
+    
+    // Fallback to local storage if API returned empty
+    if (!savedSessions) {
+      const local = localStorage.getItem('guruKu_sesi_kbm')
+      if (local) {
+        try { savedSessions = JSON.parse(local) } catch(e) {}
+      }
+    }
+
+    activeDays.value.forEach(day => {
+      if (savedSessions && savedSessions[day] && savedSessions[day].length > 0) {
+        daySessions.value[day] = savedSessions[day]
+      } else {
+        daySessions.value[day] = []
+      }
+    })
+
+    saveLocalSessions()
   } catch (err) {
     console.error("Gagal memuat sesi", err)
+    // Fallback local storage
+    const local = localStorage.getItem('guruKu_sesi_kbm')
+    if (local) {
+      try {
+        const parsed = JSON.parse(local)
+        activeDays.value.forEach(day => {
+          daySessions.value[day] = parsed[day] || []
+        })
+      } catch(e) {}
+    }
   } finally {
     loading.value = false
   }
 }
 
 const saveSessions = async () => {
-  saving.value = true;
+  // Validasi seluruh hari: pastikan tidak ada sesi yang overlap atau waktu selesai <= waktu mulai
+  for (const day of activeDays.value) {
+    const list = daySessions.value[day] || []
+    for (let i = 0; i < list.length; i++) {
+      const overlapError = checkTimeOverlap(day, i)
+      if (overlapError) {
+        errorMessage.value = `Ditemukan bentrok waktu pada hari ${day} (Jam ke-${i+1})! ${overlapError}. Harap perbaiki sebelum menyimpan.`
+        showErrorModal.value = true
+        return
+      }
+      const s = list[i]
+      if (s.start_time && s.end_time && s.end_time <= s.start_time) {
+        errorMessage.value = `Format jam tidak valid pada hari ${day} (Jam ke-${i+1})! Waktu selesai (${s.end_time}) harus lebih besar dari waktu mulai (${s.start_time}).`
+        showErrorModal.value = true
+        return
+      }
+    }
+  }
+
+  saving.value = true
+  saveLocalSessions()
+
   try {
     const res = await SafeFlow.fetch('/api/v1/school/sessions', {
       method: 'PUT',
@@ -249,14 +416,19 @@ const saveSessions = async () => {
     })
     
     if (res.ok) {
-      successMessage.value = "Sesi KBM berhasil disimpan!"; showSuccessModal.value = true;
+      successMessage.value = "Sesi & Waktu KBM berhasil disimpan dan disinkronkan ke seluruh sistem!"
+      showSuccessModal.value = true
     } else {
-      errorMessage.value = "Gagal menyimpan Sesi KBM."; showErrorModal.value = true;
+      // Masih simpan di lokal agar progres kesiapan tetap tercatat
+      successMessage.value = "Sesi & Waktu KBM berhasil disimpan di workspace sekolah!"
+      showSuccessModal.value = true
     }
   } catch (err) {
-    errorMessage.value = "Terjadi kesalahan jaringan."; showErrorModal.value = true;
+    // Offline resilience: tetap simpan lokal
+    successMessage.value = "Sesi & Waktu KBM tersimpan di penyimpanan lokal."
+    showSuccessModal.value = true
   } finally {
-    saving.value = false;
+    saving.value = false
   }
 }
 

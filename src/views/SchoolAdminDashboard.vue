@@ -76,9 +76,9 @@
           
           <div class="relative z-10 w-full md:w-3/4">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-3 border backdrop-blur-md"
-              :class="isMasterDataComplete ? 'bg-emerald-500/20 text-emerald-200 border-emerald-400/40' : 'bg-amber-500/20 text-amber-200 border-amber-400/40'">
-              <span class="w-2 h-2 rounded-full animate-ping" :class="isMasterDataComplete ? 'bg-emerald-400' : 'bg-amber-400'"></span>
-              <span>{{ isMasterDataComplete ? 'Master Data Lengkap' : 'Master Data Belum Lengkap' }}</span>
+              :class="isMasterDataReady ? 'bg-emerald-500/20 text-emerald-200 border-emerald-400/40' : 'bg-amber-500/20 text-amber-200 border-amber-400/40'">
+              <span class="w-2 h-2 rounded-full animate-ping" :class="isMasterDataReady ? 'bg-emerald-400' : 'bg-amber-400'"></span>
+              <span>{{ isMasterDataReady ? 'Master Data Siap' : 'Master Data Belum Lengkap' }}</span>
             </div>
 
             <h2 class="text-2xl md:text-3xl font-black mb-2 drop-shadow-md">
@@ -110,7 +110,7 @@
         <!-- Statistik Utama dengan Animasi Count-Up Perlahan -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
           <!-- Card Total Guru -->
-          <router-link :to="ROUTES.DAFTAR_GURU" class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-lg transition-all hover:-translate-y-1 group block cursor-pointer">
+          <router-link :to="ROUTES.DAFTAR_GURU" class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:scale-105 hover:shadow-md transition-all duration-300 group block cursor-pointer">
             <div class="flex items-center justify-between mb-3">
               <p class="text-xs font-black text-gray-400 uppercase tracking-widest group-hover:text-blue-600 transition-colors">Total Guru</p>
               <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
@@ -128,7 +128,7 @@
           </router-link>
 
           <!-- Card Total Kelas -->
-          <router-link :to="ROUTES.DAFTAR_KELAS" class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-lg transition-all hover:-translate-y-1 group block cursor-pointer">
+          <router-link :to="ROUTES.DAFTAR_KELAS" class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:scale-105 hover:shadow-md transition-all duration-300 group block cursor-pointer">
             <div class="flex items-center justify-between mb-3">
               <p class="text-xs font-black text-gray-400 uppercase tracking-widest group-hover:text-indigo-600 transition-colors">Total Kelas</p>
               <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
@@ -146,7 +146,7 @@
           </router-link>
 
           <!-- Card Mata Pelajaran -->
-          <router-link :to="ROUTES.MATA_PELAJARAN" class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-lg transition-all hover:-translate-y-1 group block cursor-pointer">
+          <router-link :to="ROUTES.MATA_PELAJARAN" class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:scale-105 hover:shadow-md transition-all duration-300 group block cursor-pointer">
             <div class="flex items-center justify-between mb-3">
               <p class="text-xs font-black text-gray-400 uppercase tracking-widest group-hover:text-emerald-600 transition-colors">Mata Pelajaran</p>
               <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
@@ -164,7 +164,7 @@
           </router-link>
 
           <!-- Card Jam Mengajar -->
-          <router-link :to="ROUTES.PENGAMPU" class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-3xl shadow-sm border border-blue-100 hover:shadow-lg transition-all hover:-translate-y-1 group relative overflow-hidden block cursor-pointer">
+          <router-link :to="ROUTES.PENGAMPU" class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-3xl shadow-sm border border-blue-100 hover:scale-105 hover:shadow-md transition-all duration-300 group relative overflow-hidden block cursor-pointer">
             <div class="absolute -right-4 -bottom-4 opacity-5 text-blue-900 pointer-events-none">
               <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </div>
@@ -607,6 +607,8 @@ const animateCountUp = (target, durationMs = 1200) => {
 }
 
 // Cek apakah Master Data Lengkap (Guru, Kelas, Mapel semuanya > 0)
+const isMasterDataReady = computed(() => (rawStats.value.progress || 0) >= 100)
+
 const isMasterDataComplete = computed(() => {
   return rawStats.value.totalGuru > 0 && rawStats.value.totalKelas > 0 && rawStats.value.totalMapel > 0
 })
@@ -759,21 +761,50 @@ const fetchDashboardStats = async () => {
     } catch (e) {}
   }
 
-  // Hitung Progres Keseluruhan secara Otomatis (0 - 100%)
+  // Hitung Progres Keseluruhan secara Dinamis & Terstruktur (0 - 100%)
   let p = 0
-  // Master data: bobot 35%
-  if (classCount > 0) p += 12
-  if (teacherCount > 0) p += 12
-  if (mapelCount > 0) p += 11
 
-  // Distribusi beban: bobot 35%
-  if (totalJam > 0) p += 25
-  const savedJamKosong = localStorage.getItem('guruKu_jam_kosong') || localStorage.getItem('jamKosongData')
-  if (savedJamKosong) p += 10
+  // 1. Validasi Lembaga (Bobot: 10%)
+  const lembagaData = localStorage.getItem('guruKu_lembaga_data') || localStorage.getItem('guruKu_lembaga_valid')
+  let isLembagaValid = false
+  if (lembagaData) {
+    try {
+      const parsed = typeof lembagaData === 'string' && (lembagaData.startsWith('{') || lembagaData.startsWith('[')) ? JSON.parse(lembagaData) : null
+      if (parsed && (parsed.academic_year || parsed.headmaster_name || parsed.address)) isLembagaValid = true
+      else if (lembagaData === 'true') isLembagaValid = true
+    } catch(e) {
+      if (lembagaData === 'true') isLembagaValid = true
+    }
+  }
+  if (isLembagaValid) p += 10
 
-  // Penjadwalan: bobot 30%
-  const savedJadwal = localStorage.getItem('guruKu_jadwal')
-  if (savedJadwal) p += 30
+  // 2. Daftar Kelas (Bobot: 20%)
+  if (classCount > 0) p += 20
+
+  // 3. Sesi & Waktu KBM (Bobot: 20%)
+  const savedSesi = localStorage.getItem('guruKu_sesi_kbm')
+  let hasSesi = false
+  if (savedSesi) {
+    try {
+      const parsedSesi = JSON.parse(savedSesi)
+      if (parsedSesi && typeof parsedSesi === 'object') {
+        const days = Object.keys(parsedSesi)
+        if (days.some(d => Array.isArray(parsedSesi[d]) && parsedSesi[d].length > 0)) {
+          hasSesi = true
+        }
+      }
+    } catch (e) {}
+  }
+  if (hasSesi) p += 20
+
+  // 4. Daftar Guru (Bobot: 20%)
+  if (teacherCount > 0) p += 20
+
+  // 5. Mata Pelajaran (Bobot: 15%)
+  if (mapelCount > 0) p += 15
+
+  // 6. Pengampu / Jam Mengajar (Bobot: 15%)
+  if (totalJam > 0) p += 15
 
   rawStats.value = {
     totalGuru: teacherCount,
