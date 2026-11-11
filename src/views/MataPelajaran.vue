@@ -348,6 +348,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import * as XLSX from 'xlsx'
+import { realtimeClient } from '../core/realtimeClient.js'
 
 const loading = ref(true)
 const saving = ref(false)
@@ -401,6 +402,7 @@ watch(searchQuery, () => {
 })
 
 onMounted(() => {
+  realtimeClient.connect('school_admin')
   const saved = localStorage.getItem('guruKu_mapel');
   if (saved) {
     try {
@@ -588,6 +590,7 @@ const handleFileUpload = (event) => {
       }
       successMessage.value = msg
       showSuccessModal.value = true
+      realtimeClient.syncProgress('Mata Pelajaran')
     } catch (err) {
       console.error('Error saat parsing file Excel mapel:', err)
       errorMessage.value = err.message || 'Format file Excel tidak dapat dibaca atau tidak sesuai.'
@@ -647,6 +650,7 @@ const saveSubject = () => {
     
     successMessage.value = `Mata Pelajaran "${name}" (${code}) berhasil ditambahkan ke database.`
     showSuccessModal.value = true
+    realtimeClient.syncProgress('Mata Pelajaran')
   }, 400)
 }
 
@@ -708,6 +712,7 @@ const deleteSubject = (subject) => {
     const idx = subjects.value.findIndex(s => (s.id && s.id === subject.id) || s.code === subject.code)
     if (idx !== -1) {
       subjects.value.splice(idx, 1)
+      realtimeClient.syncProgress('Mata Pelajaran')
       if (currentPage.value > totalPages.value) {
         currentPage.value = Math.max(1, totalPages.value)
       }

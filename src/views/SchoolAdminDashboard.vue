@@ -541,6 +541,7 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import AppLogo from '../components/AppLogo.vue'
+import { realtimeClient } from '../core/realtimeClient.js'
 import MagicWizard from '../components/MagicWizard.vue'
 import { ROUTES } from '../config/routePaths.js'
 import { getStoredPackages } from '../data/packagesCatalog.js'
@@ -816,11 +817,13 @@ const fetchDashboardStats = async () => {
 
   // Mulai animasi naik perlahan dari 0 ke nilai target
   animateCountUp(rawStats.value, 1200)
+  realtimeClient.syncProgress('Dashboard Overview')
 }
 
 onMounted(() => {
   fetchProfileName()
   fetchDashboardStats()
+  realtimeClient.connect('school_admin')
 })
 
 // Refresh stats saat user kembali ke Dashboard Utama dari menu lain

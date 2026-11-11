@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"jadwal-api/core/database"
+	"jadwal-api/core/realtime"
 )
 
 type SchoolProfileResponse struct {
@@ -111,6 +112,10 @@ func UpdateMySchoolProfile(c *gin.Context) {
 		return
 	}
 
+	if realtime.GlobalHub != nil {
+		realtime.GlobalHub.BroadcastProgress(schoolID, 10, "Validasi Lembaga")
+	}
+
 	c.JSON(http.StatusOK, gin.H{"message": "Profil sekolah berhasil diperbarui"})
 }
 
@@ -209,6 +214,10 @@ func UpdateSchoolSessions(c *gin.Context) {
 		return
 	}
 
+	if realtime.GlobalHub != nil {
+		realtime.GlobalHub.BroadcastProgress(schoolID, 30, "Sesi & Waktu KBM")
+	}
+
 	c.JSON(http.StatusOK, gin.H{"message": "Sesi KBM berhasil diperbarui"})
 }
 
@@ -253,6 +262,10 @@ func UpdatePengampuMapel(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan data pengampu"})
 		return
+	}
+
+	if realtime.GlobalHub != nil {
+		realtime.GlobalHub.BroadcastProgress(schoolID, 70, "Pengampu Mapel")
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Data pengampu berhasil disimpan"})

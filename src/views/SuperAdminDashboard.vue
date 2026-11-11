@@ -655,9 +655,37 @@
                         <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
                           Limit {{ school.database_limit || 100 }} MB
                         </span>
+                        <!-- Online Presence Pill -->
+                        <span 
+                          class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold border transition-all"
+                          :class="school.is_online ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-slate-100 text-slate-500 border-slate-200'"
+                        >
+                          <span class="w-1.5 h-1.5 rounded-full" :class="school.is_online ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'"></span>
+                          <span>{{ school.is_online ? 'Online' : 'Offline' }}</span>
+                        </span>
                       </div>
                       <h3 class="font-extrabold text-slate-900 text-sm leading-snug mt-1">{{ school.name || school.school_name }}</h3>
                       <p class="text-[11px] text-slate-500 line-clamp-1 mt-0.5" :title="school.address">{{ school.address || 'Alamat belum disetel' }}</p>
+
+                      <!-- Real-Time Setup Progress Bar Mobile -->
+                      <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-1.5">
+                          <span class="text-[10px] font-bold text-slate-500">Setup:</span>
+                          <div class="w-20 h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200 shadow-inner">
+                            <div 
+                              class="h-full rounded-full transition-all duration-700"
+                              :class="school.readiness_percentage >= 100 ? 'bg-emerald-500' : 'bg-gradient-to-r from-blue-600 to-indigo-600'"
+                              :style="{ width: (school.readiness_percentage || 0) + '%' }"
+                            ></div>
+                          </div>
+                          <span class="text-[11px] font-mono font-bold" :class="school.readiness_percentage >= 100 ? 'text-emerald-600' : 'text-blue-700'">
+                            {{ school.readiness_percentage || 0 }}%
+                          </span>
+                        </div>
+                        <span v-if="school.last_active_menu" class="text-[10px] text-slate-400 truncate max-w-[120px]">
+                          {{ school.last_active_menu }}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
@@ -770,10 +798,16 @@
                       {{ clientSearch ? 'Tidak ada sekolah yang cocok dengan pencarian.' : 'Belum ada klien sekolah yang terdaftar.' }}
                     </td>
                   </tr>
-                  <tr v-for="(school, sIdx) in filteredSchools" :key="school.id" class="hover:bg-blue-50/20 transition-colors group animate-row" :style="{ animationDelay: Math.min(sIdx * 60, 400) + 'ms' }">
-                    <!-- Column 1: Tenant ID & School Name -->
+                  <tr 
+                      v-for="(school, sIdx) in filteredSchools" 
+                      :key="school.id" 
+                      class="transition-all duration-500 group animate-row"
+                      :class="school._justUpdated ? 'bg-emerald-50/90 ring-2 ring-emerald-400/60' : 'hover:bg-blue-50/20'"
+                      :style="{ animationDelay: Math.min(sIdx * 60, 400) + 'ms' }"
+                    >
+                    <!-- Column 1: Tenant ID, Online Presence & School Name -->
                     <td class="py-5 px-6">
-                      <div class="flex items-center gap-1.5 mb-1">
+                      <div class="flex items-center gap-1.5 mb-1.5 flex-wrap">
                         <button 
                           @click="copyToClipboard(school.id, 'Tenant ID')"
                           class="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[10px] font-bold border border-slate-300 inline-flex items-center gap-1 transition-colors cursor-pointer"
@@ -785,9 +819,35 @@
                         <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
                           DB Limit: {{ school.database_limit || 100 }} MB
                         </span>
+                        <!-- Real-time Online Presence Indicator -->
+                        <span 
+                          class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold transition-all border"
+                          :class="school.is_online ? 'bg-emerald-50 text-emerald-700 border-emerald-300 shadow-2xs' : 'bg-slate-100 text-slate-500 border-slate-200'"
+                        >
+                          <span class="w-1.5 h-1.5 rounded-full" :class="school.is_online ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'"></span>
+                          <span>{{ school.is_online ? 'Online' : 'Offline' }}</span>
+                        </span>
                       </div>
                       <p class="font-bold text-slate-900 text-sm group-hover:text-blue-700 transition-colors">{{ school.name || school.school_name }}</p>
-                      <p class="text-[11px] text-slate-500 font-medium max-w-[220px] truncate" :title="school.address">{{ school.address || 'Alamat belum disetel' }}</p>
+                      <p class="text-[11px] text-slate-500 font-medium max-w-[240px] truncate" :title="school.address">{{ school.address || 'Alamat belum disetel' }}</p>
+
+                      <!-- Real-Time Setup Progress Bar & Last Active Menu -->
+                      <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center gap-2">
+                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Setup:</span>
+                        <div class="w-24 sm:w-28 h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200 shadow-inner">
+                          <div 
+                            class="h-full rounded-full transition-all duration-700"
+                            :class="school.readiness_percentage >= 100 ? 'bg-emerald-500' : 'bg-gradient-to-r from-blue-600 to-indigo-600'"
+                            :style="{ width: (school.readiness_percentage || 0) + '%' }"
+                          ></div>
+                        </div>
+                        <span class="text-[11px] font-mono font-black" :class="school.readiness_percentage >= 100 ? 'text-emerald-600' : 'text-blue-700'">
+                          {{ school.readiness_percentage || 0 }}%
+                        </span>
+                        <span v-if="school.last_active_menu" class="text-[10px] font-medium text-slate-400 truncate max-w-[140px]" :title="school.last_active_menu">
+                          · {{ school.last_active_menu }}
+                        </span>
+                      </div>
                     </td>
 
                     <!-- Column 2: Admin Contact & Username -->
@@ -2358,6 +2418,7 @@ import KeuanganAset from './KeuanganAset.vue'
 import KalkulatorHPP from './KalkulatorHPP.vue'
 import EtalaseProdukView from './EtalaseProdukView.vue'
 import { getStoredPackages } from '../data/packagesCatalog.js'
+import { realtimeClient } from '../core/realtimeClient.js'
 
 const router = useRouter()
 const activeTab = ref('dashboard')
@@ -3739,15 +3800,61 @@ onMounted(() => {
   window.addEventListener('storage', handleStorageChange)
   window.addEventListener('guruKu_packages_updated', handlePackagesUpdate)
   window.addEventListener('guruKu_finance_updated', loadFinancialSummary)
-  
-  // Polling real-time (3 detik) agar tersinkron otomatis dengan database serverless Neon
+
+  // -----------------------------------------------------------------
+  // 1. REAL-TIME ARCHITECTURE: Gorilla WebSockets + SSE Fallback
+  // -----------------------------------------------------------------
+  realtimeClient.connect('super_admin')
+
+  // Real-Time Progress Updated Listener (Setup Monitor Tanpa Refresh)
+  realtimeClient.on('progress_updated', (data) => {
+    const tenantId = data.tenant_id
+    if (!tenantId) return
+
+    const target = schools.value.find(s => 
+      s.id === tenantId || 
+      s.tenant_id === tenantId || 
+      (s.name && tenantId && s.name.toLowerCase().includes(tenantId.toLowerCase()))
+    )
+
+    if (target) {
+      target.readiness_percentage = data.readiness_percentage
+      target.last_active_menu = data.last_active_menu
+      target.is_online = true
+      target._justUpdated = true
+      setTimeout(() => { target._justUpdated = false }, 3000)
+
+      showToast(`Update Real-Time: ${target.name || 'Tenant'} memperbarui ${data.last_active_menu || 'Master Data'} (${data.readiness_percentage}%)`)
+    }
+  })
+
+  // Real-Time Online Presence Tracking Listener
+  realtimeClient.on('presence_updated', (data) => {
+    const tenantId = data.tenant_id
+    if (!tenantId) return
+
+    const target = schools.value.find(s => 
+      s.id === tenantId || 
+      s.tenant_id === tenantId || 
+      (s.name && tenantId && s.name.toLowerCase().includes(tenantId.toLowerCase()))
+    )
+
+    if (target) {
+      target.is_online = data.is_online
+      target.last_seen = data.last_seen
+    }
+  })
+
+  // -----------------------------------------------------------------
+  // 2. GENTLE BACKGROUND SYNC (60s) - Menghilangkan Polling Agresif
+  // -----------------------------------------------------------------
   reportInterval = setInterval(() => {
     loadForgotPasswordReports()
     loadSupportTickets()
     loadPendingPayments()
     loadFinancialSummary()
     fetchDashboardMetrics()
-  }, 3000)
+  }, 60000)
 })
 
 onUnmounted(() => {
@@ -3756,6 +3863,7 @@ onUnmounted(() => {
   window.removeEventListener('guruKu_packages_updated', handlePackagesUpdate)
   window.removeEventListener('guruKu_finance_updated', loadFinancialSummary)
   if (reportInterval) clearInterval(reportInterval)
+  realtimeClient.disconnect()
 })
 
 const handleLogout = () => {

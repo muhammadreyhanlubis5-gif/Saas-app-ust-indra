@@ -5,12 +5,14 @@ import (
 	"github.com/gin-gonic/gin"
 	
 	"jadwal-api/core/database"
+	"jadwal-api/core/realtime"
 	"jadwal-api/core/router"
 )
 
 var app *gin.Engine
 
 func init() {
+	realtime.InitHub()
 	// Initialize DB Connection
 	database.Connect()
 

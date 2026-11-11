@@ -334,6 +334,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import * as XLSX from 'xlsx'
+import { realtimeClient } from '../core/realtimeClient.js'
 
 const loading = ref(true)
 const saving = ref(false)
@@ -388,6 +389,7 @@ watch(searchQuery, () => {
 })
 
 onMounted(() => {
+  realtimeClient.connect('school_admin')
   const saved = localStorage.getItem('guruKu_classes');
   if (saved) {
     try {
@@ -641,6 +643,7 @@ const handleFileUpload = (event) => {
 
       successMessage.value = `Berhasil mengimpor file Excel! ${addedCount} kelas baru ditambahkan${updatedCount > 0 ? `, ${updatedCount} kelas diperbarui` : ''}. Data sudah tersinkronisasi ke seluruh sistem.`
       showSuccessModal.value = true
+      realtimeClient.syncProgress('Daftar Kelas')
     } catch (err) {
       console.error('Error saat parsing file Excel:', err)
       errorMessage.value = err.message || 'Format file Excel tidak dapat dibaca atau tidak sesuai.'
@@ -681,6 +684,7 @@ const saveClass = () => {
     
     successMessage.value = 'Data Kelas (Rombel) berhasil ditambahkan ke database.'
     showSuccessModal.value = true
+    realtimeClient.syncProgress('Daftar Kelas')
   }, 600)
 }
 
@@ -722,6 +726,7 @@ const updateClass = () => {
     showEditModal.value = false
     successMessage.value = `Data kelas "${newName}" berhasil diperbarui!`
     showSuccessModal.value = true
+    realtimeClient.syncProgress('Daftar Kelas')
   }, 400)
 }
 
@@ -730,6 +735,7 @@ const deleteClass = (cls) => {
     const idx = classes.value.findIndex(c => (c.id && c.id === cls.id) || c.name === cls.name)
     if (idx !== -1) {
       classes.value.splice(idx, 1)
+      realtimeClient.syncProgress('Daftar Kelas')
       if (currentPage.value > totalPages.value) {
         currentPage.value = Math.max(1, totalPages.value)
       }

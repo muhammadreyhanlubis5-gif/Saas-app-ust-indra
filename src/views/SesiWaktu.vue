@@ -198,6 +198,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { SafeFlow } from '../core/SafeFlow.js'
 import { ROUTES } from '../config/routePaths.js'
+import { realtimeClient } from '../core/realtimeClient.js'
 
 
 const router = useRouter()
@@ -258,6 +259,7 @@ const addSession = (day, type) => {
   })
 
   saveLocalSessions()
+  realtimeClient.syncProgress('Sesi & Waktu KBM')
 }
 
 // Check time overlap with previous session
@@ -434,6 +436,7 @@ const saveSessions = async () => {
 
 onMounted(() => {
   fetchProfile()
+  realtimeClient.connect('school_admin')
 })
 </script>
 

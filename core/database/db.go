@@ -46,6 +46,8 @@ func autoMigrateTables() {
 	_, _ = DB.Exec(`
 		ALTER TABLE schools ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'ACTIVE';
 		ALTER TABLE schools ADD COLUMN IF NOT EXISTS database_limit INT DEFAULT 100;
+		ALTER TABLE schools ADD COLUMN IF NOT EXISTS readiness_percentage INT DEFAULT 0;
+		ALTER TABLE schools ADD COLUMN IF NOT EXISTS last_active_menu VARCHAR(100) DEFAULT 'Validasi Lembaga';
 	`)
 
 	// 2. Tabel Support Tickets (Pusat Bantuan) dengan relasi Tenant_ID dan status standar B2B SaaS

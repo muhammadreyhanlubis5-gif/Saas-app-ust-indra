@@ -3,10 +3,15 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"jadwal-api/core/handlers"
+	"jadwal-api/core/realtime"
 )
 
 func SetupRoutes(r *gin.Engine) {
 	api := r.Group("/api/v1")
+	// Real-Time WebSocket & SSE Architecture
+	api.GET("/ws", realtime.HandleWebSocket)
+	api.GET("/realtime/stream", realtime.HandleSSE)
+	api.POST("/school/progress", realtime.HandleProgressUpdate)
 	
 	// Authentication
 	api.POST("/login", handlers.GenerateJWTLogin)

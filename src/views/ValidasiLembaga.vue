@@ -200,6 +200,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { SafeFlow } from '../core/SafeFlow.js'
 import { ROUTES } from '../config/routePaths.js'
+import { realtimeClient } from '../core/realtimeClient.js'
 
 const router = useRouter()
 const loading = ref(true)
@@ -413,6 +414,7 @@ const saveProfile = async () => {
   } catch (err) {
     // Offline resilience: tetap tampilkan berhasil karena sudah tersimpan di browser
     showSuccessModal.value = true
+    realtimeClient.syncProgress('Validasi Lembaga')
   } finally {
     saving.value = false
   }
@@ -420,6 +422,7 @@ const saveProfile = async () => {
 
 onMounted(() => {
   fetchProfile()
+  realtimeClient.connect('school_admin')
   document.addEventListener('click', handleClickOutside)
 })
 

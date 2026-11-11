@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"jadwal-api/core/database"
+	"jadwal-api/core/realtime"
 )
 
 type SchoolResponse struct {
@@ -30,6 +31,9 @@ type SchoolResponse struct {
 	TeacherCount        int        `json:"teacher_count"`
 	SubjectCount        int        `json:"subject_count"`
 	AdminUsername       string     `json:"admin_username"`
+	ReadinessPercentage int        `json:"readiness_percentage"`
+	LastActiveMenu      string     `json:"last_active_menu"`
+	IsOnline            bool       `json:"is_online"`
 }
 
 // GET /api/v1/super/schools
@@ -41,7 +45,9 @@ func GetSchools(c *gin.Context) {
 			COALESCE(s.database_limit, 100) as database_limit,
 			(SELECT COUNT(*) FROM users u WHERE u.school_id = s.id AND u.role = 'TEACHER') as teacher_count,
 			(SELECT COUNT(*) FROM subjects sub WHERE sub.school_id = s.id) as subject_count,
-			COALESCE((SELECT u.username FROM users u WHERE u.school_id = s.id AND u.role = 'SCHOOL_ADMIN' LIMIT 1), '') as admin_username
+			COALESCE((SELECT u.username FROM users u WHERE u.school_id = s.id AND u.role = 'SCHOOL_ADMIN' LIMIT 1), '') as admin_username,
+			COALESCE(s.readiness_percentage, 0) as readiness_percentage,
+			COALESCE(s.last_active_menu, 'Validasi Lembaga') as last_active_menu
 		FROM schools s
 		ORDER BY s.created_at DESC
 	`)
@@ -58,6 +64,7 @@ func GetSchools(c *gin.Context) {
 		err := rows.Scan(
 			&s.ID, &s.Name, &s.ValidUntil, &s.PaymentMethod, &s.PaymentAmount, &s.Address, &s.ContactNumber,
 			&rawStatus, &s.DatabaseLimit, &s.TeacherCount, &s.SubjectCount, &s.AdminUsername,
+			&s.ReadinessPercentage, &s.LastActiveMenu,
 		)
 		if err != nil {
 			log.Println("Error scan school:", err)
@@ -68,6 +75,17 @@ func GetSchools(c *gin.Context) {
 		s.SchoolName = s.Name
 		s.SubscriptionEndDate = s.ValidUntil
 		s.AdminContact = s.ContactNumber
+
+		// Realtime online presence overlay from In-Memory Hub
+		if realtime.GlobalHub != nil {
+			s.IsOnline = realtime.GlobalHub.IsTenantOnline(s.ID)
+			if r, m := realtime.GlobalHub.GetTenantReadiness(s.ID); r > 0 {
+				s.ReadinessPercentage = r
+				if m != "" {
+					s.LastActiveMenu = m
+				}
+			}
+		}
 
 		// Format username @guruku.id
 		if s.AdminUsername != "" && !strings.HasSuffix(s.AdminUsername, "@guruku.id") {
