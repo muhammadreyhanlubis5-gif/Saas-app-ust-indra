@@ -1,3 +1,89 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ==========================================================================
+   GURUKU SAAS - GLOWING ANIMATED BORDER UTILITIES (Moving Laser Border)
+   ========================================================================== */
+
+@keyframes border-laser-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.glow-border-wrapper {
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glow-border-wrapper.state-default {
+  border: 1.5px solid #f1f5f9;
+  background-color: #ffffff;
+}
+
+/* ERROR STATE: Rotating Red Laser Line */
+.glow-border-wrapper.state-error {
+  background-color: transparent;
+  box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.25), 0 0 15px 0 rgba(239, 68, 68, 0.15);
+}
+
+.glow-border-wrapper.state-error::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 200deg,
+    rgba(239, 68, 68, 0.2) 280deg,
+    rgba(239, 68, 68, 0.8) 330deg,
+    #ef4444 360deg
+  );
+  animation: border-laser-spin 3s linear infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* SUCCESS STATE: Rotating Green Laser Line */
+.glow-border-wrapper.state-success {
+  background-color: transparent;
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.25), 0 0 15px 0 rgba(16, 185, 129, 0.15);
+}
+
+.glow-border-wrapper.state-success::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 200deg,
+    rgba(16, 185, 129, 0.2) 280deg,
+    rgba(16, 185, 129, 0.8) 330deg,
+    #10b981 360deg
+  );
+  animation: border-laser-spin 2.5s linear infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.glow-border-mask {
+  position: relative;
+  z-index: 1;
+  margin: 2.5px;
+  border-radius: calc(1.5rem - 2.5px);
+  background-color: #ffffff;
+  height: calc(100% - 5px);
+}

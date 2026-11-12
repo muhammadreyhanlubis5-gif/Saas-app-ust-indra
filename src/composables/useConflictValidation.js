@@ -1,0 +1,337 @@
+/**
+ * GuruKu SaaS - Real-Time Conflict Engine & Validation Rules
+ * 
+ * Strict Validation Rules:
+ * - RULE A (Subject Duplication): Prevents multiple teachers from being assigned the same subject in the same class.
+ * - RULE B (Time Clash / Double Booking): Prevents a teacher from being assigned to the same time period across multiple classes simultaneously.
+ * - MAX WORKLOAD: Alerts if a teacher exceeds the maximum 40 JP limit.
+ */
+
+import { ref, computed, watch, reactive } from 'vue'
+
+export function useConflictValidation() {
+  // Map of rowId -> Array of conflict objects
+  const conflicts = ref(new Map())
+  
+  // Track temporary success states (e.g. for glowing green border on save/edit)
+  const successStates = reactive(new Map())
+
+  // Timer handles for auto-reverting success state
+  const successTimers = new Map()
+
+  /**
+   * Helper to get a stable unique row identifier
+   */
+  const getRowId = (row, index) => {
+    if (row.id) return String(row.id)
+    if (row.teacher_code && row.subject_code) {
+      return `row_${row.teacher_code}_${row.subject_code}_${index}`
+    }
+    return `row_${index}`
+  }
+
+  /**
+   * Runs validation against current rows, classes, and time slots
+   * 
+   * @param {Array} rows - Assignment rows
+   * @param {Array} classes - List of class names
+   * @param {Array|Object} timeSlots - Optional schedule time-slot entries for Rule B
+   * @returns {Map} Updated conflicts map
+   */
+  const validate = (rows = [], classes = [], timeSlots = []) => {
+    const newConflicts = new Map()
+
+    const addConflict = (rowId, conflictObj) => {
+      if (!newConflicts.has(rowId)) {
+        newConflicts.set(rowId, [])
+      }
+      newConflicts.get(rowId).push(conflictObj)
+    }
+
+    // -------------------------------------------------------------
+    // RULE A: Subject Duplication Check
+    // (Target_Class cannot have more than 1 teacher for the same Subject_Code)
+    // -------------------------------------------------------------
+    // Map structure: classIndex -> subjectCode -> [ { rowId, teacherName, teacherCode, hours } ]
+    const classSubjectMap = new Map()
+
+    rows.forEach((row, rIdx) => {
+      const rowId = getRowId(row, rIdx)
+      const subjCode = (row.subject_code || '').trim().toUpperCase()
+      const tCode = (row.teacher_code || '').trim().toUpperCase()
+      const tName = row.teacher_name || tCode || 'Guru'
+
+      if (!subjCode || !row.hours) return
+
+      row.hours.forEach((hrs, cIdx) => {
+        if (hrs > 0) {
+          if (!classSubjectMap.has(cIdx)) {
+            classSubjectMap.set(cIdx, new Map())
+          }
+          const subjectMap = classSubjectMap.get(cIdx)
+          if (!subjectMap.has(subjCode)) {
+            subjectMap.set(subjCode, [])
+          }
+          subjectMap.get(subjCode).push({
+            rowId,
+            teacherCode: tCode,
+            teacherName: tName,
+            subjectCode: subjCode,
+            subjectName: row.subject_name || subjCode,
+            hours: hrs,
+            classIndex: cIdx
+          })
+        }
+      })
+    })
+
+    // Evaluate duplicates per class & subject
+    for (const [cIdx, subjectMap] of classSubjectMap.entries()) {
+      const className = classes[cIdx] || `Kelas ${cIdx + 1}`
+
+      for (const [subjCode, assignments] of subjectMap.entries()) {
+        // If different teachers are assigned the same subject in this class
+        const uniqueTeachers = new Set(assignments.map(a => a.teacherCode).filter(Boolean))
+        
+        if (uniqueTeachers.size > 1 || assignments.length > 1) {
+          assignments.forEach(assign => {
+            const otherTeachers = assignments
+              .filter(a => a.rowId !== assign.rowId)
+              .map(a => a.teacherName)
+              .join(', ')
+
+            addConflict(assign.rowId, {
+              rule: 'RULE_A',
+              type: 'SUBJECT_DUPLICATION',
+              title: 'Bentrok Mata Pelajaran (Duplikasi Guru)',
+              className,
+              subjectCode: subjCode,
+              subjectName: assign.subjectName,
+              message: `Bentrok Mapel: Kelas ${className} sudah diajar Guru lain (${otherTeachers}) untuk ${assign.subjectName || subjCode}.`,
+              severity: 'error'
+            })
+          })
+        }
+      }
+    }
+
+    // -------------------------------------------------------------
+    // RULE B: Time Clash / Double Booking Check
+    // (Teacher_ID cannot be in Class_A and Class_B at Period_X simultaneously)
+    // -------------------------------------------------------------
+    // Normalise timeSlots to array of { day, period, teacher_code, class_name }
+    let flatSlots = []
+    if (Array.isArray(timeSlots)) {
+      flatSlots = timeSlots
+    } else if (typeof timeSlots === 'object' && timeSlots !== null) {
+      // If structured as { "SENIN-1-1A": { guru: "BS", mapel: "MAT" } }
+      for (const [key, val] of Object.entries(timeSlots)) {
+        if (val && (val.guru || val.teacher_code)) {
+          const parts = key.split('-')
+          if (parts.length >= 3) {
+            flatSlots.push({
+              day: parts[0],
+              period: parts[1],
+              className: parts.slice(2).join('-'),
+              teacher_code: (val.guru || val.teacher_code || '').toUpperCase(),
+              subject_code: (val.mapel || val.subject_code || '').toUpperCase()
+            })
+          }
+        }
+      }
+    }
+
+    // Group slots by `${day}__${period}__${teacher_code}`
+    const periodTeacherMap = new Map()
+    flatSlots.forEach(slot => {
+      const tCode = (slot.teacher_code || '').trim().toUpperCase()
+      const day = (slot.day || '').trim().toUpperCase()
+      const period = (slot.period || '').toString().trim()
+      const cls = (slot.className || slot.cls || '').trim().toUpperCase()
+
+      if (!tCode || !day || !period) return
+
+      const slotKey = `${day}__${period}__${tCode}`
+      if (!periodTeacherMap.has(slotKey)) {
+        periodTeacherMap.set(slotKey, [])
+      }
+      periodTeacherMap.get(slotKey).push({ ...slot, className: cls })
+    })
+
+    // Detect double bookings
+    for (const [slotKey, bookings] of periodTeacherMap.entries()) {
+      const uniqueClasses = new Set(bookings.map(b => b.className).filter(Boolean))
+
+      if (uniqueClasses.size > 1) {
+        const [day, period, tCode] = slotKey.split('__')
+        const classNames = Array.from(uniqueClasses).join(' & ')
+
+        // Find all rows for this teacher and attach Rule B conflict
+        rows.forEach((row, rIdx) => {
+          const rowTCode = (row.teacher_code || '').trim().toUpperCase()
+          if (rowTCode === tCode) {
+            const rowId = getRowId(row, rIdx)
+            addConflict(rowId, {
+              rule: 'RULE_B',
+              type: 'TIME_CLASH',
+              title: 'Bentrok Waktu Mengajar (Double Booking)',
+              day,
+              period,
+              classes: Array.from(uniqueClasses),
+              teacherCode: tCode,
+              message: `Bentrok Waktu: Mengajar di ${classNames} pada ${day} Jam ${period}.`,
+              severity: 'error'
+            })
+          }
+        })
+      }
+    }
+
+    // -------------------------------------------------------------
+    // RULE C: Maximum Workload Check (Max 40 JP)
+    // -------------------------------------------------------------
+    const teacherTotalJP = new Map()
+    rows.forEach(row => {
+      const tCode = (row.teacher_code || '').trim().toUpperCase()
+      if (!tCode) return
+      const rowSum = (row.hours || []).reduce((sum, h) => sum + (Number(h) || 0), 0)
+      teacherTotalJP.set(tCode, (teacherTotalJP.get(tCode) || 0) + rowSum)
+    })
+
+    rows.forEach((row, rIdx) => {
+      const tCode = (row.teacher_code || '').trim().toUpperCase()
+      const totalJP = teacherTotalJP.get(tCode) || 0
+      if (totalJP > 40) {
+        const rowId = getRowId(row, rIdx)
+        addConflict(rowId, {
+          rule: 'RULE_WORKLOAD',
+          type: 'OVERLOAD',
+          title: 'Beban Mengajar Melebihi Batas',
+          totalJP,
+          maxWorkload: 40,
+          message: `Beban Mengajar Berlebih: Total ${totalJP} JP (Maksimal standar 40 JP).`,
+          severity: 'warning'
+        })
+      }
+    })
+
+    conflicts.value = newConflicts
+    return newConflicts
+  }
+
+  /**
+   * Check if a row has any conflict
+   */
+  const hasConflict = (rowId) => {
+    const list = conflicts.value.get(String(rowId))
+    return Boolean(list && list.length > 0)
+  }
+
+  /**
+   * Get all conflict objects for a row
+   */
+  const getConflicts = (rowId) => {
+    return conflicts.value.get(String(rowId)) || []
+  }
+
+  /**
+   * Get the primary/most critical conflict for a row
+   */
+  const getPrimaryConflict = (rowId) => {
+    const list = getConflicts(rowId)
+    if (list.length === 0) return null
+    // Prioritize errors over warnings
+    const errorConflict = list.find(c => c.severity === 'error')
+    return errorConflict || list[0]
+  }
+
+  /**
+   * Get formatted tooltip text for a row
+   */
+  const getConflictTooltip = (rowId) => {
+    const list = getConflicts(rowId)
+    if (list.length === 0) return ''
+    return list.map(c => c.message).join('\n• ')
+  }
+
+  /**
+   * Mark rows as successful (e.g. conflict-free edit or successfully saved)
+   * Triggers moving green line animation for the specified duration.
+   */
+  const markSuccess = (rowIds, duration = 3500) => {
+    const ids = Array.isArray(rowIds) ? rowIds : [rowIds]
+
+    ids.forEach(id => {
+      const strId = String(id)
+      // Only set success if there is NO conflict currently
+      if (!hasConflict(strId)) {
+        successStates.set(strId, true)
+
+        if (successTimers.has(strId)) {
+          clearTimeout(successTimers.get(strId))
+        }
+
+        const timer = setTimeout(() => {
+          successStates.delete(strId)
+          successTimers.delete(strId)
+        }, duration)
+
+        successTimers.set(strId, timer)
+      }
+    })
+  }
+
+  /**
+   * Mark all conflict-free rows as successful (e.g. after "Save" or "Auto-Distribute")
+   */
+  const markAllSuccess = (rows = [], duration = 3500) => {
+    rows.forEach((row, idx) => {
+      const rowId = getRowId(row, idx)
+      if (!hasConflict(rowId)) {
+        markSuccess(rowId, duration)
+      }
+    })
+  }
+
+  /**
+   * Get visual state of a card: 'error' | 'success' | 'default'
+   */
+  const getCardState = (rowId) => {
+    const strId = String(rowId)
+    if (hasConflict(strId)) {
+      return 'error'
+    }
+    if (successStates.get(strId)) {
+      return 'success'
+    }
+    return 'default'
+  }
+
+  /**
+   * Total number of conflicts currently detected
+   */
+  const totalConflictCount = computed(() => {
+    let count = 0
+    for (const list of conflicts.value.values()) {
+      count += list.length
+    }
+    return count
+  })
+
+  const hasAnyConflict = computed(() => totalConflictCount.value > 0)
+
+  return {
+    conflicts,
+    validate,
+    hasConflict,
+    getConflicts,
+    getPrimaryConflict,
+    getConflictTooltip,
+    markSuccess,
+    markAllSuccess,
+    getCardState,
+    totalConflictCount,
+    hasAnyConflict,
+    getRowId
+  }
+}
