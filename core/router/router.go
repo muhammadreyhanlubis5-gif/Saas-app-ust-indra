@@ -23,6 +23,7 @@ func SetupRoutes(r *gin.Engine) {
 	// Authentication (HttpOnly, Secure, SameSite=Strict Anti-XSS)
 	api.POST("/login", handlers.GenerateJWTLogin)
 	api.POST("/logout", handlers.LogoutHandler)
+	api.GET("/auth/session", handlers.GetSessionHandler)
 	api.POST("/forgot-password", handlers.SubmitForgotPassword)
 	api.GET("/forgot-password/status", handlers.CheckForgotPasswordStatus)
 

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -125,5 +126,60 @@ func LogoutHandler(c *gin.Context) {
 	middleware.ClearAuthCookie(c)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Logout berhasil. Sesi telah diakhiri secara aman.",
+	})
+}
+
+// GetSessionHandler validates the HttpOnly cookie session and returns the active user info
+func GetSessionHandler(c *gin.Context) {
+	tokenString := ""
+	if cookieToken, err := c.Cookie(middleware.AuthCookieName); err == nil && cookieToken != "" {
+		tokenString = cookieToken
+	} else {
+		authHeader := c.GetHeader("Authorization")
+		if strings.HasPrefix(authHeader, "Bearer ") {
+			tokenString = strings.TrimPrefix(authHeader, "Bearer ")
+		}
+	}
+
+	if tokenString == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"authenticated": false,
+			"error":         "Sesi tidak ditemukan atau telah berakhir",
+		})
+		return
+	}
+
+	token, err := jwt.ParseWithClaims(tokenString, &middleware.CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method")
+		}
+		return middleware.JwtSecretKey, nil
+	})
+
+	if err != nil || !token.Valid {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"authenticated": false,
+			"error":         "Token tidak valid atau kedaluwarsa",
+		})
+		return
+	}
+
+	claims, ok := token.Claims.(*middleware.CustomClaims)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"authenticated": false,
+			"error":         "Claims token tidak valid",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"authenticated": true,
+		"user": gin.H{
+			"id":          claims.UserID,
+			"role":        claims.Role,
+			"school_id":   claims.SchoolID,
+			"valid_until": claims.ValidUntil,
+		},
 	})
 }

@@ -3423,10 +3423,7 @@ const passForm = ref({ old: '', new: '', confirm: '' })
 
 const loadForgotPasswordReports = async () => {
   try {
-    const token = localStorage.getItem('token')
-    const res = await SafeFlow.fetch('/api/v1/super/forgot-password-requests', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
+    const res = await SafeFlow.fetch('/api/v1/super/forgot-password-requests')
     if (res.ok) {
       forgotPasswordReports.value = await res.json()
     }
@@ -3460,10 +3457,8 @@ const rejectReport = async (id) => {
   processingIds.value.add(id)
 
   try {
-    const token = localStorage.getItem('token')
     const res = await SafeFlow.fetch(`/api/v1/super/forgot-password-requests/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
+      method: 'DELETE'
     })
     
     if (res.ok) {
@@ -3484,10 +3479,8 @@ const resolveReport = async (id) => {
   processingIds.value.add(id)
 
   try {
-    const token = localStorage.getItem('token')
     const res = await SafeFlow.fetch(`/api/v1/super/forgot-password-requests/${id}/approve`, {
-      method: 'PUT',
-      headers: { 'Authorization': `Bearer ${token}` }
+      method: 'PUT'
     })
     
     if (res.ok) {

@@ -2,7 +2,8 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
 export const useAuthStore = defineStore('auth', () => {
-  const token = ref(localStorage.getItem('token') || null)
+  // Token HANYA disimpan di memory (RAM), TIDAK PERNAH di localStorage
+  const token = ref(null)
   const role = ref((localStorage.getItem('role') || localStorage.getItem('user_role') || '').toUpperCase())
   const schoolId = ref(localStorage.getItem('school_id') || null)
   const schoolName = ref(localStorage.getItem('school_name') || '')
@@ -10,27 +11,30 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref(null)
   const isSubmitting = ref(false)
   const error = ref(null)
+  const sessionChecked = ref(false)
+
+  // Bersihkan sisa token usang di localStorage jika ada (Pencegahan Kebocoran XSS)
+  if (localStorage.getItem('token')) {
+    localStorage.removeItem('token')
+  }
 
   const isAuthenticated = computed(() => {
-    if (!token.value) return false
-    try {
-      const parts = token.value.split('.')
-      if (parts.length !== 3) return false
-      const payload = JSON.parse(atob(parts[1]))
-      if (payload.exp && payload.exp * 1000 < Date.now()) {
+    // Sesi valid jika objek user aktif terisi di memory dan belum kedaluwarsa
+    if (!user.value && !role.value) return false
+    if (validUntil.value) {
+      const expDate = new Date(validUntil.value)
+      if (!isNaN(expDate.getTime()) && expDate.getTime() < Date.now()) {
         return false
       }
-      return true
-    } catch {
-      return false
     }
+    return true
   })
 
   const isSuperAdmin = computed(() => role.value === 'SUPER_ADMIN')
   const isSchoolAdmin = computed(() => role.value === 'SCHOOL_ADMIN')
   const isTeacher = computed(() => role.value === 'TEACHER')
 
-  // Helper untuk normalisasi role
+  // Helper normalisasi role
   function normalizeRole(r) {
     if (!r) return ''
     const upper = String(r).toUpperCase().trim()
@@ -40,51 +44,73 @@ export const useAuthStore = defineStore('auth', () => {
     return upper
   }
 
-  // Restore session dari token yang tersimpan di awal start
-  function restoreSession() {
+  // Restore session via HttpOnly Cookie (GET /api/v1/auth/session)
+  async function restoreSession() {
+    console.info('[AuthStore] Memulihkan sesi akun via HttpOnly cookie...')
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), 4500)
+
     try {
-      const storedToken = localStorage.getItem('token')
-      if (!storedToken) {
-        logout()
-        return false
-      }
+      const res = await fetch('/api/v1/auth/session', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // Mengirim cookie HttpOnly secara otomatis
+        signal: controller.signal
+      })
 
-      const parts = storedToken.split('.')
-      if (parts.length !== 3) {
-        logout()
-        return false
-      }
+      if (res.ok) {
+        const data = await res.json()
+        if (data && data.authenticated && data.user) {
+          const normalized = normalizeRole(data.user.role)
+          role.value = normalized
+          schoolId.value = data.user.school_id || null
+          validUntil.value = data.user.valid_until || null
+          user.value = {
+            id: data.user.id,
+            role: normalized,
+            school_id: schoolId.value
+          }
 
-      const payload = JSON.parse(atob(parts[1]))
-      // Periksa masa berlaku token
-      if (payload.exp && payload.exp * 1000 < Date.now()) {
-        console.warn('[AuthStore] Sesi token telah kedaluwarsa.')
-        logout()
-        return false
-      }
+          localStorage.setItem('role', normalized)
+          localStorage.setItem('user_role', normalized)
+          if (schoolId.value) localStorage.setItem('school_id', schoolId.value)
+          if (validUntil.value) localStorage.setItem('valid_until', validUntil.value)
 
-      token.value = storedToken
-      role.value = normalizeRole(payload.role)
-      schoolId.value = payload.school_id || localStorage.getItem('school_id') || null
-      validUntil.value = payload.valid_until || localStorage.getItem('valid_until') || null
-      user.value = {
-        id: payload.user_id,
-        role: role.value,
-        school_id: schoolId.value
+          sessionChecked.value = true
+          console.info('[AuthStore] Sesi berhasil dipulihkan untuk peran:', normalized)
+          return true
+        }
       }
-
-      // Sinkronkan localStorage agar guard router konsisten
-      localStorage.setItem('role', role.value)
-      localStorage.setItem('user_role', role.value)
-      return true
-    } catch (err) {
-      console.error('[AuthStore] Gagal me-restore session:', err)
-      logout()
+      
+      // Jika server mengembalikan 401 atau tidak terautentikasi
+      console.warn('[AuthStore] Sesi server tidak ditemukan atau telah kedaluwarsa.')
+      await logout()
       return false
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        console.warn('[AuthStore] Restore session timeout.')
+      } else {
+        console.warn('[AuthStore] Gagal menghubungi endpoint session server:', err.message)
+      }
+      
+      // Mode Offline Fallback: Jika offline dan ada cached user_role di storage
+      if (!navigator.onLine && (localStorage.getItem('role') || localStorage.getItem('user_role'))) {
+        console.info('[AuthStore] Terdeteksi offline, mempertahankan peran lokal sementara.')
+        role.value = normalizeRole(localStorage.getItem('role') || localStorage.getItem('user_role'))
+        schoolId.value = localStorage.getItem('school_id')
+        user.value = { role: role.value, school_id: schoolId.value, offline: true }
+        return true
+      }
+
+      await logout()
+      return false
+    } finally {
+      clearTimeout(timer)
+      sessionChecked.value = true
     }
   }
 
-  // Login dengan timeout controller & multi-attempt fallback
+  // Login dengan timeout & credential HttpOnly
   async function login(usernameInput, passwordInput) {
     if (isSubmitting.value) return false
     isSubmitting.value = true
@@ -98,16 +124,18 @@ export const useAuthStore = defineStore('auth', () => {
       let response = await fetch('/api/v1/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // Set HttpOnly Cookie
         body: JSON.stringify({ username: cleanUsername, password: passwordInput }),
         signal: controller.signal
       })
 
-      // Fallback 1: Coba dengan suffix @guruku.id jika gagal dan belum berakhiran domain
+      // Fallback 1: Coba dengan suffix @guruku.id jika gagal
       if (!response.ok && !cleanUsername.includes('@') && !['admin', 'superadmin', 'master'].includes(cleanUsername.toLowerCase())) {
         try {
           const retryRes = await fetch('/api/v1/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({ username: `${cleanUsername}@guruku.id`, password: passwordInput }),
             signal: controller.signal
           })
@@ -122,6 +150,7 @@ export const useAuthStore = defineStore('auth', () => {
           const retryRes = await fetch('/api/v1/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({ username: stripped, password: passwordInput }),
             signal: controller.signal
           })
@@ -139,43 +168,37 @@ export const useAuthStore = defineStore('auth', () => {
         throw new Error(errorMsg)
       }
 
-      // Ambil token dari response
-      const tokenString = data.token
-      if (!tokenString) {
-        throw new Error('Server tidak mengembalikan token autentikasi valid.')
+      // Token JWT disimpan HANYA di memory (RAM), TIDAK DISIMPAN di localStorage
+      if (data.token) {
+        token.value = data.token
+        const payloadBase64 = data.token.split('.')[1]
+        const decodedPayload = JSON.parse(atob(payloadBase64))
+        const normalized = normalizeRole(decodedPayload.role)
+
+        role.value = normalized
+        schoolId.value = decodedPayload.school_id || null
+        validUntil.value = decodedPayload.valid_until || null
+        user.value = {
+          id: decodedPayload.user_id,
+          role: normalized,
+          school_id: schoolId.value
+        }
+
+        // Simpan hanya preferensi UI non-sensitif (BUKAN TOKEN/JWT)
+        localStorage.setItem('role', normalized)
+        localStorage.setItem('user_role', normalized)
+        if (schoolId.value) localStorage.setItem('school_id', schoolId.value)
+        if (validUntil.value) localStorage.setItem('valid_until', validUntil.value)
+        localStorage.removeItem('token') // Pastikan bersih dari localStorage
+
+        return {
+          role: normalized,
+          school_id: schoolId.value,
+          valid_until: validUntil.value
+        }
       }
 
-      // Parse payload token secara aman
-      const payloadBase64 = tokenString.split('.')[1]
-      const decodedPayload = JSON.parse(atob(payloadBase64))
-      const normalized = normalizeRole(decodedPayload.role)
-
-      token.value = tokenString
-      role.value = normalized
-      schoolId.value = decodedPayload.school_id || null
-      validUntil.value = decodedPayload.valid_until || null
-      user.value = {
-        id: decodedPayload.user_id,
-        role: normalized,
-        school_id: schoolId.value
-      }
-
-      // Simpan ke localStorage dengan key terpadu untuk kompatibilitas
-      localStorage.setItem('token', tokenString)
-      localStorage.setItem('role', normalized)
-      localStorage.setItem('user_role', normalized)
-      if (schoolId.value) {
-        localStorage.setItem('school_id', schoolId.value)
-      }
-      if (validUntil.value) {
-        localStorage.setItem('valid_until', validUntil.value)
-      }
-
-      return {
-        role: normalized,
-        school_id: schoolId.value,
-        valid_until: validUntil.value
-      }
+      throw new Error('Server tidak mengembalikan sesi yang valid.')
     } catch (err) {
       if (err.name === 'AbortError') {
         error.value = 'Waktu koneksi habis (Timeout). Mohon periksa jaringan Anda dan coba lagi.'
@@ -189,7 +212,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  // Logout terpadu
+  // Logout terpadu: Hapus cookie server & bersihkan memory state
   async function logout() {
     try {
       const controller = new AbortController()
@@ -197,6 +220,7 @@ export const useAuthStore = defineStore('auth', () => {
       await fetch('/api/v1/logout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         signal: controller.signal
       }).catch(() => {})
       clearTimeout(timeoutId)
@@ -209,8 +233,9 @@ export const useAuthStore = defineStore('auth', () => {
     validUntil.value = null
     user.value = null
     error.value = null
+    sessionChecked.value = false
 
-    // Hapus data sesi sensitif
+    // Hapus data sesi di storage
     localStorage.removeItem('token')
     localStorage.removeItem('role')
     localStorage.removeItem('user_role')
@@ -227,6 +252,7 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     isSubmitting,
     error,
+    sessionChecked,
     isAuthenticated,
     isSuperAdmin,
     isSchoolAdmin,

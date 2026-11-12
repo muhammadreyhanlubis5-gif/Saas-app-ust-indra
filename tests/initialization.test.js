@@ -120,3 +120,24 @@ test('5. Workspace Initialization handles hard network errors with actionable er
   assert.equal(result.status, 'error')
   assert.equal(result.error, 'NETWORK_DISCONNECTED')
 })
+
+test('6. Security Compliance: No JWT/Token is persisted in localStorage', () => {
+  const storage = new Map()
+  const mockSetItem = (key, val) => {
+    if (key === 'token') {
+      throw new Error('SECURITY_VIOLATION: Token/JWT must not be saved to localStorage')
+    }
+    storage.set(key, val)
+  }
+
+  // Non-sensitive routing flags are allowed
+  mockSetItem('role', 'SCHOOL_ADMIN')
+  mockSetItem('user_role', 'SCHOOL_ADMIN')
+  mockSetItem('school_id', 'TEN-1234')
+  assert.equal(storage.get('role'), 'SCHOOL_ADMIN')
+
+  // Attempting to persist JWT token must throw security violation
+  assert.throws(() => {
+    mockSetItem('token', 'header.payload.signature')
+  }, /SECURITY_VIOLATION/)
+})

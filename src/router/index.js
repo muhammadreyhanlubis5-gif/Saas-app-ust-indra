@@ -114,7 +114,9 @@ const router = createRouter({
   }
 })
 
-// Navigation Guard Enterprise (Robust & Resilient)
+import { useAuthStore } from '../stores/auth.js'
+
+// Navigation Guard Enterprise (HttpOnly Cookie & Zero-Token in LocalStorage)
 function getNormalizedRole() {
   const raw = localStorage.getItem('role') || localStorage.getItem('user_role') || ''
   const upper = String(raw).toUpperCase().trim()
@@ -124,26 +126,16 @@ function getNormalizedRole() {
   return upper
 }
 
-function hasValidToken() {
-  const token = localStorage.getItem('token') || localStorage.getItem('guruku_session')
-  if (!token) return false
-  try {
-    const parts = token.split('.')
-    if (parts.length === 3) {
-      const payload = JSON.parse(atob(parts[1]))
-      if (payload.exp && payload.exp * 1000 < Date.now()) {
-        return false
-      }
-    }
-    return true
-  } catch (_) {
-    return false
-  }
-}
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore()
 
-router.beforeEach((to, from, next) => {
-  const isAuth = hasValidToken()
-  const role = getNormalizedRole()
+  // Verifikasi sesi cookie server secara asinkron jika belum dicek pada siklus hidup tab ini
+  if (!authStore.sessionChecked) {
+    await authStore.restoreSession()
+  }
+
+  const isAuth = authStore.isAuthenticated
+  const role = authStore.role || getNormalizedRole()
 
   // Jika sudah terautentikasi dan membuka halaman Login (/), arahkan langsung ke dashboard yang sesuai
   if (to.name === 'Login' && isAuth) {
@@ -155,10 +147,6 @@ router.beforeEach((to, from, next) => {
   // Jika rute membutuhkan otorisasi
   if (to.meta.requiresAuth) {
     if (!isAuth) {
-      // Bersihkan sesi usang
-      localStorage.removeItem('token')
-      localStorage.removeItem('role')
-      localStorage.removeItem('user_role')
       return next({ name: 'Login' })
     }
 

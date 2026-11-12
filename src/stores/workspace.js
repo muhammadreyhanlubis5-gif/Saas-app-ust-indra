@@ -31,22 +31,40 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   const isReady = computed(() => status.value === 'ready')
   const hasError = computed(() => status.value === 'error')
 
-  // Helper listener status jaringan
+  // Helper structured logging
+  function logStartupStep(stepName, stepProgress, extra = {}) {
+    console.info('[GuruKu Startup]', {
+      timestamp: new Date().toISOString(),
+      step: stepName,
+      progress: `${stepProgress}%`,
+      status: status.value,
+      isOnline: isOnline.value,
+      ...extra
+    })
+  }
+
+  // Listener status jaringan
   window.addEventListener('online', () => {
     isOnline.value = true
     if (status.value === 'offline') status.value = 'ready'
+    console.info('[GuruKu Network] Koneksi online terdeteksi kembali.')
   })
   window.addEventListener('offline', () => {
     isOnline.value = false
     status.value = 'offline'
+    console.warn('[GuruKu Network] Mode offline diaktifkan.')
   })
 
   // Timeout wrapper dengan AbortSignal
-  async function fetchWithTimeout(url, options = {}, timeoutMs = 5000) {
+  async function fetchWithTimeout(url, options = {}, timeoutMs = 4500) {
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), timeoutMs)
     try {
-      const response = await fetch(url, { ...options, signal: controller.signal })
+      const response = await fetch(url, {
+        ...options,
+        credentials: 'include', // Otomatis menyertakan HttpOnly cookie
+        signal: controller.signal
+      })
       return response
     } finally {
       clearTimeout(timer)
@@ -69,10 +87,9 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     try {
       const res = await fetchWithTimeout('/api/v1/school/profile', {
         headers: {
-          'X-School-ID': schoolId,
-          ...(localStorage.getItem('token') ? { 'Authorization': `Bearer ${localStorage.getItem('token')}` } : {})
+          'X-School-ID': schoolId
         }
-      }, 4500)
+      }, 4000)
 
       if (res.ok) {
         const data = await res.json()
@@ -89,7 +106,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         }
       }
     } catch (e) {
-      console.warn('[Workspace] Profile fetch timeout/network issue, using local cache:', e.message)
+      console.warn('[Workspace] Profile fetch timeout/network issue, using local cache fallback:', e.message)
       const cached = localStorage.getItem('guruKu_lembaga_data') || localStorage.getItem('guruKu_school_profile')
       if (cached) {
         try {
@@ -158,34 +175,36 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     return stats.value
   }
 
-  // Inisialisasi Lifecycle Utama Ruang Kerja
+  // Inisialisasi Ruang Kerja dengan Pola Aman (try/catch/finally & hard timeout)
   async function initializeWorkspace(options = {}) {
     const authStore = useAuthStore()
     status.value = 'loading'
     initError.value = null
     progress.value = 10
     step.value = 'Memvalidasi kredensial & sesi akun...'
+    logStartupStep(step.value, progress.value)
 
-    // Safety Hard Timeout: 8 detik maksimal
-    // Jika ada yang menggantung, batalkan dan masuk ke dashboard secara graceful
     let hardTimeoutId = null
     const hardTimeoutPromise = new Promise((_, reject) => {
       hardTimeoutId = setTimeout(() => {
         reject(new Error('WAKTU_INISIALISASI_HABIS'))
-      }, 7500)
+      }, 7000)
     })
 
     try {
       await Promise.race([
         (async () => {
           // Tahap 1: Validasi Sesi
-          const isValidSession = authStore.restoreSession()
-          if (!isValidSession && !options.skipAuthCheck) {
-            throw new Error('SESI_TIDAK_VALID')
+          if (!options.skipAuthCheck) {
+            const isValidSession = await authStore.restoreSession()
+            if (!isValidSession) {
+              throw new Error('SESI_TIDAK_VALID')
+            }
           }
 
           progress.value = 35
           step.value = 'Memeriksa profil lembaga & status lisensi...'
+          logStartupStep(step.value, progress.value)
 
           // Tahap 2: Load Profil Sekolah (dengan fallback)
           const sid = authStore.schoolId || localStorage.getItem('school_id')
@@ -194,18 +213,20 @@ export const useWorkspaceStore = defineStore('workspace', () => {
           progress.value = 65
           const schoolDisplayName = profile?.name || 'sekolah tervalidasi'
           step.value = `Menyiapkan ruang kerja (${schoolDisplayName})...`
+          logStartupStep(step.value, progress.value, { school: schoolDisplayName })
 
           // Tahap 3: Load Master Data
           await loadMasterData()
 
           progress.value = 90
           step.value = 'Sinkronisasi instan selesai...'
+          logStartupStep(step.value, progress.value)
 
-          // Tunggu sedikit agar animasi transisi halus terlihat
           await new Promise(r => setTimeout(r, 200))
           progress.value = 100
           status.value = 'ready'
           step.value = 'Ruang kerja siap digunakan'
+          logStartupStep(step.value, progress.value)
         })(),
         hardTimeoutPromise
       ])
@@ -215,17 +236,18 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         status.value = 'error'
         initError.value = {
           code: 'SESSION_INVALID',
-          message: 'Sesi masuk Anda telah kedaluwarsa. Silakan masuk kembali.',
+          message: 'Sesi masuk Anda telah berakhir atau tidak valid. Silakan masuk kembali.',
           canRetry: false
         }
-        authStore.logout()
+        await authStore.logout()
       } else if (err.message === 'WAKTU_INISIALISASI_HABIS') {
-        // Fallback Graceful: Jika jaringan lambat, tetap buka dashboard dengan offline/cached data!
+        // Fallback Cepat: Jangan biarkan aplikasi stuck selamanya! Masuk ke dashboard dengan data cached
         console.info('[Workspace] Melewati inisialisasi jaringan penuh (Fallback Cepat).')
         await loadMasterData()
         status.value = 'ready'
         progress.value = 100
         step.value = 'Ruang kerja siap (Mode Cepat)'
+        logStartupStep(step.value, progress.value, { fallback: true })
       } else {
         status.value = 'error'
         initError.value = {
@@ -236,11 +258,17 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       }
     } finally {
       if (hardTimeoutId) clearTimeout(hardTimeoutId)
-      // Jaminan keselamatan: Jangan pernah biarkan status tetap 'loading'
+      // Jaminan absolut: Status loading wajib berakhir
       if (status.value === 'loading') {
         status.value = 'ready'
       }
     }
+  }
+
+  // Retry initialization
+  async function retry() {
+    initError.value = null
+    await initializeWorkspace()
   }
 
   // Reset status
@@ -265,6 +293,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     initializeWorkspace,
     loadSchoolProfile,
     loadMasterData,
+    retry,
     reset
   }
 })

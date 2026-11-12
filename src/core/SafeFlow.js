@@ -15,23 +15,23 @@ export const SafeFlow = {
     const baseUrl = import.meta.env.VITE_API_URL || '';
     const url = endpoint.startsWith('http') ? endpoint : `${baseUrl}${endpoint}`;
 
-    // Auto-inject Authorization Token untuk semua request
-    const token = localStorage.getItem('token');
+    // Headers & Credentials (HttpOnly Cookie-first Anti-XSS)
     const headers = {
       'Content-Type': 'application/json',
       ...options.headers
     };
-    
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
     
     // Safety Timeout Controller (Anti-Hanging Request)
     const timeout = options.timeout || 8000;
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeout);
     const signal = options.signal || controller.signal;
-    const fetchOptions = { ...options, headers, signal };
+    const fetchOptions = {
+      credentials: 'include', // Otomatis mengirim cookie sesi HttpOnly
+      ...options,
+      headers,
+      signal
+    };
 
     if (isMutation) {
       // ----------------------------------------------------
