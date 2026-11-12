@@ -197,6 +197,7 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ROUTES } from '../config/routePaths.js'
+import { normalizeSchedulePayload } from '../core/scheduleStore.js'
 
 const props = defineProps({
   show: Boolean
@@ -474,12 +475,16 @@ const generateMagic = async () => {
 
     // 4. RUN AUTO-GENERATE
     const bestJadwal = runAutoGenerate(finalSessions, classes.value, pengampuPayload.rows)
+    const normalizedPayload = normalizeSchedulePayload(bestJadwal, finalSessions)
     
-    // 5. SAVE JADWAL
+    // 5. SAVE JADWAL (Normalized relational array structure)
+    localStorage.setItem('guruKu_schedule_payload', JSON.stringify(normalizedPayload))
+    localStorage.setItem('guruKu_schedule', JSON.stringify(bestJadwal))
+
     const saveRes = await fetch('/api/v1/school/jadwal', {
       method: 'PUT',
       headers,
-      body: JSON.stringify(bestJadwal)
+      body: JSON.stringify(normalizedPayload)
     })
     
     if (saveRes.ok) {
