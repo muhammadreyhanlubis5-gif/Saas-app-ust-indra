@@ -111,8 +111,19 @@ func GenerateJWTLogin(c *gin.Context) {
 		return
 	}
 
+	// Set HttpOnly, Secure, SameSite=Strict cookie for session (Enterprise Anti-XSS)
+	middleware.SetAuthCookie(c, tokenString, 24*time.Hour)
+
 	c.JSON(http.StatusOK, gin.H{
 		"token": tokenString,
 		"message": "Login sukses",
+	})
+}
+
+// LogoutHandler clears the HttpOnly session cookie
+func LogoutHandler(c *gin.Context) {
+	middleware.ClearAuthCookie(c)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Logout berhasil. Sesi telah diakhiri secara aman.",
 	})
 }

@@ -23,7 +23,7 @@ export default defineConfig({
         display: 'standalone',
         icons: [
           {
-            src: '/assets/logo-STpjEXFZ.png', // Fallback to our existing logo
+            src: '/assets/logo-STpjEXFZ.png',
             sizes: '192x192',
             type: 'image/png'
           },
@@ -39,6 +39,25 @@ export default defineConfig({
   build: {
     sourcemap: false,
     minify: 'terser',
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('vue') || id.includes('vue-router')) {
+              return 'vendor-vue'
+            }
+            if (id.includes('xlsx')) {
+              return 'vendor-xlsx'
+            }
+            if (id.includes('localforage')) {
+              return 'vendor-storage'
+            }
+            return 'vendor-libs'
+          }
+        }
+      }
+    },
     terserOptions: {
       compress: {
         drop_console: true,

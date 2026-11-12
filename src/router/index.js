@@ -1,32 +1,33 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// Views - Static Imports for Faster UX
+// Views - Dynamic Route-Level Code-Splitting (Pillar 2: Zero-Lag Chunking)
 import Login from '../views/LoginView.vue'
-import SuperAdminDashboard from '../views/SuperAdminDashboard.vue'
-import SchoolAdminDashboard from '../views/SchoolAdminDashboard.vue'
-import TeacherDashboard from '../views/TeacherDashboard.vue'
-import ExpiredView from '../views/ExpiredView.vue'
-import ValidasiLembaga from '../views/ValidasiLembaga.vue'
-import DaftarKelas from '../views/DaftarKelas.vue'
-import DaftarGuru from '../views/DaftarGuru.vue'
-import SesiWaktu from '../views/SesiWaktu.vue'
-import PengampuMapel from '../views/PengampuMapel.vue'
-import JamKosong from '../views/JamKosong.vue'
-import TugasTambahan from '../views/TugasTambahan.vue'
-import JadwalGuru from '../views/JadwalGuru.vue'
-import JadwalKelas from '../views/JadwalKelas.vue'
-import MataPelajaran from '../views/MataPelajaran.vue'
-import AnalisisGuru from '../views/AnalisisGuru.vue'
-import TunjanganSertifikasi from '../views/TunjanganSertifikasi.vue'
-import KeuanganAset from '../views/KeuanganAset.vue'
-import KalkulatorHPP from '../views/KalkulatorHPP.vue'
-import PesananView from '../views/PesananView.vue'
-import CustomRequestView from '../views/CustomRequestView.vue'
-import EtalaseProdukView from '../views/EtalaseProdukView.vue'
-import LaporanInvestorView from '../views/LaporanInvestorView.vue'
-import PengaturanView from '../views/PengaturanView.vue'
-import PusatBantuan from '../views/PusatBantuan.vue'
-import ComingSoon from '../views/ComingSoon.vue'
+const SuperAdminDashboard = () => import('../views/SuperAdminDashboard.vue')
+const SchoolAdminDashboard = () => import('../views/SchoolAdminDashboard.vue')
+const TeacherDashboard = () => import('../views/TeacherDashboard.vue')
+const ExpiredView = () => import('../views/ExpiredView.vue')
+const ValidasiLembaga = () => import('../views/ValidasiLembaga.vue')
+const DaftarKelas = () => import('../views/DaftarKelas.vue')
+const DaftarGuru = () => import('../views/DaftarGuru.vue')
+const SesiWaktu = () => import('../views/SesiWaktu.vue')
+const PengampuMapel = () => import('../views/PengampuMapel.vue')
+const JamKosong = () => import('../views/JamKosong.vue')
+const TugasTambahan = () => import('../views/TugasTambahan.vue')
+const JadwalGuru = () => import('../views/JadwalGuru.vue')
+const JadwalKelas = () => import('../views/JadwalKelas.vue')
+const MataPelajaran = () => import('../views/MataPelajaran.vue')
+const AnalisisGuru = () => import('../views/AnalisisGuru.vue')
+const TunjanganSertifikasi = () => import('../views/TunjanganSertifikasi.vue')
+const KeuanganAset = () => import('../views/KeuanganAset.vue')
+const KalkulatorHPP = () => import('../views/KalkulatorHPP.vue')
+const PesananView = () => import('../views/PesananView.vue')
+const CustomRequestView = () => import('../views/CustomRequestView.vue')
+const EtalaseProdukView = () => import('../views/EtalaseProdukView.vue')
+const LaporanInvestorView = () => import('../views/LaporanInvestorView.vue')
+const PengaturanView = () => import('../views/PengaturanView.vue')
+const PusatBantuan = () => import('../views/PusatBantuan.vue')
+const ComingSoon = () => import('../views/ComingSoon.vue')
+
 import { ROUTES, SCHOOL_ADMIN_SUB } from '../config/routePaths.js'
 
 const routes = [
@@ -107,51 +108,30 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
-})
-
-// GLOBAL BEFORE GUARD
-router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth) {
-    // 1. Ambil data dari localStorage
-    const token = localStorage.getItem('token')
-    const userRole = localStorage.getItem('user_role')
-    const validUntil = localStorage.getItem('valid_until') // Disimpan saat login
-
-    // 2. Cek apakah sudah login
-    if (!token) {
-      return next({ name: 'Login' })
-    }
-
-    // 3. Cek apakah Role sesuai (RBAC)
-    if (to.meta.role && to.meta.role !== userRole) {
-      console.warn("Akses Ditolak: Role tidak sesuai.")
-      return next({ name: 'Login' })
-    }
-
-    // 4. Validasi Masa Kontrak (Khusus Klien: School Admin & Teacher)
-    if (userRole === 'SCHOOL_ADMIN' || userRole === 'TEACHER') {
-      if (validUntil) {
-        const expiryDate = new Date(validUntil)
-        const today = new Date()
-        
-        // Jika tanggal hari ini sudah melewati batas valid_until
-        if (today > expiryDate) {
-          console.error("Masa kontrak habis. Redirecting to /expired")
-          return next({ name: 'Expired' })
-        }
-      }
-    }
-
-    // Lolos semua pengecekan
-    next()
-  } else {
-    next()
+  routes,
+  scrollBehavior() {
+    return { top: 0 }
   }
 })
 
+// Navigation Guard
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token') || localStorage.getItem('guruku_session')
+  const role = localStorage.getItem('role')
+
+  if (to.meta.requiresAuth) {
+    if (!token) {
+      return next({ name: 'Login' })
+    }
+    if (to.meta.role && to.meta.role !== role) {
+      if (role === 'SUPER_ADMIN') return next({ path: ROUTES.SUPER_ADMIN })
+      if (role === 'SCHOOL_ADMIN') return next({ path: ROUTES.SCHOOL_ADMIN })
+      if (role === 'TEACHER') return next({ path: ROUTES.TEACHER })
+      return next({ name: 'Login' })
+    }
+  }
+
+  next()
+})
+
 export default router
-
-
-
-

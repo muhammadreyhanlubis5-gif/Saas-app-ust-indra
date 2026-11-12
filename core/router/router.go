@@ -3,23 +3,35 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"jadwal-api/core/handlers"
+	"jadwal-api/core/middleware"
 	"jadwal-api/core/realtime"
 )
 
 func SetupRoutes(r *gin.Engine) {
+	// 1. Extreme Performance Middleware: Gzip Payload Compression (Pillar 3)
+	r.Use(middleware.GzipCompressionMiddleware())
+
+	// 2. DevSecOps Defense: Token Bucket Rate Limiter (60 req/s, burst 20) (Pillar 4)
+	r.Use(middleware.TokenBucketRateLimiter(60, 20))
+
 	api := r.Group("/api/v1")
 	// Real-Time WebSocket & SSE Architecture
 	api.GET("/ws", realtime.HandleWebSocket)
 	api.GET("/realtime/stream", realtime.HandleSSE)
 	api.POST("/school/progress", realtime.HandleProgressUpdate)
-	
-	// Authentication
+
+	// Authentication (HttpOnly, Secure, SameSite=Strict Anti-XSS)
 	api.POST("/login", handlers.GenerateJWTLogin)
+	api.POST("/logout", handlers.LogoutHandler)
 	api.POST("/forgot-password", handlers.SubmitForgotPassword)
 	api.GET("/forgot-password/status", handlers.CheckForgotPasswordStatus)
-	
-	// Super Admin Routes
+
+	// Heavy-Lifting Scheduling Engine (Go + C++ Native Integration via CGO)
+	api.POST("/school/auto-schedule/solve", handlers.HandleSolveSchedule)
+
+	// Super Admin Routes (Scoped with Auth and Tenant Isolation)
 	super := api.Group("/super")
+	super.Use(middleware.TenantContextMiddleware())
 	{
 		super.GET("/metrics", handlers.GetDashboardMetrics)
 		super.GET("/schools", handlers.GetSchools)
@@ -29,7 +41,7 @@ func SetupRoutes(r *gin.Engine) {
 		super.PUT("/schools/:id/suspend", handlers.SuspendSchool)
 		super.PUT("/schools/:id/block", handlers.BlockSchool)
 		super.DELETE("/schools/:id", handlers.DeleteSchool)
-		
+
 		// Pricing Source of Truth
 		super.GET("/plans", handlers.GetSubscriptionPlans)
 		super.PUT("/plans/:id", handlers.UpdateSubscriptionPlan)
@@ -40,7 +52,9 @@ func SetupRoutes(r *gin.Engine) {
 		super.DELETE("/forgot-password-requests/:id", handlers.RejectForgotPassword)
 	}
 
+	// School Admin Routes (Protected by PostgreSQL Row-Level Security)
 	school := api.Group("/school")
+	school.Use(middleware.TenantContextMiddleware())
 	{
 		school.GET("/profile", handlers.GetMySchoolProfile)
 		school.PUT("/profile", handlers.UpdateMySchoolProfile)
@@ -55,7 +69,7 @@ func SetupRoutes(r *gin.Engine) {
 		school.GET("/jadwal", handlers.GetJadwal)
 		school.PUT("/jadwal", handlers.UpdateJadwal)
 	}
-	
+
 	dashboard := api.Group("/dashboard")
 	{
 		dashboard.GET("/validation", handlers.GetDashboardValidation)
@@ -76,6 +90,6 @@ func SetupRoutes(r *gin.Engine) {
 	api.DELETE("/payment-confirmations/:id", handlers.DeletePaymentConfirmation)
 
 	api.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{"message": "pong dari GuruKu SaaS Core API!"})
+		c.JSON(200, gin.H{"message": "pong dari GuruKu SaaS Core API (Enterprise Grade)!"})
 	})
 }
