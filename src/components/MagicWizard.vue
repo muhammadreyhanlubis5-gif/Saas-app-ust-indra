@@ -198,6 +198,7 @@ import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ROUTES } from '../config/routePaths.js'
 import { normalizeSchedulePayload } from '../core/scheduleStore.js'
+import { normalizeTeacherConstraints, isTeacherBlocked } from '../core/teacherConstraintsStore.js'
 
 const props = defineProps({
   show: Boolean
@@ -327,7 +328,7 @@ const generateSessionsMatrix = () => {
 }
 
 // THE ALGORITHM (Smart Schedule Generator)
-const runAutoGenerate = (generatedSessions, generatedClasses, generatedPengampu) => {
+const runAutoGenerate = (generatedSessions, generatedClasses, generatedPengampu, constraints = []) => {
   const currentSchedule = {} // { "SENIN-1-4 TM": { guru: "SB", mapel: "NAH" } }
   
   // Transform daySessions into flat available slots
@@ -370,6 +371,11 @@ const runAutoGenerate = (generatedSessions, generatedClasses, generatedPengampu)
     return false
   }
 
+  // RULE D: Teacher Constraint Checker (Permintaan Jam Kosong)
+  const isBlockedByConstraint = (day, session, guru) => {
+    return isTeacherBlocked(constraints, guru, day, session)
+  }
+
   const countTeacherHoursOnDay = (guru, day) => {
     let count = 0
     const dayCap = day.toUpperCase()
@@ -397,7 +403,11 @@ const runAutoGenerate = (generatedSessions, generatedClasses, generatedPengampu)
         const key = `${slot.day.toUpperCase()}-${slot.session}-${r.cls}`
         if (!currentSchedule[key]) {
           if (!isClashing(slot.day, slot.session, r.guru)) {
-            validCells.push({ ...slot, cls: r.cls })
+            // RULE D: Constraint Validation
+            // If target [Day][SlotIndex] exists in blocked_slots array for that teacher_code, insertion fails instantly.
+            if (!isBlockedByConstraint(slot.day, slot.session, r.guru)) {
+              validCells.push({ ...slot, cls: r.cls })
+            }
           }
         }
       })
@@ -473,11 +483,33 @@ const generateMagic = async () => {
       body: JSON.stringify(pengampuPayload)
     })
 
-    // 4. RUN AUTO-GENERATE
-    const bestJadwal = runAutoGenerate(finalSessions, classes.value, pengampuPayload.rows)
+    // 4. LOAD TEACHER CONSTRAINTS (RULE D: Permintaan Jam Kosong)
+    let activeConstraints = []
+    const savedConstraints = localStorage.getItem('guruKu_teacher_constraints')
+    if (savedConstraints) {
+      try {
+        activeConstraints = normalizeTeacherConstraints(JSON.parse(savedConstraints))
+      } catch (e) {
+        activeConstraints = []
+      }
+    }
+    if (activeConstraints.length === 0) {
+      try {
+        const cRes = await fetch('/api/v1/school/jam-kosong', { headers })
+        if (cRes.ok) {
+          const cData = await cRes.json()
+          activeConstraints = normalizeTeacherConstraints(cData)
+        }
+      } catch (e) {
+        // Fallback local
+      }
+    }
+
+    // 5. RUN AUTO-GENERATE (With Rule D Constraints)
+    const bestJadwal = runAutoGenerate(finalSessions, classes.value, pengampuPayload.rows, activeConstraints)
     const normalizedPayload = normalizeSchedulePayload(bestJadwal, finalSessions)
     
-    // 5. SAVE JADWAL (Normalized relational array structure)
+    // 6. SAVE JADWAL (Normalized relational array structure)
     localStorage.setItem('guruKu_schedule_payload', JSON.stringify(normalizedPayload))
     localStorage.setItem('guruKu_schedule', JSON.stringify(bestJadwal))
 

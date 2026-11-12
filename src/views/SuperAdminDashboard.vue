@@ -578,8 +578,8 @@
         <div v-else-if="activeTab === 'manajemen'" class="animate-fade-in space-y-6">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-300">
             <div>
-              <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Pesanan Klien Sekolah</h1>
-              <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Kelola penyewaan aplikasi sekolah, kelancaran pembayaran, dan verifikasi langganan secara terpusat.</p>
+              <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Manajemen Klien Sekolah</h1>
+              <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Kelola batas waktu lisensi, kelancaran pembayaran, dan verifikasi langganan secara terpusat.</p>
             </div>
             <div class="flex items-center gap-3">
               <div class="bg-white border border-slate-300 px-4 py-2 rounded-xl shadow-2xs text-right">
@@ -3180,7 +3180,7 @@ const contactSchool = (school) => {
 const currentTabTitle = computed(() => {
   switch (activeTab.value) {
     case 'dashboard': return 'Dashboard'
-    case 'manajemen': return 'Pesanan'
+    case 'manajemen': return 'Manajemen Klien'
     case 'laporan': return 'Laporan Investor'
     case 'verifikasi': return 'Verifikasi Bayar'
     case 'aduan': return 'Custom Request'
