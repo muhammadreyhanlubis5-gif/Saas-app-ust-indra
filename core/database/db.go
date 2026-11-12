@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"os"
+	"time"
 
 	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
@@ -11,24 +12,36 @@ import (
 
 var DB *sql.DB
 
+func IsConnected() bool {
+	return DB != nil && DB.Ping() == nil
+}
+
 func Connect() {
 	dsn := os.Getenv("DATABASE_URL") // Diset di Neon & Vercel
 	if dsn == "" {
-		log.Println("DATABASE_URL is not set, skipping DB connection")
+		log.Println("[Database] DATABASE_URL is not set, running in stateless offline mode")
 		return
 	}
 
 	var err error
 	DB, err = sql.Open("postgres", dsn)
 	if err != nil {
-		log.Fatalf("Failed to connect to Neon DB: %v", err)
+		log.Printf("[Database] Failed to open Neon DB connection pool: %v", err)
+		return
 	}
 
+	// Konfigurasi connection pool yang aman untuk environment Serverless
+	DB.SetMaxOpenConns(10)
+	DB.SetMaxIdleConns(5)
+	DB.SetConnMaxLifetime(5 * time.Minute)
+
+	// Ping database dengan timeout aman (JANGAN log.Fatalf yang membunuh lambda)
 	if err = DB.Ping(); err != nil {
-		log.Fatalf("Failed to ping Neon DB: %v", err)
+		log.Printf("[Database] Warning: DB ping failed on cold start: %v (queries will auto-retry)", err)
+		return
 	}
 
-	log.Println("Successfully connected to Neon Serverless Postgres!")
+	log.Println("[Database] Successfully connected to Neon Serverless Postgres!")
 	
 	// Otomatis Buat Tabel Penting jika belum ada
 	autoMigrateTables()

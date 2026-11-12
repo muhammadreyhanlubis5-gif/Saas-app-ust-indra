@@ -69,6 +69,44 @@
       <!-- Hanya tampil jika di root dashboard -->
       <div v-if="$route.path === ROUTES.SCHOOL_ADMIN || $route.path === '/admin-sekolah'" class="p-4 md:p-8 max-w-[1400px] mx-auto animate-fade-in-up">
         
+        <!-- Notifikasi Indikator Realtime Fallback (Non-blocking) -->
+        <div v-if="realtimeStatus.state === 'failed' || (!realtimeStatus.isRealtimeAvailable && realtimeStatus.state !== 'connected')" 
+          class="mb-6 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 flex items-center justify-between shadow-xs">
+          <div class="flex items-center gap-3">
+            <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+            <div>
+              <p class="text-xs font-bold">Mode Sinkronisasi Berkala Aktif</p>
+              <p class="text-[11px] text-amber-700">Koneksi websocket dialihkan ke polling periodik (30s). Aplikasi tetap dapat digunakan sepenuhnya tanpa gangguan.</p>
+            </div>
+          </div>
+          <button @click="realtimeClient.manualReconnect()" class="px-3 py-1.5 bg-white border border-amber-300 hover:bg-amber-100 rounded-xl text-xs font-bold text-amber-900 transition-colors cursor-pointer shrink-0 ml-4">
+            Sambungkan Ulang
+          </button>
+        </div>
+
+        <!-- Alert Error Server Dashboard (Jika Terjadi Kegagalan HTTP) -->
+        <div v-if="dashboardState === 'error'" 
+          class="mb-6 p-5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 mt-0.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-rose-900">{{ errorMessage || 'Gagal memuat data dashboard' }}</p>
+              <p v-if="errorRequestId" class="text-[11px] font-mono text-rose-700 mt-0.5">ID Permintaan: {{ errorRequestId }}</p>
+              <p class="text-[11px] text-rose-700 mt-0.5">Data lokal yang tersimpan tetap dapat diakses di menu navigasi.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 self-end sm:self-center">
+            <button @click="loadDashboard" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95">
+              Coba Lagi
+            </button>
+            <button @click="dashboardState = 'success'" class="px-3 py-2 bg-white border border-rose-300 text-rose-800 hover:bg-rose-100 rounded-xl text-xs font-semibold transition-colors cursor-pointer">
+              Gunakan Cache
+            </button>
+          </div>
+        </div>
+
         <!-- Banner Modern Premium dengan Sapaan Dinamis -->
         <div class="bg-blue-900 rounded-3xl p-6 md:p-8 mb-8 shadow-xl shadow-blue-900/20 relative overflow-hidden text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div class="absolute inset-0 bg-[url('../assets/banner-bg.png')] bg-cover bg-center opacity-40 mix-blend-overlay"></div>
@@ -540,19 +578,31 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import AppLogo from '../components/AppLogo.vue'
 import { realtimeClient } from '../core/realtimeClient.js'
+import { useAuthStore } from '../stores/auth.js'
 import MagicWizard from '../components/MagicWizard.vue'
 import { ROUTES } from '../config/routePaths.js'
 import { getStoredPackages } from '../data/packagesCatalog.js'
 
+const authStore = useAuthStore()
 const router = useRouter()
 const route = useRoute()
 const profileName = ref('')
 const showWizard = ref(false)
 const isSidebarOpen = ref(false)
+
+// State Mesin Dashboard: 'loading' | 'success' | 'empty' | 'error' | 'offline'
+const dashboardState = ref('loading')
+const errorMessage = ref('')
+const errorRequestId = ref('')
+const realtimeStatus = ref({
+  state: realtimeClient.getState(),
+  isRealtimeAvailable: true,
+  mode: realtimeClient.getMode()
+})
 
 // Nilai Riil Database / LocalStorage
 const rawStats = ref({
@@ -680,16 +730,25 @@ const fetchProfileName = async () => {
   }
   const schoolId = localStorage.getItem('school_id')
   if (!schoolId) return
+
   try {
     const res = await fetch('/api/v1/school/profile', {
-      headers: { 'X-School-ID': schoolId }
+      headers: { 'X-School-ID': schoolId },
+      credentials: 'include'
     })
     if (res.ok) {
       const data = await res.json()
       if (data.name) profileName.value = data.name
+    } else if (res.status >= 500) {
+      const errData = await res.json().catch(() => ({}))
+      const reqId = res.headers.get('X-Request-ID') || errData?.error?.requestId || ''
+      const customErr = new Error(errData?.error?.message || 'Data profil lembaga tidak dapat dimuat dari server.')
+      customErr.requestId = reqId
+      throw customErr
     }
   } catch (e) {
-    // ignore
+    if (e.requestId) throw e
+    // Abaikan jika network offline, profil nama tetap diambil dari cache lokal
   }
 }
 
@@ -744,24 +803,35 @@ const fetchDashboardStats = async () => {
     } catch (e) {}
   }
 
-  // Fallback API jika ada data dari backend
+  // Coba ambil dari Endpoint Terpadu Backend /api/v1/school/dashboard
   const schoolId = localStorage.getItem('school_id')
   if (schoolId) {
     try {
-      const pengampuRes = await fetch('/api/v1/school/pengampu', { headers: { 'X-School-ID': schoolId } })
-      if (pengampuRes.ok) {
-        const data = await pengampuRes.json()
-        if (data.classes && classCount === 0) classCount = data.classes.length
-        if (data.rows) {
-          if (teacherCount === 0) teacherCount = data.rows.length
-          if (totalJam === 0) {
-            data.rows.forEach(r => {
-              if (r.hours) r.hours.forEach(h => totalJam += Number(h) || 0)
-            })
-          }
+      const res = await fetch('/api/v1/school/dashboard', { 
+        headers: { 'X-School-ID': schoolId },
+        credentials: 'include'
+      })
+      if (res.ok) {
+        const payload = await res.json()
+        const d = payload.data
+        if (d) {
+          if (classCount === 0 && d.totalClasses > 0) classCount = d.totalClasses
+          if (teacherCount === 0 && d.totalTeachers > 0) teacherCount = d.totalTeachers
+          if (mapelCount === 0 && d.totalSubjects > 0) mapelCount = d.totalSubjects
+          if (totalJam === 0 && d.totalTeachingHours > 0) totalJam = d.totalTeachingHours
+          if (d.schoolName && !profileName.value) profileName.value = d.schoolName
         }
+      } else if (res.status >= 500) {
+        const errData = await res.json().catch(() => ({}))
+        const reqId = res.headers.get('X-Request-ID') || errData?.error?.requestId || ''
+        const customErr = new Error(errData?.error?.message || 'Data dashboard tidak dapat dimuat dari server.')
+        customErr.requestId = reqId
+        throw customErr
       }
-    } catch (e) {}
+    } catch (e) {
+      if (e.requestId) throw e
+      // Fallback lokal jika backend tidak terjangkau
+    }
   }
 
   // Hitung Progres Keseluruhan secara Dinamis & Terstruktur (0 - 100%)
@@ -822,17 +892,75 @@ const fetchDashboardStats = async () => {
   realtimeClient.syncProgress('Dashboard Overview')
 }
 
+// Pola State Management Dashboard: loading -> success/empty/error/offline
+const loadDashboard = async () => {
+  dashboardState.value = 'loading'
+  errorMessage.value = ''
+  errorRequestId.value = ''
+
+  try {
+    await fetchProfileName()
+    await fetchDashboardStats()
+
+    if (rawStats.value.totalGuru === 0 && rawStats.value.totalKelas === 0 && rawStats.value.totalMapel === 0) {
+      dashboardState.value = 'empty'
+    } else {
+      dashboardState.value = 'success'
+    }
+  } catch (err) {
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      dashboardState.value = 'offline'
+      errorMessage.value = 'Mode offline aktif: memuat data lokal tersimpan.'
+    } else {
+      dashboardState.value = 'error'
+      errorMessage.value = err?.message || 'Data dashboard tidak dapat dimuat.'
+      errorRequestId.value = err?.requestId || ''
+    }
+  }
+}
+
+const activeUnsubs = []
+
 onMounted(() => {
-  fetchProfileName()
-  fetchDashboardStats()
+  loadDashboard()
   realtimeClient.connect('school_admin')
+
+  // Listeners realtime lifecycle non-blocking
+  const unsubStatus = realtimeClient.on('realtime:status', (st) => {
+    if (st) {
+      realtimeStatus.value = {
+        state: st.state || 'disconnected',
+        isRealtimeAvailable: st.isRealtimeAvailable !== false,
+        mode: st.mode || 'none'
+      }
+    }
+  })
+
+  const unsubDashboard = realtimeClient.on('dashboard_update', (d) => {
+    if (d?.data) {
+      const s = d.data
+      if (s.totalTeachers !== undefined) rawStats.value.totalGuru = s.totalTeachers
+      if (s.totalClasses !== undefined) rawStats.value.totalKelas = s.totalClasses
+      if (s.totalSubjects !== undefined) rawStats.value.totalMapel = s.totalSubjects
+      if (s.totalTeachingHours !== undefined) rawStats.value.jamMengajar = s.totalTeachingHours
+      animateCountUp(rawStats.value, 600)
+    }
+  })
+
+  activeUnsubs.push(unsubStatus, unsubDashboard)
+})
+
+onUnmounted(() => {
+  activeUnsubs.forEach(unsub => {
+    if (typeof unsub === 'function') unsub()
+  })
+  activeUnsubs.length = 0
 })
 
 // Refresh stats saat user kembali ke Dashboard Utama dari menu lain
 watch(() => route.path, (newPath) => {
   if (newPath === ROUTES.SCHOOL_ADMIN || newPath === '/admin-sekolah') {
-    fetchProfileName()
-    fetchDashboardStats()
+    loadDashboard()
   }
 })
 
@@ -953,13 +1081,11 @@ const submitClientRenewal = async () => {
 
 const handleLogout = async () => {
   try {
-    await fetch('/api/v1/logout', { method: 'POST' }).catch(() => {})
+    // 1. Putus koneksi WebSocket/SSE secara permanen dan cegah auto-reconnect
+    realtimeClient.disconnect(true)
+    // 2. Bersihkan session HttpOnly di backend & store pinia
+    await authStore.logout()
   } catch (_) {}
-  localStorage.removeItem('token')
-  localStorage.removeItem('role')
-  localStorage.removeItem('user_role')
-  localStorage.removeItem('school_id')
-  localStorage.removeItem('valid_until')
   router.push('/')
 }
 </script>

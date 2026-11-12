@@ -8,6 +8,9 @@ import (
 )
 
 func SetupRoutes(r *gin.Engine) {
+	// 0. Observability & Security: Structured Logging & Request ID
+	r.Use(middleware.StructuredLoggerMiddleware())
+
 	// 1. Extreme Performance Middleware: Gzip Payload Compression (Pillar 3)
 	r.Use(middleware.GzipCompressionMiddleware())
 
@@ -57,6 +60,7 @@ func SetupRoutes(r *gin.Engine) {
 	school := api.Group("/school")
 	school.Use(middleware.TenantContextMiddleware())
 	{
+		school.GET("/dashboard", handlers.GetSchoolDashboardSummary)
 		school.GET("/profile", handlers.GetMySchoolProfile)
 		school.PUT("/profile", handlers.UpdateMySchoolProfile)
 		school.GET("/sessions", handlers.GetSchoolSessions)

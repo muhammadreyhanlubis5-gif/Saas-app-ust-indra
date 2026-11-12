@@ -60,6 +60,43 @@ func ClearAuthCookie(c *gin.Context) {
 	)
 }
 
+// ExtractAndValidateClaims mengekstrak dan memvalidasi JWT dari cookie atau header
+func ExtractAndValidateClaims(c *gin.Context) (*CustomClaims, error) {
+	tokenString := ""
+	if cookieToken, err := c.Cookie(AuthCookieName); err == nil && cookieToken != "" {
+		tokenString = cookieToken
+	}
+
+	if tokenString == "" {
+		authHeader := c.GetHeader("Authorization")
+		if strings.HasPrefix(authHeader, "Bearer ") {
+			tokenString = strings.TrimPrefix(authHeader, "Bearer ")
+		}
+	}
+
+	if tokenString == "" {
+		return nil, fmt.Errorf("token tidak ditemukan")
+	}
+
+	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("metode signing tidak valid")
+		}
+		return JwtSecretKey, nil
+	})
+
+	if err != nil || !token.Valid {
+		return nil, fmt.Errorf("token tidak valid atau telah kedaluwarsa")
+	}
+
+	claims, ok := token.Claims.(*CustomClaims)
+	if !ok {
+		return nil, fmt.Errorf("klaim token tidak sesuai format")
+	}
+
+	return claims, nil
+}
+
 /**
  * AuthMiddleware
  * High-security authentication checking HttpOnly cookie first, then Bearer header fallback.

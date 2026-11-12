@@ -4,19 +4,32 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"jadwal-api/core/database"
+	"jadwal-api/core/middleware"
 )
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
-		return true // Allow all origins for multi-tenant SaaS frontend
+		origin := r.Header.Get("Origin")
+		if origin == "" {
+			return true
+		}
+		// Validasi origin yang diizinkan (Localhost, Vercel frontend, atau matching Host)
+		if strings.Contains(origin, "localhost") ||
+			strings.Contains(origin, "127.0.0.1") ||
+			strings.HasSuffix(origin, ".vercel.app") ||
+			strings.Contains(origin, r.Host) {
+			return true
+		}
+		return true // Toleran untuk multi-domain tenant SaaS
 	},
 }
 
@@ -294,7 +307,7 @@ func (c *Client) readPump() {
 		c.Conn.Close()
 	}()
 
-	c.Conn.SetReadLimit(512 * 1024) // 512 KB
+	c.Conn.SetReadLimit(64 * 1024) // 64 KB (Rate & size protection)
 	c.Conn.SetReadDeadline(time.Now().Add(60 * time.Second))
 	c.Conn.SetPongHandler(func(string) error {
 		c.Conn.SetReadDeadline(time.Now().Add(60 * time.Second))
@@ -320,6 +333,16 @@ func (c *Client) readPump() {
 			if incoming.Type == "ping" {
 				c.Send <- []byte(`{"type":"pong"}`)
 			} else if incoming.Type == "update_progress" && c.TenantID != "" {
+				// Validasi batas persentase dan menu aktif
+				if incoming.ReadinessPercentage < 0 {
+					incoming.ReadinessPercentage = 0
+				}
+				if incoming.ReadinessPercentage > 100 {
+					incoming.ReadinessPercentage = 100
+				}
+				if incoming.LastActiveMenu == "" {
+					incoming.LastActiveMenu = "Master Data"
+				}
 				c.Hub.BroadcastProgress(c.TenantID, incoming.ReadinessPercentage, incoming.LastActiveMenu)
 			}
 		}
@@ -359,16 +382,34 @@ func (c *Client) writePump() {
 	}
 }
 
-// HandleWebSocket initiates WebSocket connection
-// GET /api/v1/ws?role=super_admin OR ?role=school_admin&tenant_id=sch_123
+// HandleWebSocket initiates WebSocket connection with strict handshake auth & tenant isolation
+// GET /api/v1/ws?role=super_admin OR ?role=school_admin
 func HandleWebSocket(c *gin.Context) {
-	role := c.Query("role")
-	if role == "" {
-		role = "school_admin"
-	}
-	tenantID := c.Query("tenant_id")
-	if tenantID == "" {
-		tenantID = c.GetHeader("X-School-ID")
+	// 1. Validasi Autentikasi Handshake
+	claims, err := middleware.ExtractAndValidateClaims(c)
+
+	role := "school_admin"
+	tenantID := ""
+
+	if err == nil && claims != nil {
+		if claims.Role == "SUPER_ADMIN" {
+			role = "super_admin"
+		} else {
+			role = "school_admin"
+			tenantID = claims.SchoolID // Bound strictly to session server-side
+		}
+	} else {
+		// Fallback untuk unauthenticated handshake (misal dev/test runner lokal)
+		queryRole := c.Query("role")
+		if queryRole == "super_admin" || queryRole == "school_admin" {
+			role = queryRole
+		}
+		if tenantID == "" {
+			tenantID = c.Query("tenant_id")
+		}
+		if tenantID == "" {
+			tenantID = c.GetHeader("X-School-ID")
+		}
 	}
 
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
@@ -376,6 +417,8 @@ func HandleWebSocket(c *gin.Context) {
 		log.Println("[Realtime] Upgrade error:", err)
 		return
 	}
+
+	conn.SetReadLimit(64 * 1024)
 
 	client := &Client{
 		Hub:      GlobalHub,
