@@ -155,6 +155,8 @@
                 <input 
                   type="text" 
                   id="username" 
+                  name="username"
+                  autocomplete="username"
                   v-model.trim="username" 
                   placeholder="Username (@guruku.id)" 
                   class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-800 placeholder-gray-400 text-sm focus:outline-none focus:border-[#263D9B] focus:ring-4 focus:ring-[#263D9B]/10 transition-all shadow-sm font-medium"
@@ -174,6 +176,8 @@
                 <input 
                   :type="showPassword ? 'text' : 'password'" 
                   id="password" 
+                  name="password"
+                  autocomplete="current-password"
                   v-model="password" 
                   placeholder="Password" 
                   class="w-full pl-11 pr-11 py-3 rounded-xl border border-gray-200 bg-white text-gray-800 placeholder-gray-400 text-sm focus:outline-none focus:border-[#263D9B] focus:ring-4 focus:ring-[#263D9B]/10 transition-all shadow-sm"
@@ -262,6 +266,9 @@
               <label class="block text-xs font-bold text-gray-600 mb-1">Username Klien</label>
               <input 
                 type="text" 
+                id="forgot-username"
+                name="username"
+                autocomplete="username"
                 v-model.trim="forgotForm.username"
                 placeholder="Masukkan username Anda"
                 class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-800 text-sm focus:outline-none focus:border-[#263D9B] focus:ring-4 focus:ring-[#263D9B]/10 transition-all shadow-sm"
@@ -272,7 +279,10 @@
             <div>
               <label class="block text-xs font-bold text-gray-600 mb-1">Password Baru Yang Diajukan</label>
               <input 
-                type="text" 
+                type="password" 
+                id="forgot-new-password"
+                name="new-password"
+                autocomplete="new-password"
                 v-model.trim="forgotForm.newPassword"
                 placeholder="Ketik password baru"
                 class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-800 text-sm focus:outline-none focus:border-[#263D9B] focus:ring-4 focus:ring-[#263D9B]/10 transition-all shadow-sm"
