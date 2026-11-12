@@ -6,12 +6,14 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --test tests/*.test.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",
     "localforage": "^1.10.0",
     "pg": "^8.23.0",
+    "pinia": "^4.1.0",
     "vue": "^3.5.42",
     "vue-router": "^4.6.4",
     "xlsx": "^0.18.5"

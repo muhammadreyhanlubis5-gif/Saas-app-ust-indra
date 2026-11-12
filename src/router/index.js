@@ -114,20 +114,62 @@ const router = createRouter({
   }
 })
 
-// Navigation Guard
-router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token') || localStorage.getItem('guruku_session')
-  const role = localStorage.getItem('role')
+// Navigation Guard Enterprise (Robust & Resilient)
+function getNormalizedRole() {
+  const raw = localStorage.getItem('role') || localStorage.getItem('user_role') || ''
+  const upper = String(raw).toUpperCase().trim()
+  if (upper === 'SUPER_ADMIN' || upper === 'SUPERADMIN') return 'SUPER_ADMIN'
+  if (upper === 'SCHOOL_ADMIN' || upper === 'ADMIN_SEKOLAH') return 'SCHOOL_ADMIN'
+  if (upper === 'TEACHER' || upper === 'GURU') return 'TEACHER'
+  return upper
+}
 
+function hasValidToken() {
+  const token = localStorage.getItem('token') || localStorage.getItem('guruku_session')
+  if (!token) return false
+  try {
+    const parts = token.split('.')
+    if (parts.length === 3) {
+      const payload = JSON.parse(atob(parts[1]))
+      if (payload.exp && payload.exp * 1000 < Date.now()) {
+        return false
+      }
+    }
+    return true
+  } catch (_) {
+    return false
+  }
+}
+
+router.beforeEach((to, from, next) => {
+  const isAuth = hasValidToken()
+  const role = getNormalizedRole()
+
+  // Jika sudah terautentikasi dan membuka halaman Login (/), arahkan langsung ke dashboard yang sesuai
+  if (to.name === 'Login' && isAuth) {
+    if (role === 'SUPER_ADMIN') return next({ path: ROUTES.SUPER_ADMIN })
+    if (role === 'SCHOOL_ADMIN') return next({ path: ROUTES.SCHOOL_ADMIN })
+    if (role === 'TEACHER') return next({ path: ROUTES.TEACHER })
+  }
+
+  // Jika rute membutuhkan otorisasi
   if (to.meta.requiresAuth) {
-    if (!token) {
+    if (!isAuth) {
+      // Bersihkan sesi usang
+      localStorage.removeItem('token')
+      localStorage.removeItem('role')
+      localStorage.removeItem('user_role')
       return next({ name: 'Login' })
     }
-    if (to.meta.role && to.meta.role !== role) {
-      if (role === 'SUPER_ADMIN') return next({ path: ROUTES.SUPER_ADMIN })
-      if (role === 'SCHOOL_ADMIN') return next({ path: ROUTES.SCHOOL_ADMIN })
-      if (role === 'TEACHER') return next({ path: ROUTES.TEACHER })
-      return next({ name: 'Login' })
+
+    if (to.meta.role) {
+      const requiredRole = String(to.meta.role).toUpperCase().trim()
+      if (role !== requiredRole) {
+        if (role === 'SUPER_ADMIN') return next({ path: ROUTES.SUPER_ADMIN })
+        if (role === 'SCHOOL_ADMIN') return next({ path: ROUTES.SCHOOL_ADMIN })
+        if (role === 'TEACHER') return next({ path: ROUTES.TEACHER })
+        return next({ name: 'Login' })
+      }
     }
   }
 

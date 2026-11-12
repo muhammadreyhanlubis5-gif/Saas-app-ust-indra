@@ -1,10 +1,46 @@
 <template>
   <!-- Loading Animation Overlay (Menyiapkan Ruang Kerja) -->
   <div v-if="showAnimation" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900/95 backdrop-blur-sm transition-opacity duration-300">
-    <div class="relative flex flex-col items-center">
-      <img :src="animasiImg" alt="Loading..." class="w-48 h-48 object-contain z-10" />
-      <h2 class="mt-8 text-2xl font-semibold text-white tracking-wide z-10">Menyiapkan Ruang Kerja Anda...</h2>
-      <p class="mt-3 text-blue-300 text-sm font-medium z-10 animate-pulse transition-all duration-300">{{ loadingText }}</p>
+    <div class="relative flex flex-col items-center max-w-sm w-full px-6 text-center">
+      <img :src="animasiImg" alt="Loading..." class="w-44 h-44 object-contain z-10" />
+      <h2 class="mt-6 text-2xl font-black text-white tracking-wide z-10">Menyiapkan Ruang Kerja Anda...</h2>
+      
+      <!-- Progress Bar Dinamis & Persentase -->
+      <div class="w-full bg-white/10 rounded-full h-2 mt-5 overflow-hidden border border-white/10 relative">
+        <div 
+          class="bg-gradient-to-r from-blue-500 to-indigo-400 h-full rounded-full transition-all duration-300 ease-out"
+          :style="{ width: `${workspaceProgress}%` }"
+        ></div>
+      </div>
+      <div class="flex items-center justify-between w-full mt-2 text-[11px] font-semibold text-blue-200/80">
+        <span class="truncate pr-2">{{ loadingText }}</span>
+        <span>{{ workspaceProgress }}%</span>
+      </div>
+
+      <!-- Jika terjadi error / timeout saat inisialisasi -->
+      <div v-if="initError" class="mt-5 p-4 rounded-2xl bg-red-500/20 border border-red-500/40 text-red-200 text-xs w-full animate-fade-in text-left">
+        <p class="font-bold mb-1 flex items-center gap-1.5 text-white">
+          <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          Gagal Menyiapkan Ruang Kerja
+        </p>
+        <p class="text-[11px] opacity-90 mb-3 leading-relaxed">{{ initError }}</p>
+        <div class="flex items-center justify-end gap-2 pt-1 border-t border-red-500/20">
+          <button 
+            type="button" 
+            @click="dismissLoading" 
+            class="px-3.5 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg font-bold text-xs transition-all cursor-pointer"
+          >
+            Batal
+          </button>
+          <button 
+            type="button" 
+            @click="retryInitialization" 
+            class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-xs transition-all shadow-md cursor-pointer"
+          >
+            Coba Lagi
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -514,8 +550,13 @@ import slide6 from '../assets/slides-login/6.jpg'
 import slide7 from '../assets/slides-login/7.jpg'
 import slide8 from '../assets/slides-login/8.jpg'
 import { ROUTES } from '../config/routePaths.js'
+import { useAuthStore } from '../stores/auth.js'
+import { useWorkspaceStore } from '../stores/workspace.js'
 
 const router = useRouter()
+const authStore = useAuthStore()
+const workspaceStore = useWorkspaceStore()
+
 const username = ref('')
 const password = ref('')
 const showPassword = ref(false)
@@ -523,6 +564,9 @@ const isSubmitting = ref(false)
 
 const showAnimation = ref(false)
 const loadingText = ref('Sinkronisasi dengan server...')
+const workspaceProgress = ref(0)
+const initError = ref(null)
+let safetyTimer = null
 
 // Modal Bantuan & Layanan Aduan
 const showHelpModal = ref(false)
@@ -717,103 +761,94 @@ const submitForgotPassword = async () => {
   }
 }
 
+const retryInitialization = () => {
+  initError.value = null
+  handleLogin()
+}
+
+const dismissLoading = () => {
+  showAnimation.value = false
+  initError.value = null
+  isSubmitting.value = false
+  if (safetyTimer) {
+    clearTimeout(safetyTimer)
+    safetyTimer = null
+  }
+}
+
 const handleLogin = async () => {
   if (isSubmitting.value) return
   isSubmitting.value = true
+  initError.value = null
+  showAnimation.value = true
+  workspaceProgress.value = 15
+  loadingText.value = 'Memvalidasi kredensial pengguna...'
+
+  // Safety Timeout: Batasi maksimal 8 detik
+  if (safetyTimer) clearTimeout(safetyTimer)
+  safetyTimer = setTimeout(() => {
+    if (showAnimation.value && !initError.value) {
+      console.warn('[LoginView] Inisialisasi melebihi batas waktu 8s, mengaktifkan menu opsi.')
+      initError.value = 'Koneksi ke server memerlukan waktu lebih lama dari biasanya.'
+    }
+  }, 8000)
 
   try {
-    let cleanUsername = username.value.trim()
-
-    let response = await fetch('/api/v1/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: cleanUsername, password: password.value })
-    })
-
-    // Jika gagal dan username belum memiliki akhiran @guruku.id (bukan super admin), coba dengan @guruku.id
-    if (!response.ok && !cleanUsername.includes('@') && !['admin', 'superadmin', 'master'].includes(cleanUsername.toLowerCase())) {
-      const retryResponse = await fetch('/api/v1/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: `${cleanUsername}@guruku.id`, password: password.value })
-      })
-      if (retryResponse.ok) {
-        response = retryResponse
-      }
-    } else if (!response.ok && cleanUsername.toLowerCase().endsWith('@guruku.id')) {
-      // Fallback jika database masih menyimpan username lama tanpa suffix
-      const stripped = cleanUsername.replace(/@guruku\.id$/i, '')
-      const retryResponse = await fetch('/api/v1/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: stripped, password: password.value })
-      })
-      if (retryResponse.ok) {
-        response = retryResponse
-      }
+    const authResult = await authStore.login(username.value, password.value)
+    if (!authResult) {
+      throw new Error('Gagal memproses autentikasi pengguna.')
     }
-    
-    const data = await response.json()
-    
-    if (response.ok) {
-      showAnimation.value = true
-      
-      // Decode JWT token untuk mendapatkan peran akun
-      const token = data.token
-      localStorage.setItem('token', token)
-      
-      const payloadBase64 = token.split('.')[1]
-      const decodedPayload = JSON.parse(atob(payloadBase64))
-      
-      localStorage.setItem('user_role', decodedPayload.role)
-      if (decodedPayload.school_id) {
-        localStorage.setItem('school_id', decodedPayload.school_id)
-      }
-      if (decodedPayload.valid_until) {
-        localStorage.setItem('valid_until', decodedPayload.valid_until)
-      }
 
-      // Ambil nama sekolah khusus untuk teks animasi (jika bukan super admin)
-      let schoolName = "sekolah yang tervalidasi"
-      if (decodedPayload.school_id) {
-        try {
-          const profileRes = await fetch('/api/v1/school/profile', {
-            headers: { 'X-School-ID': decodedPayload.school_id }
-          })
-          if (profileRes.ok) {
-            const profileData = await profileRes.json()
-            if (profileData.name) {
-              schoolName = profileData.name
-            }
-          }
-        } catch(e) {}
-      }
+    workspaceProgress.value = 45
+    loadingText.value = 'Data berhasil tervalidasi...'
 
-      // Animasi pergantian teks kilat & responsif
-      setTimeout(() => {
-        loadingText.value = 'Data berhasil tervalidasi...'
-      }, 350)
-      
-      setTimeout(() => {
-        loadingText.value = `Siap mengunggah data (${schoolName})...`
-      }, 700)
-
-      // Redirect cepat (total 1.1 detik)
-      setTimeout(() => {
-        if (decodedPayload.role === 'SUPER_ADMIN') {
-          router.push(ROUTES.SUPER_ADMIN)
-        } else if (decodedPayload.role === 'SCHOOL_ADMIN') {
-          router.push(ROUTES.SCHOOL_ADMIN)
-        } else {
-          router.push(ROUTES.TEACHER)
+    // Ambil nama sekolah khusus untuk teks animasi (jika bukan super admin)
+    let schoolName = 'sekolah yang tervalidasi'
+    if (authResult.school_id) {
+      try {
+        const profile = await workspaceStore.loadSchoolProfile(authResult.school_id)
+        if (profile && profile.name) {
+          schoolName = profile.name
         }
-      }, 1100)
-      
-    } else {
-      alert("Login Gagal: " + (data.error || "Password salah atau username tidak ditemukan"))
+      } catch (_) {}
     }
+
+    workspaceProgress.value = 75
+    loadingText.value = `Siap mengunggah data (${schoolName})...`
+
+    // Pre-sync master data statistik
+    await workspaceStore.loadMasterData()
+
+    workspaceProgress.value = 100
+    loadingText.value = 'Membuka ruang kerja...'
+
+    // Redirect sesuai peran akun secara presisi
+    setTimeout(async () => {
+      if (safetyTimer) {
+        clearTimeout(safetyTimer)
+        safetyTimer = null
+      }
+      showAnimation.value = false
+      if (authResult.role === 'SUPER_ADMIN') {
+        await router.push(ROUTES.SUPER_ADMIN)
+      } else if (authResult.role === 'SCHOOL_ADMIN') {
+        await router.push(ROUTES.SCHOOL_ADMIN)
+      } else {
+        await router.push(ROUTES.TEACHER)
+      }
+    }, 450)
+
   } catch (error) {
-    alert("Terjadi kesalahan jaringan saat masuk.")
+    if (safetyTimer) {
+      clearTimeout(safetyTimer)
+      safetyTimer = null
+    }
+    console.error('[Login Error]', error)
+    initError.value = error.message || 'Terjadi kesalahan jaringan saat masuk.'
+    if (!authStore.isAuthenticated) {
+      showAnimation.value = false
+      alert('Login Gagal: ' + initError.value)
+    }
   } finally {
     isSubmitting.value = false
   }
@@ -856,17 +891,19 @@ onMounted(() => {
   // Mulai perputaran slide 5 detik
   startSliderTimer()
 
-  // Cek langsung status persetujuan
-  checkApproval()
-  
-  approvalInterval = setInterval(() => {
+  // Cek status persetujuan jika ada permohonan aktif
+  if (forgotForm.value.username || username.value) {
     checkApproval()
-  }, 1000)
+    approvalInterval = setInterval(() => {
+      checkApproval()
+    }, 15000)
+  }
 })
 
 onUnmounted(() => {
   if (sliderTimer) clearInterval(sliderTimer)
   if (approvalInterval) clearInterval(approvalInterval)
+  if (safetyTimer) clearTimeout(safetyTimer)
 })
 </script>
 

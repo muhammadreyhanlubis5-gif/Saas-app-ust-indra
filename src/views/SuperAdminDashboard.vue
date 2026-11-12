@@ -3866,8 +3866,15 @@ onUnmounted(() => {
   realtimeClient.disconnect()
 })
 
-const handleLogout = () => {
-  localStorage.clear()
+const handleLogout = async () => {
+  try {
+    await fetch('/api/v1/logout', { method: 'POST' }).catch(() => {})
+  } catch (_) {}
+  localStorage.removeItem('token')
+  localStorage.removeItem('role')
+  localStorage.removeItem('user_role')
+  localStorage.removeItem('school_id')
+  localStorage.removeItem('valid_until')
   router.push('/')
 }
 </script>

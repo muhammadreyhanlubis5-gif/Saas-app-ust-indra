@@ -26,7 +26,12 @@ export const SafeFlow = {
       headers['Authorization'] = `Bearer ${token}`;
     }
     
-    const fetchOptions = { ...options, headers };
+    // Safety Timeout Controller (Anti-Hanging Request)
+    const timeout = options.timeout || 8000;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeout);
+    const signal = options.signal || controller.signal;
+    const fetchOptions = { ...options, headers, signal };
 
     if (isMutation) {
       // ----------------------------------------------------
@@ -56,6 +61,8 @@ export const SafeFlow = {
           status: 200,
           headers: { 'Content-Type': 'application/json' }
         });
+      } finally {
+        clearTimeout(timer);
       }
     } else {
       // ----------------------------------------------------
@@ -74,7 +81,7 @@ export const SafeFlow = {
         }
         return response;
       } catch (err) {
-        console.warn("[SafeFlow] Koneksi putus. Mengaktifkan Edge Cache Lokal untuk:", url);
+        console.warn("[SafeFlow] Koneksi putus atau timeout. Mengaktifkan Edge Cache Lokal untuk:", url);
         const cached = await localforage.getItem(cacheKey);
         if (cached) {
           return new Response(cached, { status: 200, headers: { 'Content-Type': 'application/json' } });
@@ -82,6 +89,8 @@ export const SafeFlow = {
         
         // Jika benar-benar kosong, kembalikan array kosong agar UI tidak crash
         return new Response("[]", { status: 200, headers: { 'Content-Type': 'application/json' } });
+      } finally {
+        clearTimeout(timer);
       }
     }
   },
