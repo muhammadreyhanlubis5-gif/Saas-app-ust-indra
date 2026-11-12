@@ -87,7 +87,7 @@
           <button 
             type="button"
             @click="$emit('remove')" 
-            class="w-8 h-8 rounded-full bg-gray-50 hover:bg-red-50 border border-gray-200 hover:border-red-200 text-gray-400 hover:text-red-600 flex items-center justify-center transition-all shadow-sm"
+            class="w-8 h-8 rounded-full bg-gray-50 hover:bg-red-50 border border-gray-200 hover:border-red-200 text-gray-400 hover:text-red-600 flex items-center justify-center transition-all shadow-sm cursor-pointer"
             title="Hapus Penugasan Ini"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -148,9 +148,12 @@
           </select>
         </div>
 
-        <!-- Workload Summary & Limit Tracker (Max 40 JP) -->
+        <!-- Workload Summary & Limit Tracker (Weekly Total, Max 40 JP) -->
         <div class="flex items-center justify-between mb-3 bg-gray-50/70 p-2.5 rounded-2xl border border-gray-100">
-          <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Total Beban</span>
+          <div>
+            <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Total Beban Guru</span>
+            <div class="text-[10px] text-gray-400 font-medium">Akumulasi JP / Minggu</div>
+          </div>
           <div class="flex items-center gap-1.5">
             <span 
               class="text-xs font-black px-2.5 py-1 rounded-xl border transition-all"
@@ -163,8 +166,8 @@
           </div>
         </div>
 
-        <!-- Per-Class Assigned Hours List -->
-        <div class="space-y-2 mb-4 max-h-48 overflow-y-auto pr-1">
+        <!-- Per-Class Assigned Weekly Hours & Block Split Preview -->
+        <div class="space-y-2.5 mb-4 max-h-56 overflow-y-auto pr-1">
           <div 
             v-if="assignedClassIndices.length === 0" 
             class="text-center py-6 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50"
@@ -176,42 +179,53 @@
           <div 
             v-for="cIdx in assignedClassIndices" 
             :key="cIdx"
-            class="flex items-center justify-between p-2.5 rounded-xl border transition-all"
+            class="flex flex-col p-2.5 rounded-xl border transition-all"
             :class="isClassConflicted(cIdx) 
               ? 'bg-red-50/70 border-red-200 text-red-900' 
               : 'bg-gray-50 border-gray-100 text-gray-800 hover:bg-white'"
           >
-            <div class="flex items-center gap-2">
-              <span 
-                class="w-2 h-2 rounded-full"
-                :class="isClassConflicted(cIdx) ? 'bg-red-500 animate-ping' : 'bg-indigo-500'"
-              ></span>
-              <span class="font-black text-sm">{{ classes[cIdx] }}</span>
-              <span v-if="isClassConflicted(cIdx)" class="text-[10px] font-bold text-red-600 bg-red-100 px-1.5 py-0.5 rounded">
-                Bentrok
-              </span>
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span 
+                  class="w-2 h-2 rounded-full flex-shrink-0"
+                  :class="isClassConflicted(cIdx) ? 'bg-red-500 animate-ping' : 'bg-indigo-500'"
+                ></span>
+                <span class="font-black text-sm">Kelas {{ classes[cIdx] }}</span>
+                <span v-if="isClassConflicted(cIdx)" class="text-[10px] font-bold text-red-600 bg-red-100 px-1.5 py-0.5 rounded">
+                  Bentrok
+                </span>
+              </div>
+
+              <div class="flex items-center gap-1.5">
+                <input 
+                  type="number" 
+                  min="0" 
+                  max="40"
+                  v-model.number="row.hours[cIdx]" 
+                  @input="onHoursInput(cIdx)"
+                  class="w-14 bg-white border border-gray-200 rounded-lg px-2 py-1 text-sm font-black text-center text-blue-700 focus:ring-2 focus:ring-blue-500 outline-none"
+                  title="Total Jam Mengajar per Minggu untuk kelas ini"
+                />
+                <span class="text-xs font-bold text-gray-400">JP/mg</span>
+                <button 
+                  type="button"
+                  @click="removeClassHour(cIdx)" 
+                  class="ml-1 text-gray-300 hover:text-red-500 transition-colors cursor-pointer"
+                  title="Hapus jam untuk kelas ini"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </div>
             </div>
 
-            <div class="flex items-center gap-2">
-              <input 
-                type="number" 
-                min="0" 
-                max="40"
-                v-model.number="row.hours[cIdx]" 
-                @input="onHoursInput"
-                class="w-14 bg-white border border-gray-200 rounded-lg px-2 py-1 text-sm font-black text-center text-blue-700 focus:ring-2 focus:ring-blue-500 outline-none"
-              />
-              <span class="text-xs font-bold text-gray-400">JP</span>
-              <button 
-                type="button"
-                @click="removeClassHour(cIdx)" 
-                class="ml-1 text-gray-300 hover:text-red-500 transition-colors"
-                title="Hapus jam untuk kelas ini"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-              </button>
+            <!-- Dynamic JP Auto-Splitter Result Display -->
+            <div class="flex items-center justify-between text-[11px] text-gray-500 font-medium pl-4 mt-1.5 pt-1.5 border-t border-gray-200/60">
+              <span class="text-gray-400 text-[10px] uppercase font-bold tracking-tight">Pecahan Sesi:</span>
+              <span class="font-bold text-indigo-600">
+                {{ formatBlockSplit(row.hours[cIdx]) }}
+              </span>
             </div>
           </div>
         </div>
@@ -245,6 +259,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import { generateTimeBlocks, formatBlockSplit } from '../composables/useAutoDistribution.js'
 
 const props = defineProps({
   row: {
@@ -277,6 +292,7 @@ const emit = defineEmits(['update:row', 'remove', 'change'])
 
 const hasError = computed(() => props.cardState === 'error' && props.conflicts.length > 0)
 
+// Total Beban: sum of all Weekly JP inputs
 const totalHours = computed(() => {
   if (!props.row.hours) return 0
   return props.row.hours.reduce((sum, h) => sum + (Number(h) || 0), 0)
@@ -295,6 +311,13 @@ const isClassConflicted = (cIdx) => {
   if (!props.conflicts || props.conflicts.length === 0) return false
   const clsName = props.classes[cIdx]
   return props.conflicts.some(c => c.className === clsName || c.classIndex === cIdx)
+}
+
+const syncBlocksPayload = () => {
+  if (props.row.hours) {
+    props.row.blocks = props.row.hours.map(h => generateTimeBlocks(h))
+    props.row.total_weekly_jp = totalHours.value
+  }
 }
 
 const onTeacherChange = (teacherCode) => {
@@ -316,13 +339,15 @@ const onSubjectInput = () => {
   emitChange()
 }
 
-const onHoursInput = () => {
+const onHoursInput = (cIdx) => {
+  syncBlocksPayload()
   emitChange()
 }
 
 const removeClassHour = (cIdx) => {
   if (props.row.hours) {
     props.row.hours[cIdx] = 0
+    syncBlocksPayload()
     emitChange()
   }
 }
@@ -330,13 +355,15 @@ const removeClassHour = (cIdx) => {
 const assignClass = (event) => {
   const cIdx = event.target.value
   if (cIdx !== '' && props.row.hours) {
-    props.row.hours[cIdx] = 2 // Default 2 JP
+    props.row.hours[cIdx] = 4 // Default 4 Weekly JP -> splits into [2, 2]
+    syncBlocksPayload()
     event.target.value = ''
     emitChange()
   }
 }
 
 const emitChange = () => {
+  syncBlocksPayload()
   emit('change', props.row)
 }
 </script>

@@ -1,8 +1,10 @@
 /**
- * GuruKu SaaS - Smart Auto-Distribution Algorithm Module
+ * GuruKu SaaS - Smart Auto-Distribution Algorithm & Time Block Splitter
  * 
- * Automates teacher assignments to classes based on subject specialization,
- * maintaining balanced workloads up to maxWorkload (default: 40 JP).
+ * Features:
+ * - Dynamic JP Auto-Splitter (generateTimeBlocks): Splits weekly total into optimal 2 JP / 1 JP blocks
+ * - Smart Subject & Specialization Matching
+ * - Workload Capping (Max 40 JP/week) & Load Balancing across staff
  */
 
 import { ref } from 'vue'
@@ -33,6 +35,66 @@ const COMMON_ALIASES = {
   pen: ['penjas', 'penjaskes', 'pjok', 'olahraga', 'olahragakesehatan'],
   seni: ['senibudaya', 'kesenian', 'sbdp', 'senirupa', 'senimusik'],
   tik: ['informatika', 'komputer', 'teknologiinformasi', 'ti']
+}
+
+/**
+ * DYNAMIC JP AUTO-SPLITTER (Block Generator)
+ * 
+ * Breaks down total weekly JP for a class into optimal daily meeting blocks.
+ * - Rule: Max block size is 2 JP. Min block size is 1 JP.
+ * - Examples:
+ *   - 2 JP -> [2]
+ *   - 3 JP -> [2, 1]
+ *   - 4 JP -> [2, 2] (Preferred over [1, 1, 1, 1])
+ *   - 5 JP -> [2, 2, 1]
+ *   - 6 JP -> [2, 2, 2]
+ *   - 1 JP -> [1]
+ *   - <= 0 -> []
+ * 
+ * @param {number|string} totalWeeklyJP 
+ * @returns {Array<number>} Array of daily block sizes (e.g. [2, 1])
+ */
+export const generateTimeBlocks = (totalWeeklyJP) => {
+  const total = parseInt(totalWeeklyJP, 10)
+  if (isNaN(total) || total <= 0) return []
+
+  const blocks = []
+  let remaining = total
+
+  // Greedy approach prioritizing 2 JP blocks for optimal pedagogical retention
+  while (remaining > 0) {
+    if (remaining >= 2) {
+      blocks.push(2)
+      remaining -= 2
+    } else {
+      blocks.push(1)
+      remaining -= 1
+    }
+  }
+
+  return blocks
+}
+
+/**
+ * Formats time blocks into human-readable text for UI display
+ * E.g. [2, 1] -> "(Dipecah menjadi: 2 JP & 1 JP)"
+ * 
+ * @param {number|string} totalWeeklyJP 
+ * @returns {string} Formatted description
+ */
+export const formatBlockSplit = (totalWeeklyJP) => {
+  const blocks = generateTimeBlocks(totalWeeklyJP)
+  if (blocks.length === 0) return '(0 JP / Minggu)'
+  if (blocks.length === 1) return `(Dipecah menjadi: ${blocks[0]} JP)`
+
+  const formatted = blocks.map(b => `${b} JP`)
+  if (formatted.length === 2) {
+    return `(Dipecah menjadi: ${formatted[0]} & ${formatted[1]})`
+  }
+
+  const allExceptLast = formatted.slice(0, -1).join(', ')
+  const last = formatted[formatted.length - 1]
+  return `(Dipecah menjadi: ${allExceptLast} & ${last})`
 }
 
 /**
@@ -76,7 +138,7 @@ export const isTeacherSubjectMatch = (teacher, subject) => {
  */
 export const autoDistribute = (teachers = [], classes = [], subjects = [], options = {}) => {
   const maxWorkload = options.maxWorkload || 40 // Default maximum 40 JP workload
-  const defaultHours = options.defaultHoursPerSubject || 2 // Default 2 JP per class session
+  const defaultHours = options.defaultHoursPerSubject || 4 // Default weekly JP (e.g. 4 JP -> split into [2, 2])
 
   // Normalize class names
   const normalizedClasses = classes.map(c => {
@@ -153,11 +215,14 @@ export const autoDistribute = (teachers = [], classes = [], subjects = [], optio
             subject_code: subj.code,
             subject_name: subj.name,
             is_linear: 'true',
-            hours: hoursArray
+            hours: hoursArray,
+            // Pre-calculate blocks for each class
+            blocks: hoursArray.map(h => generateTimeBlocks(h))
           })
         } else {
           const existingRow = assignmentMap.get(rowKey)
           existingRow.hours[classIdx] = neededHours
+          existingRow.blocks = existingRow.hours.map(h => generateTimeBlocks(h))
         }
       } else {
         // Record unassigned requirement
@@ -167,6 +232,7 @@ export const autoDistribute = (teachers = [], classes = [], subjects = [], optio
           subjectCode: subj.code,
           subjectName: subj.name,
           neededHours,
+          blocks: generateTimeBlocks(neededHours),
           reason: candidateTeachers.length === 0
             ? 'Tidak ada guru dengan spesialisasi mapel ini'
             : `Semua guru (${candidateTeachers.map(t => t.code).join(', ')}) telah mencapai batas maksimal (${maxWorkload} JP)`
@@ -175,8 +241,11 @@ export const autoDistribute = (teachers = [], classes = [], subjects = [], optio
     })
   })
 
-  // Convert map to array of rows
-  const rows = Array.from(assignmentMap.values())
+  // Convert map to array of rows and ensure blocks are synced
+  const rows = Array.from(assignmentMap.values()).map(r => ({
+    ...r,
+    blocks: (r.hours || []).map(h => generateTimeBlocks(h))
+  }))
 
   // Compute final statistics
   const teachersUsed = Array.from(teacherWorkloads.entries())
@@ -231,6 +300,8 @@ export function useAutoDistribution() {
     isDistributing,
     lastDistributionResult,
     runAutoDistribution,
-    autoDistribute
+    autoDistribute,
+    generateTimeBlocks,
+    formatBlockSplit
   }
 }

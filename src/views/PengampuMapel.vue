@@ -12,13 +12,13 @@
             {{ hasAnyConflict ? `${totalConflictCount} Bentrok Terdeteksi` : 'Status: Valid & Siap' }}
           </span>
         </div>
-        <p class="text-gray-500 text-sm mt-1">Otomasi pembagian jam mengajar guru dengan validasi bentrok real-time.</p>
+        <p class="text-gray-500 text-sm mt-1">Otomasi pembagian jam mengajar guru dengan pemecahan blok JP dinamis dan batas harian (Max 4 JP/hari).</p>
       </div>
 
       <div class="flex flex-wrap items-center gap-3">
         <!-- Magic Auto-Distribute Button -->
         <button 
-          @click="triggerMagicAutoDistribute"
+          @click="triggerMagicAutoDistribute" 
           :disabled="isDistributing || loading"
           class="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-black py-2.5 px-6 rounded-xl shadow-lg hover:shadow-indigo-500/25 transition-all flex items-center gap-2.5 transform active:scale-95 disabled:opacity-50 cursor-pointer"
           title="Otomasi distribusi seluruh guru ke kelas sesuai spesialisasi mapel dan batas beban 40 JP"
@@ -76,8 +76,8 @@
             ⚡
           </div>
           <div>
-            <h4 class="text-sm font-black text-gray-800">Simulator Pengujian Bentrok (Rule A & Rule B)</h4>
-            <p class="text-xs text-gray-500">Uji langsung efek visual animasi border merah dan hijau pada kartu penugasan.</p>
+            <h4 class="text-sm font-black text-gray-800">Simulator Pengujian Bentrok (Rule A, Rule B & Rule C)</h4>
+            <p class="text-xs text-gray-500">Uji langsung efek visual animasi border merah dan pecahan blok pada kartu penugasan.</p>
           </div>
         </div>
 
@@ -98,6 +98,15 @@
             title="Uji jika guru yang sama dijadwalkan mengajar 2 kelas di jam yang sama"
           >
             + Simulasi Bentrok Waktu (Rule B)
+          </button>
+
+          <!-- Test Rule C -->
+          <button 
+            @click="simulateRuleCConflict" 
+            class="text-xs font-bold px-3.5 py-2 rounded-xl border border-rose-200 bg-rose-50 text-rose-800 hover:bg-rose-100 transition-colors cursor-pointer"
+            title="Uji jika guru dijadwalkan > 4 JP pada satu hari (Batas maksimal 4 JP/hari)"
+          >
+            + Simulasi Batas Harian 4 JP (Rule C)
           </button>
 
           <!-- Clear Test -->
@@ -180,7 +189,7 @@
           </div>
           <h3 class="text-xl font-bold text-gray-800">Belum Ada Penugasan</h3>
           <p class="text-gray-400 mt-2 text-sm max-w-md mx-auto">
-            Klik tombol <b>Magic Auto-Distribute</b> untuk memetakan seluruh guru ke kelas secara instan, atau tambah penugasan secara manual.
+            Klik tombol <b>Magic Auto-Distribute</b> untuk memetakan seluruh guru ke kelas secara instan dengan pecahan blok 1 JP / 2 JP, atau tambah penugasan secara manual.
           </p>
           <div class="mt-6 flex justify-center gap-3">
             <button 
@@ -238,7 +247,7 @@
 
         <h3 class="text-2xl font-black text-gray-900">Distribusi Otomatis Selesai!</h3>
         <p class="text-sm text-gray-500 mt-1">
-          Algoritma cerdas telah memetakan jam mengajar guru dengan aturan bebas bentrok dan beban maksimal 40 JP.
+          Algoritma cerdas telah memetakan jam mengajar guru dengan aturan bebas bentrok, pecahan blok 1 JP / 2 JP, dan batas maksimal 40 JP mingguan.
         </p>
 
         <!-- Stats Grid -->
@@ -284,7 +293,7 @@
 import { ref, watch, onMounted, nextTick } from 'vue'
 import { ROUTES } from '../config/routePaths.js'
 import TeacherAssignmentCard from '../components/TeacherAssignmentCard.vue'
-import { useAutoDistribution } from '../composables/useAutoDistribution.js'
+import { useAutoDistribution, generateTimeBlocks } from '../composables/useAutoDistribution.js'
 import { useConflictValidation } from '../composables/useConflictValidation.js'
 import { realtimeClient } from '../core/realtimeClient.js'
 
@@ -294,7 +303,7 @@ const classes = ref([])
 const rows = ref([])
 const registeredTeachers = ref([])
 const availableSubjects = ref([])
-const timeSlots = ref([]) // For Rule B time-clash validation
+const timeSlots = ref([]) // For Rule B & Rule C validation
 
 const showSummaryModal = ref(false)
 const lastDistributionReport = ref(null)
@@ -401,19 +410,29 @@ const loadData = async () => {
     if (res.ok) {
       const data = await res.json()
       if (data && data.rows && data.rows.length > 0) {
-        rows.value = data.rows
+        rows.value = data.rows.map(r => ({
+          ...r,
+          blocks: r.blocks || (r.hours || []).map(h => generateTimeBlocks(h)),
+          total_weekly_jp: (r.hours || []).reduce((sum, h) => sum + (Number(h) || 0), 0)
+        }))
       }
     } else {
       const savedPengampu = localStorage.getItem('guruKu_pengampu')
       if (savedPengampu) {
         try {
           const parsedP = JSON.parse(savedPengampu)
-          if (parsedP && parsedP.rows) rows.value = parsedP.rows
+          if (parsedP && parsedP.rows) {
+            rows.value = parsedP.rows.map(r => ({
+              ...r,
+              blocks: r.blocks || (r.hours || []).map(h => generateTimeBlocks(h)),
+              total_weekly_jp: (r.hours || []).reduce((sum, h) => sum + (Number(h) || 0), 0)
+            }))
+          }
         } catch (e) {}
       }
     }
 
-    // If rows still empty, offer seed demo rows
+    // If rows still empty, offer seed demo rows with weekly JP
     if (rows.value.length === 0 && registeredTeachers.value.length > 0) {
       rows.value = [
         {
@@ -423,7 +442,9 @@ const loadData = async () => {
           subject_code: 'MAT',
           subject_name: 'Matematika',
           is_linear: 'true',
-          hours: [4, 4, 4, 0, 0, 0]
+          hours: [4, 4, 4, 0, 0, 0],
+          blocks: [[2, 2], [2, 2], [2, 2], [], [], []],
+          total_weekly_jp: 12
         },
         {
           id: 'row_init_2',
@@ -432,7 +453,9 @@ const loadData = async () => {
           subject_code: 'BIN',
           subject_name: 'Bahasa Indonesia',
           is_linear: 'true',
-          hours: [4, 4, 0, 0, 0, 0]
+          hours: [4, 3, 0, 0, 0, 0],
+          blocks: [[2, 2], [2, 1], [], [], [], []],
+          total_weekly_jp: 7
         }
       ]
     }
@@ -468,7 +491,7 @@ const triggerMagicAutoDistribute = () => {
     registeredTeachers.value,
     classes.value,
     availableSubjects.value,
-    { maxWorkload: 40, defaultHoursPerSubject: 2 }
+    { maxWorkload: 40, defaultHoursPerSubject: 4 }
   )
 
   if (report.success && report.rows.length > 0) {
@@ -488,6 +511,7 @@ const triggerMagicAutoDistribute = () => {
 
 /**
  * SAVE DATA HANDLER
+ * Stores block structures and total weekly JP in the payload
  */
 const saveData = async () => {
   if (hasAnyConflict.value) {
@@ -499,9 +523,16 @@ const saveData = async () => {
   }
 
   try {
+    // Process rows to ensure blocks and total_weekly_jp are up-to-date
+    const processedRows = rows.value.map(row => ({
+      ...row,
+      blocks: (row.hours || []).map(h => generateTimeBlocks(h)),
+      total_weekly_jp: (row.hours || []).reduce((sum, h) => sum + (Number(h) || 0), 0)
+    }))
+
     const payload = {
       classes: classes.value,
-      rows: rows.value
+      rows: processedRows
     }
     localStorage.setItem('guruKu_pengampu', JSON.stringify(payload))
 
@@ -531,7 +562,7 @@ const saveData = async () => {
 }
 
 /**
- * SIMULATOR METHODS (FOR TESTING RULE A & RULE B)
+ * SIMULATOR METHODS (FOR TESTING RULE A, RULE B & RULE C)
  */
 // 1. Simulate Rule A: Subject Duplication (Assign 2 different teachers to teach same subject in same class)
 const simulateRuleAConflict = () => {
@@ -539,15 +570,16 @@ const simulateRuleAConflict = () => {
     addTeacherRow()
   }
 
-  // Set Row 0 and Row 1 to teach "BIN" (Bahasa Indonesia) in Class 0 (e.g. 1A)
   if (rows.value.length >= 2) {
     rows.value[0].subject_code = 'BIN'
     rows.value[0].subject_name = 'Bahasa Indonesia'
     rows.value[0].hours[0] = 4
+    rows.value[0].blocks = rows.value[0].hours.map(h => generateTimeBlocks(h))
 
     rows.value[1].subject_code = 'BIN'
     rows.value[1].subject_name = 'Bahasa Indonesia'
     rows.value[1].hours[0] = 4
+    rows.value[1].blocks = rows.value[1].hours.map(h => generateTimeBlocks(h))
 
     runValidation()
   }
@@ -557,10 +589,23 @@ const simulateRuleAConflict = () => {
 const simulateRuleBConflict = () => {
   if (rows.value.length > 0) {
     const teacherCode = rows.value[0].teacher_code || 'BS'
-    // Inject colliding time slots: Teacher teaches Class 1A and 4A on Senin Jam 1
     timeSlots.value = [
       { day: 'SENIN', period: '1', teacher_code: teacherCode, className: classes.value[0] || '1A' },
       { day: 'SENIN', period: '1', teacher_code: teacherCode, className: classes.value[1] || '4A' }
+    ]
+    runValidation()
+  }
+}
+
+// 3. Simulate Rule C: Teacher Daily Limit Constraint (> 4 JP on Monday)
+const simulateRuleCConflict = () => {
+  if (rows.value.length > 0) {
+    const teacherCode = rows.value[0].teacher_code || 'BS'
+    // 2 JP in 1A + 2 JP in 1B + 2 JP in 2A on Monday = 6 JP (Exceeds 4 JP daily limit!)
+    timeSlots.value = [
+      { day: 'SENIN', period: '1-2', hours: 2, teacher_code: teacherCode, className: classes.value[0] || '1A' },
+      { day: 'SENIN', period: '3-4', hours: 2, teacher_code: teacherCode, className: classes.value[1] || '1B' },
+      { day: 'SENIN', period: '5-6', hours: 2, teacher_code: teacherCode, className: classes.value[2] || '2A' }
     ]
     runValidation()
   }
@@ -588,7 +633,9 @@ const addTeacherRow = () => {
     is_linear: 'true',
     subject_code: '',
     subject_name: '',
-    hours: new Array(classes.value.length).fill(0)
+    hours: new Array(classes.value.length).fill(0),
+    blocks: new Array(classes.value.length).fill([]),
+    total_weekly_jp: 0
   }
   rows.value.unshift(newRow)
   nextTick(() => runValidation())
@@ -606,7 +653,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Keyframe fade in */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }

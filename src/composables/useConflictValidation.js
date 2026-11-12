@@ -4,10 +4,44 @@
  * Strict Validation Rules:
  * - RULE A (Subject Duplication): Prevents multiple teachers from being assigned the same subject in the same class.
  * - RULE B (Time Clash / Double Booking): Prevents a teacher from being assigned to the same time period across multiple classes simultaneously.
- * - MAX WORKLOAD: Alerts if a teacher exceeds the maximum 40 JP limit.
+ * - RULE C (Teacher Daily Limit Constraint): Limits a teacher to MAX_DAILY_TEACHER_JP = 4 JP per day across all classes.
+ * - MAX WORKLOAD: Alerts if a teacher exceeds the maximum 40 JP weekly limit.
  */
 
 import { ref, computed, watch, reactive } from 'vue'
+
+export const MAX_DAILY_TEACHER_JP = 4
+
+/**
+ * Scheduling Engine Constraint Helper
+ * Checks if placing a block of size `blockSize` on `day` for `teacherCode` is allowed.
+ * If it hits the 4 JP limit, it indicates that placement must be blocked and moved to the next day.
+ */
+export const validateDailyTeacherLimit = (currentSlots = [], teacherCode, day, blockSize = 2) => {
+  const normTeacher = (teacherCode || '').trim().toUpperCase()
+  const normDay = (day || '').trim().toUpperCase()
+
+  const currentDailyJP = currentSlots
+    .filter(s => {
+      const sTeacher = (s.teacher_code || s.guru || '').trim().toUpperCase()
+      const sDay = (s.day || '').trim().toUpperCase()
+      return sTeacher === normTeacher && sDay === normDay
+    })
+    .reduce((sum, s) => sum + (Number(s.hours || s.jp || s.duration) || 1), 0)
+
+  const projectedJP = currentDailyJP + blockSize
+  const allowed = projectedJP <= MAX_DAILY_TEACHER_JP
+
+  return {
+    allowed,
+    currentDailyJP,
+    projectedJP,
+    maxDailyJP: MAX_DAILY_TEACHER_JP,
+    reason: allowed
+      ? null
+      : `Batas Harian Terlampaui: Penempatan ${blockSize} JP pada hari ${normDay} menghasilkan total ${projectedJP} JP (Maksimal ${MAX_DAILY_TEACHER_JP} JP/hari). Blok harus dipindahkan ke hari berikutnya.`
+  }
+}
 
 export function useConflictValidation() {
   // Map of rowId -> Array of conflict objects
@@ -35,7 +69,7 @@ export function useConflictValidation() {
    * 
    * @param {Array} rows - Assignment rows
    * @param {Array} classes - List of class names
-   * @param {Array|Object} timeSlots - Optional schedule time-slot entries for Rule B
+   * @param {Array|Object} timeSlots - Optional schedule time-slot entries for Rule B & Rule C
    * @returns {Map} Updated conflicts map
    */
   const validate = (rows = [], classes = [], timeSlots = []) => {
@@ -52,7 +86,6 @@ export function useConflictValidation() {
     // RULE A: Subject Duplication Check
     // (Target_Class cannot have more than 1 teacher for the same Subject_Code)
     // -------------------------------------------------------------
-    // Map structure: classIndex -> subjectCode -> [ { rowId, teacherName, teacherCode, hours } ]
     const classSubjectMap = new Map()
 
     rows.forEach((row, rIdx) => {
@@ -90,7 +123,6 @@ export function useConflictValidation() {
       const className = classes[cIdx] || `Kelas ${cIdx + 1}`
 
       for (const [subjCode, assignments] of subjectMap.entries()) {
-        // If different teachers are assigned the same subject in this class
         const uniqueTeachers = new Set(assignments.map(a => a.teacherCode).filter(Boolean))
         
         if (uniqueTeachers.size > 1 || assignments.length > 1) {
@@ -116,15 +148,12 @@ export function useConflictValidation() {
     }
 
     // -------------------------------------------------------------
-    // RULE B: Time Clash / Double Booking Check
-    // (Teacher_ID cannot be in Class_A and Class_B at Period_X simultaneously)
+    // Normalize timeSlots for RULE B and RULE C
     // -------------------------------------------------------------
-    // Normalise timeSlots to array of { day, period, teacher_code, class_name }
     let flatSlots = []
     if (Array.isArray(timeSlots)) {
       flatSlots = timeSlots
     } else if (typeof timeSlots === 'object' && timeSlots !== null) {
-      // If structured as { "SENIN-1-1A": { guru: "BS", mapel: "MAT" } }
       for (const [key, val] of Object.entries(timeSlots)) {
         if (val && (val.guru || val.teacher_code)) {
           const parts = key.split('-')
@@ -134,14 +163,18 @@ export function useConflictValidation() {
               period: parts[1],
               className: parts.slice(2).join('-'),
               teacher_code: (val.guru || val.teacher_code || '').toUpperCase(),
-              subject_code: (val.mapel || val.subject_code || '').toUpperCase()
+              subject_code: (val.mapel || val.subject_code || '').toUpperCase(),
+              hours: Number(val.hours || val.jp || val.duration) || 1
             })
           }
         }
       }
     }
 
-    // Group slots by `${day}__${period}__${teacher_code}`
+    // -------------------------------------------------------------
+    // RULE B: Time Clash / Double Booking Check
+    // (Teacher_ID cannot be in Class_A and Class_B at Period_X simultaneously)
+    // -------------------------------------------------------------
     const periodTeacherMap = new Map()
     flatSlots.forEach(slot => {
       const tCode = (slot.teacher_code || '').trim().toUpperCase()
@@ -158,7 +191,6 @@ export function useConflictValidation() {
       periodTeacherMap.get(slotKey).push({ ...slot, className: cls })
     })
 
-    // Detect double bookings
     for (const [slotKey, bookings] of periodTeacherMap.entries()) {
       const uniqueClasses = new Set(bookings.map(b => b.className).filter(Boolean))
 
@@ -166,7 +198,6 @@ export function useConflictValidation() {
         const [day, period, tCode] = slotKey.split('__')
         const classNames = Array.from(uniqueClasses).join(' & ')
 
-        // Find all rows for this teacher and attach Rule B conflict
         rows.forEach((row, rIdx) => {
           const rowTCode = (row.teacher_code || '').trim().toUpperCase()
           if (rowTCode === tCode) {
@@ -188,7 +219,48 @@ export function useConflictValidation() {
     }
 
     // -------------------------------------------------------------
-    // RULE C: Maximum Workload Check (Max 40 JP)
+    // RULE C: Teacher Daily Limit Constraint (MAX_DAILY_TEACHER_JP = 4)
+    // (A teacher can only teach a maximum of 4 JP per day across all assigned classes)
+    // -------------------------------------------------------------
+    const teacherDailyJP = new Map()
+    flatSlots.forEach(slot => {
+      const tCode = (slot.teacher_code || '').trim().toUpperCase()
+      const day = (slot.day || '').trim().toUpperCase()
+      const jp = Number(slot.hours || slot.jp || slot.duration) || 1
+
+      if (!tCode || !day) return
+
+      const dailyKey = `${day}__${tCode}`
+      teacherDailyJP.set(dailyKey, (teacherDailyJP.get(dailyKey) || 0) + jp)
+    })
+
+    for (const [dailyKey, totalDailyJP] of teacherDailyJP.entries()) {
+      if (totalDailyJP > MAX_DAILY_TEACHER_JP) {
+        const [day, tCode] = dailyKey.split('__')
+
+        rows.forEach((row, rIdx) => {
+          const rowTCode = (row.teacher_code || '').trim().toUpperCase()
+          if (rowTCode === tCode) {
+            const rowId = getRowId(row, rIdx)
+            const tName = row.teacher_name || tCode
+            addConflict(rowId, {
+              rule: 'RULE_C',
+              type: 'DAILY_LIMIT_EXCEEDED',
+              title: `Batas Harian Guru Terlampaui (Max ${MAX_DAILY_TEACHER_JP} JP)`,
+              day,
+              teacherCode: tCode,
+              dailyJP: totalDailyJP,
+              maxDailyJP: MAX_DAILY_TEACHER_JP,
+              message: `Batas Harian Terlampaui: Guru ${tName} (${tCode}) dijadwalkan ${totalDailyJP} JP pada hari ${day} (Batas maksimal ${MAX_DAILY_TEACHER_JP} JP/hari). Blok harus dipindahkan ke hari lain.`,
+              severity: 'error'
+            })
+          }
+        })
+      }
+    }
+
+    // -------------------------------------------------------------
+    // RULE D: Maximum Weekly Workload Check (Max 40 JP)
     // -------------------------------------------------------------
     const teacherTotalJP = new Map()
     rows.forEach(row => {
@@ -206,10 +278,10 @@ export function useConflictValidation() {
         addConflict(rowId, {
           rule: 'RULE_WORKLOAD',
           type: 'OVERLOAD',
-          title: 'Beban Mengajar Melebihi Batas',
+          title: 'Beban Mingguan Melebihi Batas',
           totalJP,
           maxWorkload: 40,
-          message: `Beban Mengajar Berlebih: Total ${totalJP} JP (Maksimal standar 40 JP).`,
+          message: `Beban Mingguan Berlebih: Total ${totalJP} JP (Maksimal standar 40 JP/minggu).`,
           severity: 'warning'
         })
       }
@@ -219,51 +291,33 @@ export function useConflictValidation() {
     return newConflicts
   }
 
-  /**
-   * Check if a row has any conflict
-   */
   const hasConflict = (rowId) => {
     const list = conflicts.value.get(String(rowId))
     return Boolean(list && list.length > 0)
   }
 
-  /**
-   * Get all conflict objects for a row
-   */
   const getConflicts = (rowId) => {
     return conflicts.value.get(String(rowId)) || []
   }
 
-  /**
-   * Get the primary/most critical conflict for a row
-   */
   const getPrimaryConflict = (rowId) => {
     const list = getConflicts(rowId)
     if (list.length === 0) return null
-    // Prioritize errors over warnings
     const errorConflict = list.find(c => c.severity === 'error')
     return errorConflict || list[0]
   }
 
-  /**
-   * Get formatted tooltip text for a row
-   */
   const getConflictTooltip = (rowId) => {
     const list = getConflicts(rowId)
     if (list.length === 0) return ''
     return list.map(c => c.message).join('\n• ')
   }
 
-  /**
-   * Mark rows as successful (e.g. conflict-free edit or successfully saved)
-   * Triggers moving green line animation for the specified duration.
-   */
   const markSuccess = (rowIds, duration = 3500) => {
     const ids = Array.isArray(rowIds) ? rowIds : [rowIds]
 
     ids.forEach(id => {
       const strId = String(id)
-      // Only set success if there is NO conflict currently
       if (!hasConflict(strId)) {
         successStates.set(strId, true)
 
@@ -281,9 +335,6 @@ export function useConflictValidation() {
     })
   }
 
-  /**
-   * Mark all conflict-free rows as successful (e.g. after "Save" or "Auto-Distribute")
-   */
   const markAllSuccess = (rows = [], duration = 3500) => {
     rows.forEach((row, idx) => {
       const rowId = getRowId(row, idx)
@@ -293,9 +344,6 @@ export function useConflictValidation() {
     })
   }
 
-  /**
-   * Get visual state of a card: 'error' | 'success' | 'default'
-   */
   const getCardState = (rowId) => {
     const strId = String(rowId)
     if (hasConflict(strId)) {
@@ -307,9 +355,6 @@ export function useConflictValidation() {
     return 'default'
   }
 
-  /**
-   * Total number of conflicts currently detected
-   */
   const totalConflictCount = computed(() => {
     let count = 0
     for (const list of conflicts.value.values()) {
@@ -332,6 +377,7 @@ export function useConflictValidation() {
     getCardState,
     totalConflictCount,
     hasAnyConflict,
-    getRowId
+    getRowId,
+    MAX_DAILY_TEACHER_JP
   }
 }
