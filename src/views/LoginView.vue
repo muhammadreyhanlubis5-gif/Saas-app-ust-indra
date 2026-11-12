@@ -177,6 +177,20 @@
             <p class="text-xs text-gray-400 mt-1.5 font-medium">Masuk ke portal administrasi GuruKu</p>
           </div>
 
+          <!-- Banner Notifikasi Error Login Interaktif -->
+          <div v-if="loginErrorMessage" class="mb-4 p-3.5 bg-rose-50 border border-rose-200 rounded-2xl flex items-start gap-3 animate-fade-in shadow-xs">
+            <svg class="w-5 h-5 text-rose-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div class="flex-1">
+              <p class="text-xs font-bold text-rose-800">{{ loginErrorTitle }}</p>
+              <p class="text-xs text-rose-700 mt-0.5 leading-relaxed">{{ loginErrorMessage }}</p>
+            </div>
+            <button type="button" @click="loginErrorMessage = ''" class="text-rose-400 hover:text-rose-700 p-1 cursor-pointer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </div>
+
           <!-- Formulir Masuk -->
           <form @submit.prevent="handleLogin" class="space-y-4">
             
@@ -566,6 +580,8 @@ const showAnimation = ref(false)
 const loadingText = ref('Sinkronisasi dengan server...')
 const workspaceProgress = ref(0)
 const initError = ref(null)
+const loginErrorMessage = ref('')
+const loginErrorTitle = ref('')
 let safetyTimer = null
 
 // Modal Bantuan & Layanan Aduan
@@ -831,7 +847,7 @@ const handleLogin = async () => {
       showAnimation.value = false
       if (authResult.role === 'SUPER_ADMIN') {
         await router.push(ROUTES.SUPER_ADMIN)
-      } else if (authResult.role === 'SCHOOL_ADMIN') {
+      } else if (authResult.role === 'SCHOOL_ADMIN' || authResult.role === 'CURRICULUM_ADMIN' || authResult.role === 'PRINCIPAL') {
         await router.push(ROUTES.SCHOOL_ADMIN)
       } else {
         await router.push(ROUTES.TEACHER)
@@ -844,10 +860,26 @@ const handleLogin = async () => {
       safetyTimer = null
     }
     console.error('[Login Error]', error)
-    initError.value = error.message || 'Terjadi kesalahan jaringan saat masuk.'
+    const errCode = authStore.error?.code || 'AUTH_FAILED'
+    const errMsg = authStore.error?.message || error.message || 'Terjadi kesalahan jaringan saat masuk.'
+
+    if (errCode === 'TENANT_SUSPENDED') {
+      loginErrorTitle.value = 'Akses Lembaga Ditangguhkan'
+      loginErrorMessage.value = errMsg
+    } else if (errCode === 'SUBSCRIPTION_EXPIRED') {
+      loginErrorTitle.value = 'Masa Lisensi Berakhir'
+      loginErrorMessage.value = errMsg
+    } else if (errCode === 'TIMEOUT') {
+      loginErrorTitle.value = 'Koneksi Server Timeout'
+      loginErrorMessage.value = errMsg
+    } else {
+      loginErrorTitle.value = 'Gagal Masuk Akun'
+      loginErrorMessage.value = errMsg
+    }
+
+    initError.value = errMsg
     if (!authStore.isAuthenticated) {
       showAnimation.value = false
-      alert('Login Gagal: ' + initError.value)
     }
   } finally {
     isSubmitting.value = false

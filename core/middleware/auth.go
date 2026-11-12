@@ -138,3 +138,43 @@ func AuthMiddleware() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+/**
+ * RequireRoles
+ * RBAC authorization middleware ensuring the user belongs to at least one of the permitted roles.
+ */
+func RequireRoles(allowedRoles ...string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		roleVal, exists := c.Get("role")
+		if !exists {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error":   "Unauthorized",
+				"message": "Identitas peran tidak ditemukan dalam sesi.",
+				"code":    "ROLE_MISSING",
+			})
+			return
+		}
+
+		userRole, ok := roleVal.(string)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"error": "Tipe data peran tidak valid.",
+			})
+			return
+		}
+
+		normalizedUserRole := strings.ToUpper(strings.TrimSpace(userRole))
+		for _, allowed := range allowedRoles {
+			if strings.ToUpper(strings.TrimSpace(allowed)) == normalizedUserRole {
+				c.Next()
+				return
+			}
+		}
+
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+			"error":   "Forbidden",
+			"message": "Anda tidak memiliki wewenang untuk mengakses endpoint ini.",
+			"code":    "INSUFFICIENT_PERMISSIONS",
+		})
+	}
+}

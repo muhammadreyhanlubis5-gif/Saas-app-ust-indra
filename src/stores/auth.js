@@ -1,6 +1,32 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
+// Matrix Izin Peran Sesuai Master Architecture GuruKu
+export const ROLE_PERMISSIONS = {
+  SUPER_ADMIN: [
+    'manage_tenants', 'manage_subscriptions', 'view_all_schools', 'manage_users',
+    'manage_teachers', 'manage_classes', 'manage_subjects', 'manage_schedule',
+    'view_schedule', 'publish_schedule', 'export_schedule', 'view_financials', 'manage_tickets'
+  ],
+  SCHOOL_ADMIN: [
+    'manage_school_profile', 'manage_teachers', 'manage_classes', 'manage_subjects',
+    'manage_time_slots', 'manage_distribution', 'manage_constraints', 'run_scheduler',
+    'view_schedule', 'publish_schedule', 'export_schedule', 'request_renewal'
+  ],
+  CURRICULUM_ADMIN: [
+    'manage_teachers', 'manage_classes', 'manage_subjects', 'manage_time_slots',
+    'manage_distribution', 'manage_constraints', 'run_scheduler', 'view_schedule',
+    'export_schedule'
+  ],
+  PRINCIPAL: [
+    'view_school_profile', 'view_teachers', 'view_classes', 'view_subjects',
+    'view_schedule', 'publish_schedule', 'export_schedule', 'view_analytics'
+  ],
+  TEACHER: [
+    'view_my_schedule', 'request_blocked_slots', 'view_school_schedule', 'export_schedule'
+  ]
+}
+
 export const useAuthStore = defineStore('auth', () => {
   // Token HANYA disimpan di memory (RAM), TIDAK PERNAH di localStorage
   const token = ref(null)
@@ -30,16 +56,33 @@ export const useAuthStore = defineStore('auth', () => {
     return true
   })
 
+  // Role Checks
   const isSuperAdmin = computed(() => role.value === 'SUPER_ADMIN')
   const isSchoolAdmin = computed(() => role.value === 'SCHOOL_ADMIN')
+  const isCurriculumAdmin = computed(() => role.value === 'CURRICULUM_ADMIN')
+  const isPrincipal = computed(() => role.value === 'PRINCIPAL')
   const isTeacher = computed(() => role.value === 'TEACHER')
 
-  // Helper normalisasi role
+  // Permission Checks
+  const canManageSchool = computed(() => isSuperAdmin.value || isSchoolAdmin.value)
+  const canManageSchedule = computed(() => isSuperAdmin.value || isSchoolAdmin.value || isCurriculumAdmin.value)
+  const canPublishSchedule = computed(() => isSuperAdmin.value || isSchoolAdmin.value || isPrincipal.value)
+  const canViewSchedule = computed(() => isAuthenticated.value)
+
+  function can(permission) {
+    if (!role.value) return false
+    const permissions = ROLE_PERMISSIONS[role.value] || []
+    return permissions.includes(permission)
+  }
+
+  // Helper normalisasi role untuk 5 peran utama
   function normalizeRole(r) {
     if (!r) return ''
     const upper = String(r).toUpperCase().trim()
     if (upper === 'SUPER_ADMIN' || upper === 'SUPERADMIN') return 'SUPER_ADMIN'
     if (upper === 'SCHOOL_ADMIN' || upper === 'ADMIN_SEKOLAH') return 'SCHOOL_ADMIN'
+    if (upper === 'CURRICULUM_ADMIN' || upper === 'WAKASEK_KURIKULUM' || upper === 'KURIKULUM') return 'CURRICULUM_ADMIN'
+    if (upper === 'PRINCIPAL' || upper === 'KEPALA_SEKOLAH') return 'PRINCIPAL'
     if (upper === 'TEACHER' || upper === 'GURU') return 'TEACHER'
     return upper
   }
@@ -164,7 +207,10 @@ export const useAuthStore = defineStore('auth', () => {
 
       if (!response.ok) {
         const errorMsg = data.error || data.message || 'Username atau password tidak sesuai.'
-        error.value = errorMsg
+        error.value = {
+          code: data.code || (response.status === 403 ? 'ACCESS_FORBIDDEN' : 'INVALID_CREDENTIALS'),
+          message: errorMsg
+        }
         throw new Error(errorMsg)
       }
 
@@ -201,9 +247,15 @@ export const useAuthStore = defineStore('auth', () => {
       throw new Error('Server tidak mengembalikan sesi yang valid.')
     } catch (err) {
       if (err.name === 'AbortError') {
-        error.value = 'Waktu koneksi habis (Timeout). Mohon periksa jaringan Anda dan coba lagi.'
+        error.value = {
+          code: 'TIMEOUT',
+          message: 'Waktu koneksi habis (Timeout). Mohon periksa jaringan Anda dan coba lagi.'
+        }
       } else if (!error.value) {
-        error.value = err.message || 'Terjadi gangguan jaringan saat menghubungi server.'
+        error.value = {
+          code: 'NETWORK_ERROR',
+          message: err.message || 'Terjadi gangguan jaringan saat menghubungi server.'
+        }
       }
       throw err
     } finally {
@@ -256,7 +308,14 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated,
     isSuperAdmin,
     isSchoolAdmin,
+    isCurriculumAdmin,
+    isPrincipal,
     isTeacher,
+    canManageSchool,
+    canManageSchedule,
+    canPublishSchedule,
+    canViewSchedule,
+    can,
     login,
     logout,
     restoreSession,

@@ -140,7 +140,9 @@ router.beforeEach(async (to, from, next) => {
   // Jika sudah terautentikasi dan membuka halaman Login (/), arahkan langsung ke dashboard yang sesuai
   if (to.name === 'Login' && isAuth) {
     if (role === 'SUPER_ADMIN') return next({ path: ROUTES.SUPER_ADMIN })
-    if (role === 'SCHOOL_ADMIN') return next({ path: ROUTES.SCHOOL_ADMIN })
+    if (role === 'SCHOOL_ADMIN' || role === 'CURRICULUM_ADMIN' || role === 'PRINCIPAL') {
+      return next({ path: ROUTES.SCHOOL_ADMIN })
+    }
     if (role === 'TEACHER') return next({ path: ROUTES.TEACHER })
   }
 
@@ -150,14 +152,25 @@ router.beforeEach(async (to, from, next) => {
       return next({ name: 'Login' })
     }
 
-    if (to.meta.role) {
-      const requiredRole = String(to.meta.role).toUpperCase().trim()
-      if (role !== requiredRole) {
-        if (role === 'SUPER_ADMIN') return next({ path: ROUTES.SUPER_ADMIN })
-        if (role === 'SCHOOL_ADMIN') return next({ path: ROUTES.SCHOOL_ADMIN })
-        if (role === 'TEACHER') return next({ path: ROUTES.TEACHER })
-        return next({ name: 'Login' })
+    // Mendukung pengecekan single role (meta.role) maupun multi-role array (meta.roles)
+    const allowedRoles = Array.isArray(to.meta.roles) 
+      ? to.meta.roles.map(r => String(r).toUpperCase().trim())
+      : (to.meta.role ? [String(to.meta.role).toUpperCase().trim()] : [])
+
+    // Izinkan CURRICULUM_ADMIN dan PRINCIPAL mengakses workspace SCHOOL_ADMIN
+    if (allowedRoles.includes('SCHOOL_ADMIN')) {
+      if (!allowedRoles.includes('CURRICULUM_ADMIN')) allowedRoles.push('CURRICULUM_ADMIN')
+      if (!allowedRoles.includes('PRINCIPAL')) allowedRoles.push('PRINCIPAL')
+    }
+
+    if (allowedRoles.length > 0 && !allowedRoles.includes(role)) {
+      console.warn(`[RouteGuard] Akses ditolak untuk role ${role} ke rute ${to.path}. Dibutuhkan: ${allowedRoles.join(', ')}`)
+      if (role === 'SUPER_ADMIN') return next({ path: ROUTES.SUPER_ADMIN })
+      if (role === 'SCHOOL_ADMIN' || role === 'CURRICULUM_ADMIN' || role === 'PRINCIPAL') {
+        return next({ path: ROUTES.SCHOOL_ADMIN })
       }
+      if (role === 'TEACHER') return next({ path: ROUTES.TEACHER })
+      return next({ name: 'Login' })
     }
   }
 
