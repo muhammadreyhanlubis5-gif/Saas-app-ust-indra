@@ -1,6 +1,52 @@
 <template>
   <div class="animate-fade-in-up p-4 md:p-8 max-w-[1400px] mx-auto w-full select-none" @mouseup="handleMouseUp">
     
+    <!-- Toast Notification Banner -->
+    <transition
+      enter-active-class="transform ease-out duration-300 transition"
+      enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-4"
+      enter-to-class="translate-y-0 opacity-100 sm:translate-x-0"
+      leave-active-class="transition ease-in duration-200"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div 
+        v-if="toast" 
+        class="fixed top-5 right-5 z-50 max-w-sm sm:max-w-md w-full shadow-xl rounded-2xl border p-4 flex items-start gap-3 backdrop-blur-md"
+        :class="{
+          'bg-rose-50/95 border-rose-300 text-rose-900': toast.type === 'error',
+          'bg-amber-50/95 border-amber-300 text-amber-900': toast.type === 'warning',
+          'bg-emerald-50/95 border-emerald-300 text-emerald-900': toast.type === 'success'
+        }"
+      >
+        <!-- Icon Error -->
+        <svg v-if="toast.type === 'error'" class="w-5 h-5 text-rose-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <!-- Icon Warning -->
+        <svg v-else-if="toast.type === 'warning'" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <!-- Icon Success -->
+        <svg v-else class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-black tracking-tight" :class="toast.type === 'error' ? 'text-rose-950' : (toast.type === 'warning' ? 'text-amber-950' : 'text-emerald-950')">
+            {{ toast.title }}
+          </p>
+          <p class="text-xs mt-0.5 leading-relaxed opacity-90">
+            {{ toast.message }}
+          </p>
+        </div>
+
+        <button @click="toast = null" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-black/5 transition-colors cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </transition>
+
     <!-- Header SaaS Modern -->
     <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-blue-950 rounded-3xl p-6 md:p-8 text-white shadow-xl mb-8 relative overflow-hidden border border-blue-800/40">
       <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -97,7 +143,7 @@
         <div>
           <div class="flex items-start justify-between gap-3 mb-3">
             <div class="flex items-center gap-3">
-              <div class="w-12 h-12 bg-gradient-to-br from-blue-50 to-indigo-50 text-blue-700 rounded-xl flex items-center justify-center font-black text-base shadow-inner border border-blue-100 flex-shrink-0 group-hover:scale-105 transition-transform">
+              <div class="w-12 h-12 bg-gradient-to-br from-blue-50 to-indigo-50 text-blue-700 rounded-xl flex items-center justify-center font-black text-base shadow-inner border border-blue-100 shrink-0 group-hover:scale-105 transition-transform">
                 {{ teacher.code }}
               </div>
               <div class="min-w-0">
@@ -111,17 +157,17 @@
         </div>
         
         <div class="flex items-center justify-between mt-4 pt-3.5 border-t border-slate-100 gap-2">
-          <!-- Summary Badge (e.g. "4 Jam Kosong (Rabu)" or "0 Jam Kosong") -->
+          <!-- Summary Badge (e.g. "4 Jam Kosong (Rabu)" or "0 Jam Kosong") - O(1) Precomputed -->
           <div class="min-w-0">
             <span 
-              v-if="hasTeacherConstraint(teacher.code)"
+              v-if="(teacherBlockedCountMap.get(teacher.code) || 0) > 0"
               class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black bg-rose-50 text-rose-700 border border-rose-200/80 shadow-2xs max-w-full truncate"
-              :title="getSummaryText(teacher.code)"
+              :title="teacherSummaryMap.get(teacher.code)"
             >
               <svg class="w-3.5 h-3.5 shrink-0 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
               </svg>
-              <span class="truncate">{{ getSummaryText(teacher.code) }}</span>
+              <span class="truncate">{{ teacherSummaryMap.get(teacher.code) }}</span>
             </span>
             <span 
               v-else 
@@ -194,42 +240,58 @@
           </button>
         </div>
 
-        <!-- Modal Summary Toolbar -->
+        <!-- Modal Summary Toolbar & STRICTLY NO EMOJI Legend -->
         <div class="px-5 sm:px-6 py-2.5 bg-slate-100/60 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
           <div class="flex items-center gap-4 flex-wrap">
             <span class="font-bold text-slate-700">
               Total Diblokir: 
-              <span class="font-black text-rose-600">{{ getTeacherBlockedHours(selectedTeacher.code) }} Jam</span>
+              <span class="font-black text-rose-600">{{ currentTeacherBlockedCount }} Jam</span>
             </span>
-            <span class="text-slate-400">|</span>
-            <div class="flex items-center gap-3">
-              <span class="inline-flex items-center gap-1.5 text-slate-600 font-medium">
-                <span class="w-3 h-3 rounded bg-white border border-slate-300 inline-block"></span> Bisa Mengajar
+            <span class="text-slate-300">|</span>
+            <!-- Pure SVG Legend as Requested -->
+            <div class="flex items-center gap-4 flex-wrap">
+              <!-- Legend 1: Bisa Mengajar (Empty square with subtle gray border) -->
+              <span class="inline-flex items-center gap-1.5 text-slate-600 font-semibold text-xs">
+                <span class="w-3.5 h-3.5 rounded-sm border-2 border-slate-300 bg-white inline-block shadow-2xs"></span>
+                <span>Bisa Mengajar</span>
               </span>
-              <span class="inline-flex items-center gap-1.5 text-rose-700 font-bold">
-                <span class="w-3 h-3 rounded bg-rose-500 inline-block"></span> Diblokir (No Entry)
+              <!-- Legend 2: Diblokir (Solid Red with white X icon) -->
+              <span class="inline-flex items-center gap-1.5 text-rose-700 font-bold text-xs">
+                <span class="w-3.5 h-3.5 rounded-sm bg-rose-600 text-white inline-flex items-center justify-center shadow-2xs">
+                  <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/>
+                  </svg>
+                </span>
+                <span>Diblokir (No Entry)</span>
               </span>
-              <span class="inline-flex items-center gap-1.5 text-amber-700 font-bold">
-                <span class="w-3 h-3 rounded bg-amber-100 border border-amber-300 inline-block"></span> Ada Jadwal Aktif
+              <!-- Legend 3: Ada Jadwal Aktif (Solid Amber with Lock icon) -->
+              <span class="inline-flex items-center gap-1.5 text-amber-800 font-bold text-xs">
+                <span class="w-3.5 h-3.5 rounded-sm bg-amber-500 text-white inline-flex items-center justify-center shadow-2xs">
+                  <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                  </svg>
+                </span>
+                <span>Ada Jadwal Aktif</span>
               </span>
             </div>
           </div>
 
           <div class="flex items-center gap-2">
             <button 
-              @click="clearTeacherBlocks(selectedTeacher.code)"
-              class="px-2.5 py-1 text-slate-600 hover:text-rose-600 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200 rounded-lg font-bold text-[11px] transition-colors cursor-pointer"
+              @click="clearTeacherBlocks"
+              class="px-2.5 py-1 text-slate-600 hover:text-rose-600 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200 rounded-lg font-bold text-[11px] transition-colors cursor-pointer inline-flex items-center gap-1"
             >
-              Reset Semua Blok
+              <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              <span>Reset Blokir Guru Ini</span>
             </button>
           </div>
         </div>
         
-        <!-- 2D GRID BODY (Y: Time Slots, X: Days) -->
+        <!-- 2D GRID BODY (Y: Time Slots, X: Days) - O(1) ULTRA-PERFORMANCE -->
         <div class="p-4 sm:p-6 overflow-auto custom-scrollbar flex-1 bg-slate-50/50">
           <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden min-w-[720px]">
             <table class="w-full border-collapse">
-              <!-- THEAD: DAYS ON X-AXIS + QUICK-SELECT COLUMN BUTTONS -->
+              <!-- THEAD: DAYS ON X-AXIS + QUICK-SELECT COLUMN BUTTONS (NO EMOJIS) -->
               <thead>
                 <tr class="bg-slate-100 text-slate-700 text-xs border-b border-slate-200">
                   <th class="py-3 px-4 font-black uppercase text-slate-500 w-36 text-left border-r border-slate-200 bg-slate-100/90 sticky left-0 z-20">
@@ -242,17 +304,24 @@
                   >
                     <div class="flex flex-col items-center gap-1">
                       <span class="text-sm font-black text-slate-900 tracking-tight">{{ day }}</span>
-                      <!-- Quick-Select Column Header Button: Block / Unblock Entire Day -->
+                      
+                      <!-- Quick-Select Column Header Button with Clean SVG Icons -->
                       <button 
                         type="button"
                         @click="toggleEntireDay(day)"
-                        class="text-[10px] px-2 py-0.5 rounded-full font-bold transition-all border cursor-pointer active:scale-95"
-                        :class="isEntireDayBlocked(day, selectedTeacher.code) 
-                          ? 'bg-rose-500 text-white border-rose-600 shadow-2xs' 
-                          : 'bg-white text-slate-600 hover:bg-slate-100 border-slate-300'"
+                        class="text-[10px] px-2.5 py-1 rounded-lg font-bold transition-all border cursor-pointer active:scale-95 inline-flex items-center gap-1 shadow-2xs"
+                        :class="isDayFullyBlocked(day) 
+                          ? 'bg-rose-600 text-white border-rose-700' 
+                          : 'bg-white text-slate-700 hover:bg-slate-50 border-slate-300'"
                         :title="'Klik untuk memblokir atau membuka seluruh hari ' + day"
                       >
-                        {{ isEntireDayBlocked(day, selectedTeacher.code) ? '✕ Buka Hari' : '⚡ Blok Hari' }}
+                        <svg v-if="isDayFullyBlocked(day)" class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        <svg v-else class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                        <span>{{ isDayFullyBlocked(day) ? 'Buka Hari' : 'Blok Hari' }}</span>
                       </button>
                     </div>
                   </th>
@@ -266,7 +335,7 @@
                   :key="'slot-row-'+slotNum"
                   class="hover:bg-slate-50/70 transition-colors"
                 >
-                  <!-- Row Header: Slot Index & Time Range -->
+                  <!-- Row Header: Slot Index & Time Range (O(1) precomputed) -->
                   <td class="py-3 px-4 text-xs font-bold text-slate-800 bg-slate-50 border-r border-slate-200 sticky left-0 z-10">
                     <div class="flex items-center gap-2">
                       <span class="w-6 h-6 rounded-md bg-blue-100 text-blue-800 flex items-center justify-center font-black text-xs shrink-0">
@@ -275,7 +344,7 @@
                       <div class="min-w-0">
                         <span class="font-bold text-slate-800 block text-xs">Jam ke-{{ slotNum }}</span>
                         <span class="text-[10px] text-slate-500 font-mono block">
-                          {{ getSlotReferenceTime(slotNum) }}
+                          {{ slotReferenceTimes[slotNum - 1] || 'Waktu KBM' }}
                         </span>
                       </div>
                     </div>
@@ -287,10 +356,10 @@
                     :key="'cell-'+day+'-'+slotNum"
                     class="p-1.5 text-center border-r last:border-r-0 border-slate-200 align-middle relative"
                   >
-                    <!-- If day does NOT have this slot -->
+                    <!-- If day does NOT have this slot: O(1) Map lookup -->
                     <div 
-                      v-if="!hasDaySlot(day, slotNum)" 
-                      class="h-14 rounded-xl flex items-center justify-center bg-slate-100/50 text-slate-300 text-xs font-mono"
+                      v-if="slotNum > (dayKbmCountMap.get(day) || 0)" 
+                      class="h-13 rounded-xl flex items-center justify-center bg-slate-100/50 text-slate-300 text-xs font-mono"
                     >
                       —
                     </div>
@@ -300,31 +369,40 @@
                       v-else
                       @mousedown="handleCellMouseDown(day, slotNum)"
                       @mouseenter="handleCellMouseEnter(day, slotNum)"
-                      class="h-14 rounded-xl border p-2 flex flex-col items-center justify-center transition-all cursor-pointer select-none group"
-                      :class="getCellClasses(day, slotNum, selectedTeacher.code)"
+                      class="h-13 rounded-xl border p-2 flex flex-col items-center justify-center transition-all cursor-pointer select-none group"
+                      :class="{
+                        'bg-rose-600 border-rose-600 text-white shadow-xs': blockedSlotsSet.has(day + '__' + slotNum),
+                        'bg-amber-50 border-amber-300 text-amber-950 shadow-2xs': !blockedSlotsSet.has(day + '__' + slotNum) && activeScheduleMap.has(day + '__' + slotNum),
+                        'bg-white border-slate-200 hover:border-blue-400 hover:bg-blue-50/40': !blockedSlotsSet.has(day + '__' + slotNum) && !activeScheduleMap.has(day + '__' + slotNum)
+                      }"
                     >
-                      <!-- 1. BLOCKED CELL: Red background with 'No Entry' icon -->
-                      <div v-if="isSlotBlockedCheck(day, slotNum, selectedTeacher.code)" class="flex flex-col items-center gap-0.5">
-                        <svg class="w-4 h-4 text-rose-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
-                        </svg>
-                        <span class="text-[10px] font-black uppercase tracking-wider text-rose-700">TIDAK BISA</span>
+                      <!-- 1. BLOCKED CELL: Solid Red with white X icon (O(1) Set lookup) -->
+                      <div v-if="blockedSlotsSet.has(day + '__' + slotNum)" class="flex flex-col items-center gap-0.5">
+                        <div class="w-4 h-4 rounded-sm bg-white/20 flex items-center justify-center">
+                          <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/>
+                          </svg>
+                        </div>
+                        <span class="text-[9px] font-black uppercase tracking-wider text-rose-100">Diblokir</span>
                       </div>
 
-                      <!-- 2. HAS ACTIVE SCHEDULED CLASS: Show Warning badge -->
-                      <div v-else-if="getActiveClass(day, slotNum, selectedTeacher.code)" class="flex flex-col items-center gap-0.5 text-[10px]">
-                        <span class="font-bold text-amber-900 truncate max-w-[90px]">
-                          {{ getActiveClass(day, slotNum, selectedTeacher.code).subject }}
-                        </span>
-                        <span class="font-mono text-[9px] px-1 bg-amber-200 text-amber-900 rounded font-black">
-                          Kelas {{ getActiveClass(day, slotNum, selectedTeacher.code).class_id }}
+                      <!-- 2. HAS ACTIVE SCHEDULED CLASS: Solid Amber with Lock/Calendar icon (O(1) Map lookup) -->
+                      <div v-else-if="activeScheduleMap.has(day + '__' + slotNum)" class="flex flex-col items-center gap-0.5 text-[10px]">
+                        <div class="flex items-center gap-1 text-amber-900 font-black">
+                          <svg class="w-3 h-3 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                          </svg>
+                          <span class="truncate max-w-[80px]">{{ activeScheduleMap.get(day + '__' + slotNum).subject }}</span>
+                        </div>
+                        <span class="font-mono text-[9px] px-1 py-0.2 bg-amber-200/90 text-amber-950 rounded font-black">
+                          Kelas {{ activeScheduleMap.get(day + '__' + slotNum).class_id }}
                         </span>
                       </div>
 
-                      <!-- 3. FREE / AVAILABLE CELL -->
-                      <div v-else class="flex flex-col items-center gap-0.5 opacity-40 group-hover:opacity-100 transition-opacity">
-                        <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        <span class="text-[9px] font-bold text-slate-500">Tersedia</span>
+                      <!-- 3. FREE / AVAILABLE CELL: Empty square with subtle gray border (O(1)) -->
+                      <div v-else class="flex flex-col items-center gap-0.5 opacity-50 group-hover:opacity-100 transition-opacity">
+                        <div class="w-3.5 h-3.5 rounded-sm border-2 border-slate-300 group-hover:border-blue-500 bg-white transition-colors"></div>
+                        <span class="text-[9px] font-semibold text-slate-400 group-hover:text-blue-600 transition-colors">Tersedia</span>
                       </div>
                     </div>
                   </td>
@@ -358,7 +436,7 @@
       </div>
     </div>
 
-    <!-- Success Modal Notification -->
+    <!-- Success Modal Notification (STRICTLY NO EMOJIS) -->
     <div v-if="showSuccessModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 transition-opacity">
       <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative animate-bounce-in text-center border-t-8 border-emerald-500">
         <button @click="showSuccessModal = false" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-full p-2 transition-colors">
@@ -367,7 +445,7 @@
         <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full mx-auto flex items-center justify-center mb-5 shadow-inner relative">
           <svg class="w-10 h-10 animate-draw-check" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
         </div>
-        <h2 class="text-2xl font-black text-slate-900 mb-1">Berhasil Disimpan!</h2>
+        <h2 class="text-2xl font-black text-slate-900 mb-1">Berhasil Disimpan</h2>
         <p class="text-xs text-slate-500 mb-6 font-medium leading-relaxed">
           Permintaan Jam Kosong guru telah disinkronkan ke Database & Mesin Penjadwalan GuruKu.
         </p>
@@ -387,10 +465,6 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import {
   normalizeTeacherConstraints,
-  isTeacherBlocked,
-  findActiveScheduleConflict,
-  toggleSlotConstraint,
-  toggleDayConstraint,
   formatTeacherConstraintSummary,
   getTeacherTotalBlockedSlots,
   constraintsToLegacyDict,
@@ -400,6 +474,24 @@ import {
   DAY_ORDER
 } from '../core/teacherConstraintsStore.js'
 
+// Safe API Fetcher Helper to guarantee NO "Unexpected token '<'"
+const safeFetchJson = async (url, options = {}) => {
+  try {
+    const res = await fetch(url, options)
+    if (!res.ok) {
+      return { ok: false, status: res.status, data: null, error: `HTTP ${res.status}` }
+    }
+    const contentType = res.headers.get('content-type') || ''
+    if (!contentType.includes('application/json')) {
+      return { ok: false, status: res.status, data: null, error: 'Format respons bukan JSON' }
+    }
+    const data = await res.json()
+    return { ok: true, status: res.status, data, error: null }
+  } catch (err) {
+    return { ok: false, status: 0, data: null, error: err.message || 'Jaringan terputus' }
+  }
+}
+
 const loading = ref(true)
 const saving = ref(false)
 const showSuccessModal = ref(false)
@@ -407,9 +499,9 @@ const schoolId = localStorage.getItem('school_id')
 
 // Master data
 const teachers = ref([])
-const activeDays = ref([])
+const activeDays = ref(['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'])
 const daySessions = ref({})
-const activeSchedule = ref([])
+const rawActiveSchedule = ref([])
 
 // Search & Filter
 const searchQuery = ref('')
@@ -423,6 +515,146 @@ const teacherConstraints = ref([])
 const selectedTeacher = ref(null)
 const conflictWarning = ref(null)
 let conflictTimer = null
+
+// Toast State
+const toast = ref(null)
+let toastTimer = null
+const showToast = (title, message, type = 'error', duration = 4000) => {
+  toast.value = { title, message, type }
+  if (toastTimer) clearTimeout(toastTimer)
+  toastTimer = setTimeout(() => {
+    toast.value = null
+  }, duration)
+}
+
+// ============================================================================
+// PERFORMANCE OPTIMIZATION: O(1) Sets & Maps for Modal Rendering
+// ============================================================================
+// 1. Set of keys: `${day}__${slotNum}` for the selected teacher (Instant O(1) lookup in template)
+const blockedSlotsSet = ref(new Set())
+
+// 2. Map of active scheduled classes for selected teacher: `${day}__${slotNum}` -> { subject, class_id }
+const activeScheduleMap = ref(new Map())
+
+// 3. Map of day -> KBM count (Instant O(1) lookup in template)
+const dayKbmCountMap = computed(() => {
+  const map = new Map()
+  activeDays.value.forEach(day => {
+    const kbm = (daySessions.value[day] || []).filter(s => s.type === 'KBM')
+    map.set(day, kbm.length)
+  })
+  return map
+})
+
+// 4. Precalculated Slot Reference Times (O(1) index access)
+const slotReferenceTimes = computed(() => {
+  const times = []
+  const max = maxSlotCount.value
+  for (let i = 1; i <= max; i++) {
+    let foundTime = '07.30 - 08.15'
+    for (const day of activeDays.value) {
+      const kbm = (daySessions.value[day] || []).filter(s => s.type === 'KBM')
+      if (kbm[i - 1]) {
+        const sess = kbm[i - 1]
+        foundTime = `${sess.start_time || '07.30'} - ${sess.end_time || '08.15'}`
+        break
+      }
+    }
+    times.push(foundTime)
+  }
+  return times
+})
+
+// 5. Precomputed Map for Teacher Cards in Main View
+const teacherSummaryMap = computed(() => {
+  const map = new Map()
+  teachers.value.forEach(t => {
+    map.set(t.code, formatTeacherConstraintSummary(teacherConstraints.value, t.code))
+  })
+  return map
+})
+
+const teacherBlockedCountMap = computed(() => {
+  const map = new Map()
+  teachers.value.forEach(t => {
+    map.set(t.code, getTeacherTotalBlockedSlots(teacherConstraints.value, t.code))
+  })
+  return map
+})
+
+// Build O(1) state whenever selectedTeacher opens
+const buildTeacherModalState = (teacher) => {
+  if (!teacher) {
+    blockedSlotsSet.value = new Set()
+    activeScheduleMap.value = new Map()
+    return
+  }
+
+  const tCode = teacher.code.trim().toUpperCase()
+
+  // Build blockedSlotsSet
+  const newBlockedSet = new Set()
+  teacherConstraints.value.forEach(c => {
+    if (c.teacher_code.trim().toUpperCase() === tCode && Array.isArray(c.blocked_slots)) {
+      const day = capitalizeDay(c.day)
+      c.blocked_slots.forEach(slot => {
+        newBlockedSet.add(`${day}__${slot}`)
+      })
+    }
+  })
+  blockedSlotsSet.value = newBlockedSet
+
+  // Build activeScheduleMap
+  const newSchedMap = new Map()
+  rawActiveSchedule.value.forEach(item => {
+    const itemTeacher = (item.teacher_code || item.guru || '').trim().toUpperCase()
+    if (itemTeacher === tCode) {
+      const day = capitalizeDay(item.day)
+      const slot = Number(item.slot_index || item.session || 0)
+      if (slot > 0) {
+        newSchedMap.set(`${day}__${slot}`, {
+          subject: (item.subject || item.mapel || '').trim().toUpperCase(),
+          class_id: (item.class_id || item.cls || item.className || '').trim().toUpperCase()
+        })
+      }
+    }
+  })
+  activeScheduleMap.value = newSchedMap
+}
+
+// Sync blockedSlotsSet back to teacherConstraints array
+const syncBlockedSetToConstraints = () => {
+  if (!selectedTeacher.value) return
+  const tCode = selectedTeacher.value.code.trim().toUpperCase()
+
+  // Group by day
+  const daySlotsMap = new Map()
+  blockedSlotsSet.value.forEach(key => {
+    const [day, slotStr] = key.split('__')
+    const slot = Number(slotStr)
+    if (!daySlotsMap.has(day)) {
+      daySlotsMap.set(day, [])
+    }
+    daySlotsMap.get(day).push(slot)
+  })
+
+  // Remove existing entries for this teacher
+  const filtered = teacherConstraints.value.filter(c => c.teacher_code.trim().toUpperCase() !== tCode)
+
+  // Add updated entries
+  for (const [day, slots] of daySlotsMap.entries()) {
+    if (slots.length > 0) {
+      filtered.push({
+        teacher_code: tCode,
+        day,
+        blocked_slots: slots.sort((a, b) => a - b)
+      })
+    }
+  }
+
+  teacherConstraints.value = filtered
+  persistLocal()
+}
 
 // Mouse Drag-To-Select State
 const isMouseDown = ref(false)
@@ -445,9 +677,11 @@ const triggerConflictAlert = (message) => {
 const openModal = (teacher) => {
   selectedTeacher.value = teacher
   conflictWarning.value = null
+  buildTeacherModalState(teacher)
 }
 
 const closeModal = () => {
+  syncBlockedSetToConstraints()
   selectedTeacher.value = null
   conflictWarning.value = null
 }
@@ -461,61 +695,31 @@ const closeModalAndSave = () => {
 const maxSlotCount = computed(() => {
   let max = 0
   activeDays.value.forEach(day => {
-    const kbm = (daySessions.value[day] || []).filter(s => s.type === 'KBM')
-    if (kbm.length > max) max = kbm.length
+    const kbm = dayKbmCountMap.value.get(day) || 0
+    if (kbm > max) max = kbm
   })
   return Math.max(max, 6) // Minimal 6 slot
 })
 
-const hasDaySlot = (day, slotNum) => {
-  const kbm = (daySessions.value[day] || []).filter(s => s.type === 'KBM')
-  return slotNum <= kbm.length
-}
-
-const getSlotReferenceTime = (slotNum) => {
-  for (const day of activeDays.value) {
-    const kbm = (daySessions.value[day] || []).filter(s => s.type === 'KBM')
-    if (kbm[slotNum - 1]) {
-      const sess = kbm[slotNum - 1]
-      return `${sess.start_time || '07.30'} - ${sess.end_time || '08.15'}`
+// O(1) Check if Day is fully blocked
+const isDayFullyBlocked = (day) => {
+  const totalSlots = dayKbmCountMap.value.get(day) || 0
+  if (totalSlots === 0) return false
+  for (let s = 1; s <= totalSlots; s++) {
+    if (!blockedSlotsSet.value.has(`${day}__${s}`)) {
+      return false
     }
   }
-  return 'Waktu KBM'
+  return true
 }
 
-// Checkers
-const isSlotBlockedCheck = (day, slotNum, teacherCode) => {
-  return isTeacherBlocked(teacherConstraints.value, teacherCode, day, slotNum)
-}
-
-const getActiveClass = (day, slotNum, teacherCode) => {
-  return findActiveScheduleConflict(activeSchedule.value, teacherCode, day, slotNum)
-}
-
-const isEntireDayBlocked = (day, teacherCode) => {
-  const kbm = (daySessions.value[day] || []).filter(s => s.type === 'KBM')
-  if (kbm.length === 0) return false
-  return kbm.every((_, idx) => isTeacherBlocked(teacherConstraints.value, teacherCode, day, idx + 1))
-}
-
-const getCellClasses = (day, slotNum, teacherCode) => {
-  const blocked = isSlotBlockedCheck(day, slotNum, teacherCode)
-  if (blocked) {
-    return 'bg-rose-50 border-rose-300 hover:bg-rose-100 shadow-2xs'
-  }
-  const activeClass = getActiveClass(day, slotNum, teacherCode)
-  if (activeClass) {
-    return 'bg-amber-50/80 border-amber-300 hover:bg-amber-100'
-  }
-  return 'bg-white border-slate-200 hover:bg-blue-50/50 hover:border-blue-300'
-}
-
-// Mouse Drag & Click Handlers
+// Cell Mouse Drag & Click Handlers (O(1))
 const handleCellMouseDown = (day, slotNum) => {
   if (!selectedTeacher.value) return
   isMouseDown.value = true
 
-  const currentlyBlocked = isSlotBlockedCheck(day, slotNum, selectedTeacher.value.code)
+  const key = `${day}__${slotNum}`
+  const currentlyBlocked = blockedSlotsSet.value.has(key)
   dragMode.value = currentlyBlocked ? 'unblock' : 'block'
   applyCellAction(day, slotNum, dragMode.value)
 }
@@ -526,68 +730,71 @@ const handleCellMouseEnter = (day, slotNum) => {
 }
 
 const applyCellAction = (day, slotNum, mode) => {
-  const tCode = selectedTeacher.value.code
-  const isBlocked = isSlotBlockedCheck(day, slotNum, tCode)
+  const key = `${day}__${slotNum}`
+  const isBlocked = blockedSlotsSet.value.has(key)
 
   if (mode === 'block' && !isBlocked) {
     // REAL-TIME VALIDATION: Check active schedule
-    const conflict = getActiveClass(day, slotNum, tCode)
+    const conflict = activeScheduleMap.value.get(key)
     if (conflict) {
-      triggerConflictAlert("Gagal: Guru sudah memiliki jadwal aktif pada waktu ini. Hapus jadwal terlebih dahulu.")
+      triggerConflictAlert(`Gagal: Guru sudah memiliki jadwal aktif pada waktu ini (${conflict.subject} - Kelas ${conflict.class_id}). Hapus jadwal terlebih dahulu.`)
       return
     }
-    toggleSlotConstraint(teacherConstraints.value, tCode, day, slotNum, activeSchedule.value)
-    persistLocal()
+    blockedSlotsSet.value.add(key)
+    syncBlockedSetToConstraints()
   } else if (mode === 'unblock' && isBlocked) {
-    toggleSlotConstraint(teacherConstraints.value, tCode, day, slotNum, activeSchedule.value)
-    persistLocal()
+    blockedSlotsSet.value.delete(key)
+    syncBlockedSetToConstraints()
   }
 }
 
 // Quick-Select Column Header: Toggle Entire Day
 const toggleEntireDay = (day) => {
   if (!selectedTeacher.value) return
-  const tCode = selectedTeacher.value.code
-  const kbm = (daySessions.value[day] || []).filter(s => s.type === 'KBM')
-  const allSlotNumbers = kbm.map((_, idx) => idx + 1)
+  const totalSlots = dayKbmCountMap.value.get(day) || 0
+  if (totalSlots === 0) return
 
-  const res = toggleDayConstraint(
-    teacherConstraints.value,
-    tCode,
-    day,
-    allSlotNumbers,
-    activeSchedule.value
-  )
+  const fullyBlocked = isDayFullyBlocked(day)
 
-  if (!res.success && res.conflict) {
-    triggerConflictAlert("Gagal: Guru sudah memiliki jadwal aktif pada waktu ini. Hapus jadwal terlebih dahulu.")
+  if (fullyBlocked) {
+    // UNBLOCK ALL
+    for (let s = 1; s <= totalSlots; s++) {
+      blockedSlotsSet.value.delete(`${day}__${s}`)
+    }
+    syncBlockedSetToConstraints()
   } else {
-    persistLocal()
+    // Check conflicts for all slots to be blocked
+    for (let s = 1; s <= totalSlots; s++) {
+      const key = `${day}__${s}`
+      if (!blockedSlotsSet.value.has(key)) {
+        const conflict = activeScheduleMap.value.get(key)
+        if (conflict) {
+          triggerConflictAlert(`Gagal: Guru sudah memiliki jadwal aktif pada ${day} Jam ke-${s} (${conflict.subject} - Kelas ${conflict.class_id}). Hapus jadwal terlebih dahulu.`)
+          return
+        }
+      }
+    }
+
+    // BLOCK ALL
+    for (let s = 1; s <= totalSlots; s++) {
+      blockedSlotsSet.value.add(`${day}__${s}`)
+    }
+    syncBlockedSetToConstraints()
   }
 }
 
 // Reset Blocks for single teacher
-const clearTeacherBlocks = (teacherCode) => {
-  const normCode = teacherCode.trim().toUpperCase()
-  teacherConstraints.value = teacherConstraints.value.filter(c => c.teacher_code.trim().toUpperCase() !== normCode)
-  persistLocal()
+const clearTeacherBlocks = () => {
+  blockedSlotsSet.value.clear()
+  syncBlockedSetToConstraints()
 }
 
-// Teacher Card Helpers
-const hasTeacherConstraint = (teacherCode) => {
-  return getTeacherTotalBlockedSlots(teacherConstraints.value, teacherCode) > 0
-}
-
-const getSummaryText = (teacherCode) => {
-  return formatTeacherConstraintSummary(teacherConstraints.value, teacherCode)
-}
-
-const getTeacherBlockedHours = (teacherCode) => {
-  return getTeacherTotalBlockedSlots(teacherConstraints.value, teacherCode)
-}
+const currentTeacherBlockedCount = computed(() => {
+  return blockedSlotsSet.value.size
+})
 
 const teachersWithConstraintsCount = computed(() => {
-  return teachers.value.filter(t => hasTeacherConstraint(t.code)).length
+  return teachers.value.filter(t => (teacherBlockedCountMap.value.get(t.code) || 0) > 0).length
 })
 
 // Filtered Teachers
@@ -604,7 +811,7 @@ const filteredTeachers = computed(() => {
   }
 
   if (filterType.value === 'blocked') {
-    list = list.filter(t => hasTeacherConstraint(t.code))
+    list = list.filter(t => (teacherBlockedCountMap.value.get(t.code) || 0) > 0)
   }
 
   return list
@@ -613,38 +820,62 @@ const filteredTeachers = computed(() => {
 // Local Persistence Helper
 const persistLocal = () => {
   localStorage.setItem(STORAGE_KEY_CONSTRAINTS, JSON.stringify(teacherConstraints.value))
-  // Keep legacy dict updated for backward compatibility
   const legacyDict = constraintsToLegacyDict(teacherConstraints.value)
   localStorage.setItem('guruKu_jam_kosong_data', JSON.stringify(legacyDict))
 }
 
-// Fetch all initial data
+// Fallback Default KBM Sessions Matrix
+const createDefaultSessions = () => {
+  const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+  const sessions = {}
+  days.forEach(day => {
+    sessions[day] = [
+      { type: 'KBM', start_time: '07:30', end_time: '08:15', label: '1' },
+      { type: 'KBM', start_time: '08:15', end_time: '09:00', label: '2' },
+      { type: 'KBM', start_time: '09:00', end_time: '09:45', label: '3' },
+      { type: 'ISTIRAHAT', start_time: '09:45', end_time: '10:15', label: 'ISTIRAHAT' },
+      { type: 'KBM', start_time: '10:15', end_time: '11:00', label: '4' },
+      { type: 'KBM', start_time: '11:00', end_time: '11:45', label: '5' },
+      { type: 'ISTIRAHAT', start_time: '11:45', end_time: '12:30', label: 'ISTIRAHAT' },
+      { type: 'KBM', start_time: '12:30', end_time: '13:15', label: '6' },
+      { type: 'KBM', start_time: '13:15', end_time: '14:00', label: '7' },
+    ]
+  })
+  return { days, sessions }
+}
+
+// Fetch all initial data with strict anti-crash error handling
 const fetchAllData = async () => {
   loading.value = true
   try {
     // 1. Fetch Teachers from Master Data
     const savedTeachers = localStorage.getItem('guruKu_teachers')
     if (savedTeachers) {
-      const parsed = JSON.parse(savedTeachers)
-      teachers.value = parsed.map(t => ({
-        code: (t.code || t.teacher_code || '').trim().toUpperCase(),
-        name: t.name || t.teacher_name,
-        subject: t.subject || t.specialization || ''
-      })).sort((a, b) => a.code.localeCompare(b.code))
+      try {
+        const parsed = JSON.parse(savedTeachers)
+        teachers.value = parsed.map(t => ({
+          code: (t.code || t.teacher_code || '').trim().toUpperCase(),
+          name: t.name || t.teacher_name,
+          subject: t.subject || t.specialization || ''
+        })).sort((a, b) => a.code.localeCompare(b.code))
+      } catch (e) {
+        teachers.value = []
+      }
     }
 
-    // 2. Fetch Sessions from API or Local
-    const sessionRes = await fetch('/api/v1/school/sessions', {
+    // 2. Fetch Sessions from API with safe JSON check and local fallback
+    const sessionRes = await safeFetchJson('/api/v1/school/sessions', {
       headers: { 'X-School-ID': schoolId || '' }
     })
-    if (sessionRes.ok) {
-      const data = await sessionRes.json()
+
+    if (sessionRes.ok && sessionRes.data && typeof sessionRes.data === 'object') {
+      const data = sessionRes.data
       const days = Object.keys(data).sort((a, b) => (DAY_ORDER[a] || 99) - (DAY_ORDER[b] || 99))
-      activeDays.value = days
+      activeDays.value = days.length > 0 ? days : ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
       
-      days.forEach(day => {
+      activeDays.value.forEach(day => {
         let kbmCount = 0
-        daySessions.value[day] = data[day].map(s => {
+        daySessions.value[day] = (data[day] || []).map(s => {
           if (s.type === 'KBM') {
             kbmCount++
             return { ...s, label: kbmCount.toString() }
@@ -653,50 +884,75 @@ const fetchAllData = async () => {
         })
       })
     } else {
-      activeDays.value = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+      // Graceful Fallback: LocalStorage 'guruKu_sesi_kbm' or standard schedule
+      const localSesi = localStorage.getItem('guruKu_sesi_kbm')
+      if (localSesi) {
+        try {
+          const parsed = JSON.parse(localSesi)
+          const days = Object.keys(parsed).sort((a, b) => (DAY_ORDER[a] || 99) - (DAY_ORDER[b] || 99))
+          activeDays.value = days
+          days.forEach(day => {
+            let kbmCount = 0
+            daySessions.value[day] = (parsed[day] || []).map(s => {
+              if (s.type === 'KBM') {
+                kbmCount++
+                return { ...s, label: kbmCount.toString() }
+              }
+              return { ...s, label: 'ISTIRAHAT' }
+            })
+          })
+        } catch (e) {
+          const fallback = createDefaultSessions()
+          activeDays.value = fallback.days
+          daySessions.value = fallback.sessions
+        }
+      } else {
+        const fallback = createDefaultSessions()
+        activeDays.value = fallback.days
+        daySessions.value = fallback.sessions
+      }
+
+      if (sessionRes.error) {
+        showToast('Koneksi Server Offline', 'Gagal memuat sesi KBM dari server. Menggunakan data sesi lokal.', 'warning', 5000)
+      }
     }
 
     // 3. Load Active Schedule for Real-Time Conflict Detection
     const savedSchedule = localStorage.getItem(STORAGE_KEY_SCHEDULE)
     if (savedSchedule) {
       try {
-        activeSchedule.value = JSON.parse(savedSchedule)
+        rawActiveSchedule.value = JSON.parse(savedSchedule)
       } catch (e) {
-        activeSchedule.value = []
+        rawActiveSchedule.value = []
       }
     } else {
-      // Try fetch from API
-      try {
-        const schedRes = await fetch('/api/v1/school/jadwal', {
-          headers: { 'X-School-ID': schoolId || '' }
-        })
-        if (schedRes.ok) {
-          const sData = await schedRes.json()
-          activeSchedule.value = Array.isArray(sData) ? sData : []
-        }
-      } catch (e) {
-        activeSchedule.value = []
+      const schedRes = await safeFetchJson('/api/v1/school/jadwal', {
+        headers: { 'X-School-ID': schoolId || '' }
+      })
+      if (schedRes.ok && Array.isArray(schedRes.data)) {
+        rawActiveSchedule.value = schedRes.data
       }
     }
 
     // 4. Fetch Constraints (Local first, then API)
     const localConstraints = localStorage.getItem(STORAGE_KEY_CONSTRAINTS)
     if (localConstraints) {
-      teacherConstraints.value = normalizeTeacherConstraints(JSON.parse(localConstraints))
-    }
-
-    const kosRes = await fetch('/api/v1/school/jam-kosong', {
-      headers: { 'X-School-ID': schoolId || '' }
-    })
-    if (kosRes.ok) {
-      const data = await kosRes.json()
-      if (data && (!localConstraints || Array.isArray(data) && data.length > 0)) {
-        teacherConstraints.value = normalizeTeacherConstraints(data)
-        persistLocal()
+      try {
+        teacherConstraints.value = normalizeTeacherConstraints(JSON.parse(localConstraints))
+      } catch (e) {
+        teacherConstraints.value = []
       }
     }
+
+    const kosRes = await safeFetchJson('/api/v1/school/jam-kosong', {
+      headers: { 'X-School-ID': schoolId || '' }
+    })
+    if (kosRes.ok && kosRes.data && (!localConstraints || (Array.isArray(kosRes.data) && kosRes.data.length > 0))) {
+      teacherConstraints.value = normalizeTeacherConstraints(kosRes.data)
+      persistLocal()
+    }
   } catch (err) {
-    console.error("Gagal sinkronisasi data jam kosong:", err)
+    showToast('Peringatan Data', 'Terjadi kendala saat sinkronisasi data master. Menggunakan cache lokal.', 'warning')
   } finally {
     loading.value = false
   }
@@ -708,7 +964,7 @@ const saveData = async () => {
   persistLocal()
 
   try {
-    const res = await fetch('/api/v1/school/jam-kosong', {
+    const res = await safeFetchJson('/api/v1/school/jam-kosong', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -716,13 +972,14 @@ const saveData = async () => {
       },
       body: JSON.stringify(teacherConstraints.value)
     })
+
     if (res.ok) {
       showSuccessModal.value = true
     } else {
-      alert("Peringatan: Berhasil disimpan secara lokal, namun server gagal merespons.")
+      showToast('Tersimpan di Perangkat', 'Data berhasil disimpan di penyimpanan lokal browser.', 'success', 3500)
+      showSuccessModal.value = true
     }
   } catch (err) {
-    console.warn("Jaringan offline, tersimpan di localStorage:", err)
     showSuccessModal.value = true
   } finally {
     saving.value = false
@@ -737,6 +994,7 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('mouseup', handleMouseUp)
   if (conflictTimer) clearTimeout(conflictTimer)
+  if (toastTimer) clearTimeout(toastTimer)
 })
 </script>
 

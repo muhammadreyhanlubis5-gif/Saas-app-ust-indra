@@ -38,7 +38,9 @@
         <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
         <span>Hasil kalkulasi HPP (Rp {{ Number(totalHPP).toLocaleString('id-ID') }}) dan Harga Jual (Rp {{ Number(hargaJual).toLocaleString('id-ID') }}) berhasil disinkronkan ke Dashboard Utama!</span>
       </div>
-      <button @click="appliedNotification = false" class="text-emerald-600 hover:text-emerald-900">✕</button>
+      <button @click="appliedNotification = false" class="text-emerald-600 hover:text-emerald-900 cursor-pointer p-0.5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
     </div>
 
     <!-- Grid 2 Kolom: Form Parameter (Kiri) & Hasil Analisis (Kanan) -->

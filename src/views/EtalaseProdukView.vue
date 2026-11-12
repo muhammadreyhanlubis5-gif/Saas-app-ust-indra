@@ -46,7 +46,9 @@
         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
         <span>{{ notificationMsg }}</span>
       </div>
-      <button @click="notificationMsg = ''" class="text-emerald-700 hover:text-emerald-900 cursor-pointer">✕</button>
+      <button @click="notificationMsg = ''" class="text-emerald-700 hover:text-emerald-900 cursor-pointer p-0.5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
     </div>
 
     <!-- 4 Ringkasan Statistik Paket (Border Tipis Rapi) -->

@@ -483,7 +483,9 @@
             <h3 class="text-xl font-black text-slate-900">Perpanjangan Lisensi GuruKu</h3>
             <p class="text-xs text-slate-500 mt-0.5">Pilih paket lisensi untuk memperpanjang akses sistem manajemen sekolah.</p>
           </div>
-          <button @click="showClientRenewModal = false" class="p-1 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 cursor-pointer">✕</button>
+          <button @click="showClientRenewModal = false" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
         </div>
 
         <div class="space-y-4">

@@ -14,7 +14,11 @@ class RealtimeClient {
     this.listeners = new Map();
     this.isConnected = false;
     this.reconnectAttempts = 0;
-    this.maxReconnectAttempts = 10;
+    this.maxReconnectAttempts = 3;
+    this.backoffDelays = [2000, 5000, 10000]; // Linear/Exponential Backoff
+    this.pollingTimer = null;
+    this.isPollingFallback = false;
+    this.hasLoggedFallbackWarning = false;
   }
 
   getWsUrl(role, tenantId) {
@@ -57,6 +61,10 @@ class RealtimeClient {
     this.role = role;
     this.tenantId = tenantId || localStorage.getItem('school_id') || 'TEN-C9320E88';
 
+    if (this.isPollingFallback) {
+      return;
+    }
+
     if (this.socket && (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING)) {
       return;
     }
@@ -68,6 +76,8 @@ class RealtimeClient {
       this.socket.onopen = () => {
         this.isConnected = true;
         this.reconnectAttempts = 0;
+        this.hasLoggedFallbackWarning = false;
+        this.stopPollingFallback();
         this.startHeartbeat();
         this.emitInternal('connect', { role: this.role, tenantId: this.tenantId });
         
@@ -96,8 +106,8 @@ class RealtimeClient {
         }
       };
 
-      this.socket.onerror = (err) => {
-        console.warn('[Realtime WS] Connection warning, using fallback if needed:', err);
+      this.socket.onerror = () => {
+        // Handled via onclose and backoff to avoid console flood
       };
 
       this.socket.onclose = () => {
@@ -107,19 +117,19 @@ class RealtimeClient {
         this.scheduleReconnect();
       };
     } catch (e) {
-      console.warn('[Realtime WS] Native WebSocket initialization error, using SSE fallback:', e);
       this.connectSSE();
     }
   }
 
   connectSSE() {
-    if (this.sseSource) return;
+    if (this.sseSource || this.isPollingFallback) return;
     try {
       const url = this.getSseUrl(this.role, this.tenantId);
       this.sseSource = new EventSource(url);
 
       this.sseSource.onopen = () => {
         this.isConnected = true;
+        this.reconnectAttempts = 0;
         this.emitInternal('connect', { mode: 'sse' });
         if (this.role === 'school_admin') {
           this.syncProgress('Workspace Dibuka');
@@ -141,10 +151,10 @@ class RealtimeClient {
           this.sseSource.close();
           this.sseSource = null;
         }
-        setTimeout(() => this.connect(this.role, this.tenantId), 5000);
+        this.stopReconnectingAndFallback();
       };
     } catch (e) {
-      console.warn('[Realtime SSE] Error:', e);
+      this.stopReconnectingAndFallback();
     }
   }
 
@@ -167,16 +177,86 @@ class RealtimeClient {
   scheduleReconnect() {
     if (this.reconnectTimer) return;
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      this.connectSSE();
+      this.stopReconnectingAndFallback();
       return;
     }
 
-    const delay = Math.min(1000 * Math.pow(1.5, this.reconnectAttempts), 15000);
+    const delay = this.backoffDelays[this.reconnectAttempts] || 10000;
     this.reconnectAttempts++;
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
       this.connect(this.role, this.tenantId);
     }, delay);
+  }
+
+  stopReconnectingAndFallback() {
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
+    }
+    this.stopHeartbeat();
+
+    if (this.socket) {
+      try { this.socket.close(); } catch (e) {}
+      this.socket = null;
+    }
+    if (this.sseSource) {
+      try { this.sseSource.close(); } catch (e) {}
+      this.sseSource = null;
+    }
+
+    if (!this.hasLoggedFallbackWarning) {
+      console.warn('[Realtime WS] WebSocket connection failed after 3 attempts. Stopped reconnecting. Falling back to HTTP polling (every 30s).');
+      this.hasLoggedFallbackWarning = true;
+    }
+
+    this.startPollingFallback();
+  }
+
+  startPollingFallback() {
+    if (this.pollingTimer) return;
+    this.isPollingFallback = true;
+    // Initial poll
+    this.pollFallback();
+    // Recurring 30s poll
+    this.pollingTimer = setInterval(() => {
+      this.pollFallback();
+    }, 30000);
+  }
+
+  stopPollingFallback() {
+    if (this.pollingTimer) {
+      clearInterval(this.pollingTimer);
+      this.pollingTimer = null;
+    }
+    this.isPollingFallback = false;
+  }
+
+  async pollFallback() {
+    try {
+      if (this.role === 'super_admin') {
+        const apiBase = import.meta.env.VITE_API_URL || '';
+        const res = await fetch(`${apiBase}/api/v1/super/metrics`, {
+          headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        if (res.ok) {
+          const contentType = res.headers.get('content-type') || '';
+          if (contentType.includes('application/json')) {
+            const data = await res.json();
+            this.emitInternal('metrics_update', data);
+          }
+        }
+      }
+    } catch (e) {
+      // Graceful fallback
+    }
+  }
+
+  manualReconnect() {
+    this.stopPollingFallback();
+    this.reconnectAttempts = 0;
+    this.hasLoggedFallbackWarning = false;
+    this.connect(this.role, this.tenantId);
   }
 
   on(event, handler) {

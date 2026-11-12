@@ -73,7 +73,7 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div class="flex items-center gap-2.5">
           <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm">
-            ⚡
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
           </div>
           <div>
             <h4 class="text-sm font-black text-gray-800">Simulator Pengujian Bentrok (Rule A, Rule B & Rule C)</h4>
@@ -236,7 +236,7 @@
           @click="showSummaryModal = false" 
           class="absolute top-6 right-6 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition-colors cursor-pointer"
         >
-          ✕
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
 
         <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
@@ -269,7 +269,7 @@
         <!-- Unassigned Warning if any -->
         <div v-if="lastDistributionReport.unassigned.length > 0" class="mb-6 bg-amber-50 border border-amber-200 p-3.5 rounded-2xl text-xs text-amber-900">
           <div class="font-bold flex items-center gap-1.5 mb-1 text-amber-800">
-            <span>⚠️</span>
+            <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
             <span>{{ lastDistributionReport.unassigned.length }} Kebutuhan Belum Terpenuhi:</span>
           </div>
           <p class="text-amber-700">Beberapa mapel memerlukan guru tambahan karena semua guru spesialis terkait telah mencapai batas 40 JP.</p>
