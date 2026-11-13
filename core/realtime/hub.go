@@ -383,33 +383,25 @@ func (c *Client) writePump() {
 }
 
 // HandleWebSocket initiates WebSocket connection with strict handshake auth & tenant isolation
-// GET /api/v1/ws?role=super_admin OR ?role=school_admin
+// GET /api/v1/ws
 func HandleWebSocket(c *gin.Context) {
-	// 1. Validasi Autentikasi Handshake
+	// 1. Validasi Autentikasi Handshake - Tenant & Role HANYA dari JWT
 	claims, err := middleware.ExtractAndValidateClaims(c)
+	if err != nil || claims == nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"error":   "Unauthorized",
+			"message": "Koneksi WebSocket memerlukan autentikasi JWT yang valid.",
+			"code":    "AUTH_TOKEN_REQUIRED",
+		})
+		return
+	}
 
 	role := "school_admin"
-	tenantID := ""
+	tenantID := claims.SchoolID
 
-	if err == nil && claims != nil {
-		if claims.Role == "SUPER_ADMIN" {
-			role = "super_admin"
-		} else {
-			role = "school_admin"
-			tenantID = claims.SchoolID // Bound strictly to session server-side
-		}
-	} else {
-		// Fallback untuk unauthenticated handshake (misal dev/test runner lokal)
-		queryRole := c.Query("role")
-		if queryRole == "super_admin" || queryRole == "school_admin" {
-			role = queryRole
-		}
-		if tenantID == "" {
-			tenantID = c.Query("tenant_id")
-		}
-		if tenantID == "" {
-			tenantID = c.GetHeader("X-School-ID")
-		}
+	if claims.Role == "SUPER_ADMIN" {
+		role = "super_admin"
+		tenantID = ""
 	}
 
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
@@ -435,15 +427,24 @@ func HandleWebSocket(c *gin.Context) {
 }
 
 // HandleSSE provides light-weight Server-Sent Events alternative
-// GET /api/v1/realtime/stream?role=super_admin
+// GET /api/v1/realtime/stream
 func HandleSSE(c *gin.Context) {
+	claims, err := middleware.ExtractAndValidateClaims(c)
+	if err != nil || claims == nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"error":   "Unauthorized",
+			"message": "Koneksi SSE stream memerlukan autentikasi JWT yang valid.",
+			"code":    "AUTH_TOKEN_REQUIRED",
+		})
+		return
+	}
+
 	c.Writer.Header().Set("Content-Type", "text/event-stream")
 	c.Writer.Header().Set("Cache-Control", "no-cache")
 	c.Writer.Header().Set("Connection", "keep-alive")
-	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 
-	role := c.Query("role")
-	if role == "" {
+	role := "school_admin"
+	if claims.Role == "SUPER_ADMIN" {
 		role = "super_admin"
 	}
 
@@ -485,19 +486,19 @@ type UpdateProgressRequest struct {
 // HandleProgressUpdate receives progress updates via HTTP POST
 // POST /api/v1/school/progress
 func HandleProgressUpdate(c *gin.Context) {
-	tenantID := c.GetHeader("X-School-ID")
+	tenantID := c.GetString("tenant_id")
+	if tenantID == "" {
+		tenantID = c.GetString("school_id")
+	}
+
 	var req UpdateProgressRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Format payload tidak valid"})
 		return
 	}
 
-	if req.TenantID != "" {
-		tenantID = req.TenantID
-	}
-
 	if tenantID == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "X-School-ID atau tenant_id wajib disertakan"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Identitas tenant tidak ditemukan dalam sesi"})
 		return
 	}
 

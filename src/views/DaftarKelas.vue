@@ -12,7 +12,7 @@
             Daftar Kelas
           </h1>
           <p class="text-blue-100 max-w-2xl text-sm md:text-base drop-shadow">
-            Kelola data Rombongan Belajar (Rombel) beserta Wali Kelas. Anda dapat mengunduh template Excel, mengisi data sekolah, lalu mengunggahnya kembali untuk sinkronisasi otomatis.
+            Kelola data Rombongan Belajar (Rombel), Tingkat, Jurusan, dan Wali Kelas. Sinkronisasi data ke server backend bergaransi multi-tenant dengan validasi baris transaksi penuh.
           </p>
         </div>
         
@@ -29,35 +29,48 @@
           <!-- Tombol Download Template Excel -->
           <button 
             @click="downloadTemplate" 
-            class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl font-bold transition-all shadow-md flex items-center gap-2 text-sm"
+            class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl font-bold transition-all shadow-md flex items-center gap-2 text-sm cursor-pointer"
             title="Unduh format file Excel resmi"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
             <span>Unduh Template</span>
           </button>
 
-          <!-- Tombol Upload Excel -->
+          <!-- Tombol Upload Excel / XLSB -->
           <button 
-            @click="triggerUpload" 
-            :disabled="importing" 
-            class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl font-bold transition-all shadow-md flex items-center gap-2 text-sm border border-blue-400/40"
-            title="Unggah template Excel yang telah diisi"
+            @click="showXlsbModal = true" 
+            :disabled="masterStore.isImporting" 
+            class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl font-bold transition-all shadow-md flex items-center gap-2 text-sm border border-blue-400/40 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Unggah template Excel / XLSB untuk dipratinjau & diimpor"
           >
-            <svg v-if="importing" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-            <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-            <span>{{ importing ? 'Membaca Excel...' : 'Upload Excel' }}</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            <span>Upload XLSB / Excel</span>
           </button>
 
           <!-- Tombol Manual Tambah Kelas -->
           <button 
-            @click="showAddModal = true" 
-            class="bg-white text-blue-700 hover:bg-gray-50 px-5 py-2.5 rounded-xl font-bold transition-all shadow-md flex items-center gap-2 text-sm"
+            @click="openAddModal" 
+            class="bg-white text-blue-700 hover:bg-gray-50 px-5 py-2.5 rounded-xl font-bold transition-all shadow-md flex items-center gap-2 text-sm cursor-pointer"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
             <span>Tambah Kelas</span>
           </button>
         </div>
       </div>
+    </div>
+
+    <!-- Error Banner jika terjadi kegagalan muat server -->
+    <div v-if="masterStore.error && !loading" class="mb-6 bg-rose-50 border border-rose-200 rounded-2xl p-4 flex items-center justify-between gap-4 text-rose-800">
+      <div class="flex items-center gap-3">
+        <svg class="w-6 h-6 text-rose-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <div>
+          <p class="font-bold text-sm">Terjadi Kesalahan</p>
+          <p class="text-xs text-rose-600">{{ masterStore.error }}</p>
+        </div>
+      </div>
+      <button @click="loadData" class="px-4 py-2 bg-rose-600 text-white rounded-xl text-xs font-bold hover:bg-rose-700 transition-colors shadow-sm cursor-pointer flex-shrink-0">
+        Coba Lagi
+      </button>
     </div>
 
     <!-- Data Table Container with Toolbar -->
@@ -69,54 +82,69 @@
           <span class="text-xs px-2.5 py-0.5 rounded-full font-bold bg-blue-50 text-blue-700 border border-blue-100">
             {{ filteredClasses.length }} Kelas
           </span>
+          <span v-if="activeFilterStatus !== 'all'" class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-gray-100 text-gray-600">
+            Status: {{ activeFilterStatus === 'active' ? 'Aktif' : 'Nonaktif' }}
+          </span>
         </div>
         
-        <!-- Search bar aligned to the right -->
-        <div class="relative w-full sm:w-72">
-          <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-          </span>
-          <input 
-            v-model="searchQuery"
-            type="text" 
-            placeholder="Cari nama kelas atau wali..." 
-            class="w-full pl-10 pr-8 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-          />
-          <button 
-            v-if="searchQuery" 
-            @click="searchQuery = ''"
-            type="button"
-            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
+        <!-- Controls: Status Filter & Search bar -->
+        <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+          <select 
+            v-model="activeFilterStatus" 
+            class="text-xs bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer"
           >
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-          </button>
+            <option value="all">Semua Status</option>
+            <option value="active">Aktif Saja</option>
+            <option value="inactive">Nonaktif Saja</option>
+          </select>
+
+          <div class="relative w-full sm:w-64">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </span>
+            <input 
+              v-model="searchQuery"
+              type="text" 
+              placeholder="Cari nama kelas atau wali..." 
+              class="w-full pl-10 pr-8 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+            />
+            <button 
+              v-if="searchQuery" 
+              @click="searchQuery = ''"
+              type="button"
+              class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 cursor-pointer"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+          </div>
         </div>
       </div>
 
+      <!-- Loading State -->
       <div v-if="loading" class="text-center py-16">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <p class="text-gray-500 font-medium">Memuat data kelas...</p>
+        <p class="text-gray-500 font-medium">Memuat data kelas dari server...</p>
       </div>
 
       <!-- Empty State: Data Benar-Benar Kosong -->
-      <div v-else-if="classes.length === 0" class="text-center py-20 px-4">
+      <div v-else-if="masterStore.classes.length === 0" class="text-center py-20 px-4">
         <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-100">
           <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
         </div>
         <h3 class="text-lg font-bold text-gray-800 mb-1">Belum Ada Rombongan Belajar</h3>
         <p class="text-gray-500 mb-6 text-sm max-w-md mx-auto">
-          Silakan tambah kelas secara manual atau unduh template Excel kami untuk mengimpor banyak kelas sekaligus.
+          Silakan tambah kelas secara manual atau unduh template Excel resmi untuk mengimpor seluruh kelas sekolah Anda.
         </p>
         <div class="flex flex-wrap justify-center gap-3">
           <button @click="downloadTemplate" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold transition-colors text-sm flex items-center gap-2 cursor-pointer shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
             Unduh Template Excel
           </button>
-          <button @click="triggerUpload" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold transition-colors text-sm flex items-center gap-2 cursor-pointer shadow-sm">
+          <button @click="showXlsbModal = true" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold transition-colors text-sm flex items-center gap-2 cursor-pointer shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-            Upload File Excel
+            Upload File XLSB / Excel
           </button>
-          <button @click="showAddModal = true" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-bold transition-colors text-sm cursor-pointer">
+          <button @click="openAddModal" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-bold transition-colors text-sm cursor-pointer">
             + Tambah Manual
           </button>
         </div>
@@ -129,20 +157,23 @@
         </div>
         <h4 class="font-bold text-gray-700 text-sm">Tidak ditemukan kelas yang cocok</h4>
         <p class="text-xs text-gray-400 mt-1">Tidak ada rombel yang sesuai dengan kata kunci "{{ searchQuery }}"</p>
-        <button @click="searchQuery = ''" class="mt-3 px-4 py-2 bg-blue-50 text-blue-700 text-xs font-bold rounded-xl hover:bg-blue-100 transition-colors cursor-pointer">
-          Reset Pencarian
+        <button @click="resetFilters" class="mt-3 px-4 py-2 bg-blue-50 text-blue-700 text-xs font-bold rounded-xl hover:bg-blue-100 transition-colors cursor-pointer">
+          Reset Filter & Pencarian
         </button>
       </div>
 
-      <!-- Tabel Data dengan Padding Luas & Action Buttons Lengkap -->
+      <!-- Tabel Data Kelas -->
       <div v-else class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="bg-gray-50/80 border-b border-gray-100 text-gray-500 uppercase text-xs tracking-wider">
               <th class="px-6 py-4 font-bold w-16">No</th>
               <th class="px-6 py-4 font-bold">Nama Kelas</th>
+              <th class="px-6 py-4 font-bold">Tingkat / Jurusan</th>
+              <th class="px-6 py-4 font-bold">Tahun Ajaran</th>
               <th class="px-6 py-4 font-bold">Wali Kelas</th>
               <th class="px-6 py-4 font-bold text-center">Jumlah Siswa</th>
+              <th class="px-6 py-4 font-bold text-center">Status</th>
               <th class="px-6 py-4 font-bold text-right w-32">Aksi</th>
             </tr>
           </thead>
@@ -152,10 +183,31 @@
               <td class="px-6 py-4">
                 <span class="bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg font-bold text-sm border border-blue-100/60 inline-block shadow-2xs">{{ cls.name }}</span>
               </td>
-              <td class="px-6 py-4 font-medium text-gray-800 text-sm">{{ cls.homeroom_teacher || '-' }}</td>
+              <td class="px-6 py-4 text-sm text-gray-600">
+                <span v-if="cls.grade_level" class="font-medium text-gray-800">Kelas {{ cls.grade_level }}</span>
+                <span v-else class="text-gray-400">-</span>
+                <span v-if="cls.major && cls.major !== 'Umum'" class="ml-1 text-xs text-blue-600 bg-blue-50/80 px-2 py-0.5 rounded font-medium">
+                  {{ cls.major }}
+                </span>
+              </td>
+              <td class="px-6 py-4 text-xs font-mono text-gray-600">
+                {{ cls.academic_year || '-' }}
+              </td>
+              <td class="px-6 py-4 font-medium text-gray-800 text-sm">
+                {{ cls.homeroom_teacher_name || cls.homeroom_teacher || '-' }}
+              </td>
               <td class="px-6 py-4 text-center font-bold text-gray-600 text-sm">
                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">
-                  {{ cls.student_count || 32 }} Siswa
+                  {{ cls.student_count ?? 0 }} Siswa
+                </span>
+              </td>
+              <td class="px-6 py-4 text-center">
+                <span 
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                  :class="cls.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full mr-1.5" :class="cls.is_active ? 'bg-emerald-500' : 'bg-rose-500'"></span>
+                  {{ cls.is_active ? 'Aktif' : 'Nonaktif' }}
                 </span>
               </td>
               <td class="px-6 py-4 text-right">
@@ -170,7 +222,7 @@
                   </button>
                   <!-- Tombol Delete (Trash) -->
                   <button 
-                    @click="deleteClass(cls)" 
+                    @click="confirmDeleteClass(cls)" 
                     class="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-rose-200" 
                     title="Hapus Kelas"
                   >
@@ -183,7 +235,7 @@
         </table>
       </div>
 
-      <!-- Pagination Client-Side -->
+      <!-- Pagination Controls -->
       <div v-if="filteredClasses.length > 0" class="px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600 bg-gray-50/50">
         <p class="font-medium">
           Menampilkan <span class="font-bold text-gray-900">{{ paginationStart }}</span> - <span class="font-bold text-gray-900">{{ paginationEnd }}</span> dari <span class="font-bold text-gray-900">{{ filteredClasses.length }}</span> data
@@ -222,111 +274,433 @@
       </div>
     </div>
 
-    <!-- Form Modal Tambah Kelas Manual -->
+    <!-- ===================================================================== -->
+    <!-- MODAL: TAMBAH KELAS MANUAL -->
+    <!-- ===================================================================== -->
     <div v-if="showAddModal" class="fixed inset-0 z-40 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
-      <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-fade-in-up">
+      <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-fade-in-up">
         <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-          <h3 class="font-bold text-gray-800 text-lg">Tambah Kelas</h3>
-          <button @click="showAddModal = false" class="text-gray-400 hover:text-gray-600 bg-white hover:bg-gray-100 rounded-full p-1.5 transition-colors shadow-sm">
+          <div>
+            <h3 class="font-bold text-gray-800 text-lg">Tambah Rombel Kelas</h3>
+            <p class="text-xs text-gray-500">Isi data rombongan belajar baru untuk tahun ajaran aktif</p>
+          </div>
+          <button @click="showAddModal = false" class="text-gray-400 hover:text-gray-600 bg-white hover:bg-gray-100 rounded-full p-1.5 transition-colors shadow-sm cursor-pointer">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
         </div>
         
-        <form @submit.prevent="saveClass" class="p-6 space-y-5">
+        <form @submit.prevent="saveClass" class="p-6 space-y-4">
+          <!-- Nama Kelas -->
           <div>
-            <label class="block text-sm font-bold text-gray-700 mb-1">Nama Kelas</label>
-            <input v-model="form.name" type="text" required placeholder="Contoh: 4 A, X IPA 1" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none uppercase transition-shadow">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+              Nama Kelas <span class="text-rose-500">*</span>
+            </label>
+            <input 
+              v-model="form.name" 
+              type="text" 
+              required 
+              placeholder="Contoh: 7 A, 10 MIPA 1, XII TKJ" 
+              class="w-full bg-white text-gray-900 border rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none uppercase transition-all text-sm"
+              :class="formErrors.name ? 'border-rose-400 bg-rose-50/20' : 'border-gray-300'"
+            />
+            <p v-if="formErrors.name" class="text-xs text-rose-600 mt-1 font-medium">{{ formErrors.name }}</p>
           </div>
-          <div>
-            <label class="block text-sm font-bold text-gray-700 mb-1">Wali Kelas</label>
-            <input v-model="form.homeroom_teacher" type="text" placeholder="Masukkan Nama Wali Kelas" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none transition-shadow">
+
+          <!-- Tingkat & Jurusan -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Tingkat / Grade</label>
+              <select v-model="form.grade_level" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                <option :value="null">Pilih Tingkat...</option>
+                <option v-for="g in 12" :key="g" :value="g">Kelas {{ g }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Jurusan / Program</label>
+              <input v-model="form.major" type="text" placeholder="Contoh: Umum, MIPA, RPL" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+            </div>
           </div>
+
+          <!-- Tahun Ajaran & Jumlah Siswa -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                Tahun Ajaran <span class="text-rose-500">*</span>
+              </label>
+              <input 
+                v-model="form.academic_year" 
+                type="text" 
+                required 
+                placeholder="2024/2025" 
+                class="w-full bg-white text-gray-900 border rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                :class="formErrors.academic_year ? 'border-rose-400' : 'border-gray-300'"
+              />
+              <p v-if="formErrors.academic_year" class="text-xs text-rose-600 mt-1 font-medium">{{ formErrors.academic_year }}</p>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                Jumlah Siswa <span class="text-rose-500">*</span>
+              </label>
+              <input 
+                v-model.number="form.student_count" 
+                type="number" 
+                min="0" 
+                required 
+                placeholder="32" 
+                class="w-full bg-white text-gray-900 border rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                :class="formErrors.student_count ? 'border-rose-400' : 'border-gray-300'"
+              />
+              <p v-if="formErrors.student_count" class="text-xs text-rose-600 mt-1 font-medium">{{ formErrors.student_count }}</p>
+            </div>
+          </div>
+
+          <!-- Wali Kelas Dropdown -->
           <div>
-            <label class="block text-sm font-bold text-gray-700 mb-1">Jumlah Siswa</label>
-            <input v-model.number="form.student_count" type="number" min="1" required placeholder="Contoh: 32" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none transition-shadow">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Wali Kelas</label>
+            <select v-model="form.homeroom_teacher_id" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none text-sm cursor-pointer">
+              <option :value="null">-- Belum Ditentukan / Tidak Ada --</option>
+              <option v-for="teacher in masterStore.activeTeachers" :key="teacher.id" :value="teacher.id">
+                {{ teacher.name }} {{ teacher.nip_nuptk ? `(NIP: ${teacher.nip_nuptk})` : '' }}
+              </option>
+            </select>
+            <p v-if="formErrors.homeroom_teacher_id" class="text-xs text-rose-600 mt-1 font-medium">{{ formErrors.homeroom_teacher_id }}</p>
+          </div>
+
+          <!-- Status Aktif -->
+          <div class="flex items-center gap-3 pt-2">
+            <input type="checkbox" id="add_is_active" v-model="form.is_active" class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer">
+            <label for="add_is_active" class="text-xs font-bold text-gray-700 cursor-pointer select-none">
+              Status Kelas Aktif (Dapat digunakan untuk jadwal pelajaran)
+            </label>
           </div>
           
-          <div class="pt-4 flex gap-3">
-            <button type="button" @click="showAddModal = false" class="flex-1 bg-gray-100 text-gray-700 hover:bg-gray-200 font-bold py-3 px-4 rounded-xl transition-colors">
+          <div class="pt-4 flex gap-3 border-t border-gray-100">
+            <button type="button" @click="showAddModal = false" class="flex-1 bg-gray-100 text-gray-700 hover:bg-gray-200 font-bold py-2.5 px-4 rounded-xl transition-colors cursor-pointer text-sm">
               Batal
             </button>
-            <button type="submit" :disabled="saving" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
-              <svg v-if="saving" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-              <span>{{ saving ? 'Memproses...' : 'Simpan' }}</span>
+            <button 
+              type="submit" 
+              :disabled="masterStore.isSaving" 
+              class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 text-sm"
+            >
+              <svg v-if="masterStore.isSaving" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+              <span>{{ masterStore.isSaving ? 'Menyimpan...' : 'Simpan Kelas' }}</span>
             </button>
           </div>
         </form>
       </div>
     </div>
 
-    <!-- Form Modal Edit Kelas Manual -->
+    <!-- ===================================================================== -->
+    <!-- MODAL: EDIT KELAS MANUAL -->
+    <!-- ===================================================================== -->
     <div v-if="showEditModal" class="fixed inset-0 z-40 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
-      <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-fade-in-up">
+      <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-fade-in-up">
         <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-          <h3 class="font-bold text-gray-800 text-lg">Edit Rombongan Belajar</h3>
+          <div>
+            <h3 class="font-bold text-gray-800 text-lg">Edit Rombel Kelas</h3>
+            <p class="text-xs text-gray-500">Perbarui identitas kelas dan wali kelas</p>
+          </div>
           <button @click="showEditModal = false" class="text-gray-400 hover:text-gray-600 bg-white hover:bg-gray-100 rounded-full p-1.5 transition-colors shadow-sm cursor-pointer">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
         </div>
         
-        <form @submit.prevent="updateClass" class="p-6 space-y-5">
+        <form @submit.prevent="updateClassData" class="p-6 space-y-4">
           <div>
-            <label class="block text-sm font-bold text-gray-700 mb-1">Nama Kelas</label>
-            <input v-model="editForm.name" type="text" required placeholder="Contoh: 4 A, X IPA 1" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none uppercase transition-shadow">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+              Nama Kelas <span class="text-rose-500">*</span>
+            </label>
+            <input 
+              v-model="editForm.name" 
+              type="text" 
+              required 
+              placeholder="Contoh: 7 A, X IPA 1" 
+              class="w-full bg-white text-gray-900 border rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none uppercase transition-all text-sm"
+              :class="formErrors.name ? 'border-rose-400 bg-rose-50/20' : 'border-gray-300'"
+            />
+            <p v-if="formErrors.name" class="text-xs text-rose-600 mt-1 font-medium">{{ formErrors.name }}</p>
           </div>
-          <div>
-            <label class="block text-sm font-bold text-gray-700 mb-1">Wali Kelas</label>
-            <input v-model="editForm.homeroom_teacher" type="text" placeholder="Masukkan Nama Wali Kelas" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none transition-shadow">
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Tingkat / Grade</label>
+              <select v-model="editForm.grade_level" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                <option :value="null">Pilih Tingkat...</option>
+                <option v-for="g in 12" :key="g" :value="g">Kelas {{ g }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Jurusan / Program</label>
+              <input v-model="editForm.major" type="text" placeholder="Contoh: Umum, MIPA" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+            </div>
           </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Tahun Ajaran</label>
+              <input v-model="editForm.academic_year" type="text" required placeholder="2024/2025" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Jumlah Siswa</label>
+              <input v-model.number="editForm.student_count" type="number" min="0" required placeholder="32" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+            </div>
+          </div>
+
           <div>
-            <label class="block text-sm font-bold text-gray-700 mb-1">Jumlah Siswa</label>
-            <input v-model.number="editForm.student_count" type="number" min="1" required placeholder="Contoh: 32" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none transition-shadow">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Wali Kelas</label>
+            <select v-model="editForm.homeroom_teacher_id" class="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none text-sm cursor-pointer">
+              <option :value="null">-- Belum Ditentukan / Tidak Ada --</option>
+              <option v-for="teacher in masterStore.activeTeachers" :key="teacher.id" :value="teacher.id">
+                {{ teacher.name }} {{ teacher.nip_nuptk ? `(NIP: ${teacher.nip_nuptk})` : '' }}
+              </option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-3 pt-2">
+            <input type="checkbox" id="edit_is_active" v-model="editForm.is_active" class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer">
+            <label for="edit_is_active" class="text-xs font-bold text-gray-700 cursor-pointer select-none">
+              Status Kelas Aktif (Dapat digunakan untuk jadwal pelajaran)
+            </label>
           </div>
           
-          <div class="pt-4 flex gap-3">
-            <button type="button" @click="showEditModal = false" class="flex-1 bg-gray-100 text-gray-700 hover:bg-gray-200 font-bold py-3 px-4 rounded-xl transition-colors cursor-pointer">
+          <div class="pt-4 flex gap-3 border-t border-gray-100">
+            <button type="button" @click="showEditModal = false" class="flex-1 bg-gray-100 text-gray-700 hover:bg-gray-200 font-bold py-2.5 px-4 rounded-xl transition-colors cursor-pointer text-sm">
               Batal
             </button>
-            <button type="submit" :disabled="saving" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
-              <svg v-if="saving" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-              <span>{{ saving ? 'Memproses...' : 'Simpan Perubahan' }}</span>
+            <button 
+              type="submit" 
+              :disabled="masterStore.isSaving" 
+              class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 text-sm"
+            >
+              <svg v-if="masterStore.isSaving" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+              <span>{{ masterStore.isSaving ? 'Menyimpan...' : 'Simpan Perubahan' }}</span>
             </button>
           </div>
         </form>
       </div>
     </div>
 
-    <!-- Success Modal -->
-    <div v-if="showSuccessModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
-      <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative animate-bounce-in text-center border-t-8 border-emerald-500">
-        <button @click="showSuccessModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-        <div class="w-24 h-24 bg-emerald-100 text-emerald-500 rounded-full mx-auto flex items-center justify-center mb-6 shadow-inner relative">
-          <div class="absolute inset-0 bg-emerald-400 rounded-full animate-ping opacity-20"></div>
-          <svg class="w-12 h-12 animate-draw-check" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+    <!-- ===================================================================== -->
+    <!-- MODAL: KONFIRMASI HAPUS (SOFT DELETE) -->
+    <!-- ===================================================================== -->
+    <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
+      <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl p-6 text-center animate-fade-in-up">
+        <div class="w-16 h-16 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-100">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
         </div>
-        <h2 class="text-2xl font-black text-gray-800 mb-2">Berhasil!</h2>
-        <p class="text-gray-600 mb-8 font-medium leading-relaxed text-sm">{{ successMessage }}</p>
-        <button @click="showSuccessModal = false" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-transform transform hover:-translate-y-1">Selesai</button>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Hapus Rombel Kelas?</h3>
+        <p class="text-sm text-gray-500 mb-6 leading-relaxed">
+          Anda akan menghapus kelas <span class="font-bold text-gray-900">"{{ classToDelete?.name }}"</span>.
+          Sistem menggunakan soft delete sehingga data riwayat jadwal lama tetap terjaga secara audit aman.
+        </p>
+        <div class="flex gap-3">
+          <button 
+            type="button" 
+            @click="showDeleteModal = false" 
+            class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2.5 px-4 rounded-xl transition-colors cursor-pointer text-sm"
+          >
+            Batal
+          </button>
+          <button 
+            type="button" 
+            @click="executeDeleteClass" 
+            :disabled="masterStore.isDeleting"
+            class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 text-sm"
+          >
+            <svg v-if="masterStore.isDeleting" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <span>{{ masterStore.isDeleting ? 'Menghapus...' : 'Ya, Hapus Kelas' }}</span>
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Error Modal -->
-    <div v-if="showErrorModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
-      <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative animate-shake text-center border-t-8 border-rose-500">
-        <button @click="showErrorModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-        <div class="w-24 h-24 bg-rose-100 text-rose-500 rounded-full mx-auto flex items-center justify-center mb-6 shadow-inner relative">
-          <div class="absolute inset-0 bg-rose-400 rounded-full animate-ping opacity-20"></div>
-          <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+    <!-- ===================================================================== -->
+    <!-- MODAL: PRATINJAU & VALIDASI EXCEL SEBELUM COMMIT IMPORT -->
+    <!-- ===================================================================== -->
+    <div v-if="showExcelPreviewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
+      <div class="bg-white rounded-3xl w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up">
+        <!-- Header Modal Preview -->
+        <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50 flex-shrink-0">
+          <div>
+            <h3 class="font-bold text-gray-800 text-lg flex items-center gap-2">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              Pratinjau & Validasi Impor Excel
+            </h3>
+            <p class="text-xs text-gray-500">Periksa ringkasan baris data sebelum disimpan ke database</p>
+          </div>
+          <button @click="closeExcelPreviewModal" class="text-gray-400 hover:text-gray-600 bg-white hover:bg-gray-100 rounded-full p-2 transition-colors cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
         </div>
-        <h2 class="text-2xl font-black text-gray-800 mb-2">Gagal Membaca File</h2>
-        <p class="text-gray-600 mb-8 font-medium leading-relaxed text-sm">{{ errorMessage }}</p>
-        <button @click="showErrorModal = false" class="w-full bg-rose-500 hover:bg-rose-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition-transform transform hover:-translate-y-1">Tutup & Coba Lagi</button>
+
+        <!-- Summary Badges Bar -->
+        <div class="px-6 py-3 bg-gray-50/50 border-b border-gray-100 flex flex-wrap items-center justify-between gap-3 text-xs flex-shrink-0">
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1 rounded-full font-bold bg-blue-100 text-blue-800">
+              Total: {{ excelPreviewRows.length }} Baris
+            </span>
+            <span class="px-3 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800">
+              Valid: {{ validExcelCount }} Baris
+            </span>
+            <span v-if="invalidExcelCount > 0" class="px-3 py-1 rounded-full font-bold bg-rose-100 text-rose-800">
+              Error: {{ invalidExcelCount }} Baris
+            </span>
+          </div>
+
+          <!-- Opsi Mode Impor -->
+          <div class="flex items-center gap-3">
+            <label class="flex items-center gap-1.5 cursor-pointer text-gray-700 font-medium">
+              <input type="radio" value="upsert" v-model="importMode" class="text-blue-600 focus:ring-blue-500">
+              <span>Upsert (Perbarui jika kelas sudah ada)</span>
+            </label>
+            <label class="flex items-center gap-1.5 cursor-pointer text-gray-700 font-medium">
+              <input type="radio" value="insert" v-model="importMode" class="text-blue-600 focus:ring-blue-500">
+              <span>Hanya yang baru</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Tabel Pratinjau Baris -->
+        <div class="overflow-y-auto flex-1 p-6">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-200 text-gray-600 font-bold uppercase tracking-wider">
+                <th class="px-3 py-3 w-12 text-center">Baris</th>
+                <th class="px-3 py-3 w-28">Status</th>
+                <th class="px-3 py-3">Nama Kelas</th>
+                <th class="px-3 py-3">Tingkat</th>
+                <th class="px-3 py-3">Jurusan</th>
+                <th class="px-3 py-3">Wali Kelas</th>
+                <th class="px-3 py-3 text-center">Siswa</th>
+                <th class="px-3 py-3">Keterangan / Validasi</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <tr 
+                v-for="item in excelPreviewRows" 
+                :key="item.row"
+                class="hover:bg-gray-50 transition-colors"
+                :class="!item.valid ? 'bg-rose-50/40' : item.warnings.length > 0 ? 'bg-amber-50/30' : ''"
+              >
+                <td class="px-3 py-2.5 font-mono text-center text-gray-500 font-semibold">{{ item.row }}</td>
+                <td class="px-3 py-2.5">
+                  <span 
+                    v-if="item.valid" 
+                    class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-bold bg-emerald-100 text-emerald-800"
+                  >
+                    Siap Import
+                  </span>
+                  <span 
+                    v-else 
+                    class="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-bold bg-rose-100 text-rose-800"
+                  >
+                    Format Salah
+                  </span>
+                </td>
+                <td class="px-3 py-2.5 font-bold text-gray-800">
+                  {{ item.parsedData.name || '-' }}
+                </td>
+                <td class="px-3 py-2.5 text-gray-600">
+                  {{ item.parsedData.grade_level ? `Kelas ${item.parsedData.grade_level}` : '-' }}
+                </td>
+                <td class="px-3 py-2.5 text-gray-600">
+                  {{ item.parsedData.major || 'Umum' }}
+                </td>
+                <td class="px-3 py-2.5 text-gray-700">
+                  {{ item.parsedData.homeroom_teacher_name || '-' }}
+                </td>
+                <td class="px-3 py-2.5 text-center font-semibold text-gray-700">
+                  {{ item.parsedData.student_count }}
+                </td>
+                <td class="px-3 py-2.5">
+                  <div v-if="item.errors.length > 0" class="text-rose-600 font-medium">
+                    <p v-for="(err, eIdx) in item.errors" :key="eIdx">{{ err }}</p>
+                  </div>
+                  <div v-else-if="item.warnings.length > 0" class="text-amber-700 font-medium">
+                    <p v-for="(warn, wIdx) in item.warnings" :key="wIdx">{{ warn }}</p>
+                  </div>
+                  <span v-else class="text-emerald-600 font-medium">Data valid</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Footer Actions Preview -->
+        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-between gap-3 flex-shrink-0">
+          <p class="text-xs text-gray-500">
+            Hanya baris dengan status <strong class="text-emerald-700">Siap Import</strong> yang akan diproses ke server database.
+          </p>
+          <div class="flex items-center gap-3">
+            <button 
+              type="button" 
+              @click="closeExcelPreviewModal" 
+              class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2.5 px-4 rounded-xl transition-colors cursor-pointer text-sm"
+            >
+              Batal
+            </button>
+            <button 
+              type="button" 
+              @click="commitExcelImport" 
+              :disabled="validExcelCount === 0 || masterStore.isImporting" 
+              class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50 text-sm"
+            >
+              <svg v-if="masterStore.isImporting" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+              <span>{{ masterStore.isImporting ? 'Menyimpan ke Server...' : `Import ${validExcelCount} Kelas` }}</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- ===================================================================== -->
+    <!-- MODAL: SUKSES -->
+    <!-- ===================================================================== -->
+    <div v-if="showSuccessModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
+      <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative animate-bounce-in text-center border-t-8 border-emerald-500">
+        <button @click="showSuccessModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full mx-auto flex items-center justify-center mb-5 shadow-inner relative">
+          <svg class="w-10 h-10 animate-draw-check" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+        <h2 class="text-xl font-black text-gray-800 mb-2">Berhasil!</h2>
+        <p class="text-gray-600 mb-6 font-medium leading-relaxed text-sm">{{ successMessage }}</p>
+        <button @click="showSuccessModal = false" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-transform transform hover:-translate-y-0.5 cursor-pointer text-sm">
+          Selesai
+        </button>
+      </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- MODAL: ERROR -->
+    <!-- ===================================================================== -->
+    <div v-if="showErrorModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 transition-opacity">
+      <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative animate-shake text-center border-t-8 border-rose-500">
+        <button @click="showErrorModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <div class="w-20 h-20 bg-rose-100 text-rose-500 rounded-full mx-auto flex items-center justify-center mb-5 shadow-inner relative">
+          <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </div>
+        <h2 class="text-xl font-black text-gray-800 mb-2">Terjadi Kesalahan</h2>
+        <p class="text-gray-600 mb-6 font-medium leading-relaxed text-sm">{{ errorMessage }}</p>
+        <button @click="showErrorModal = false" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-transform transform hover:-translate-y-0.5 cursor-pointer text-sm">
+          Tutup & Perbaiki
+        </button>
+      </div>
+    </div>
+
+    <!-- MODAL: XLSB / EXCEL WORKBOOK IMPOR PIPELINE -->
+    <XlsbImportModal
+      :isOpen="showXlsbModal"
+      defaultEntityType="classes"
+      :existingRecords="masterStore.classes"
+      @close="showXlsbModal = false"
+      @import-success="handleXlsbImportSuccess"
+      @error="handleXlsbError"
+    />
 
   </div>
 </template>
@@ -334,36 +708,58 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import * as XLSX from 'xlsx'
+import { useMasterDataStore } from '../stores/masterData.js'
 import { realtimeClient } from '../core/realtimeClient.js'
+import { createDefaultClass, validateClassExcelRow } from '../types/masterData.js'
+import XlsbImportModal from '../components/XlsbImportModal.vue'
+
+const masterStore = useMasterDataStore()
 
 const loading = ref(true)
-const saving = ref(false)
-const importing = ref(false)
+const readingExcel = ref(false)
+
 const showAddModal = ref(false)
 const showEditModal = ref(false)
+const showDeleteModal = ref(false)
+const showExcelPreviewModal = ref(false)
+const showXlsbModal = ref(false)
 const showSuccessModal = ref(false)
 const showErrorModal = ref(false)
-const successMessage = ref('Data Kelas (Rombel) berhasil ditambahkan ke database.')
+
+const successMessage = ref('')
 const errorMessage = ref('')
+const formErrors = ref({})
 
 const searchQuery = ref('')
+const activeFilterStatus = ref('all') // 'all' | 'active' | 'inactive'
 const currentPage = ref(1)
 const itemsPerPage = 10
 
 const fileInput = ref(null)
-const classes = ref([])
-const form = ref({ name: '', student_count: null, homeroom_teacher: '' })
-const editForm = ref({ id: null, originalName: '', name: '', homeroom_teacher: '', student_count: null })
+const classToDelete = ref(null)
+const form = ref(createDefaultClass())
+const editForm = ref(createDefaultClass())
 
-// Client-Side Search & Pagination Computed
+// State Preview Excel
+const excelPreviewRows = ref([])
+const importMode = ref('upsert') // 'upsert' | 'insert'
+
+// Filtered Classes
 const filteredClasses = computed(() => {
   const q = searchQuery.value.trim().toLowerCase()
-  if (!q) return classes.value
-  return classes.value.filter(c => 
-    (c.name && c.name.toLowerCase().includes(q)) ||
-    (c.homeroom_teacher && c.homeroom_teacher.toLowerCase().includes(q)) ||
-    (c.student_count && String(c.student_count).includes(q))
-  )
+  return (masterStore.classes || []).filter((c) => {
+    // Filter status aktif/nonaktif
+    if (activeFilterStatus.value === 'active' && !c.is_active) return false
+    if (activeFilterStatus.value === 'inactive' && c.is_active) return false
+
+    // Filter teks pencarian
+    if (!q) return true
+    const nameMatch = (c.name || '').toLowerCase().includes(q)
+    const hrMatch = (c.homeroom_teacher_name || c.homeroom_teacher || '').toLowerCase().includes(q)
+    const majorMatch = (c.major || '').toLowerCase().includes(q)
+    const countMatch = String(c.student_count || '').includes(q)
+    return nameMatch || hrMatch || majorMatch || countMatch
+  })
 })
 
 const totalPages = computed(() => {
@@ -384,155 +780,212 @@ const paginationEnd = computed(() => {
   return Math.min(currentPage.value * itemsPerPage, filteredClasses.value.length)
 })
 
+const validExcelCount = computed(() => {
+  return excelPreviewRows.value.filter((r) => r.valid).length
+})
+
+const invalidExcelCount = computed(() => {
+  return excelPreviewRows.value.filter((r) => !r.valid).length
+})
+
 watch(searchQuery, () => {
   currentPage.value = 1
 })
 
-onMounted(() => {
-  realtimeClient.connect('school_admin')
-  const saved = localStorage.getItem('guruKu_classes');
-  if (saved) {
-    try {
-      classes.value = JSON.parse(saved);
-    } catch (e) {
-      console.error('Error parsing classes:', e);
-    }
-    loading.value = false;
-    syncHomeroomTeachersToGuru(classes.value);
-  } else {
-    setTimeout(() => {
-      classes.value = [
-        { id: 1, name: '4 A', student_count: 32, homeroom_teacher: 'Budi Santoso, S.Pd' },
-        { id: 2, name: '4 B', student_count: 30, homeroom_teacher: 'Siti Aminah, M.Pd' },
-      ]
-      loading.value = false
-      syncHomeroomTeachersToGuru(classes.value);
-    }, 600)
-  }
+watch(activeFilterStatus, () => {
+  currentPage.value = 1
 })
 
-// Fungsi Pembuat Kode Guru Otomatis yang Unik
-const generateUniqueTeacherCode = (teacherName, existingTeachers) => {
-  let clean = teacherName
-    .replace(/(,\s*)?(s\.pd|m\.pd|s\.ag|s\.si|m\.si|m\.kom|s\.kom|drs\.|dra\.|ph\.d|m\.hum|s\.sos|s\.e|m\.m)/gi, '')
-    .trim()
-
-  const words = clean.split(/\s+/).filter(w => w.length > 0)
-  let candidate = ''
-  if (words.length >= 2) {
-    candidate = (words[0][0] + words[1][0]).toUpperCase()
-  } else if (words.length === 1) {
-    candidate = words[0].substring(0, 2).toUpperCase()
-  } else {
-    candidate = 'G'
-  }
-
-  const existingCodes = new Set(existingTeachers.map(t => (t.code || '').trim().toUpperCase()))
-
-  if (!existingCodes.has(candidate)) {
-    return candidate
-  }
-
-  if (words.length >= 3) {
-    const candidate3 = (words[0][0] + words[1][0] + words[2][0]).toUpperCase()
-    if (!existingCodes.has(candidate3)) return candidate3
-  }
-
-  let counter = 1
-  while (existingCodes.has(`${candidate}${counter}`)) {
-    counter++
-  }
-  return `${candidate}${counter}`
+const resetFilters = () => {
+  searchQuery.value = ''
+  activeFilterStatus.value = 'all'
+  currentPage.value = 1
 }
 
-// Sinkronkan Wali Kelas ke Daftar Guru (guruKu_teachers) secara otomatis
-const syncHomeroomTeachersToGuru = (classesList) => {
-  if (!classesList || classesList.length === 0) return
-
-  let teachers = []
-  const savedTeachers = localStorage.getItem('guruKu_teachers')
-  if (savedTeachers) {
-    try {
-      teachers = JSON.parse(savedTeachers)
-    } catch (e) {}
+// ============================================================================
+// LIFECYCLE: LOAD DATA FROM BACKEND SERVER
+// ============================================================================
+async function loadData() {
+  loading.value = true
+  try {
+    // Muat data kelas dan guru dari backend
+    await Promise.allSettled([
+      masterStore.loadClasses(),
+      masterStore.loadTeachers()
+    ])
+  } catch (err) {
+    console.error('Error loading master data:', err)
+  } finally {
+    loading.value = false
   }
+}
 
-  let addedNew = false
+onMounted(() => {
+  realtimeClient.connect('school_admin')
+  loadData()
+})
 
-  classesList.forEach((cls, idx) => {
-    const waliName = (cls.homeroom_teacher || '').trim()
-    if (!waliName || waliName === '-') return
+// ============================================================================
+// TAMBAH KELAS
+// ============================================================================
+function openAddModal() {
+  form.value = createDefaultClass()
+  formErrors.value = {}
+  showAddModal.value = true
+}
 
-    // Cek apakah wali kelas ini sudah ada di teachers
-    const exists = teachers.some(t => {
-      const tName = (t.name || '').trim().toLowerCase()
-      const wName = waliName.toLowerCase()
-      if (tName === wName) return true
-      const cleanT = tName.replace(/[.,]/g, '').replace(/\b(spd|mpd|sag|ssi|msi|mkom|skom|drs|dra)\b/gi, '').trim()
-      const cleanW = wName.replace(/[.,]/g, '').replace(/\b(spd|mpd|sag|ssi|msi|mkom|skom|drs|dra)\b/gi, '').trim()
-      return cleanT === cleanW
-    })
-
-    if (!exists) {
-      const newCode = generateUniqueTeacherCode(waliName, teachers)
-      teachers.push({
-        id: Date.now() + idx,
-        name: waliName,
-        code: newCode,
-        subject: `Wali Kelas ${cls.name}`
-      })
-      addedNew = true
+async function saveClass() {
+  formErrors.value = {}
+  try {
+    const payload = {
+      name: form.value.name.trim().toUpperCase(),
+      grade_level: form.value.grade_level ? Number(form.value.grade_level) : null,
+      major: form.value.major.trim() || 'Umum',
+      academic_year: form.value.academic_year.trim(),
+      homeroom_teacher_id: form.value.homeroom_teacher_id || null,
+      student_count: Number(form.value.student_count) || 0,
+      is_active: Boolean(form.value.is_active)
     }
-  })
 
-  if (addedNew) {
-    localStorage.setItem('guruKu_teachers', JSON.stringify(teachers))
+    await masterStore.addClass(payload)
+    showAddModal.value = false
+    successMessage.value = `Rombel "${payload.name}" berhasil ditambahkan ke server.`
+    showSuccessModal.value = true
+    realtimeClient.syncProgress('Daftar Kelas')
+  } catch (err) {
+    if (err.fields) {
+      formErrors.value = err.fields
+    } else {
+      errorMessage.value = err.message || 'Gagal menambahkan kelas baru'
+      showErrorModal.value = true
+    }
   }
 }
 
-// Sinkronkan ke localStorage agar PengampuMapel, DaftarGuru, & TugasTambahan otomatis terupdate
-watch(classes, (newVal) => {
-  localStorage.setItem('guruKu_classes', JSON.stringify(newVal));
-  syncHomeroomTeachersToGuru(newVal);
-}, { deep: true });
+// ============================================================================
+// EDIT KELAS
+// ============================================================================
+function openEditModal(cls) {
+  editForm.value = {
+    id: cls.id,
+    name: cls.name,
+    grade_level: cls.grade_level ?? null,
+    major: cls.major || 'Umum',
+    academic_year: cls.academic_year || `${new Date().getFullYear()}/${new Date().getFullYear() + 1}`,
+    homeroom_teacher_id: cls.homeroom_teacher_id ?? null,
+    student_count: cls.student_count ?? 0,
+    is_active: cls.is_active ?? true
+  }
+  formErrors.value = {}
+  showEditModal.value = true
+}
 
-// 1. Download Template Excel Resmi
-const downloadTemplate = () => {
+async function updateClassData() {
+  formErrors.value = {}
+  try {
+    const payload = {
+      name: editForm.value.name.trim().toUpperCase(),
+      grade_level: editForm.value.grade_level ? Number(editForm.value.grade_level) : null,
+      major: editForm.value.major.trim() || 'Umum',
+      academic_year: editForm.value.academic_year.trim(),
+      homeroom_teacher_id: editForm.value.homeroom_teacher_id || null,
+      student_count: Number(editForm.value.student_count) || 0,
+      is_active: Boolean(editForm.value.is_active)
+    }
+
+    await masterStore.editClass(editForm.value.id, payload)
+    showEditModal.value = false
+    successMessage.value = `Data kelas "${payload.name}" berhasil diperbarui.`
+    showSuccessModal.value = true
+    realtimeClient.syncProgress('Daftar Kelas')
+  } catch (err) {
+    if (err.fields) {
+      formErrors.value = err.fields
+    } else {
+      errorMessage.value = err.message || 'Gagal memperbarui kelas'
+      showErrorModal.value = true
+    }
+  }
+}
+
+// ============================================================================
+// HAPUS KELAS (SOFT DELETE)
+// ============================================================================
+function confirmDeleteClass(cls) {
+  classToDelete.value = cls
+  showDeleteModal.value = true
+}
+
+async function executeDeleteClass() {
+  if (!classToDelete.value) return
+  try {
+    await masterStore.removeClass(classToDelete.value.id)
+    showDeleteModal.value = false
+    successMessage.value = `Kelas "${classToDelete.value.name}" berhasil dihapus secara aman (soft delete).`
+    showSuccessModal.value = true
+    classToDelete.value = null
+    realtimeClient.syncProgress('Daftar Kelas')
+  } catch (err) {
+    errorMessage.value = err.message || 'Gagal menghapus kelas'
+    showErrorModal.value = true
+  }
+}
+
+// ============================================================================
+// EXCEL: TEMPLATE DOWNLOAD & UPLOAD PREVIEW
+// ============================================================================
+function downloadTemplate() {
+  const currentYear = new Date().getFullYear()
+  const academicYear = `${currentYear}/${currentYear + 1}`
+
   const templateRows = [
     {
       'No': 1,
-      'Nama Kelas': '4 A',
+      'Nama Kelas': '7 A',
+      'Tingkat': 7,
+      'Jurusan': 'Umum',
+      'Tahun Ajaran': academicYear,
       'Wali Kelas': 'Budi Santoso, S.Pd',
       'Jumlah Siswa': 32
     },
     {
       'No': 2,
-      'Nama Kelas': '4 B',
+      'Nama Kelas': '7 B',
+      'Tingkat': 7,
+      'Jurusan': 'Umum',
+      'Tahun Ajaran': academicYear,
       'Wali Kelas': 'Siti Aminah, M.Pd',
       'Jumlah Siswa': 30
     },
     {
       'No': 3,
-      'Nama Kelas': '5 A',
+      'Nama Kelas': '8 A',
+      'Tingkat': 8,
+      'Jurusan': 'Umum',
+      'Tahun Ajaran': academicYear,
       'Wali Kelas': 'Ahmad Fauzi, S.Pd',
       'Jumlah Siswa': 32
     },
     {
       'No': 4,
-      'Nama Kelas': '5 B',
+      'Nama Kelas': '10 MIPA 1',
+      'Tingkat': 10,
+      'Jurusan': 'MIPA',
+      'Tahun Ajaran': academicYear,
       'Wali Kelas': 'Dewi Lestari, S.Pd',
-      'Jumlah Siswa': 31
+      'Jumlah Siswa': 36
     }
   ]
 
   const ws = XLSX.utils.json_to_sheet(templateRows)
-
-  // Atur lebar kolom agar proporsional dan mudah dibaca
   ws['!cols'] = [
     { wch: 6 },   // No
     { wch: 18 },  // Nama Kelas
+    { wch: 10 },  // Tingkat
+    { wch: 14 },  // Jurusan
+    { wch: 16 },  // Tahun Ajaran
     { wch: 30 },  // Wali Kelas
-    { wch: 16 }   // Jumlah Siswa
+    { wch: 14 }   // Jumlah Siswa
   ]
 
   const wb = XLSX.utils.book_new()
@@ -540,20 +993,17 @@ const downloadTemplate = () => {
   XLSX.writeFile(wb, 'Template_Daftar_Kelas_GuruKu.xlsx')
 }
 
-// 2. Trigger Upload Input
-const triggerUpload = () => {
+function triggerUpload() {
   if (fileInput.value) {
     fileInput.value.click()
   }
 }
 
-// 3. Handle File Upload & Parse Excel
-const handleFileUpload = (event) => {
+function handleFileUpload(event) {
   const file = event.target.files && event.target.files[0]
   if (!file) return
 
-  importing.value = true
-
+  readingExcel.value = true
   const reader = new FileReader()
 
   reader.onload = (e) => {
@@ -573,89 +1023,25 @@ const handleFileUpload = (event) => {
         throw new Error('File Excel kosong atau tidak memiliki baris data.')
       }
 
-      const importedList = []
-
-      rawRows.forEach((row, idx) => {
-        // Normalisasi nama kolom menjadi lowercase dan tanpa spasi ganda
-        const normalized = {}
-        for (const key in row) {
-          normalized[key.trim().toLowerCase()] = row[key]
-        }
-
-        const name = (
-          normalized['nama kelas'] ||
-          normalized['nama_kelas'] ||
-          normalized['kelas'] ||
-          normalized['rombel'] ||
-          ''
-        ).toString().trim()
-
-        const homeroom = (
-          normalized['wali kelas'] ||
-          normalized['wali_kelas'] ||
-          normalized['wali'] ||
-          normalized['nama wali'] ||
-          ''
-        ).toString().trim()
-
-        const studentCountVal = (
-          normalized['jumlah siswa'] ||
-          normalized['jumlah_siswa'] ||
-          normalized['jumlah'] ||
-          normalized['siswa'] ||
-          30
-        )
-        const studentCount = parseInt(studentCountVal) || 30
-
-        if (name) {
-          importedList.push({
-            id: Date.now() + idx,
-            name: name.toUpperCase(),
-            homeroom_teacher: homeroom,
-            student_count: studentCount
-          })
-        }
+      const seenNames = new Set()
+      const previewList = rawRows.map((row, idx) => {
+        return validateClassExcelRow(row, idx + 1, seenNames)
       })
 
-      if (importedList.length === 0) {
-        throw new Error('Kolom "Nama Kelas" tidak ditemukan atau tidak ada data yang valid. Silakan gunakan template yang telah disediakan.')
-      }
-
-      // Merge data: tambahkan yang baru, update wali/jumlah jika kelas sudah ada
-      let addedCount = 0
-      let updatedCount = 0
-
-      importedList.forEach(item => {
-        const existingIdx = classes.value.findIndex(c => c.name.toUpperCase() === item.name)
-        if (existingIdx !== -1) {
-          if (item.homeroom_teacher) {
-            classes.value[existingIdx].homeroom_teacher = item.homeroom_teacher
-          }
-          if (item.student_count) {
-            classes.value[existingIdx].student_count = item.student_count
-          }
-          updatedCount++
-        } else {
-          classes.value.push(item)
-          addedCount++
-        }
-      })
-
-      successMessage.value = `Berhasil mengimpor file Excel! ${addedCount} kelas baru ditambahkan${updatedCount > 0 ? `, ${updatedCount} kelas diperbarui` : ''}. Data sudah tersinkronisasi ke seluruh sistem.`
-      showSuccessModal.value = true
-      realtimeClient.syncProgress('Daftar Kelas')
+      excelPreviewRows.value = previewList
+      showExcelPreviewModal.value = true
     } catch (err) {
-      console.error('Error saat parsing file Excel:', err)
-      errorMessage.value = err.message || 'Format file Excel tidak dapat dibaca atau tidak sesuai.'
+      console.error('Error saat membaca Excel:', err)
+      errorMessage.value = err.message || 'Format file Excel tidak dapat dibaca.'
       showErrorModal.value = true
     } finally {
-      importing.value = false
+      readingExcel.value = false
       if (fileInput.value) fileInput.value.value = ''
     }
   }
 
   reader.onerror = () => {
-    importing.value = false
+    readingExcel.value = false
     errorMessage.value = 'Gagal membaca file dari penyimpanan lokal komputer Anda.'
     showErrorModal.value = true
     if (fileInput.value) fileInput.value.value = ''
@@ -664,83 +1050,79 @@ const handleFileUpload = (event) => {
   reader.readAsArrayBuffer(file)
 }
 
-// 4. Tambah Kelas Manual
-const saveClass = () => {
-  saving.value = true
-  setTimeout(() => {
-    classes.value.push({
-      id: Date.now(),
-      name: form.value.name.toUpperCase(),
-      student_count: form.value.student_count,
-      homeroom_teacher: form.value.homeroom_teacher
-    })
-    
-    // Reset state
-    form.value.name = ''
-    form.value.student_count = null
-    form.value.homeroom_teacher = ''
-    saving.value = false
-    showAddModal.value = false
-    
-    successMessage.value = 'Data Kelas (Rombel) berhasil ditambahkan ke database.'
-    showSuccessModal.value = true
-    realtimeClient.syncProgress('Daftar Kelas')
-  }, 600)
+function closeExcelPreviewModal() {
+  showExcelPreviewModal.value = false
+  excelPreviewRows.value = []
 }
 
-const openEditModal = (cls) => {
-  editForm.value = {
-    id: cls.id,
-    originalName: cls.name,
-    name: cls.name,
-    homeroom_teacher: cls.homeroom_teacher || '',
-    student_count: cls.student_count || 32
-  }
-  showEditModal.value = true
-}
+async function commitExcelImport() {
+  const validRows = excelPreviewRows.value
+    .filter((r) => r.valid)
+    .map((r) => r.parsedData)
 
-const updateClass = () => {
-  const newName = editForm.value.name.trim().toUpperCase()
-  if (!newName) return
-
-  // Cek duplikasi jika nama diubah
-  const isDuplicate = classes.value.some(c => 
-    c.name.toUpperCase() === newName && 
-    c.name.toUpperCase() !== editForm.value.originalName.toUpperCase()
-  )
-  if (isDuplicate) {
-    errorMessage.value = `Kelas "${newName}" sudah ada dalam daftar. Nama kelas tidak boleh sama.`
+  if (validRows.length === 0) {
+    errorMessage.value = 'Tidak ada baris data valid untuk diimpor.'
     showErrorModal.value = true
     return
   }
 
-  saving.value = true
-  setTimeout(() => {
-    const targetIdx = classes.value.findIndex(c => (c.id && c.id === editForm.value.id) || c.name === editForm.value.originalName)
-    if (targetIdx !== -1) {
-      classes.value[targetIdx].name = newName
-      classes.value[targetIdx].homeroom_teacher = editForm.value.homeroom_teacher.trim()
-      classes.value[targetIdx].student_count = editForm.value.student_count
-    }
-    saving.value = false
-    showEditModal.value = false
-    successMessage.value = `Data kelas "${newName}" berhasil diperbarui!`
+  try {
+    const result = await masterStore.importClassesBatch(validRows, importMode.value)
+    closeExcelPreviewModal()
+
+    const summaryParts = []
+    if (result.inserted > 0) summaryParts.push(`${result.inserted} kelas baru ditambahkan`)
+    if (result.updated > 0) summaryParts.push(`${result.updated} kelas diperbarui`)
+    if (result.skipped > 0) summaryParts.push(`${result.skipped} kelas dilewati`)
+    if (result.failed > 0) summaryParts.push(`${result.failed} baris gagal`)
+
+    successMessage.value = `Impor Excel berhasil! ${summaryParts.join(', ')}.`
     showSuccessModal.value = true
     realtimeClient.syncProgress('Daftar Kelas')
-  }, 400)
+  } catch (err) {
+    errorMessage.value = err.message || 'Gagal menyimpan transaksi batch ke server.'
+    showErrorModal.value = true
+  }
 }
 
-const deleteClass = (cls) => {
-  if (confirm(`Yakin ingin menghapus kelas "${cls.name}"? Semua penugasan guru di kelas ini juga akan terhapus nantinya.`)) {
-    const idx = classes.value.findIndex(c => (c.id && c.id === cls.id) || c.name === cls.name)
-    if (idx !== -1) {
-      classes.value.splice(idx, 1)
+async function handleXlsbImportSuccess({ mode, items, result }) {
+  if (mode === 'VALIDATE_ONLY') {
+    successMessage.value = `Validasi berhasil! ${result.validCount} dari ${result.total} data kelas valid.`
+    showSuccessModal.value = true
+    return
+  }
+
+  if (items && items.length > 0) {
+    try {
+      const payload = items.map((it) => ({
+        name: it.name,
+        grade_level: it.gradeLevel,
+        major: it.major || '',
+        academic_year: it.academicYear || '2026/2027',
+        homeroom_teacher_name: it.homeroomTeacherName || '',
+        is_active: true
+      }))
+      const res = await masterStore.importClassesBatch(payload, mode.toLowerCase())
+      const summaryParts = []
+      if (res.inserted > 0) summaryParts.push(`${res.inserted} kelas baru ditambahkan`)
+      if (res.updated > 0) summaryParts.push(`${res.updated} kelas diperbarui`)
+      if (res.skipped > 0) summaryParts.push(`${res.skipped} kelas dilewati`)
+      if (res.failed > 0) summaryParts.push(`${res.failed} baris gagal`)
+
+      successMessage.value = `Impor XLSB berhasil! ${summaryParts.join(', ')}.`
+      showSuccessModal.value = true
       realtimeClient.syncProgress('Daftar Kelas')
-      if (currentPage.value > totalPages.value) {
-        currentPage.value = Math.max(1, totalPages.value)
-      }
+      await masterStore.fetchClasses(1)
+    } catch (err) {
+      errorMessage.value = err.message || 'Gagal menyimpan hasil impor XLSB.'
+      showErrorModal.value = true
     }
   }
+}
+
+function handleXlsbError(msg) {
+  errorMessage.value = msg
+  showErrorModal.value = true
 }
 </script>
 

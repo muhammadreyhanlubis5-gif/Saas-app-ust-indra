@@ -1,0 +1,5713 @@
+[
+  {
+    "index": 1,
+    "name": "Home",
+    "visibility": "Visible",
+    "range": "A1:CX1036",
+    "rowCount": 1036,
+    "colCount": 102,
+    "mergesCount": 17,
+    "formulaCount": 65,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": 12,
+    "headerColumns": [
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "TOTAL ALOKASI JAM (UNTUK LEBIH JELAS  KLIK MENU NO. 5"
+      },
+      {
+        "colIdx": 11,
+        "colLetter": "K",
+        "name": "726"
+      },
+      {
+        "colIdx": 12,
+        "colLetter": "L",
+        "name": "JP"
+      },
+      {
+        "colIdx": 14,
+        "colLetter": "N",
+        "name": "JUMLAH KEDUANYA HARUS SAMA"
+      },
+      {
+        "colIdx": 18,
+        "colLetter": "R",
+        "name": "JAM GURU TELAH SESUAI DENGAN ALOKASI KURIKULUM YANG DITETAPKAN, LANJUTKAN  KE INPUT JADWAL (MENU NO. 10)"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 1,
+        "cells": [
+          "IKUTI ALUR PENGISIAN JADWAL  DARI URUTAN NO 1 SAMPAI NO 16",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 1,
+        "cells": [
+          "MTs",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 12,
+        "nonEmptyCount": 5,
+        "cells": [
+          "",
+          "TOTAL ALOKASI JAM (UNTUK LEBIH JELAS  KLIK MENU NO. 5",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "726",
+          "JP",
+          "",
+          "JUMLAH KEDUANYA HARUS SAMA",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 13,
+        "nonEmptyCount": 3,
+        "cells": [
+          "",
+          "TOTAL  JAM  TERDISTRIBUSI KE GURU (KLIK MENU NO. 7)",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "726",
+          "JP",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 16,
+        "nonEmptyCount": 3,
+        "cells": [
+          "",
+          "KODE GURU YANG BELUM DIINPUT (CEK DI MENU NO.12 )",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "200.00%",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 18,
+        "nonEmptyCount": 2,
+        "cells": [
+          "",
+          "0",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 19,
+        "nonEmptyCount": 4,
+        "cells": [
+          "",
+          "KODE GURU YANG SUDAH DIINPUT KE JADWAL ADALAH",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "726",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "A2",
+        "formula": "Rombel!D9",
+        "val": "MTs"
+      },
+      {
+        "cell": "BA5",
+        "formula": "SH33TJSSRC355!C5",
+        "val": "X-A"
+      },
+      {
+        "cell": "BB5",
+        "formula": "SH33TJSSRC355!D5",
+        "val": "X-B"
+      },
+      {
+        "cell": "BC5",
+        "formula": "SH33TJSSRC355!E5",
+        "val": "X-C"
+      },
+      {
+        "cell": "BD5",
+        "formula": "SH33TJSSRC355!F5",
+        "val": "X-D"
+      }
+    ]
+  },
+  {
+    "index": 2,
+    "name": "PPA",
+    "visibility": "Visible",
+    "range": "A1:H184",
+    "rowCount": 184,
+    "colCount": 8,
+    "mergesCount": 3,
+    "formulaCount": 0,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": 16,
+    "headerColumns": [
+      {
+        "colIdx": 1,
+        "colLetter": "A",
+        "name": "No"
+      },
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "URAIAN"
+      },
+      {
+        "colIdx": 3,
+        "colLetter": "C",
+        "name": "Keterangan"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "WAJIIB UNTUK MELAKUKAN AKTIVASII MAKRO EXCEL VBA AGAR APLIKASI INI DAPAT BERFUNGSI DENGAN BAIK (1  KALI SAJA)",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "CARANYA ADALAH :",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "1.  Tutup dahulu Aplikasi Excel ini",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "2. Klik kanan file → Properties",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "3. Centang Unblock   → OK",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "SILAHKAN INPUT NAMA SEKOLAH/MADRASAH/KAMPUS/LEMBAGA DISINI UNTUK DIVALIDASI PADA KOLOM DI BAWAH INI",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "MTS. DARUL ARAFAH",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 16,
+        "nonEmptyCount": 3,
+        "cells": [
+          "No",
+          "URAIAN",
+          "Keterangan",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": []
+  },
+  {
+    "index": 3,
+    "name": "Rombel",
+    "visibility": "Visible",
+    "range": "A1:BR1048566",
+    "rowCount": 1048566,
+    "colCount": 70,
+    "mergesCount": 21,
+    "formulaCount": 93,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": 4,
+    "headerColumns": [
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "No"
+      },
+      {
+        "colIdx": 3,
+        "colLetter": "C",
+        "name": "URAIAN"
+      },
+      {
+        "colIdx": 4,
+        "colLetter": "D",
+        "name": "Keterangan"
+      },
+      {
+        "colIdx": 9,
+        "colLetter": "I",
+        "name": "No"
+      },
+      {
+        "colIdx": 10,
+        "colLetter": "J",
+        "name": "HARI KBM"
+      },
+      {
+        "colIdx": 11,
+        "colLetter": "K",
+        "name": "JUMLAH ROMBEL JANGAN DI HAPUS"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 2,
+        "cells": [
+          "",
+          "JADWAL PELAJARAN",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "ISI PADA BAGIAN YANG DI BLOK WARNA KUNING SESUAI DENGAN KONDISI SEKOLAH MASING-MASING (JIKA TDK BISA INPUT MAKA DOUBLE CLICK DAHULU )",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 6,
+        "cells": [
+          "",
+          "No",
+          "URAIAN",
+          "Keterangan",
+          "",
+          "",
+          "",
+          "",
+          "No",
+          "HARI KBM",
+          "JUMLAH ROMBEL JANGAN DI HAPUS",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 6,
+        "cells": [
+          "",
+          "1",
+          "Nama Kepala Sekolah",
+          "Marwan Halim, M.Ag.",
+          "",
+          "",
+          "",
+          "",
+          "1",
+          "SABTU",
+          "0",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 5,
+        "cells": [
+          "",
+          "2",
+          "Nama Wakasek  Bid. Kurikulum",
+          "Prasilo Heri Yudanto, Lc. M.Ag",
+          "",
+          "",
+          "",
+          "",
+          "2",
+          "MINGGU",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 5,
+        "cells": [
+          "",
+          "3",
+          "Lokasi Sekolah",
+          "Lau Bakeri",
+          "",
+          "",
+          "",
+          "",
+          "3",
+          "SENIN",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 5,
+        "cells": [
+          "",
+          "4",
+          "Tanggal Pembuatan Jadwal (yy/mm/dd)",
+          "16 Juli 2026",
+          "",
+          "",
+          "",
+          "",
+          "4",
+          "SELASA",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 9,
+        "nonEmptyCount": 5,
+        "cells": [
+          "",
+          "5",
+          "NAMA SEKOLAH/MADRASAH",
+          "MTs",
+          "",
+          "",
+          "",
+          "",
+          "5",
+          "RABU",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "AN2",
+        "formula": "Alokasi!V5",
+        "val": 0
+      },
+      {
+        "cell": "AO2",
+        "formula": "Alokasi!W5",
+        "val": 0
+      },
+      {
+        "cell": "AP2",
+        "formula": "Alokasi!X5",
+        "val": 0
+      },
+      {
+        "cell": "AQ2",
+        "formula": "Alokasi!Y5",
+        "val": 0
+      },
+      {
+        "cell": "AR2",
+        "formula": "Alokasi!Z5",
+        "val": 0
+      }
+    ]
+  },
+  {
+    "index": 4,
+    "name": "TIME KBM",
+    "visibility": "Hidden",
+    "range": "B1:L120",
+    "rowCount": 120,
+    "colCount": 11,
+    "mergesCount": 18,
+    "formulaCount": 30,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": 5,
+    "headerColumns": [
+      {
+        "colIdx": 1,
+        "colLetter": "A",
+        "name": "Jam Ke :"
+      },
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "DURASI"
+      },
+      {
+        "colIdx": 3,
+        "colLetter": "C",
+        "name": "MULAI - AKHIR"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 1,
+        "cells": [
+          "SABTU",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 3,
+        "cells": [
+          "Jam Ke :",
+          "DURASI",
+          "MULAI - AKHIR",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "(JAM : MENIT)",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 5,
+        "cells": [
+          "U",
+          "0:40",
+          "7:30",
+          ":",
+          "8:10",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 5,
+        "cells": [
+          "1",
+          "0:40",
+          "8:10",
+          ":",
+          "8:50",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 9,
+        "nonEmptyCount": 5,
+        "cells": [
+          "2",
+          "0:40",
+          "8:50",
+          ":",
+          "9:30",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 10,
+        "nonEmptyCount": 5,
+        "cells": [
+          "3",
+          "0:40",
+          "9:30",
+          ":",
+          "10:10",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 11,
+        "nonEmptyCount": 5,
+        "cells": [
+          "ISTIRAHAT",
+          "0:40",
+          "10:10",
+          ":",
+          "10:50",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "B4",
+        "formula": "Rombel!J5",
+        "val": "SABTU "
+      },
+      {
+        "cell": "F7",
+        "formula": "+D7+C7",
+        "val": 0.3402777777777778
+      },
+      {
+        "cell": "D8",
+        "formula": "F7",
+        "val": 0.3402777777777778
+      },
+      {
+        "cell": "F8",
+        "formula": "+D8+C8",
+        "val": 0.3680555555555556
+      },
+      {
+        "cell": "D9",
+        "formula": "F8",
+        "val": 0.3680555555555556
+      }
+    ]
+  },
+  {
+    "index": 5,
+    "name": "Kegiatan Non Mapel",
+    "visibility": "Hidden",
+    "range": "A1:X1048473",
+    "rowCount": 1048473,
+    "colCount": 24,
+    "mergesCount": 7,
+    "formulaCount": 742,
+    "formulaErrorCount": 1,
+    "detectedHeaderRow": 2,
+    "headerColumns": [
+      {
+        "colIdx": 4,
+        "colLetter": "D",
+        "name": "NO"
+      },
+      {
+        "colIdx": 5,
+        "colLetter": "E",
+        "name": "KODE"
+      },
+      {
+        "colIdx": 6,
+        "colLetter": "F",
+        "name": "KEGIATAN"
+      },
+      {
+        "colIdx": 22,
+        "colLetter": "V",
+        "name": "Ini rumus Vba"
+      },
+      {
+        "colIdx": 23,
+        "colLetter": "W",
+        "name": "Jangan didelete"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "",
+          "KODE DAN NAMA DAFTAR KEGIATAN SELAIN DAFTAR MATA PELAJARAN YANG AKAN DICANTUMKAN DALAM JADWAL",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 5,
+        "cells": [
+          "",
+          "",
+          "",
+          "NO",
+          "KODE",
+          "KEGIATAN",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 3,
+        "cells": [
+          "",
+          "",
+          "",
+          "1",
+          "UP",
+          "UPACARA BENDERA",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 3,
+        "cells": [
+          "",
+          "",
+          "",
+          "2",
+          "REH",
+          "ISTIRAHAT",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 3,
+        "cells": [
+          "",
+          "",
+          "",
+          "3",
+          "0",
+          "0",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 3,
+        "cells": [
+          "",
+          "",
+          "",
+          "4",
+          "0",
+          "0",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 3,
+        "cells": [
+          "",
+          "",
+          "",
+          "5",
+          "0",
+          "0",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 3,
+        "cells": [
+          "",
+          "",
+          "",
+          "6",
+          "0",
+          "0",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "E3",
+        "formula": "Rombel!K173",
+        "val": "UP"
+      },
+      {
+        "cell": "F3",
+        "formula": "Rombel!J173",
+        "val": "UPACARA BENDERA"
+      },
+      {
+        "cell": "E4",
+        "formula": "Rombel!K174",
+        "val": "REH"
+      },
+      {
+        "cell": "F4",
+        "formula": "Rombel!J174",
+        "val": "ISTIRAHAT"
+      },
+      {
+        "cell": "E5",
+        "formula": "Rombel!K175",
+        "val": 0
+      }
+    ]
+  },
+  {
+    "index": 6,
+    "name": "GENARATE KODE",
+    "visibility": "Visible",
+    "range": "A1:S160",
+    "rowCount": 160,
+    "colCount": 19,
+    "mergesCount": 0,
+    "formulaCount": 160,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": -1,
+    "headerColumns": [],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "MH",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "PHY",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "IS",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "MF",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "AGR",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "AUL",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "AR",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 2,
+        "cells": [
+          "",
+          "AM",
+          "SILAHKAN KIK",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "B1",
+        "formula": "Rombel!H62",
+        "val": "MH"
+      },
+      {
+        "cell": "B2",
+        "formula": "Rombel!H63",
+        "val": "PHY"
+      },
+      {
+        "cell": "B3",
+        "formula": "Rombel!H64",
+        "val": "IS"
+      },
+      {
+        "cell": "B4",
+        "formula": "Rombel!H65",
+        "val": "MF"
+      },
+      {
+        "cell": "B5",
+        "formula": "Rombel!H66",
+        "val": "AGR"
+      }
+    ]
+  },
+  {
+    "index": 7,
+    "name": "Alokasi",
+    "visibility": "Visible",
+    "range": "A1:DC118",
+    "rowCount": 118,
+    "colCount": 107,
+    "mergesCount": 12,
+    "formulaCount": 404,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": 5,
+    "headerColumns": [
+      {
+        "colIdx": 1,
+        "colLetter": "A",
+        "name": "KODE"
+      },
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "MAPEL"
+      },
+      {
+        "colIdx": 3,
+        "colLetter": "C",
+        "name": "4 TM"
+      },
+      {
+        "colIdx": 4,
+        "colLetter": "D",
+        "name": "4 MAPK"
+      },
+      {
+        "colIdx": 5,
+        "colLetter": "E",
+        "name": "4 SAINS"
+      },
+      {
+        "colIdx": 6,
+        "colLetter": "F",
+        "name": "4 BHS A"
+      },
+      {
+        "colIdx": 7,
+        "colLetter": "G",
+        "name": "4 BHS B"
+      },
+      {
+        "colIdx": 8,
+        "colLetter": "H",
+        "name": "5 IPA-A"
+      },
+      {
+        "colIdx": 9,
+        "colLetter": "I",
+        "name": "5 IPS-B"
+      },
+      {
+        "colIdx": 10,
+        "colLetter": "J",
+        "name": "5 SAINS"
+      },
+      {
+        "colIdx": 11,
+        "colLetter": "K",
+        "name": "5 MAPK"
+      },
+      {
+        "colIdx": 12,
+        "colLetter": "L",
+        "name": "5 TM-A IPA"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 2,
+        "cells": [
+          "45",
+          "MAPEL",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 1,
+        "cells": [
+          "ALOKASI JAM TIAP MAPEL SESUAI STRUKTUR KURIKULUM / PEKAN",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "",
+          "KELAS",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 29,
+        "cells": [
+          "",
+          "",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13"
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 20,
+        "cells": [
+          "KODE",
+          "MAPEL",
+          "4 TM",
+          "4 MAPK",
+          "4 SAINS",
+          "4 BHS A",
+          "4 BHS B",
+          "5 IPA-A",
+          "5 IPS-B",
+          "5 SAINS",
+          "5 MAPK",
+          "5 TM-A IPA",
+          "5 TM-B IPS",
+          "6 IPA-A",
+          "6 IPA-B"
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 10,
+        "cells": [
+          "AD",
+          "Adab",
+          "",
+          "3",
+          "",
+          "",
+          "",
+          "1",
+          "1",
+          "1",
+          "2",
+          "1",
+          "1",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 4,
+        "cells": [
+          "AKU",
+          "Akutansi",
+          "",
+          "",
+          "",
+          "1",
+          "1",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 4,
+        "cells": [
+          "ATR",
+          "Antropologi",
+          "",
+          "",
+          "",
+          "1",
+          "1",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "A1",
+        "formula": "Rombel!J162",
+        "val": 45
+      },
+      {
+        "cell": "C5",
+        "formula": "'Analisis Mapel'!D5",
+        "val": "4 TM"
+      },
+      {
+        "cell": "D5",
+        "formula": "'Analisis Mapel'!E5",
+        "val": "4 MAPK"
+      },
+      {
+        "cell": "E5",
+        "formula": "'Analisis Mapel'!F5",
+        "val": "4 SAINS"
+      },
+      {
+        "cell": "F5",
+        "formula": "'Analisis Mapel'!G5",
+        "val": "4 BHS A"
+      }
+    ]
+  },
+  {
+    "index": 8,
+    "name": "JLH MAPEL DIAMPU",
+    "visibility": "Hidden",
+    "range": "A1:BA1048576",
+    "rowCount": 1048576,
+    "colCount": 53,
+    "mergesCount": 202,
+    "formulaCount": 1,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": -1,
+    "headerColumns": [],
+    "sampleRows": [
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "0",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "1",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "2",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "3",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 9,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "4",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 11,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "5",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "A1048576",
+        "formula": "(Rombel!G59*2)",
+        "val": 88
+      }
+    ]
+  },
+  {
+    "index": 9,
+    "name": "Pengampu",
+    "visibility": "Visible",
+    "range": "A1:BI1119",
+    "rowCount": 1119,
+    "colCount": 61,
+    "mergesCount": 795,
+    "formulaCount": 1766,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": 3,
+    "headerColumns": [
+      {
+        "colIdx": 1,
+        "colLetter": "A",
+        "name": "KODE"
+      },
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "Nama"
+      },
+      {
+        "colIdx": 3,
+        "colLetter": "C",
+        "name": "JLH MAPEL YANG DIAMPU"
+      },
+      {
+        "colIdx": 4,
+        "colLetter": "D",
+        "name": "KRITERIA MAPEL"
+      },
+      {
+        "colIdx": 6,
+        "colLetter": "F",
+        "name": "KELAS"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 1,
+        "cells": [
+          "LAMPIRAN SK MENGAJAR MTs  TAHUN PELAJARAN",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 1,
+        "cells": [
+          "DISTRIBUSI ALOKASI JAM PADA SETIAP PENGAMPU MATA PELAJARAN",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 5,
+        "cells": [
+          "KODE",
+          "Nama",
+          "JLH MAPEL YANG DIAMPU",
+          "KRITERIA MAPEL",
+          "",
+          "KELAS",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 26,
+        "cells": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10"
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 19,
+        "cells": [
+          "",
+          "",
+          "",
+          "",
+          "KODE MAPEL",
+          "4 TM",
+          "4 MAPK",
+          "4 SAINS",
+          "4 BHS A",
+          "4 BHS B",
+          "5 IPA-A",
+          "5 IPS-B",
+          "5 SAINS",
+          "5 MAPK",
+          "5 TM-A IPA"
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 9,
+        "cells": [
+          "MH",
+          "Marwan Halim, M.Ag",
+          "",
+          "( Mapel Linier Sertifikasi )",
+          "TA",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "",
+          "",
+          "( Mapel Linier Sertifikasi )",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "",
+          "",
+          "( Mapel Linier Sertifikasi )",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "A1",
+        "formula": "\"LAMPIRAN SK MENGAJAR\"&\" \"&PPA!C21&\" \"&\" \"&\"TAHUN PELAJARAN\"&\" \"&Rombel!E10",
+        "val": "LAMPIRAN SK MENGAJAR MTs  TAHUN PELAJARAN "
+      },
+      {
+        "cell": "F5",
+        "formula": "Alokasi!C5",
+        "val": "4 TM"
+      },
+      {
+        "cell": "G5",
+        "formula": "Alokasi!D5",
+        "val": "4 MAPK"
+      },
+      {
+        "cell": "H5",
+        "formula": "Alokasi!E5",
+        "val": "4 SAINS"
+      },
+      {
+        "cell": "I5",
+        "formula": "Alokasi!F5",
+        "val": "4 BHS A"
+      }
+    ]
+  },
+  {
+    "index": 10,
+    "name": "Rumus Input Jadwal",
+    "visibility": "Hidden",
+    "range": "A1:A228",
+    "rowCount": 228,
+    "colCount": 1,
+    "mergesCount": 0,
+    "formulaCount": 0,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": -1,
+    "headerColumns": [],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 1,
+        "cells": [
+          "' -------------------------"
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 1,
+        "cells": [
+          "' Module-level variables (di bagian atas module sheet)"
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 1,
+        "cells": [
+          "' -------------------------"
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 1,
+        "cells": [
+          "Dim firstEditReady As Boolean"
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 1,
+        "cells": [
+          "Dim oldValue As Variant"
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 1,
+        "cells": [
+          "Dim oldAddress As String"
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 1,
+        "cells": [
+          "' -------------------------"
+        ]
+      },
+      {
+        "rowIdx": 9,
+        "nonEmptyCount": 1,
+        "cells": [
+          "' Worksheet Activate"
+        ]
+      }
+    ],
+    "sampleFormulas": []
+  },
+  {
+    "index": 11,
+    "name": "Rumus Ciutkan Baris Pengampu",
+    "visibility": "Hidden",
+    "range": "B1:XFD1673",
+    "rowCount": 1673,
+    "colCount": 16383,
+    "mergesCount": 0,
+    "formulaCount": 22,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": -1,
+    "headerColumns": [],
+    "sampleRows": [
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 8,
+        "cells": [
+          "Sub",
+          "",
+          "",
+          "",
+          "Ciutkan",
+          "",
+          "",
+          "",
+          "",
+          "_",
+          "",
+          "",
+          "",
+          "106",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 4,
+        "cells": [
+          "Dim",
+          "",
+          "",
+          "",
+          "cell",
+          "",
+          "",
+          "",
+          "",
+          "As",
+          "",
+          "",
+          "",
+          "Integer",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 4,
+        "cells": [
+          "",
+          "",
+          "",
+          "",
+          "cell = Range(\"C",
+          "",
+          "",
+          "",
+          "",
+          "106",
+          "",
+          "",
+          "",
+          "\")",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 7,
+        "cells": [
+          "Rows",
+          "",
+          "",
+          "",
+          "(",
+          "",
+          "",
+          "",
+          "",
+          "\"",
+          "",
+          "",
+          "",
+          "106",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 3,
+        "cells": [
+          "If cell <",
+          "",
+          "",
+          "",
+          "111",
+          "",
+          "",
+          "",
+          "",
+          "Then",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 9,
+        "cells": [
+          "Rows(cell +",
+          "",
+          "",
+          "",
+          "spasi",
+          "",
+          "",
+          "",
+          "",
+          "106",
+          "",
+          "spasi",
+          "",
+          "&",
+          "spasi"
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 1,
+        "cells": [
+          "End If",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 9,
+        "nonEmptyCount": 1,
+        "cells": [
+          "End Sub",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "O2",
+        "formula": "O14",
+        "val": 106
+      },
+      {
+        "cell": "Q2",
+        "formula": "P14",
+        "val": "L"
+      },
+      {
+        "cell": "K4",
+        "formula": "O15",
+        "val": 106
+      },
+      {
+        "cell": "AC4",
+        "formula": "O15",
+        "val": 106
+      },
+      {
+        "cell": "O5",
+        "formula": "O15",
+        "val": 106
+      }
+    ]
+  },
+  {
+    "index": 12,
+    "name": "Input Jadwal",
+    "visibility": "Visible",
+    "range": "A1:QPD561",
+    "rowCount": 561,
+    "colCount": 11912,
+    "mergesCount": 186,
+    "formulaCount": 1540,
+    "formulaErrorCount": 16,
+    "detectedHeaderRow": 3,
+    "headerColumns": [
+      {
+        "colIdx": 1,
+        "colLetter": "A",
+        "name": "HARI"
+      },
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "WAKTU"
+      },
+      {
+        "colIdx": 4,
+        "colLetter": "D",
+        "name": "KODE GURU & MAPEL, KODE KEGIATAN NON MAPEL SEPERTI UPACARA DLL (INPUT MANUAL BOLEH, COPY PASTE JUGA BOLEH)"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 7,
+        "cells": [
+          "0",
+          "",
+          "SABTU",
+          "MINGGU",
+          "SENIN",
+          "",
+          "SELASA",
+          "RABU",
+          "KAMIS",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 7,
+        "cells": [
+          "INPUT JADWAL",
+          "",
+          "16",
+          "16",
+          "20",
+          "",
+          "20",
+          "20",
+          "16",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 3,
+        "cells": [
+          "HARI",
+          "WAKTU",
+          "",
+          "KODE GURU & MAPEL, KODE KEGIATAN NON MAPEL SEPERTI UPACARA DLL (INPUT MANUAL BOLEH, COPY PASTE JUGA BOLEH)",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 19,
+        "cells": [
+          "",
+          "",
+          "JAM",
+          "4 TM",
+          "4 MAPK",
+          "4 SAINS",
+          "4 BHS A",
+          "4 BHS B",
+          "5 IPA-A",
+          "5 IPS-B",
+          "5 SAINS",
+          "5 MAPK",
+          "5 TM-A IPA",
+          "5 TM-B IPS",
+          "6 IPA-A"
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 20,
+        "cells": [
+          "SABTU",
+          "07.30 - 08.10",
+          "1",
+          "MF",
+          "FI",
+          "FH",
+          "IS",
+          "RAN",
+          "SU",
+          "SUS",
+          "SUA",
+          "SB",
+          "SAF",
+          "DF",
+          "YUL"
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 18,
+        "cells": [
+          "SABTU",
+          "",
+          "",
+          "BA",
+          "NAH",
+          "KIM",
+          "UF",
+          "BING",
+          "BING",
+          "MTK",
+          "FIS",
+          "NAH",
+          "BI",
+          "AD",
+          "MTK"
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 20,
+        "cells": [
+          "SABTU",
+          "08.10 - 08.50",
+          "2",
+          "MF",
+          "FI",
+          "FH",
+          "IS",
+          "RAN",
+          "SU",
+          "SUS",
+          "SUA",
+          "SB",
+          "SAF",
+          "ELP",
+          "YUL"
+        ]
+      },
+      {
+        "rowIdx": 9,
+        "nonEmptyCount": 18,
+        "cells": [
+          "SABTU",
+          "",
+          "",
+          "BA",
+          "NAH",
+          "KIM",
+          "UF",
+          "BING",
+          "BING",
+          "MTK",
+          "FIS",
+          "NAH",
+          "BI",
+          "BI",
+          "MTK"
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "A1",
+        "formula": "'Kegiatan Non Mapel'!$B$66-COUNTBLANK(A9:A23)",
+        "val": 0
+      },
+      {
+        "cell": "C1",
+        "formula": "Rombel!B16",
+        "val": "SABTU "
+      },
+      {
+        "cell": "D1",
+        "formula": "Rombel!F16",
+        "val": "MINGGU"
+      },
+      {
+        "cell": "E1",
+        "formula": "Rombel!I16",
+        "val": "SENIN"
+      },
+      {
+        "cell": "G1",
+        "formula": "Rombel!B36",
+        "val": "SELASA"
+      }
+    ]
+  },
+  {
+    "index": 13,
+    "name": "Hit Kode Guru dan Mapel",
+    "visibility": "Hidden",
+    "range": "A1:BA153",
+    "rowCount": 153,
+    "colCount": 53,
+    "mergesCount": 0,
+    "formulaCount": 7800,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": -1,
+    "headerColumns": [],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 28,
+        "cells": [
+          "",
+          "",
+          "",
+          "4 TM",
+          "4 MAPK",
+          "4 SAINS",
+          "4 BHS A",
+          "4 BHS B",
+          "5 IPA-A",
+          "5 IPS-B",
+          "5 SAINS",
+          "5 MAPK",
+          "5 TM-A IPA",
+          "5 TM-B IPS",
+          "6 IPA-A"
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 29,
+        "cells": [
+          "MH",
+          "",
+          "",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "1"
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 29,
+        "cells": [
+          "PHY",
+          "",
+          "",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 29,
+        "cells": [
+          "IS",
+          "",
+          "",
+          "0",
+          "2",
+          "2",
+          "2",
+          "2",
+          "2",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 29,
+        "cells": [
+          "MF",
+          "",
+          "",
+          "11",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 29,
+        "cells": [
+          "AGR",
+          "",
+          "",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "1"
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 29,
+        "cells": [
+          "AUL",
+          "",
+          "",
+          "2",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "2",
+          "1",
+          "0",
+          "1",
+          "3",
+          "0"
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 29,
+        "cells": [
+          "AR",
+          "",
+          "",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "2"
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "D1",
+        "formula": "Pengampu!F5",
+        "val": "4 TM"
+      },
+      {
+        "cell": "E1",
+        "formula": "Pengampu!G5",
+        "val": "4 MAPK"
+      },
+      {
+        "cell": "F1",
+        "formula": "Pengampu!H5",
+        "val": "4 SAINS"
+      },
+      {
+        "cell": "G1",
+        "formula": "Pengampu!I5",
+        "val": "4 BHS A"
+      },
+      {
+        "cell": "H1",
+        "formula": "Pengampu!J5",
+        "val": "4 BHS B"
+      }
+    ]
+  },
+  {
+    "index": 14,
+    "name": "Model JG",
+    "visibility": "Visible",
+    "range": "A1:V64",
+    "rowCount": 64,
+    "colCount": 22,
+    "mergesCount": 1,
+    "formulaCount": 0,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": -1,
+    "headerColumns": [],
+    "sampleRows": [
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "",
+          "JADWAL GURU",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": []
+  },
+  {
+    "index": 15,
+    "name": "Jadwal Guru",
+    "visibility": "Visible",
+    "range": "A1:BA106",
+    "rowCount": 106,
+    "colCount": 53,
+    "mergesCount": 12,
+    "formulaCount": 226,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": 6,
+    "headerColumns": [
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "KODE GURU :"
+      },
+      {
+        "colIdx": 5,
+        "colLetter": "E",
+        "name": "SB"
+      },
+      {
+        "colIdx": 11,
+        "colLetter": "K",
+        "name": "JUMLAH JAM :"
+      },
+      {
+        "colIdx": 14,
+        "colLetter": "N",
+        "name": "7"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 2,
+        "cells": [
+          "10",
+          "10",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "MTs",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 3,
+        "cells": [
+          "",
+          "TAHUN PELAJARAN 2026-2027",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 4,
+        "cells": [
+          "",
+          "KODE GURU :",
+          "",
+          "",
+          "SB",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "JUMLAH JAM :",
+          "",
+          "",
+          "7",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 4,
+        "cells": [
+          "",
+          "NAMA GURU :",
+          "",
+          "",
+          "T. Saiful Bahri, Lc",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "JUMLAH JAM TUGAS TAMBAHAN :",
+          "",
+          "",
+          "0",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 2,
+        "cells": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "TOTAL JAM + TUGAS TAMBAHAN :",
+          "",
+          "",
+          "7",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 11,
+        "nonEmptyCount": 8,
+        "cells": [
+          "",
+          "JAM/SESI",
+          "WAKTU",
+          "SABTU",
+          "",
+          "MINGGU",
+          "",
+          "SENIN",
+          "",
+          "SELASA",
+          "",
+          "RABU",
+          "",
+          "KAMIS",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 12,
+        "nonEmptyCount": 4,
+        "cells": [
+          "",
+          "1",
+          "07.30 - 08.10",
+          "NAH",
+          "5 MAPK",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "A1",
+        "formula": "MAX(Rombel!B33:J33,Rombel!B53:J53)",
+        "val": 10
+      },
+      {
+        "cell": "B1",
+        "formula": "Rombel!$L$56",
+        "val": 10
+      },
+      {
+        "cell": "B3",
+        "formula": "Rombel!D9",
+        "val": "MTs"
+      },
+      {
+        "cell": "B4",
+        "formula": "\"TAHUN PELAJARAN\"&\" \"&PPA!C22",
+        "val": "TAHUN PELAJARAN 2026-2027"
+      },
+      {
+        "cell": "N6",
+        "formula": "IFERROR(VLOOKUP(KODEGURU,Nama_Guru_Jadwal_Guru,4,0),\"\")",
+        "val": 7
+      }
+    ]
+  },
+  {
+    "index": 16,
+    "name": "Jadwal Guru 2",
+    "visibility": "Visible",
+    "range": "A1:BA99",
+    "rowCount": 99,
+    "colCount": 53,
+    "mergesCount": 10,
+    "formulaCount": 374,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": 4,
+    "headerColumns": [
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "KODE GURU :"
+      },
+      {
+        "colIdx": 4,
+        "colLetter": "D",
+        "name": "SU"
+      },
+      {
+        "colIdx": 7,
+        "colLetter": "G",
+        "name": "JUMLAH JAM :"
+      },
+      {
+        "colIdx": 10,
+        "colLetter": "J",
+        "name": "26"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "MTs",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 3,
+        "cells": [
+          "",
+          "TAHUN PELAJARAN 2026-2027",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 2,
+        "cells": [
+          "10",
+          "10",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 4,
+        "cells": [
+          "",
+          "KODE GURU :",
+          "",
+          "SU",
+          "",
+          "",
+          "JUMLAH JAM :",
+          "",
+          "",
+          "26",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 6,
+        "cells": [
+          "",
+          "NAMA GURU :",
+          "",
+          "Sri Utami, S.H.I",
+          "",
+          "",
+          "JUMLAH JAM TUGAS TAMBAHAN :",
+          "",
+          "",
+          "0",
+          "",
+          "TOTAL JAM + TUGAS TAMBAHAN :",
+          "",
+          "",
+          "26"
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 9,
+        "cells": [
+          "",
+          "JAM/SESI",
+          "WAKTU",
+          "SABTU",
+          "",
+          "",
+          "JAM/SESI",
+          "WAKTU",
+          "MINGGU",
+          "",
+          "",
+          "JAM/SESI",
+          "WAKTU",
+          "SENIN",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 12,
+        "cells": [
+          "",
+          "1",
+          "07.30 - 08.10",
+          "BING",
+          "5 IPA-A",
+          "",
+          "1",
+          "07.30 - 08.10",
+          "BING",
+          "5 IPS-B",
+          "",
+          "1",
+          "07.30 - 08.10",
+          "BING",
+          "5 TM-A IPA"
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 12,
+        "cells": [
+          "",
+          "2",
+          "08.10 - 08.50",
+          "BING",
+          "5 IPA-A",
+          "",
+          "2",
+          "08.10 - 08.50",
+          "BING",
+          "5 IPS-B",
+          "",
+          "2",
+          "08.10 - 08.50",
+          "BING",
+          "5 TM-A IPA"
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "B1",
+        "formula": "Rombel!D9",
+        "val": "MTs"
+      },
+      {
+        "cell": "B2",
+        "formula": "'Jadwal Guru'!B4:O4",
+        "val": "TAHUN PELAJARAN 2026-2027"
+      },
+      {
+        "cell": "A3",
+        "formula": "Rombel!L33",
+        "val": 10
+      },
+      {
+        "cell": "B3",
+        "formula": "Rombel!L53",
+        "val": 10
+      },
+      {
+        "cell": "J4",
+        "formula": "IFERROR(VLOOKUP(KODEGURU,Nama_Guru_Jadwal_Guru,4,0),\"\")",
+        "val": 26
+      }
+    ]
+  },
+  {
+    "index": 17,
+    "name": "Analisis Mapel",
+    "visibility": "Visible",
+    "range": "A1:BN332",
+    "rowCount": 332,
+    "colCount": 66,
+    "mergesCount": 14,
+    "formulaCount": 16064,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": 3,
+    "headerColumns": [
+      {
+        "colIdx": 1,
+        "colLetter": "A",
+        "name": "NO"
+      },
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "KODE"
+      },
+      {
+        "colIdx": 3,
+        "colLetter": "C",
+        "name": "MAPEL"
+      },
+      {
+        "colIdx": 4,
+        "colLetter": "D",
+        "name": "KELAS"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 1,
+        "cells": [
+          "45",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 1,
+        "cells": [
+          "ANALISIS SEBARAN KODE MAPEL PADA INPUT JADWAL",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 4,
+        "cells": [
+          "NO",
+          "KODE",
+          "MAPEL",
+          "KELAS",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 28,
+        "cells": [
+          "",
+          "",
+          "",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12"
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 18,
+        "cells": [
+          "",
+          "",
+          "",
+          "4 TM",
+          "4 MAPK",
+          "4 SAINS",
+          "4 BHS A",
+          "4 BHS B",
+          "5 IPA-A",
+          "5 IPS-B",
+          "5 SAINS",
+          "5 MAPK",
+          "5 TM-A IPA",
+          "5 TM-B IPS",
+          "6 IPA-A"
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 3,
+        "cells": [
+          "1",
+          "AD",
+          "Adab",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 3,
+        "cells": [
+          "2",
+          "AKU",
+          "Akutansi",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 3,
+        "cells": [
+          "3",
+          "ATR",
+          "Antropologi",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "A1",
+        "formula": "Rombel!$J$162",
+        "val": 45
+      },
+      {
+        "cell": "D5",
+        "formula": "'Kegiatan Non Mapel'!F121",
+        "val": "4 TM"
+      },
+      {
+        "cell": "E5",
+        "formula": "'Kegiatan Non Mapel'!F122",
+        "val": "4 MAPK"
+      },
+      {
+        "cell": "F5",
+        "formula": "'Kegiatan Non Mapel'!F123",
+        "val": "4 SAINS"
+      },
+      {
+        "cell": "G5",
+        "formula": "'Kegiatan Non Mapel'!F124",
+        "val": "4 BHS A"
+      }
+    ]
+  },
+  {
+    "index": 18,
+    "name": "Analisis Guru",
+    "visibility": "Visible",
+    "range": "A1:BN327",
+    "rowCount": 327,
+    "colCount": 66,
+    "mergesCount": 16,
+    "formulaCount": 16218,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": 3,
+    "headerColumns": [
+      {
+        "colIdx": 1,
+        "colLetter": "A",
+        "name": "NO"
+      },
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "KODE"
+      },
+      {
+        "colIdx": 3,
+        "colLetter": "C",
+        "name": "NAMA GURU"
+      },
+      {
+        "colIdx": 4,
+        "colLetter": "D",
+        "name": "KELAS"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 1,
+        "cells": [
+          "44",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 1,
+        "cells": [
+          "ANALISIS SEBARAN KODE GURU PADA INPUT JADWAL",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 4,
+        "cells": [
+          "NO",
+          "KODE",
+          "NAMA GURU",
+          "KELAS",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 28,
+        "cells": [
+          "",
+          "",
+          "",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12"
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 18,
+        "cells": [
+          "",
+          "",
+          "",
+          "4 TM",
+          "4 MAPK",
+          "4 SAINS",
+          "4 BHS A",
+          "4 BHS B",
+          "5 IPA-A",
+          "5 IPS-B",
+          "5 SAINS",
+          "5 MAPK",
+          "5 TM-A IPA",
+          "5 TM-B IPS",
+          "6 IPA-A"
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 3,
+        "cells": [
+          "1",
+          "MH",
+          "Marwan Halim, M.Ag",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 3,
+        "cells": [
+          "2",
+          "PHY",
+          "Prasilo Heri Yudanto, Lc. M.Ag",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 3,
+        "cells": [
+          "3",
+          "IS",
+          "Indra Syah Putra, M.A",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "A1",
+        "formula": "Rombel!$G$59",
+        "val": 44
+      },
+      {
+        "cell": "D5",
+        "formula": "D215",
+        "val": "4 TM"
+      },
+      {
+        "cell": "E5",
+        "formula": "E215",
+        "val": "4 MAPK"
+      },
+      {
+        "cell": "F5",
+        "formula": "F215",
+        "val": "4 SAINS"
+      },
+      {
+        "cell": "G5",
+        "formula": "G215",
+        "val": "4 BHS A"
+      }
+    ]
+  },
+  {
+    "index": 19,
+    "name": "TT",
+    "visibility": "Visible",
+    "range": "A1:BM1003",
+    "rowCount": 1003,
+    "colCount": 65,
+    "mergesCount": 96,
+    "formulaCount": 859,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": 2,
+    "headerColumns": [
+      {
+        "colIdx": 1,
+        "colLetter": "A",
+        "name": "SILAHKAN DIISI DATA TUGAS TAMBAHAN GURU BESERTA BOBOTNYA (PADA KOLOM YANG DIBLOK KUNING)"
+      },
+      {
+        "colIdx": 11,
+        "colLetter": "K",
+        "name": "Ini Rumus"
+      },
+      {
+        "colIdx": 18,
+        "colLetter": "R",
+        "name": "No"
+      },
+      {
+        "colIdx": 19,
+        "colLetter": "S",
+        "name": "URAIAN"
+      },
+      {
+        "colIdx": 20,
+        "colLetter": "T",
+        "name": "TGS TAMBAHAN TERDATA"
+      },
+      {
+        "colIdx": 22,
+        "colLetter": "V",
+        "name": "TOLOK UKUR JUMLAH"
+      },
+      {
+        "colIdx": 25,
+        "colLetter": "Y",
+        "name": "KESIMPULAN TUGAS TAMBAHAN"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 1,
+        "cells": [
+          "44",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 7,
+        "cells": [
+          "SILAHKAN DIISI DATA TUGAS TAMBAHAN GURU BESERTA BOBOTNYA (PADA KOLOM YANG DIBLOK KUNING)",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "Ini Rumus",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 17,
+        "cells": [
+          "No",
+          "KODE",
+          "NAMA",
+          "TUGAS TAMB",
+          "BOBOT TUGAS TAMB",
+          "",
+          "LINIER",
+          "JAM SERTIFIKASI",
+          "NON LINIER",
+          "TOTAL JTM",
+          "KELAS",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 20,
+        "cells": [
+          "1",
+          "MH",
+          "Marwan Halim, M.Ag",
+          "",
+          "",
+          "JAM",
+          "5",
+          "29",
+          "0",
+          "5",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 18,
+        "cells": [
+          "2",
+          "PHY",
+          "Prasilo Heri Yudanto, Lc. M.Ag",
+          "",
+          "",
+          "JAM",
+          "7",
+          "19",
+          "0",
+          "7",
+          "4 TM",
+          "4 MAPK",
+          "4 SAINS",
+          "4 BHS A",
+          "4 BHS B"
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 13,
+        "cells": [
+          "3",
+          "IS",
+          "Indra Syah Putra, M.A",
+          "",
+          "",
+          "JAM",
+          "10",
+          "10",
+          "0",
+          "10",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 13,
+        "cells": [
+          "4",
+          "MF",
+          "Muhammad Fahmi, S.Pd",
+          "",
+          "",
+          "JAM",
+          "11",
+          "11",
+          "0",
+          "11",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 13,
+        "cells": [
+          "5",
+          "AGR",
+          "Agus Riyadi, S.Pd.I",
+          "",
+          "",
+          "JAM",
+          "6",
+          "6",
+          "0",
+          "6",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "A1",
+        "formula": "Rombel!$G$59",
+        "val": 44
+      },
+      {
+        "cell": "S3",
+        "formula": "Rombel!C117",
+        "val": "Kepala Sekolah"
+      },
+      {
+        "cell": "T3",
+        "formula": "COUNTIF($D$4:$D$103,S3)",
+        "val": 0
+      },
+      {
+        "cell": "V3",
+        "formula": "Rombel!D117",
+        "val": 1
+      },
+      {
+        "cell": "X3",
+        "formula": "U3",
+        "val": "Orang"
+      }
+    ]
+  },
+  {
+    "index": 20,
+    "name": "MJ",
+    "visibility": "Visible",
+    "range": "A1:QPQ95",
+    "rowCount": 95,
+    "colCount": 11925,
+    "mergesCount": 2,
+    "formulaCount": 382,
+    "formulaErrorCount": 1,
+    "detectedHeaderRow": 3,
+    "headerColumns": [
+      {
+        "colIdx": 1,
+        "colLetter": "A",
+        "name": "HARI"
+      },
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "WAKTU"
+      },
+      {
+        "colIdx": 4,
+        "colLetter": "D",
+        "name": "BERIKAN TANDA SILANG PADA GURU YANG TIDAK DAPAT MENGAJAR DI JAM JAM TERTENTU SESUAI PERMINTAAN"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 7,
+        "cells": [
+          "0",
+          "",
+          "SABTU",
+          "MINGGU",
+          "SENIN",
+          "",
+          "SELASA",
+          "RABU",
+          "KAMIS",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 7,
+        "cells": [
+          "INPUT JADWAL",
+          "",
+          "8",
+          "8",
+          "10",
+          "",
+          "10",
+          "10",
+          "8",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 3,
+        "cells": [
+          "HARI",
+          "WAKTU",
+          "",
+          "BERIKAN TANDA SILANG PADA GURU YANG TIDAK DAPAT MENGAJAR DI JAM JAM TERTENTU SESUAI PERMINTAAN",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 28,
+        "cells": [
+          "",
+          "",
+          "",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12"
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 29,
+        "cells": [
+          "",
+          "",
+          "JAM/SESI",
+          "MH",
+          "PHY",
+          "IS",
+          "MF",
+          "AGR",
+          "AUL",
+          "AR",
+          "AM",
+          "FA",
+          "DF",
+          "MM",
+          "RAP"
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 4,
+        "cells": [
+          "SABTU",
+          "07.30 - 08.10",
+          "1",
+          "X",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 4,
+        "cells": [
+          "SABTU",
+          "08.10 - 08.50",
+          "2",
+          "X",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 4,
+        "cells": [
+          "SABTU",
+          "08.50 - 09.30",
+          "3",
+          "X",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "A1",
+        "formula": "'Kegiatan Non Mapel'!$B$66-COUNTBLANK(A8:A14)",
+        "val": 0
+      },
+      {
+        "cell": "C1",
+        "formula": "Rombel!B16",
+        "val": "SABTU "
+      },
+      {
+        "cell": "D1",
+        "formula": "Rombel!F16",
+        "val": "MINGGU"
+      },
+      {
+        "cell": "E1",
+        "formula": "Rombel!I16",
+        "val": "SENIN"
+      },
+      {
+        "cell": "G1",
+        "formula": "Rombel!B36",
+        "val": "SELASA"
+      }
+    ]
+  },
+  {
+    "index": 21,
+    "name": "MJ x",
+    "visibility": "Hidden",
+    "range": "A1:QNX94",
+    "rowCount": 94,
+    "colCount": 11880,
+    "mergesCount": 2,
+    "formulaCount": 9281,
+    "formulaErrorCount": 1,
+    "detectedHeaderRow": 3,
+    "headerColumns": [
+      {
+        "colIdx": 1,
+        "colLetter": "A",
+        "name": "HARI"
+      },
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "JAM"
+      },
+      {
+        "colIdx": 4,
+        "colLetter": "D",
+        "name": "COUNT PERMINTAAN JADWAL MENGAJAR"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 7,
+        "cells": [
+          "0",
+          "",
+          "SABTU",
+          "MINGGU",
+          "SENIN",
+          "",
+          "SELASA",
+          "RABU",
+          "KAMIS",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 7,
+        "cells": [
+          "INPUT JADWAL",
+          "",
+          "8",
+          "0",
+          "10",
+          "",
+          "10",
+          "0",
+          "8",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 3,
+        "cells": [
+          "HARI",
+          "JAM",
+          "",
+          "COUNT PERMINTAAN JADWAL MENGAJAR",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 28,
+        "cells": [
+          "",
+          "",
+          "",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12"
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 29,
+        "cells": [
+          "",
+          "",
+          "JAM KE",
+          "MH",
+          "PHY",
+          "IS",
+          "MF",
+          "AGR",
+          "AUL",
+          "AR",
+          "AM",
+          "FA",
+          "DF",
+          "MM",
+          "RAP"
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 31,
+        "cells": [
+          "SABTU",
+          "07.30 - 08.10",
+          "1",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 31,
+        "cells": [
+          "SABTU",
+          "08.10 - 08.50",
+          "2",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 31,
+        "cells": [
+          "SABTU",
+          "08.50 - 09.30",
+          "3",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "A1",
+        "formula": "'Kegiatan Non Mapel'!$B$66-COUNTBLANK(A8:A14)",
+        "val": 0
+      },
+      {
+        "cell": "C1",
+        "formula": "Rombel!B16",
+        "val": "SABTU "
+      },
+      {
+        "cell": "D1",
+        "formula": "Rombel!F16",
+        "val": "MINGGU"
+      },
+      {
+        "cell": "E1",
+        "formula": "Rombel!I16",
+        "val": "SENIN"
+      },
+      {
+        "cell": "G1",
+        "formula": "Rombel!B36",
+        "val": "SELASA"
+      }
+    ]
+  },
+  {
+    "index": 22,
+    "name": "CMJ sebaran",
+    "visibility": "Hidden",
+    "range": "A1:QNW184",
+    "rowCount": 184,
+    "colCount": 11879,
+    "mergesCount": 2,
+    "formulaCount": 9281,
+    "formulaErrorCount": 1,
+    "detectedHeaderRow": 3,
+    "headerColumns": [
+      {
+        "colIdx": 1,
+        "colLetter": "A",
+        "name": "HARI"
+      },
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "JAM"
+      },
+      {
+        "colIdx": 4,
+        "colLetter": "D",
+        "name": "COUNTIF SEBARAN GURU"
+      },
+      {
+        "colIdx": 6,
+        "colLetter": "F",
+        "name": "COUNTIF SEBARAN GURU"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 7,
+        "cells": [
+          "0",
+          "",
+          "SABTU",
+          "MINGGU",
+          "SENIN",
+          "",
+          "SELASA",
+          "RABU",
+          "KAMIS",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 7,
+        "cells": [
+          "INPUT JADWAL",
+          "",
+          "16",
+          "0",
+          "20",
+          "",
+          "20",
+          "0",
+          "16",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 4,
+        "cells": [
+          "HARI",
+          "JAM",
+          "",
+          "COUNTIF SEBARAN GURU",
+          "",
+          "COUNTIF SEBARAN GURU",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 28,
+        "cells": [
+          "",
+          "",
+          "",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12"
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 29,
+        "cells": [
+          "",
+          "",
+          "JAM KE",
+          "MH",
+          "PHY",
+          "IS",
+          "MF",
+          "AGR",
+          "AUL",
+          "AR",
+          "AM",
+          "FA",
+          "DF",
+          "MM",
+          "RAP"
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 31,
+        "cells": [
+          "SABTU",
+          "07.30 - 08.10",
+          "1",
+          "0",
+          "1",
+          "1",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "1",
+          "0",
+          "0"
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 31,
+        "cells": [
+          "SABTU",
+          "08.10 - 08.50",
+          "2",
+          "0",
+          "1",
+          "1",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 31,
+        "cells": [
+          "SABTU",
+          "08.50 - 09.30",
+          "3",
+          "0",
+          "1",
+          "0",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "1",
+          "0"
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "A1",
+        "formula": "'Kegiatan Non Mapel'!$B$66-COUNTBLANK(A8:A14)",
+        "val": 0
+      },
+      {
+        "cell": "C1",
+        "formula": "Rombel!B16",
+        "val": "SABTU "
+      },
+      {
+        "cell": "D1",
+        "formula": "Rombel!F16",
+        "val": "MINGGU"
+      },
+      {
+        "cell": "E1",
+        "formula": "Rombel!I16",
+        "val": "SENIN"
+      },
+      {
+        "cell": "G1",
+        "formula": "Rombel!B36",
+        "val": "SELASA"
+      }
+    ]
+  },
+  {
+    "index": 23,
+    "name": "CMJ Hasil",
+    "visibility": "Visible",
+    "range": "A1:QNU184",
+    "rowCount": 184,
+    "colCount": 11877,
+    "mergesCount": 2,
+    "formulaCount": 9276,
+    "formulaErrorCount": 1,
+    "detectedHeaderRow": 3,
+    "headerColumns": [
+      {
+        "colIdx": 1,
+        "colLetter": "A",
+        "name": "HARI"
+      },
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "JAM"
+      },
+      {
+        "colIdx": 4,
+        "colLetter": "D",
+        "name": "JIKA DIBLOK MERAH ARTINYA JADWAL MENGAJAR TIDAK SESUAI REQUEST JADWAL DARI GURU"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 2,
+        "cells": [
+          "0",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "KAMIS",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 7,
+        "cells": [
+          "INPUT JADWAL",
+          "8",
+          "8",
+          "10",
+          "",
+          "10",
+          "10",
+          "8",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 3,
+        "cells": [
+          "HARI",
+          "JAM",
+          "",
+          "JIKA DIBLOK MERAH ARTINYA JADWAL MENGAJAR TIDAK SESUAI REQUEST JADWAL DARI GURU",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 28,
+        "cells": [
+          "",
+          "",
+          "",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12"
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 29,
+        "cells": [
+          "",
+          "",
+          "JAM KE",
+          "MH",
+          "PHY",
+          "IS",
+          "MF",
+          "AGR",
+          "AUL",
+          "AR",
+          "AM",
+          "FA",
+          "DF",
+          "MM",
+          "RAP"
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 31,
+        "cells": [
+          "SABTU",
+          "07.30 - 08.10",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "0",
+          "1",
+          "1"
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 31,
+        "cells": [
+          "SABTU",
+          "08.10 - 08.50",
+          "2",
+          "0",
+          "0",
+          "0",
+          "0",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 31,
+        "cells": [
+          "SABTU",
+          "08.50 - 09.30",
+          "3",
+          "0",
+          "0",
+          "1",
+          "0",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "0",
+          "1"
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "A1",
+        "formula": "'Kegiatan Non Mapel'!$B$66-COUNTBLANK(A8:A14)",
+        "val": 0
+      },
+      {
+        "cell": "I1",
+        "formula": "Rombel!I36",
+        "val": "KAMIS"
+      },
+      {
+        "cell": "B2",
+        "formula": "Rombel!B33",
+        "val": 8
+      },
+      {
+        "cell": "C2",
+        "formula": "Rombel!F33",
+        "val": 8
+      },
+      {
+        "cell": "D2",
+        "formula": "Rombel!I33",
+        "val": 10
+      }
+    ]
+  },
+  {
+    "index": 24,
+    "name": "Jadwal K",
+    "visibility": "Visible",
+    "range": "A1:BA102",
+    "rowCount": 102,
+    "colCount": 53,
+    "mergesCount": 14,
+    "formulaCount": 222,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": 9,
+    "headerColumns": [
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "Kelas :"
+      },
+      {
+        "colIdx": 4,
+        "colLetter": "D",
+        "name": "6 SAINS"
+      },
+      {
+        "colIdx": 12,
+        "colLetter": "L",
+        "name": "Wali Kelas :"
+      },
+      {
+        "colIdx": 14,
+        "colLetter": "N",
+        "name": "Sulhana Umi Atiqah, S.Pd"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 1,
+        "cells": [
+          "10",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "MTs",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "TAHUN PELAJARAN 2026-2027",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 9,
+        "nonEmptyCount": 4,
+        "cells": [
+          "",
+          "Kelas :",
+          "",
+          "6 SAINS",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "Wali Kelas :",
+          "",
+          "Sulhana Umi Atiqah, S.Pd",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 11,
+        "nonEmptyCount": 7,
+        "cells": [
+          "",
+          "HARI",
+          "",
+          "SABTU",
+          "",
+          "MINGGU",
+          "",
+          "SENIN",
+          "",
+          "SELASA",
+          "",
+          "RABU",
+          "",
+          "KAMIS",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 12,
+        "nonEmptyCount": 14,
+        "cells": [
+          "",
+          "Les",
+          "JAM",
+          "MAPEL",
+          "KODE GURU",
+          "MAPEL",
+          "KODE GURU",
+          "MAPEL",
+          "KODE GURU",
+          "MAPEL",
+          "KODE GURU",
+          "MAPEL",
+          "KODE GURU",
+          "MAPEL",
+          "KODE GURU"
+        ]
+      },
+      {
+        "rowIdx": 13,
+        "nonEmptyCount": 14,
+        "cells": [
+          "",
+          "1",
+          "07.30 - 08.10",
+          "Biologi",
+          "BUD",
+          "Bahasa Inggris",
+          "FW",
+          "Fisika",
+          "SUA",
+          "Tauhid",
+          "AR",
+          "Bahasa Indonesia",
+          "SAF",
+          "TIK",
+          "MUF"
+        ]
+      },
+      {
+        "rowIdx": 14,
+        "nonEmptyCount": 12,
+        "cells": [
+          "",
+          "2",
+          "08.10 - 08.50",
+          "Biologi",
+          "BUD",
+          "Bahasa Inggris",
+          "FW",
+          "Fisika",
+          "SUA",
+          "Tauhid",
+          "AR",
+          "Bahasa Indonesia",
+          "SAF",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "A5",
+        "formula": "MAX(Rombel!L33:L54)",
+        "val": 10
+      },
+      {
+        "cell": "B6",
+        "formula": "'Jadwal Guru'!B3:O3",
+        "val": "MTs"
+      },
+      {
+        "cell": "B7",
+        "formula": "'Jadwal Guru'!B4:O4",
+        "val": "TAHUN PELAJARAN 2026-2027"
+      },
+      {
+        "cell": "N9",
+        "formula": "IFERROR(VLOOKUP(KELAS,Wali_Kelas,2,0),\"\")",
+        "val": "Sulhana Umi Atiqah, S.Pd"
+      },
+      {
+        "cell": "D11",
+        "formula": "'Jadwal Guru'!D11",
+        "val": "SABTU "
+      }
+    ]
+  },
+  {
+    "index": 25,
+    "name": "Jadwal K 2",
+    "visibility": "Visible",
+    "range": "A1:BA91",
+    "rowCount": 91,
+    "colCount": 53,
+    "mergesCount": 18,
+    "formulaCount": 373,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": 9,
+    "headerColumns": [
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "Kelas :"
+      },
+      {
+        "colIdx": 4,
+        "colLetter": "D",
+        "name": "X-A UMUM"
+      },
+      {
+        "colIdx": 12,
+        "colLetter": "L",
+        "name": "Wali Kelas :"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "MTs",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "TAHUN PELAJARAN 2026-2027",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 2,
+        "cells": [
+          "10",
+          "10",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 9,
+        "nonEmptyCount": 3,
+        "cells": [
+          "",
+          "Kelas :",
+          "",
+          "X-A UMUM",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "Wali Kelas :",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 11,
+        "nonEmptyCount": 6,
+        "cells": [
+          "",
+          "HARI",
+          "",
+          "SABTU",
+          "",
+          "",
+          "HARI",
+          "",
+          "MINGGU",
+          "",
+          "",
+          "HARI",
+          "",
+          "SENIN",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 12,
+        "nonEmptyCount": 12,
+        "cells": [
+          "",
+          "Les",
+          "JAM",
+          "MAPEL",
+          "KODE GURU",
+          "",
+          "Les",
+          "JAM",
+          "MAPEL",
+          "KODE GURU",
+          "",
+          "Les",
+          "JAM",
+          "MAPEL",
+          "KODE GURU"
+        ]
+      },
+      {
+        "rowIdx": 13,
+        "nonEmptyCount": 6,
+        "cells": [
+          "",
+          "1",
+          "07.30 - 08.10",
+          "",
+          "",
+          "",
+          "1",
+          "07.30 - 08.10",
+          "",
+          "",
+          "",
+          "1",
+          "07.30 - 08.10",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 14,
+        "nonEmptyCount": 6,
+        "cells": [
+          "",
+          "2",
+          "08.10 - 08.50",
+          "",
+          "",
+          "",
+          "2",
+          "08.10 - 08.50",
+          "",
+          "",
+          "",
+          "2",
+          "08.10 - 08.50",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "B6",
+        "formula": "'Jadwal Guru'!B3:O3",
+        "val": "MTs"
+      },
+      {
+        "cell": "B7",
+        "formula": "'Jadwal Guru'!B4:O4",
+        "val": "TAHUN PELAJARAN 2026-2027"
+      },
+      {
+        "cell": "A8",
+        "formula": "MAX(Rombel!L33)",
+        "val": 10
+      },
+      {
+        "cell": "B8",
+        "formula": "Rombel!L53",
+        "val": 10
+      },
+      {
+        "cell": "N9",
+        "formula": "IFERROR(VLOOKUP(KELAS,Wali_Kelas,2,0),\"\")",
+        "val": ""
+      }
+    ]
+  },
+  {
+    "index": 26,
+    "name": "Model JK",
+    "visibility": "Visible",
+    "range": "A1:AZ108",
+    "rowCount": 108,
+    "colCount": 52,
+    "mergesCount": 1,
+    "formulaCount": 0,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": -1,
+    "headerColumns": [],
+    "sampleRows": [
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "JADWAL KELAS",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": []
+  },
+  {
+    "index": 27,
+    "name": "Serti",
+    "visibility": "Visible",
+    "range": "A1:DW1003",
+    "rowCount": 1003,
+    "colCount": 127,
+    "mergesCount": 3,
+    "formulaCount": 1213,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": 2,
+    "headerColumns": [
+      {
+        "colIdx": 1,
+        "colLetter": "A",
+        "name": "JLH GURU"
+      },
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "44"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 2,
+        "cells": [
+          "JLH GURU",
+          "44",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 1,
+        "cells": [
+          "ANALISIS TUNJANGAN SERTIFIKASI GURU",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 12,
+        "cells": [
+          "No",
+          "NAMA GURU",
+          "Kode Guru",
+          "Kode Mapel Sertifikasi",
+          "LINIER",
+          "Tugas Tambahan",
+          "BOBOT TUGAS TAMBAHAN",
+          "",
+          "PERHITUNGAN JAM SERTIFIKASI",
+          "JAM NON LINIER",
+          "KET",
+          "JAM LINIER + NON LINIER + BOBOT TUGAS TAMBAHAN",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 26,
+        "cells": [
+          "1",
+          "Marwan Halim, M.Ag",
+          "MH",
+          "TA",
+          "5",
+          "",
+          "24",
+          "JP",
+          "29",
+          "",
+          "Layak Menerima Tunjangan",
+          "29",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 26,
+        "cells": [
+          "2",
+          "Prasilo Heri Yudanto, Lc. M.Ag",
+          "PHY",
+          "FQ",
+          "7",
+          "",
+          "12",
+          "JP",
+          "19",
+          "",
+          "Belum Layak Menerima Tunjangan",
+          "19",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 10,
+        "cells": [
+          "3",
+          "Indra Syah Putra, M.A",
+          "IS",
+          "IN",
+          "10",
+          "",
+          "",
+          "JP",
+          "10",
+          "",
+          "Belum Layak Menerima Tunjangan",
+          "10",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 9,
+        "nonEmptyCount": 10,
+        "cells": [
+          "4",
+          "Muhammad Fahmi, S.Pd",
+          "MF",
+          "BA",
+          "11",
+          "",
+          "",
+          "JP",
+          "11",
+          "",
+          "Belum Layak Menerima Tunjangan",
+          "11",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 10,
+        "nonEmptyCount": 10,
+        "cells": [
+          "5",
+          "Agus Riyadi, S.Pd.I",
+          "AGR",
+          "IN",
+          "6",
+          "",
+          "",
+          "JP",
+          "6",
+          "",
+          "Belum Layak Menerima Tunjangan",
+          "6",
+          "",
+          "",
+          ""
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "B2",
+        "formula": "Rombel!G59",
+        "val": 44
+      },
+      {
+        "cell": "A6",
+        "formula": "'Kegiatan Non Mapel'!E16",
+        "val": 1
+      },
+      {
+        "cell": "B6",
+        "formula": "'Kegiatan Non Mapel'!G16",
+        "val": "Marwan Halim, M.Ag"
+      },
+      {
+        "cell": "C6",
+        "formula": "'Kegiatan Non Mapel'!F16",
+        "val": "MH"
+      },
+      {
+        "cell": "D6",
+        "formula": "Pengampu!E6",
+        "val": "TA"
+      }
+    ]
+  },
+  {
+    "index": 28,
+    "name": "Tolok U",
+    "visibility": "Hidden",
+    "range": "A1:BD109",
+    "rowCount": 109,
+    "colCount": 56,
+    "mergesCount": 5,
+    "formulaCount": 5403,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": 4,
+    "headerColumns": [
+      {
+        "colIdx": 1,
+        "colLetter": "A",
+        "name": "NO"
+      },
+      {
+        "colIdx": 2,
+        "colLetter": "B",
+        "name": "KODE"
+      },
+      {
+        "colIdx": 3,
+        "colLetter": "C",
+        "name": "Nama"
+      },
+      {
+        "colIdx": 4,
+        "colLetter": "D",
+        "name": "KELAS"
+      }
+    ],
+    "sampleRows": [
+      {
+        "rowIdx": 1,
+        "nonEmptyCount": 1,
+        "cells": [
+          "PESANTREN DARUL ARAFAH RAYA",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 2,
+        "nonEmptyCount": 1,
+        "cells": [
+          "MADRASAH ALIYAH SWASTA DARUL ARAFAH",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 3,
+        "nonEmptyCount": 1,
+        "cells": [
+          "",
+          "====================================================================================================================================",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 4,
+        "nonEmptyCount": 4,
+        "cells": [
+          "NO",
+          "KODE",
+          "Nama",
+          "KELAS",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      },
+      {
+        "rowIdx": 5,
+        "nonEmptyCount": 28,
+        "cells": [
+          "",
+          "",
+          "",
+          "4 TM",
+          "4 MAPK",
+          "4 SAINS",
+          "4 BHS A",
+          "4 BHS B",
+          "5 IPA-A",
+          "5 IPS-B",
+          "5 SAINS",
+          "5 MAPK",
+          "5 TM-A IPA",
+          "5 TM-B IPS",
+          "6 IPA-A"
+        ]
+      },
+      {
+        "rowIdx": 6,
+        "nonEmptyCount": 31,
+        "cells": [
+          "1",
+          "MH",
+          "Marwan Halim, M.Ag",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "1"
+        ]
+      },
+      {
+        "rowIdx": 7,
+        "nonEmptyCount": 31,
+        "cells": [
+          "1",
+          "PHY",
+          "Prasilo Heri Yudanto, Lc. M.Ag",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      },
+      {
+        "rowIdx": 8,
+        "nonEmptyCount": 31,
+        "cells": [
+          "1",
+          "IS",
+          "Indra Syah Putra, M.A",
+          "0",
+          "2",
+          "2",
+          "2",
+          "2",
+          "2",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      }
+    ],
+    "sampleFormulas": [
+      {
+        "cell": "D5",
+        "formula": "Alokasi!C5",
+        "val": "4 TM"
+      },
+      {
+        "cell": "E5",
+        "formula": "Alokasi!D5",
+        "val": "4 MAPK"
+      },
+      {
+        "cell": "F5",
+        "formula": "Alokasi!E5",
+        "val": "4 SAINS"
+      },
+      {
+        "cell": "G5",
+        "formula": "Alokasi!F5",
+        "val": "4 BHS A"
+      },
+      {
+        "cell": "H5",
+        "formula": "Alokasi!G5",
+        "val": "4 BHS B"
+      }
+    ]
+  },
+  {
+    "index": 29,
+    "name": "JL",
+    "visibility": "Visible",
+    "range": "A1:A21",
+    "rowCount": 21,
+    "colCount": 1,
+    "mergesCount": 0,
+    "formulaCount": 0,
+    "formulaErrorCount": 0,
+    "detectedHeaderRow": -1,
+    "headerColumns": [],
+    "sampleRows": [],
+    "sampleFormulas": []
+  }
+]

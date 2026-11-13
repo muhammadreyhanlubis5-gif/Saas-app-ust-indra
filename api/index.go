@@ -2,9 +2,11 @@ package api
 
 import (
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 	
 	"jadwal-api/core/database"
+	"jadwal-api/core/middleware"
 	"jadwal-api/core/realtime"
 	"jadwal-api/core/router"
 )
@@ -12,6 +14,9 @@ import (
 var app *gin.Engine
 
 func init() {
+	// 0. Validasi Kunci Rahasia JWT - Panic jika kosong atau memakai default lama
+	middleware.InitJWTSecret()
+
 	realtime.InitHub()
 	// Initialize DB Connection
 	database.Connect()
@@ -20,17 +25,8 @@ func init() {
 	gin.SetMode(gin.ReleaseMode)
 	app = gin.New()
 	
-	// Add CORS middleware
-	app.Use(func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-		c.Next()
-	})
+	// Add CORS middleware with strict allowlist, NO wildcard, and clean headers
+	app.Use(middleware.CORSMiddleware())
 
 	// Setup API Routes
 	router.SetupRoutes(app)

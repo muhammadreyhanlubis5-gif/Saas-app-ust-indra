@@ -88,22 +88,40 @@ func (rl *RateLimiter) cleanupRoutine() {
 	}
 }
 
+// NewCustomRateLimiter creates an independent rate limiter for sensitive endpoints like login
+func NewCustomRateLimiter(rate float64, burst float64) gin.HandlerFunc {
+	limiter := &RateLimiter{
+		buckets: make(map[string]*tokenBucket),
+		rate:    rate,
+		burst:   burst,
+	}
+	go limiter.cleanupRoutine()
+
+	return func(c *gin.Context) {
+		key := c.ClientIP() + "_" + c.FullPath()
+		if !limiter.allow(key) {
+			c.Header("Retry-After", "5")
+			c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
+				"error":   "Too Many Requests",
+				"message": "Terlalu banyak percobaan. Silakan tunggu beberapa saat sebelum mencoba kembali.",
+				"code":    "RATE_LIMIT_EXCEEDED",
+			})
+			return
+		}
+		c.Next()
+	}
+}
+
 /**
  * TokenBucketRateLimiter
  * Protects enterprise API endpoints from DDoS and brute-force attacks.
- * Scoped by client IP and Tenant ID.
+ * Scoped by client IP.
  */
 func TokenBucketRateLimiter(rate float64, burst float64) gin.HandlerFunc {
 	limiter := GetRateLimiter(rate, burst)
 
 	return func(c *gin.Context) {
-		// Identify client key: Combine IP + School ID if present
-		ip := c.ClientIP()
-		schoolID := c.GetHeader("X-School-ID")
-		key := ip
-		if schoolID != "" {
-			key = schoolID + "_" + ip
-		}
+		key := c.ClientIP()
 
 		if !limiter.allow(key) {
 			c.Header("Retry-After", "1")

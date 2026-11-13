@@ -38,9 +38,10 @@ type ErrorResponse struct {
 }
 
 type ErrorDetailDTO struct {
-	Code      string `json:"code"`
-	Message   string `json:"message"`
-	RequestID string `json:"requestId"`
+	Code      string            `json:"code"`
+	Message   string            `json:"message"`
+	RequestID string            `json:"requestId,omitempty"`
+	Fields    map[string]string `json:"fields,omitempty"`
 }
 
 // GenerateRequestID membuat ID unik request 16-byte hex
@@ -83,9 +84,6 @@ func StructuredLoggerMiddleware() gin.HandlerFunc {
 		tenantID := c.GetString("tenant_id")
 		if tenantID == "" {
 			tenantID = c.GetString("school_id")
-		}
-		if tenantID == "" {
-			tenantID = c.GetHeader("X-School-ID")
 		}
 
 		status := c.Writer.Status()
@@ -133,9 +131,6 @@ func RespondError(c *gin.Context, httpStatus int, code string, clientMsg string,
 	if tenantID == "" {
 		tenantID = c.GetString("school_id")
 	}
-	if tenantID == "" {
-		tenantID = c.GetHeader("X-School-ID")
-	}
 
 	errDetail := ""
 	if err != nil {
@@ -166,13 +161,46 @@ func RespondError(c *gin.Context, httpStatus int, code string, clientMsg string,
 		log.Println("[STRUCTURED_ERROR]", string(jsonBytes))
 	}
 
-	// Response publik: Tidak membocorkan database error / query detail / stack trace
+	// Response publik: Tidak membocorkan database error / query detail / stack trace kecuali jika ada header debug
+	if c.GetHeader("X-Debug-Error") == "true" {
+		c.JSON(httpStatus, gin.H{
+			"success": false,
+			"error": gin.H{
+				"code":      code,
+				"message":   clientMsg,
+				"requestId": reqID,
+				"debug":     errDetail,
+			},
+		})
+		return
+	}
+
 	c.JSON(httpStatus, ErrorResponse{
 		Success: false,
 		Error: ErrorDetailDTO{
 			Code:      code,
 			Message:   clientMsg,
 			RequestID: reqID,
+		},
+	})
+}
+
+// RespondValidationError mengirimkan respon 422 Unprocessable Entity berstandar untuk kegagalan validasi
+func RespondValidationError(c *gin.Context, clientMsg string, fields map[string]string) {
+	reqID := GetRequestID(c)
+	if reqID == "" {
+		reqID = GenerateRequestID()
+		c.Set(RequestIDKey, reqID)
+		c.Writer.Header().Set("X-Request-ID", reqID)
+	}
+
+	c.JSON(422, ErrorResponse{
+		Success: false,
+		Error: ErrorDetailDTO{
+			Code:      "VALIDATION_ERROR",
+			Message:   clientMsg,
+			RequestID: reqID,
+			Fields:    fields,
 		},
 	})
 }

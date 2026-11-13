@@ -27,15 +27,26 @@ func IsValidUUID(u string) bool {
  */
 func TenantContextMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// 1. Ekstrak identitas tenant dari sesi JWT terotentikasi (Cookie / Bearer)
+		if c.GetString("school_id") == "" {
+			if claims, err := ExtractAndValidateClaims(c); err == nil && claims != nil {
+				c.Set("school_id", claims.SchoolID)
+				c.Set("tenant_id", claims.SchoolID)
+				c.Set("role", claims.Role)
+				c.Set("user_id", claims.UserID)
+			}
+		}
+
 		tenantID := c.GetString("school_id")
 		role := c.GetString("role")
 		userID := c.GetString("user_id")
 
-		if tenantID == "" {
-			tenantID = c.GetHeader("X-School-ID")
-		}
-
 		isSuperAdmin := (role == "SUPER_ADMIN")
+
+		// Super Admin dapat secara opsional mengoperasikan tenant tertentu jika disediakan
+		if isSuperAdmin && tenantID == "" {
+			tenantID = c.Query("tenant_id")
+		}
 
 		// Validasi tipe UUID sebelum cast $1::uuid untuk mencegah error transaksi Postgres
 		var validTenantUUID sql.NullString

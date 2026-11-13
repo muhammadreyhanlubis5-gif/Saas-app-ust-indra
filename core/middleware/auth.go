@@ -3,6 +3,7 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -10,7 +11,33 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var JwtSecretKey = []byte("super-secret-saas-key")
+const LegacyDefaultSecret = "super-secret-saas-key"
+
+var JwtSecretKey []byte
+
+// InitJWTSecret initializes and validates the JWT signing key strictly from environment.
+// Panics immediately if missing, empty, or set to the legacy hardcoded default.
+func InitJWTSecret() {
+	secret := strings.TrimSpace(os.Getenv("JWT_SECRET"))
+	if secret == "" {
+		panic("[CRITICAL SECURITY] JWT_SECRET environment variable is missing. Application cannot start without a valid JWT_SECRET.")
+	}
+	if secret == LegacyDefaultSecret {
+		panic("[CRITICAL SECURITY] Insecure legacy default JWT_SECRET detected. You must provide a secure, unique JWT_SECRET in environment variables.")
+	}
+	if len(secret) < 32 {
+		panic("[CRITICAL SECURITY] JWT_SECRET is too short (must be at least 32 characters for HMAC-SHA256).")
+	}
+	JwtSecretKey = []byte(secret)
+}
+
+// GetJWTSecret returns the validated secret key, initializing it lazily if not yet initialized.
+func GetJWTSecret() []byte {
+	if len(JwtSecretKey) == 0 {
+		InitJWTSecret()
+	}
+	return JwtSecretKey
+}
 
 const AuthCookieName = "guruku_jwt"
 
@@ -82,7 +109,7 @@ func ExtractAndValidateClaims(c *gin.Context) (*CustomClaims, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("metode signing tidak valid")
 		}
-		return JwtSecretKey, nil
+		return GetJWTSecret(), nil
 	})
 
 	if err != nil || !token.Valid {
@@ -132,7 +159,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("unexpected signing method")
 			}
-			return JwtSecretKey, nil
+			return GetJWTSecret(), nil
 		})
 
 		if err != nil || !token.Valid {
@@ -171,6 +198,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		// Set context values
 		c.Set("user_id", claims.UserID)
 		c.Set("school_id", claims.SchoolID)
+		c.Set("tenant_id", claims.SchoolID)
 		c.Set("role", claims.Role)
 		c.Next()
 	}

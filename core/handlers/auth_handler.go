@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"strings"
@@ -45,21 +46,40 @@ func GenerateJWTLogin(c *gin.Context) {
 		altUsername = cleanUsername + domain
 	}
 
-	err := database.DB.QueryRow(`
-		SELECT u.id, u.school_id, u.password, u.role, s.valid_until, s.status
-		FROM users u
-		LEFT JOIN schools s ON u.school_id = s.id
-		WHERE u.username = $1 OR u.username = $2
-	`, cleanUsername, altUsername).Scan(&user.ID, &user.SchoolID, &user.Password, &user.Role, &user.ValidUntil, &user.SchoolStatus)
+	if database.DB == nil {
+		c.JSON(http.StatusServiceUnavailable, gin.H{
+			"error": "Layanan database PostgreSQL belum terhubung. Akses autentikasi ditolak pada mode tanpa database.",
+			"code":  "DATABASE_NOT_CONNECTED",
+		})
+		return
+	}
 
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Username tidak ditemukan"})
+	var queryErr error
+	for attempt := 0; attempt < 3; attempt++ {
+		queryErr = database.DB.QueryRow(`
+			SELECT u.id, u.school_id, u.password, u.role, s.valid_until, s.status
+			FROM users u
+			LEFT JOIN schools s ON u.school_id = s.id
+			WHERE u.username = $1 OR u.username = $2
+		`, cleanUsername, altUsername).Scan(&user.ID, &user.SchoolID, &user.Password, &user.Role, &user.ValidUntil, &user.SchoolStatus)
+		if queryErr == nil || queryErr == sql.ErrNoRows {
+			break
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+
+	if queryErr != nil {
+		if queryErr == sql.ErrNoRows {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Email atau password tidak valid"})
+			return
+		}
+		middleware.RespondError(c, http.StatusInternalServerError, "DB_AUTH_FAILED", "Gagal memproses autentikasi basis data", queryErr, "DATABASE_ERROR")
 		return
 	}
 
 	// Verifikasi Password menggunakan bcrypt
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Password salah"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Email atau password tidak valid"})
 		return
 	}
 
@@ -105,7 +125,7 @@ func GenerateJWTLogin(c *gin.Context) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(middleware.JwtSecretKey)
+	tokenString, err := token.SignedString(middleware.GetJWTSecret())
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
@@ -153,7 +173,7 @@ func GetSessionHandler(c *gin.Context) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method")
 		}
-		return middleware.JwtSecretKey, nil
+		return middleware.GetJWTSecret(), nil
 	})
 
 	if err != nil || !token.Valid {
@@ -172,6 +192,11 @@ func GetSessionHandler(c *gin.Context) {
 		})
 		return
 	}
+
+	c.Set("user_id", claims.UserID)
+	c.Set("school_id", claims.SchoolID)
+	c.Set("tenant_id", claims.SchoolID)
+	c.Set("role", claims.Role)
 
 	c.JSON(http.StatusOK, gin.H{
 		"authenticated": true,

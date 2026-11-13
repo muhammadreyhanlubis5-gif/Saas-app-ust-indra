@@ -1,0 +1,6155 @@
+{
+  "fileName": "Master_Jadwal_Jadikan.xlsb",
+  "fileSize": 14038836,
+  "sheetCount": 29,
+  "hasVba": true,
+  "namedRangesCount": 2296,
+  "sheets": [
+    {
+      "index": 1,
+      "name": "Home",
+      "visibility": "Visible",
+      "range": "A1:CX1036",
+      "rowCount": 1036,
+      "colCount": 102,
+      "cellCount": 27453,
+      "mergesCount": 17,
+      "formulaCount": 65,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "IKUTI ALUR PENGISIAN JADWAL  DARI URUTAN NO 1 SAMPAI NO 16",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "MTs",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "",
+            "TOTAL ALOKASI JAM (UNTUK LEBIH JELAS  KLIK MENU NO. 5",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "726",
+            "JP",
+            "",
+            "JUMLAH KEDUANYA HARUS SAMA",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "",
+            "TOTAL  JAM  TERDISTRIBUSI KE GURU (KLIK MENU NO. 7)",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "726",
+            "JP",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "name": "PPA",
+      "visibility": "Visible",
+      "range": "A1:H184",
+      "rowCount": 184,
+      "colCount": 8,
+      "cellCount": 1464,
+      "mergesCount": 3,
+      "formulaCount": 0,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "",
+            "WAJIIB UNTUK MELAKUKAN AKTIVASII MAKRO EXCEL VBA AGAR APLIKASI INI DAPAT BERFUNGSI DENGAN BAIK (1  KALI SAJA)",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "",
+            "CARANYA ADALAH :",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "",
+            "1.  Tutup dahulu Aplikasi Excel ini",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "",
+            "2. Klik kanan file → Properties",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "",
+            "3. Centang Unblock   → OK",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "",
+            "SILAHKAN INPUT NAMA SEKOLAH/MADRASAH/KAMPUS/LEMBAGA DISINI UNTUK DIVALIDASI PADA KOLOM DI BAWAH INI",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "",
+            "MTS. DARUL ARAFAH",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "name": "Rombel",
+      "visibility": "Visible",
+      "range": "A1:BR1048566",
+      "rowCount": 1048566,
+      "colCount": 70,
+      "cellCount": 1508,
+      "mergesCount": 21,
+      "formulaCount": 93,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "",
+            "JADWAL PELAJARAN",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "",
+            "ISI PADA BAGIAN YANG DI BLOK WARNA KUNING SESUAI DENGAN KONDISI SEKOLAH MASING-MASING (JIKA TDK BISA INPUT MAKA DOUBLE CLICK DAHULU )",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "",
+            "No",
+            "URAIAN",
+            "Keterangan",
+            "",
+            "",
+            "",
+            "",
+            "No",
+            "HARI KBM",
+            "JUMLAH ROMBEL JANGAN DI HAPUS",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "",
+            "1",
+            "Nama Kepala Sekolah",
+            "Marwan Halim, M.Ag.",
+            "",
+            "",
+            "",
+            "",
+            "1",
+            "SABTU",
+            "0",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "",
+            "2",
+            "Nama Wakasek  Bid. Kurikulum",
+            "Prasilo Heri Yudanto, Lc. M.Ag",
+            "",
+            "",
+            "",
+            "",
+            "2",
+            "MINGGU",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "",
+            "3",
+            "Lokasi Sekolah",
+            "Lau Bakeri",
+            "",
+            "",
+            "",
+            "",
+            "3",
+            "SENIN",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "",
+            "4",
+            "Tanggal Pembuatan Jadwal (yy/mm/dd)",
+            "16 Juli 2026",
+            "",
+            "",
+            "",
+            "",
+            "4",
+            "SELASA",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "",
+            "5",
+            "NAMA SEKOLAH/MADRASAH",
+            "MTs",
+            "",
+            "",
+            "",
+            "",
+            "5",
+            "RABU",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "",
+            "6",
+            "TAHUN PELAJARAN",
+            "2026-2027",
+            "",
+            "",
+            "",
+            "",
+            "6",
+            "KAMIS",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "",
+            "7",
+            "SEMESTER",
+            "GANJIL",
+            "",
+            "",
+            "",
+            "",
+            "Jumlah",
+            "6",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "SESUAIKAN URUTAN JAM PELARAN DAN WAKTUNYA PADA SETIAP HARI KBM DAN SECARA OTOMATIS JUMLAH SESI KBM INI AKAN DISINGKRONKAN DENGAN KEBUTUHAN KOLOM PADA SAAT INPUT JADWAL",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "name": "TIME KBM",
+      "visibility": "Hidden",
+      "range": "B1:L120",
+      "rowCount": 120,
+      "colCount": 11,
+      "cellCount": 540,
+      "mergesCount": 18,
+      "formulaCount": 30,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 4,
+          "values": [
+            "SABTU",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "Jam Ke :",
+            "DURASI",
+            "MULAI - AKHIR",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "",
+            "(JAM : MENIT)",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "U",
+            "0.027777777777777776",
+            "0.3125",
+            ":",
+            "0.3402777777777778",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "1",
+            "0.027777777777777776",
+            "0.3402777777777778",
+            ":",
+            "0.3680555555555556",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "2",
+            "0.027777777777777776",
+            "0.3680555555555556",
+            ":",
+            "0.39583333333333337",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "3",
+            "0.027777777777777776",
+            "0.39583333333333337",
+            ":",
+            "0.42361111111111116",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "ISTIRAHAT",
+            "0.027777777777777776",
+            "0.42361111111111116",
+            ":",
+            "0.45138888888888895",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "4",
+            "0.027777777777777776",
+            "0.45138888888888895",
+            ":",
+            "0.47916666666666674",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "5",
+            "0.027777777777777776",
+            "0.47916666666666674",
+            ":",
+            "0.5069444444444445",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "name": "Kegiatan Non Mapel",
+      "visibility": "Hidden",
+      "range": "A1:X1048473",
+      "rowCount": 1048473,
+      "colCount": 24,
+      "cellCount": 2100253,
+      "mergesCount": 7,
+      "formulaCount": 742,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "",
+            "",
+            "KODE DAN NAMA DAFTAR KEGIATAN SELAIN DAFTAR MATA PELAJARAN YANG AKAN DICANTUMKAN DALAM JADWAL",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "",
+            "",
+            "",
+            "NO",
+            "KODE",
+            "KEGIATAN",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "",
+            "",
+            "",
+            "1",
+            "UP",
+            "UPACARA BENDERA",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "",
+            "",
+            "",
+            "2",
+            "REH",
+            "ISTIRAHAT",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "",
+            "",
+            "",
+            "3",
+            "0",
+            "0",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "",
+            "",
+            "",
+            "4",
+            "0",
+            "0",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "",
+            "",
+            "",
+            "5",
+            "0",
+            "0",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "",
+            "",
+            "",
+            "6",
+            "0",
+            "0",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "",
+            "",
+            "",
+            "7",
+            "0",
+            "0",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "",
+            "",
+            "",
+            "8",
+            "0",
+            "0",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "",
+            "",
+            "",
+            "9",
+            "0",
+            "0",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "",
+            "",
+            "",
+            "10",
+            "0",
+            "0",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "name": "GENARATE KODE",
+      "visibility": "Visible",
+      "range": "A1:S160",
+      "rowCount": 160,
+      "colCount": 19,
+      "cellCount": 162,
+      "mergesCount": 0,
+      "formulaCount": 160,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "",
+            "MH",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "",
+            "PHY",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "",
+            "IS",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "",
+            "MF",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "",
+            "AGR",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "",
+            "AUL",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "",
+            "AR",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "",
+            "AM",
+            "SILAHKAN KIK",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "",
+            "FA",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "",
+            "DF",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "",
+            "MM",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "",
+            "RAP",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "",
+            "KK",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "name": "Alokasi",
+      "visibility": "Visible",
+      "range": "A1:DC118",
+      "rowCount": 118,
+      "colCount": 107,
+      "cellCount": 10001,
+      "mergesCount": 12,
+      "formulaCount": 404,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "45",
+            "MAPEL",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "ALOKASI JAM TIAP MAPEL SESUAI STRUKTUR KURIKULUM / PEKAN",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "",
+            "",
+            "KELAS",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "",
+            "",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14"
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "KODE",
+            "MAPEL",
+            "4 TM",
+            "4 MAPK",
+            "4 SAINS",
+            "4 BHS A",
+            "4 BHS B",
+            "5 IPA-A",
+            "5 IPS-B",
+            "5 SAINS",
+            "5 MAPK",
+            "5 TM-A IPA",
+            "5 TM-B IPS",
+            "6 IPA-A",
+            "6 IPA-B",
+            "6 IPS-C"
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "AD",
+            "Adab",
+            "",
+            "3",
+            "",
+            "",
+            "",
+            "1",
+            "1",
+            "1",
+            "2",
+            "1",
+            "1",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "AKU",
+            "Akutansi",
+            "",
+            "",
+            "",
+            "1",
+            "1",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "ATR",
+            "Antropologi",
+            "",
+            "",
+            "",
+            "1",
+            "1",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "BA",
+            "Bahasa Arab",
+            "11",
+            "2",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "2",
+            "1",
+            "1",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "BI",
+            "Bahasa Indonesia",
+            "1",
+            "1",
+            "3",
+            "3",
+            "3",
+            "3",
+            "3",
+            "3",
+            "1",
+            "4",
+            "4",
+            "2",
+            "2",
+            "2"
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "BING",
+            "Bahasa Inggris",
+            "2",
+            "1",
+            "3",
+            "3",
+            "3",
+            "4",
+            "4",
+            "4",
+            "1",
+            "4",
+            "4",
+            "3",
+            "3",
+            "3"
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "BAL",
+            "Balaghoh",
+            "",
+            "3",
+            "",
+            "2",
+            "2",
+            "2",
+            "2",
+            "",
+            "3",
+            "3",
+            "3",
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "BIO",
+            "Biologi",
+            "",
+            "",
+            "4",
+            "",
+            "",
+            "2",
+            "",
+            "4",
+            "",
+            "2",
+            "",
+            "3",
+            "3",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "name": "JLH MAPEL DIAMPU",
+      "visibility": "Hidden",
+      "range": "A1:BA1048576",
+      "rowCount": 1048576,
+      "colCount": 53,
+      "cellCount": 1141,
+      "mergesCount": 202,
+      "formulaCount": 1,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 2,
+          "values": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "0",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "1",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "2",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "3",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "4",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "5",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "name": "Pengampu",
+      "visibility": "Visible",
+      "range": "A1:BI1119",
+      "rowCount": 1119,
+      "colCount": 61,
+      "cellCount": 65908,
+      "mergesCount": 795,
+      "formulaCount": 1766,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "LAMPIRAN SK MENGAJAR MTs  TAHUN PELAJARAN",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "DISTRIBUSI ALOKASI JAM PADA SETIAP PENGAMPU MATA PELAJARAN",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "KODE",
+            "Nama",
+            "JLH MAPEL YANG DIAMPU",
+            "KRITERIA MAPEL",
+            "",
+            "KELAS",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11"
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "",
+            "",
+            "",
+            "",
+            "KODE MAPEL",
+            "4 TM",
+            "4 MAPK",
+            "4 SAINS",
+            "4 BHS A",
+            "4 BHS B",
+            "5 IPA-A",
+            "5 IPS-B",
+            "5 SAINS",
+            "5 MAPK",
+            "5 TM-A IPA",
+            "5 TM-B IPS"
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "MH",
+            "Marwan Halim, M.Ag",
+            "0",
+            "( Mapel Linier Sertifikasi )",
+            "TA",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "",
+            "",
+            "",
+            "( Mapel Linier Sertifikasi )",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "",
+            "",
+            "",
+            "( Mapel Linier Sertifikasi )",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "",
+            "",
+            "",
+            "( Mapel Linier Sertifikasi )",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "",
+            "",
+            "",
+            "( Mapel Linier Sertifikasi )",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "",
+            "",
+            "0",
+            "( Mapel Tidak Linier Sertifikasi )",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "",
+            "",
+            "",
+            "( Mapel Tidak Linier Sertifikasi )",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "",
+            "",
+            "",
+            "( Mapel Tidak Linier Sertifikasi )",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "name": "Rumus Input Jadwal",
+      "visibility": "Hidden",
+      "range": "A1:A228",
+      "rowCount": 228,
+      "colCount": 1,
+      "cellCount": 196,
+      "mergesCount": 0,
+      "formulaCount": 0,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "' -------------------------"
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "' Module-level variables (di bagian atas module sheet)"
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "' -------------------------"
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "Dim firstEditReady As Boolean"
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "Dim oldValue As Variant"
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "Dim oldAddress As String"
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "' -------------------------"
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "' Worksheet Activate"
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "' -------------------------"
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "Private Sub Worksheet_Activate()"
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "firstEditReady = True"
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "Application.EditDirectlyInCell = True"
+          ]
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "name": "Rumus Ciutkan Baris Pengampu",
+      "visibility": "Hidden",
+      "range": "B1:XFD1673",
+      "rowCount": 1673,
+      "colCount": 16383,
+      "cellCount": 1877,
+      "mergesCount": 0,
+      "formulaCount": 22,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 2,
+          "values": [
+            "Sub",
+            "",
+            "",
+            "",
+            "Ciutkan",
+            "",
+            "",
+            "",
+            "",
+            "_",
+            "",
+            "",
+            "",
+            "106",
+            "",
+            "L"
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "Dim",
+            "",
+            "",
+            "",
+            "cell",
+            "",
+            "",
+            "",
+            "",
+            "As",
+            "",
+            "",
+            "",
+            "Integer",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "",
+            "",
+            "",
+            "",
+            "cell = Range(\"C",
+            "",
+            "",
+            "",
+            "",
+            "106",
+            "",
+            "",
+            "",
+            "\")",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "Rows",
+            "",
+            "",
+            "",
+            "(",
+            "",
+            "",
+            "",
+            "",
+            "\"",
+            "",
+            "",
+            "",
+            "106",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "If cell <",
+            "",
+            "",
+            "",
+            "111",
+            "",
+            "",
+            "",
+            "",
+            "Then",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "Rows(cell +",
+            "",
+            "",
+            "",
+            "spasi",
+            "",
+            "",
+            "",
+            "",
+            "106",
+            "",
+            "spasi",
+            "",
+            "&",
+            "spasi",
+            "\":"
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "End If",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "End Sub",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 12,
+      "name": "Input Jadwal",
+      "visibility": "Visible",
+      "range": "A1:QPD561",
+      "rowCount": 561,
+      "colCount": 11912,
+      "cellCount": 15163,
+      "mergesCount": 186,
+      "formulaCount": 1540,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "0",
+            "",
+            "SABTU",
+            "MINGGU",
+            "SENIN",
+            "",
+            "SELASA",
+            "RABU",
+            "KAMIS",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "INPUT JADWAL",
+            "",
+            "16",
+            "16",
+            "20",
+            "",
+            "20",
+            "20",
+            "16",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "HARI",
+            "WAKTU",
+            "",
+            "KODE GURU & MAPEL, KODE KEGIATAN NON MAPEL SEPERTI UPACARA DLL (INPUT MANUAL BOLEH, COPY PASTE JUGA BOLEH)",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "",
+            "",
+            "JAM",
+            "4 TM",
+            "4 MAPK",
+            "4 SAINS",
+            "4 BHS A",
+            "4 BHS B",
+            "5 IPA-A",
+            "5 IPS-B",
+            "5 SAINS",
+            "5 MAPK",
+            "5 TM-A IPA",
+            "5 TM-B IPS",
+            "6 IPA-A",
+            "6 IPA-B"
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "SABTU",
+            "07.30 - 08.10",
+            "1",
+            "MF",
+            "FI",
+            "FH",
+            "IS",
+            "RAN",
+            "SU",
+            "SUS",
+            "SUA",
+            "SB",
+            "SAF",
+            "DF",
+            "YUL",
+            "FW"
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "SABTU",
+            "",
+            "",
+            "BA",
+            "NAH",
+            "KIM",
+            "UF",
+            "BING",
+            "BING",
+            "MTK",
+            "FIS",
+            "NAH",
+            "BI",
+            "AD",
+            "MTK",
+            "BING"
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "SABTU",
+            "08.10 - 08.50",
+            "2",
+            "MF",
+            "FI",
+            "FH",
+            "IS",
+            "RAN",
+            "SU",
+            "SUS",
+            "SUA",
+            "SB",
+            "SAF",
+            "ELP",
+            "YUL",
+            "FW"
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "SABTU",
+            "",
+            "",
+            "BA",
+            "NAH",
+            "KIM",
+            "UF",
+            "BING",
+            "BING",
+            "MTK",
+            "FIS",
+            "NAH",
+            "BI",
+            "BI",
+            "MTK",
+            "BING"
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "SABTU",
+            "08.50 - 09.30",
+            "3",
+            "MF",
+            "FI",
+            "FH",
+            "DAF",
+            "RAN",
+            "SU",
+            "SUS",
+            "SUA",
+            "SB",
+            "SAF",
+            "ELP",
+            "YUL",
+            "FW"
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "SABTU",
+            "",
+            "",
+            "BA",
+            "NAH",
+            "KIM",
+            "TAU",
+            "BING",
+            "BING",
+            "MTK",
+            "FIS",
+            "NAH",
+            "BI",
+            "BI",
+            "MTK",
+            "BING"
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "SABTU",
+            "09.30 - 10.10",
+            "4",
+            "MF",
+            "FI",
+            "FH",
+            "DAF",
+            "KAL",
+            "SU",
+            "AF",
+            "SUA",
+            "SB",
+            "SAF",
+            "ELP",
+            "YUL",
+            "IB"
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "SABTU",
+            "",
+            "",
+            "BA",
+            "NAH",
+            "KIM",
+            "TAU",
+            "HAD",
+            "BING",
+            "PP",
+            "FIS",
+            "NAH",
+            "BI",
+            "BI",
+            "MTK",
+            "TAF"
+          ]
+        }
+      ]
+    },
+    {
+      "index": 13,
+      "name": "Hit Kode Guru dan Mapel",
+      "visibility": "Hidden",
+      "range": "A1:BA153",
+      "rowCount": 153,
+      "colCount": 53,
+      "cellCount": 8106,
+      "mergesCount": 0,
+      "formulaCount": 7800,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "",
+            "",
+            "",
+            "4 TM",
+            "4 MAPK",
+            "4 SAINS",
+            "4 BHS A",
+            "4 BHS B",
+            "5 IPA-A",
+            "5 IPS-B",
+            "5 SAINS",
+            "5 MAPK",
+            "5 TM-A IPA",
+            "5 TM-B IPS",
+            "6 IPA-A",
+            "6 IPA-B"
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "MH",
+            "",
+            "",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "PHY",
+            "",
+            "",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "IS",
+            "",
+            "",
+            "0",
+            "2",
+            "2",
+            "2",
+            "2",
+            "2",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "MF",
+            "",
+            "",
+            "11",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "AGR",
+            "",
+            "",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "AUL",
+            "",
+            "",
+            "2",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "2",
+            "1",
+            "0",
+            "1",
+            "3",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "AR",
+            "",
+            "",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "2",
+            "2"
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "AM",
+            "",
+            "",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "2",
+            "0",
+            "0",
+            "0",
+            "2",
+            "2"
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "FA",
+            "",
+            "",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "DF",
+            "",
+            "",
+            "2",
+            "2",
+            "2",
+            "2",
+            "2",
+            "3",
+            "3",
+            "3",
+            "2",
+            "3",
+            "3",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "MM",
+            "",
+            "",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "2",
+            "2",
+            "2",
+            "2",
+            "2",
+            "2",
+            "4",
+            "4"
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "RAP",
+            "",
+            "",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "2",
+            "2",
+            "0",
+            "0",
+            "3",
+            "3",
+            "3",
+            "3"
+          ]
+        }
+      ]
+    },
+    {
+      "index": 14,
+      "name": "Model JG",
+      "visibility": "Visible",
+      "range": "A1:V64",
+      "rowCount": 64,
+      "colCount": 22,
+      "cellCount": 1408,
+      "mergesCount": 1,
+      "formulaCount": 0,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 3,
+          "values": [
+            "",
+            "",
+            "JADWAL GURU",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 15,
+      "name": "Jadwal Guru",
+      "visibility": "Visible",
+      "range": "A1:BA106",
+      "rowCount": 106,
+      "colCount": 53,
+      "cellCount": 666,
+      "mergesCount": 12,
+      "formulaCount": 226,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "10",
+            "10",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "",
+            "MTs",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "",
+            "TAHUN PELAJARAN 2026-2027",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "",
+            "KODE GURU",
+            "",
+            "",
+            "SB",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "JUMLAH JAM",
+            "",
+            "",
+            "7",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "",
+            "NAMA GURU",
+            "",
+            "",
+            "T. Saiful Bahri, Lc",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "JUMLAH JAM TUGAS TAMBAHAN",
+            "",
+            "",
+            "0",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "TOTAL JAM + TUGAS TAMBAHAN",
+            "",
+            "",
+            "7",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "",
+            "JAM/SESI",
+            "WAKTU",
+            "SABTU",
+            "",
+            "MINGGU",
+            "",
+            "SENIN",
+            "",
+            "SELASA",
+            "",
+            "RABU",
+            "",
+            "KAMIS",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "",
+            "1",
+            "07.30 - 08.10",
+            "NAH",
+            "5 MAPK",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "",
+            "2",
+            "08.10 - 08.50",
+            "NAH",
+            "5 MAPK",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 16,
+      "name": "Jadwal Guru 2",
+      "visibility": "Visible",
+      "range": "A1:BA99",
+      "rowCount": 99,
+      "colCount": 53,
+      "cellCount": 766,
+      "mergesCount": 10,
+      "formulaCount": 374,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "",
+            "MTs",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "",
+            "TAHUN PELAJARAN 2026-2027",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "10",
+            "10",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "",
+            "KODE GURU",
+            "",
+            "SU",
+            "",
+            "",
+            "JUMLAH JAM",
+            "",
+            "",
+            "26",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "",
+            "NAMA GURU",
+            "",
+            "Sri Utami, S.H.I",
+            "",
+            "",
+            "JUMLAH JAM TUGAS TAMBAHAN",
+            "",
+            "",
+            "0",
+            "",
+            "TOTAL JAM + TUGAS TAMBAHAN",
+            "",
+            "",
+            "26",
+            ""
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "",
+            "JAM/SESI",
+            "WAKTU",
+            "SABTU",
+            "",
+            "",
+            "JAM/SESI",
+            "WAKTU",
+            "MINGGU",
+            "",
+            "",
+            "JAM/SESI",
+            "WAKTU",
+            "SENIN",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "",
+            "1",
+            "07.30 - 08.10",
+            "BING",
+            "5 IPA-A",
+            "",
+            "1",
+            "07.30 - 08.10",
+            "BING",
+            "5 IPS-B",
+            "",
+            "1",
+            "07.30 - 08.10",
+            "BING",
+            "5 TM-A IPA",
+            ""
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "",
+            "2",
+            "08.10 - 08.50",
+            "BING",
+            "5 IPA-A",
+            "",
+            "2",
+            "08.10 - 08.50",
+            "BING",
+            "5 IPS-B",
+            "",
+            "2",
+            "08.10 - 08.50",
+            "BING",
+            "5 TM-A IPA",
+            ""
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "",
+            "3",
+            "08.50 - 09.30",
+            "BING",
+            "5 IPA-A",
+            "",
+            "3",
+            "08.50 - 09.30",
+            "BING",
+            "5 SAINS",
+            "",
+            "3",
+            "08.50 - 09.30",
+            "BING",
+            "5 TM-A IPA",
+            ""
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "",
+            "4",
+            "09.30 - 10.10",
+            "BING",
+            "5 IPA-A",
+            "",
+            "4",
+            "09.30 - 10.10",
+            "BING",
+            "5 SAINS",
+            "",
+            "4",
+            "09.30 - 10.10",
+            "BING",
+            "5 TM-A IPA",
+            ""
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "",
+            "ISTIRAHAT",
+            "10.10 - 10.40",
+            "",
+            "",
+            "",
+            "ISTIRAHAT",
+            "10.10 - 10.40",
+            "",
+            "",
+            "",
+            "ISTIRAHAT",
+            "10.10 - 10.40",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "",
+            "5",
+            "10.40 - 11.20",
+            "BING",
+            "5 IPS-B",
+            "",
+            "5",
+            "10.40 - 11.20",
+            "BING",
+            "5 SAINS",
+            "",
+            "5",
+            "10.40 - 11.20",
+            "BING",
+            "5 TM-B IPS",
+            ""
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "",
+            "6",
+            "11.20 - 12.00",
+            "BING",
+            "5 IPS-B",
+            "",
+            "6",
+            "11.20 - 12.00",
+            "BING",
+            "5 SAINS",
+            "",
+            "6",
+            "11.20 - 12.00",
+            "BING",
+            "5 TM-B IPS",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 17,
+      "name": "Analisis Mapel",
+      "visibility": "Visible",
+      "range": "A1:BN332",
+      "rowCount": 332,
+      "colCount": 66,
+      "cellCount": 17191,
+      "mergesCount": 14,
+      "formulaCount": 16064,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "45",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "ANALISIS SEBARAN KODE MAPEL PADA INPUT JADWAL",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "NO",
+            "KODE",
+            "MAPEL",
+            "KELAS",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "",
+            "",
+            "",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13"
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "",
+            "",
+            "",
+            "4 TM",
+            "4 MAPK",
+            "4 SAINS",
+            "4 BHS A",
+            "4 BHS B",
+            "5 IPA-A",
+            "5 IPS-B",
+            "5 SAINS",
+            "5 MAPK",
+            "5 TM-A IPA",
+            "5 TM-B IPS",
+            "6 IPA-A",
+            "6 IPA-B"
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "1",
+            "AD",
+            "Adab",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "2",
+            "AKU",
+            "Akutansi",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "3",
+            "ATR",
+            "Antropologi",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "4",
+            "BA",
+            "Bahasa Arab",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "5",
+            "BI",
+            "Bahasa Indonesia",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "6",
+            "BING",
+            "Bahasa Inggris",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "7",
+            "BAL",
+            "Balaghoh",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "8",
+            "BIO",
+            "Biologi",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ]
+    },
+    {
+      "index": 18,
+      "name": "Analisis Guru",
+      "visibility": "Visible",
+      "range": "A1:BN327",
+      "rowCount": 327,
+      "colCount": 66,
+      "cellCount": 17343,
+      "mergesCount": 16,
+      "formulaCount": 16218,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "44",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "ANALISIS SEBARAN KODE GURU PADA INPUT JADWAL",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "NO",
+            "KODE",
+            "NAMA GURU",
+            "KELAS",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "",
+            "",
+            "",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13"
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "",
+            "",
+            "",
+            "4 TM",
+            "4 MAPK",
+            "4 SAINS",
+            "4 BHS A",
+            "4 BHS B",
+            "5 IPA-A",
+            "5 IPS-B",
+            "5 SAINS",
+            "5 MAPK",
+            "5 TM-A IPA",
+            "5 TM-B IPS",
+            "6 IPA-A",
+            "6 IPA-B"
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "1",
+            "MH",
+            "Marwan Halim, M.Ag",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "2",
+            "PHY",
+            "Prasilo Heri Yudanto, Lc. M.Ag",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "3",
+            "IS",
+            "Indra Syah Putra, M.A",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "4",
+            "MF",
+            "Muhammad Fahmi, S.Pd",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "5",
+            "AGR",
+            "Agus Riyadi, S.Pd.I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "6",
+            "AUL",
+            "Aulia Rahman, S.Pd.I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "7",
+            "AR",
+            "Ahmad Rifai, S.Ag",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "8",
+            "AM",
+            "Ahdar Muslim, S.Pd.I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ]
+    },
+    {
+      "index": 19,
+      "name": "TT",
+      "visibility": "Visible",
+      "range": "A1:BM1003",
+      "rowCount": 1003,
+      "colCount": 65,
+      "cellCount": 3440,
+      "mergesCount": 96,
+      "formulaCount": 859,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "44",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "SILAHKAN DIISI DATA TUGAS TAMBAHAN GURU BESERTA BOBOTNYA (PADA KOLOM YANG DIBLOK KUNING)",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "Ini Rumus",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "No",
+            "KODE",
+            "NAMA",
+            "TUGAS TAMB",
+            "BOBOT TUGAS TAMB",
+            "",
+            "LINIER",
+            "JAM SERTIFIKASI",
+            "NON LINIER",
+            "TOTAL JTM",
+            "KELAS",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "1",
+            "MH",
+            "Marwan Halim, M.Ag",
+            "",
+            "",
+            "JAM",
+            "5",
+            "29",
+            "0",
+            "5",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            ""
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "2",
+            "PHY",
+            "Prasilo Heri Yudanto, Lc. M.Ag",
+            "",
+            "",
+            "JAM",
+            "7",
+            "19",
+            "0",
+            "7",
+            "4 TM",
+            "4 MAPK",
+            "4 SAINS",
+            "4 BHS A",
+            "4 BHS B",
+            ""
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "3",
+            "IS",
+            "Indra Syah Putra, M.A",
+            "",
+            "",
+            "JAM",
+            "10",
+            "10",
+            "0",
+            "10",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "4",
+            "MF",
+            "Muhammad Fahmi, S.Pd",
+            "",
+            "",
+            "JAM",
+            "11",
+            "11",
+            "0",
+            "11",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "5",
+            "AGR",
+            "Agus Riyadi, S.Pd.I",
+            "",
+            "",
+            "JAM",
+            "6",
+            "6",
+            "0",
+            "6",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "6",
+            "AUL",
+            "Aulia Rahman, S.Pd.I",
+            "",
+            "",
+            "JAM",
+            "9",
+            "9",
+            "0",
+            "9",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "7",
+            "AR",
+            "Ahmad Rifai, S.Ag",
+            "",
+            "",
+            "JAM",
+            "10",
+            "10",
+            "0",
+            "10",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "8",
+            "AM",
+            "Ahdar Muslim, S.Pd.I",
+            "",
+            "",
+            "JAM",
+            "13",
+            "13",
+            "0",
+            "13",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "9",
+            "FA",
+            "Fauzan Azhari, M.Psi",
+            "",
+            "",
+            "JAM",
+            "3",
+            "3",
+            "0",
+            "3",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "10",
+            "DF",
+            "Deni Fitriadi, M.Ag",
+            "",
+            "",
+            "JAM",
+            "31",
+            "31",
+            "0",
+            "31",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 20,
+      "name": "MJ",
+      "visibility": "Visible",
+      "range": "A1:QPQ95",
+      "rowCount": 95,
+      "colCount": 11925,
+      "cellCount": 9761,
+      "mergesCount": 2,
+      "formulaCount": 382,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "0",
+            "",
+            "SABTU",
+            "MINGGU",
+            "SENIN",
+            "",
+            "SELASA",
+            "RABU",
+            "KAMIS",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "INPUT JADWAL",
+            "",
+            "8",
+            "8",
+            "10",
+            "",
+            "10",
+            "10",
+            "8",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "HARI",
+            "WAKTU",
+            "",
+            "BERIKAN TANDA SILANG PADA GURU YANG TIDAK DAPAT MENGAJAR DI JAM JAM TERTENTU SESUAI PERMINTAAN",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "",
+            "",
+            "",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13"
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "",
+            "",
+            "JAM/SESI",
+            "MH",
+            "PHY",
+            "IS",
+            "MF",
+            "AGR",
+            "AUL",
+            "AR",
+            "AM",
+            "FA",
+            "DF",
+            "MM",
+            "RAP",
+            "KK"
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "SABTU",
+            "07.30 - 08.10",
+            "1",
+            "X",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "SABTU",
+            "08.10 - 08.50",
+            "2",
+            "X",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "SABTU",
+            "08.50 - 09.30",
+            "3",
+            "X",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "SABTU",
+            "09.30 - 10.10",
+            "4",
+            "X",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "SABTU",
+            "10.10 - 10.40",
+            "ISTIRAHAT",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "SABTU",
+            "10.40 - 11.20",
+            "5",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "SABTU",
+            "11.20 - 12.00",
+            "6",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "SABTU",
+            "12.00 - 12.40",
+            "7",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 21,
+      "name": "MJ x",
+      "visibility": "Hidden",
+      "range": "A1:QNX94",
+      "rowCount": 94,
+      "colCount": 11880,
+      "cellCount": 9732,
+      "mergesCount": 2,
+      "formulaCount": 9281,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "0",
+            "",
+            "SABTU",
+            "MINGGU",
+            "SENIN",
+            "",
+            "SELASA",
+            "RABU",
+            "KAMIS",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "INPUT JADWAL",
+            "",
+            "8",
+            "0",
+            "10",
+            "",
+            "10",
+            "0",
+            "8",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "HARI",
+            "JAM",
+            "",
+            "COUNT PERMINTAAN JADWAL MENGAJAR",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "",
+            "",
+            "",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13"
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "",
+            "",
+            "JAM KE",
+            "MH",
+            "PHY",
+            "IS",
+            "MF",
+            "AGR",
+            "AUL",
+            "AR",
+            "AM",
+            "FA",
+            "DF",
+            "MM",
+            "RAP",
+            "KK"
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "SABTU",
+            "07.30 - 08.10",
+            "1",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "SABTU",
+            "08.10 - 08.50",
+            "2",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "SABTU",
+            "08.50 - 09.30",
+            "3",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "SABTU",
+            "09.30 - 10.10",
+            "4",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "SABTU",
+            "10.10 - 10.40",
+            "ISTIRAHAT",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "SABTU",
+            "10.40 - 11.20",
+            "5",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "SABTU",
+            "11.20 - 12.00",
+            "6",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "SABTU",
+            "12.00 - 12.40",
+            "7",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ]
+    },
+    {
+      "index": 22,
+      "name": "CMJ sebaran",
+      "visibility": "Hidden",
+      "range": "A1:QNW184",
+      "rowCount": 184,
+      "colCount": 11879,
+      "cellCount": 9811,
+      "mergesCount": 2,
+      "formulaCount": 9281,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "0",
+            "",
+            "SABTU",
+            "MINGGU",
+            "SENIN",
+            "",
+            "SELASA",
+            "RABU",
+            "KAMIS",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "INPUT JADWAL",
+            "",
+            "16",
+            "0",
+            "20",
+            "",
+            "20",
+            "0",
+            "16",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "HARI",
+            "JAM",
+            "",
+            "COUNTIF SEBARAN GURU",
+            "",
+            "COUNTIF SEBARAN GURU",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "",
+            "",
+            "",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13"
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "",
+            "",
+            "JAM KE",
+            "MH",
+            "PHY",
+            "IS",
+            "MF",
+            "AGR",
+            "AUL",
+            "AR",
+            "AM",
+            "FA",
+            "DF",
+            "MM",
+            "RAP",
+            "KK"
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "SABTU",
+            "07.30 - 08.10",
+            "1",
+            "0",
+            "1",
+            "1",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "SABTU",
+            "08.10 - 08.50",
+            "2",
+            "0",
+            "1",
+            "1",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "SABTU",
+            "08.50 - 09.30",
+            "3",
+            "0",
+            "1",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "SABTU",
+            "09.30 - 10.10",
+            "4",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "SABTU",
+            "10.10 - 10.40",
+            "ISTIRAHAT",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "SABTU",
+            "10.40 - 11.20",
+            "5",
+            "0",
+            "0",
+            "1",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "SABTU",
+            "11.20 - 12.00",
+            "6",
+            "0",
+            "0",
+            "1",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "SABTU",
+            "12.00 - 12.40",
+            "7",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "1",
+            "1",
+            "1",
+            "1"
+          ]
+        }
+      ]
+    },
+    {
+      "index": 23,
+      "name": "CMJ Hasil",
+      "visibility": "Visible",
+      "range": "A1:QNU184",
+      "rowCount": 184,
+      "colCount": 11877,
+      "cellCount": 9705,
+      "mergesCount": 2,
+      "formulaCount": 9276,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "0",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "KAMIS",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "INPUT JADWAL",
+            "8",
+            "8",
+            "10",
+            "",
+            "10",
+            "10",
+            "8",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "HARI",
+            "JAM",
+            "",
+            "JIKA DIBLOK MERAH ARTINYA JADWAL MENGAJAR TIDAK SESUAI REQUEST JADWAL DARI GURU",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "",
+            "",
+            "",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13"
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "",
+            "",
+            "JAM KE",
+            "MH",
+            "PHY",
+            "IS",
+            "MF",
+            "AGR",
+            "AUL",
+            "AR",
+            "AM",
+            "FA",
+            "DF",
+            "MM",
+            "RAP",
+            "KK"
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "SABTU",
+            "07.30 - 08.10",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "0",
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "SABTU",
+            "08.10 - 08.50",
+            "2",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "SABTU",
+            "08.50 - 09.30",
+            "3",
+            "0",
+            "0",
+            "1",
+            "0",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "0",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "SABTU",
+            "09.30 - 10.10",
+            "4",
+            "0",
+            "1",
+            "1",
+            "0",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "SABTU",
+            "10.10 - 10.40",
+            "ISTIRAHAT",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "SABTU",
+            "10.40 - 11.20",
+            "5",
+            "1",
+            "1",
+            "0",
+            "0",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "SABTU",
+            "11.20 - 12.00",
+            "6",
+            "1",
+            "1",
+            "0",
+            "0",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "SABTU",
+            "12.00 - 12.40",
+            "7",
+            "1",
+            "1",
+            "1",
+            "0",
+            "1",
+            "0",
+            "1",
+            "1",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ]
+    },
+    {
+      "index": 24,
+      "name": "Jadwal K",
+      "visibility": "Visible",
+      "range": "A1:BA102",
+      "rowCount": 102,
+      "colCount": 53,
+      "cellCount": 932,
+      "mergesCount": 14,
+      "formulaCount": 222,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 5,
+          "values": [
+            "10",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "",
+            "MTs",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "",
+            "TAHUN PELAJARAN 2026-2027",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "",
+            "Kelas",
+            "",
+            "6 SAINS",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "Wali Kelas",
+            "",
+            "Sulhana Umi Atiqah, S.Pd",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "",
+            "HARI",
+            "",
+            "SABTU",
+            "",
+            "MINGGU",
+            "",
+            "SENIN",
+            "",
+            "SELASA",
+            "",
+            "RABU",
+            "",
+            "KAMIS",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "",
+            "Les",
+            "JAM",
+            "MAPEL",
+            "KODE GURU",
+            "MAPEL",
+            "KODE GURU",
+            "MAPEL",
+            "KODE GURU",
+            "MAPEL",
+            "KODE GURU",
+            "MAPEL",
+            "KODE GURU",
+            "MAPEL",
+            "KODE GURU",
+            ""
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "",
+            "1",
+            "07.30 - 08.10",
+            "Biologi",
+            "BUD",
+            "Bahasa Inggris",
+            "FW",
+            "Fisika",
+            "SUA",
+            "Tauhid",
+            "AR",
+            "Bahasa Indonesia",
+            "SAF",
+            "TIK",
+            "MUF",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 25,
+      "name": "Jadwal K 2",
+      "visibility": "Visible",
+      "range": "A1:BA91",
+      "rowCount": 91,
+      "colCount": 53,
+      "cellCount": 1014,
+      "mergesCount": 18,
+      "formulaCount": 373,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 6,
+          "values": [
+            "",
+            "MTs",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "",
+            "TAHUN PELAJARAN 2026-2027",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "10",
+            "10",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "",
+            "Kelas",
+            "",
+            "X-A UMUM",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "Wali Kelas",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "",
+            "HARI",
+            "",
+            "SABTU",
+            "",
+            "",
+            "HARI",
+            "",
+            "MINGGU",
+            "",
+            "",
+            "HARI",
+            "",
+            "SENIN",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "",
+            "Les",
+            "JAM",
+            "MAPEL",
+            "KODE GURU",
+            "",
+            "Les",
+            "JAM",
+            "MAPEL",
+            "KODE GURU",
+            "",
+            "Les",
+            "JAM",
+            "MAPEL",
+            "KODE GURU",
+            ""
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "",
+            "1",
+            "07.30 - 08.10",
+            "",
+            "",
+            "",
+            "1",
+            "07.30 - 08.10",
+            "",
+            "",
+            "",
+            "1",
+            "07.30 - 08.10",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 26,
+      "name": "Model JK",
+      "visibility": "Visible",
+      "range": "A1:AZ108",
+      "rowCount": 108,
+      "colCount": 52,
+      "cellCount": 5616,
+      "mergesCount": 1,
+      "formulaCount": 0,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 5,
+          "values": [
+            "",
+            "JADWAL KELAS",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "index": 27,
+      "name": "Serti",
+      "visibility": "Visible",
+      "range": "A1:DW1003",
+      "rowCount": 1003,
+      "colCount": 127,
+      "cellCount": 2705,
+      "mergesCount": 3,
+      "formulaCount": 1213,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 2,
+          "values": [
+            "JLH GURU",
+            "44",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "ANALISIS TUNJANGAN SERTIFIKASI GURU",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "No",
+            "NAMA GURU",
+            "Kode Guru",
+            "Kode Mapel Sertifikasi",
+            "LINIER",
+            "Tugas Tambahan",
+            "BOBOT TUGAS TAMBAHAN",
+            "",
+            "PERHITUNGAN JAM SERTIFIKASI",
+            "JAM NON LINIER",
+            "KET",
+            "JAM LINIER + NON LINIER + BOBOT TUGAS TAMBAHAN",
+            "",
+            "",
+            "",
+            "KELAS"
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "1",
+            "Marwan Halim, M.Ag",
+            "MH",
+            "TA",
+            "5",
+            "0",
+            "24",
+            "JP",
+            "29",
+            "0",
+            "Layak Menerima Tunjangan",
+            "29",
+            "",
+            "",
+            "",
+            "5"
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "2",
+            "Prasilo Heri Yudanto, Lc. M.Ag",
+            "PHY",
+            "FQ",
+            "7",
+            "0",
+            "12",
+            "JP",
+            "19",
+            "0",
+            "Belum Layak Menerima Tunjangan",
+            "19",
+            "",
+            "",
+            "",
+            "7"
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "3",
+            "Indra Syah Putra, M.A",
+            "IS",
+            "IN",
+            "10",
+            "0",
+            "0",
+            "JP",
+            "10",
+            "0",
+            "Belum Layak Menerima Tunjangan",
+            "10",
+            "",
+            "",
+            "",
+            "10"
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "4",
+            "Muhammad Fahmi, S.Pd",
+            "MF",
+            "BA",
+            "11",
+            "0",
+            "0",
+            "JP",
+            "11",
+            "0",
+            "Belum Layak Menerima Tunjangan",
+            "11",
+            "",
+            "",
+            "",
+            "11"
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "5",
+            "Agus Riyadi, S.Pd.I",
+            "AGR",
+            "IN",
+            "6",
+            "0",
+            "0",
+            "JP",
+            "6",
+            "0",
+            "Belum Layak Menerima Tunjangan",
+            "6",
+            "",
+            "",
+            "",
+            "6"
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "6",
+            "Aulia Rahman, S.Pd.I",
+            "AUL",
+            "IN",
+            "9",
+            "0",
+            "0",
+            "JP",
+            "9",
+            "0",
+            "Belum Layak Menerima Tunjangan",
+            "9",
+            "",
+            "",
+            "",
+            "9"
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "7",
+            "Ahmad Rifai, S.Ag",
+            "AR",
+            "TAU",
+            "10",
+            "0",
+            "0",
+            "JP",
+            "10",
+            "0",
+            "Belum Layak Menerima Tunjangan",
+            "10",
+            "",
+            "",
+            "",
+            "10"
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "8",
+            "Ahdar Muslim, S.Pd.I",
+            "AM",
+            "NAH",
+            "13",
+            "0",
+            "0",
+            "JP",
+            "13",
+            "0",
+            "Belum Layak Menerima Tunjangan",
+            "13",
+            "",
+            "",
+            "",
+            "13"
+          ]
+        }
+      ]
+    },
+    {
+      "index": 28,
+      "name": "Tolok U",
+      "visibility": "Hidden",
+      "range": "A1:BD109",
+      "rowCount": 109,
+      "colCount": 56,
+      "cellCount": 5735,
+      "mergesCount": 5,
+      "formulaCount": 5403,
+      "hyperlinkCount": 0,
+      "previewRows": [
+        {
+          "rowNum": 1,
+          "values": [
+            "PESANTREN DARUL ARAFAH RAYA",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 2,
+          "values": [
+            "MADRASAH ALIYAH SWASTA DARUL ARAFAH",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 3,
+          "values": [
+            "",
+            "====================================================================================================================================",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 4,
+          "values": [
+            "NO",
+            "KODE",
+            "Nama",
+            "KELAS",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "rowNum": 5,
+          "values": [
+            "",
+            "",
+            "",
+            "4 TM",
+            "4 MAPK",
+            "4 SAINS",
+            "4 BHS A",
+            "4 BHS B",
+            "5 IPA-A",
+            "5 IPS-B",
+            "5 SAINS",
+            "5 MAPK",
+            "5 TM-A IPA",
+            "5 TM-B IPS",
+            "6 IPA-A",
+            "6 IPA-B"
+          ]
+        },
+        {
+          "rowNum": 6,
+          "values": [
+            "1",
+            "MH",
+            "Marwan Halim, M.Ag",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "rowNum": 7,
+          "values": [
+            "1",
+            "PHY",
+            "Prasilo Heri Yudanto, Lc. M.Ag",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 8,
+          "values": [
+            "1",
+            "IS",
+            "Indra Syah Putra, M.A",
+            "0",
+            "2",
+            "2",
+            "2",
+            "2",
+            "2",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 9,
+          "values": [
+            "1",
+            "MF",
+            "Muhammad Fahmi, S.Pd",
+            "11",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 10,
+          "values": [
+            "1",
+            "AGR",
+            "Agus Riyadi, S.Pd.I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "1"
+          ]
+        },
+        {
+          "rowNum": 11,
+          "values": [
+            "1",
+            "AUL",
+            "Aulia Rahman, S.Pd.I",
+            "2",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "2",
+            "1",
+            "0",
+            "1",
+            "3",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "rowNum": 12,
+          "values": [
+            "1",
+            "AR",
+            "Ahmad Rifai, S.Ag",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "2",
+            "2"
+          ]
+        },
+        {
+          "rowNum": 13,
+          "values": [
+            "1",
+            "AM",
+            "Ahdar Muslim, S.Pd.I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "2",
+            "0",
+            "0",
+            "0",
+            "2",
+            "2"
+          ]
+        }
+      ]
+    },
+    {
+      "index": 29,
+      "name": "JL",
+      "visibility": "Visible",
+      "range": "A1:A21",
+      "rowCount": 21,
+      "colCount": 1,
+      "cellCount": 0,
+      "mergesCount": 0,
+      "formulaCount": 0,
+      "hyperlinkCount": 0,
+      "previewRows": []
+    }
+  ]
+}

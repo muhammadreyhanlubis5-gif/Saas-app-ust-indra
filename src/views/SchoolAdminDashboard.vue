@@ -84,6 +84,38 @@
           </button>
         </div>
 
+        <!-- Indikator Loading Dashboard (Non-blank saat API memuat data) -->
+        <div v-if="dashboardState === 'loading'" 
+          class="mb-6 p-4 rounded-2xl bg-blue-50/70 border border-blue-100 text-blue-800 flex items-center justify-between shadow-xs animate-pulse">
+          <div class="flex items-center gap-3">
+            <svg class="animate-spin w-5 h-5 text-blue-600 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+            </svg>
+            <div>
+              <p class="text-xs font-bold text-blue-900">Memuat Data Dashboard & Status Fondasi Sekolah...</p>
+              <p class="text-[11px] text-blue-700">Sinkronisasi data sekolah dari server dan status lisensi.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Safe Empty State Banner (Jika Data Sekolah Belum Tersedia) -->
+        <div v-if="dashboardState === 'empty'" 
+          class="mb-6 p-5 rounded-2xl bg-sky-50 border border-sky-200 text-sky-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center shrink-0 mt-0.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-sky-900">Selamat Datang! Ruang Kerja Sekolah Baru Siap Dikonfigurasi</p>
+              <p class="text-[11px] text-sky-700 mt-0.5">Data jadwal dan master data belum diisi. Mulai dengan melengkapi validasi lembaga dan sesi KBM.</p>
+            </div>
+          </div>
+          <router-link :to="ROUTES.VALIDASI_LEMBAGA" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95 shrink-0">
+            Mulai Pengaturan Fondasi
+          </router-link>
+        </div>
+
         <!-- Alert Error Server Dashboard (Jika Terjadi Kegagalan HTTP) -->
         <div v-if="dashboardState === 'error'" 
           class="mb-6 p-5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
@@ -120,7 +152,7 @@
             </div>
 
             <h2 class="text-2xl md:text-3xl font-black mb-2 drop-shadow-md">
-              Selamat Datang di Workspace Anda, <span class="text-blue-200">{{ profileName || 'Admin Sekolah' }}</span>
+              Selamat Datang di Workspace Anda, <span class="text-blue-200">{{ setupStore.schoolProfile.schoolName || 'Sekolah Terdaftar' }}</span>
             </h2>
             <p class="text-blue-100 text-sm md:text-base font-medium leading-relaxed drop-shadow max-w-2xl">
               {{ dynamicGreeting }}
@@ -141,6 +173,81 @@
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                 <span>Perpanjang Lisensi</span>
               </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ringkasan Status Kesiapan Fondasi Sekolah (Tahap 1) -->
+        <div class="bg-white rounded-3xl p-6 mb-8 shadow-sm border border-gray-100">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-gray-100">
+            <div class="flex items-center gap-3.5">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-md shrink-0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="text-lg font-black text-gray-900 tracking-tight">{{ setupStore.schoolProfile.schoolName || 'Sekolah Terdaftar' }}</h3>
+                  <span
+                    class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border"
+                    :class="setupStore.isProfileComplete ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'"
+                  >
+                    {{ setupStore.isProfileComplete ? 'Terverifikasi' : 'Menunggu Validasi' }}
+                  </span>
+                </div>
+                <p class="text-xs text-gray-500 mt-0.5 font-medium">
+                  Tahun Pelajaran: <span class="font-bold text-gray-700 font-mono">{{ setupStore.schoolProfile.academicYear }}</span> (Semester {{ setupStore.schoolProfile.semester }}) &bull; Kepsek: <span class="font-bold text-gray-700">{{ setupStore.schoolProfile.principalName || 'Belum diisi' }}</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 self-start lg:self-center">
+              <router-link
+                :to="ROUTES.VALIDASI_LEMBAGA"
+                class="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl text-xs font-bold transition-colors border border-blue-200 flex items-center gap-1.5 shadow-2xs"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                <span>Edit Identitas & Hari KBM</span>
+              </router-link>
+              <router-link
+                :to="ROUTES.SESI_WAKTU"
+                class="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-xs font-bold transition-colors border border-indigo-200 flex items-center gap-1.5 shadow-2xs"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>Atur Sesi & Waktu</span>
+              </router-link>
+            </div>
+          </div>
+
+          <!-- Mini Metrics Fondasi -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-5">
+            <div class="p-3 bg-gray-50/70 rounded-2xl border border-gray-100">
+              <span class="text-[10px] font-black uppercase text-gray-400 tracking-wider">Validasi Lembaga</span>
+              <p class="text-sm font-black mt-1" :class="setupStore.isProfileComplete ? 'text-emerald-600' : 'text-amber-600'">
+                {{ setupStore.isProfileComplete ? 'Sudah Tervalidasi' : 'Belum Lengkap' }}
+              </p>
+            </div>
+            <div class="p-3 bg-gray-50/70 rounded-2xl border border-gray-100">
+              <span class="text-[10px] font-black uppercase text-gray-400 tracking-wider">Hari Pelaksanaan KBM</span>
+              <p class="text-sm font-black text-gray-800 mt-1 font-mono">
+                {{ setupStore.activeOperatingDays.length }} Hari Aktif
+              </p>
+              <p class="text-[11px] text-gray-500 font-medium truncate mt-0.5" :title="setupStore.activeDaysSummary">
+                {{ setupStore.activeDaysSummary }}
+              </p>
+            </div>
+            <div class="p-3 bg-gray-50/70 rounded-2xl border border-gray-100">
+              <span class="text-[10px] font-black uppercase text-gray-400 tracking-wider">Sesi KBM Harian</span>
+              <p class="text-sm font-black text-gray-800 mt-1 font-mono">
+                {{ setupStore.kbmOnlySessions.length }} Jam / Hari
+              </p>
+            </div>
+            <div class="p-3 bg-gray-50/70 rounded-2xl border border-gray-100">
+              <span class="text-[10px] font-black uppercase text-gray-400 tracking-wider">Kesiapan Fondasi</span>
+              <p class="text-sm font-black mt-1 font-mono" :class="setupStore.isSchedulingReady ? 'text-emerald-600' : 'text-blue-600'">
+                {{ setupStore.foundationCompletionPercentage }}% Selesai
+              </p>
             </div>
           </div>
         </div>
@@ -355,9 +462,22 @@
                 </div>
               </div>
 
-              <router-link :to="ROUTES.JADWAL_KELAS" class="w-full py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-md hover:bg-emerald-700 transition-colors text-center block">
+              <router-link
+                v-if="isSchedulingAllowed"
+                :to="ROUTES.JADWAL_KELAS"
+                class="w-full py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-md hover:bg-emerald-700 transition-colors text-center block cursor-pointer"
+              >
                 Lihat Jadwal Kelas
               </router-link>
+              <button
+                v-else
+                type="button"
+                @click="showSchedulingLockWarning = true"
+                class="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-xl text-xs font-bold transition-colors text-center flex items-center justify-center gap-1.5 border border-gray-200 cursor-pointer"
+              >
+                <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                <span>Terkunci (Lengkapi Fondasi)</span>
+              </button>
             </div>
 
           </div>
@@ -396,47 +516,109 @@
                 </p>
               </div>
 
-              <!-- Checklist Status -->
-              <div class="grid grid-cols-2 gap-3 text-xs font-semibold">
-                <div class="flex items-center gap-2.5 p-2.5 rounded-xl border transition-colors"
-                  :class="rawStats.totalKelas > 0 ? 'bg-emerald-50/40 border-emerald-200 text-emerald-800' : 'bg-gray-50 border-gray-200 text-gray-500'">
-                  <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+              <!-- Checklist Status 6 Langkah Fondasi & Master Data -->
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs font-semibold">
+                <!-- 1. Validasi Lembaga -->
+                <router-link
+                  :to="ROUTES.VALIDASI_LEMBAGA"
+                  class="flex items-center gap-2 p-2.5 rounded-xl border transition-all hover:shadow-2xs"
+                  :class="setupStore.isProfileComplete ? 'bg-emerald-50/40 border-emerald-200 text-emerald-800' : 'bg-gray-50 border-gray-200 text-gray-500 hover:border-blue-300'"
+                >
+                  <div class="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+                    :class="setupStore.isProfileComplete ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-gray-400'">
+                    <svg v-if="setupStore.isProfileComplete" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  </div>
+                  <div class="truncate">
+                    <p class="text-[10px] text-gray-400 uppercase leading-none mb-0.5">Langkah 1</p>
+                    <span class="truncate block">{{ setupStore.isProfileComplete ? 'Lembaga Valid' : 'Validasi Lembaga' }}</span>
+                  </div>
+                </router-link>
+
+                <!-- 2. Hari Pelaksanaan KBM -->
+                <router-link
+                  :to="ROUTES.VALIDASI_LEMBAGA"
+                  class="flex items-center gap-2 p-2.5 rounded-xl border transition-all hover:shadow-2xs"
+                  :class="setupStore.isOperatingDaysComplete ? 'bg-emerald-50/40 border-emerald-200 text-emerald-800' : 'bg-gray-50 border-gray-200 text-gray-500 hover:border-blue-300'"
+                >
+                  <div class="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+                    :class="setupStore.isOperatingDaysComplete ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-gray-400'">
+                    <svg v-if="setupStore.isOperatingDaysComplete" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  </div>
+                  <div class="truncate">
+                    <p class="text-[10px] text-gray-400 uppercase leading-none mb-0.5">Langkah 1</p>
+                    <span class="truncate block">{{ setupStore.activeOperatingDays.length > 0 ? setupStore.activeOperatingDays.length + ' Hari KBM' : 'Hari KBM' }}</span>
+                  </div>
+                </router-link>
+
+                <!-- 3. Sesi & Waktu KBM -->
+                <router-link
+                  :to="ROUTES.SESI_WAKTU"
+                  class="flex items-center gap-2 p-2.5 rounded-xl border transition-all hover:shadow-2xs"
+                  :class="setupStore.isKbmSessionsComplete ? 'bg-emerald-50/40 border-emerald-200 text-emerald-800' : 'bg-gray-50 border-gray-200 text-gray-500 hover:border-blue-300'"
+                >
+                  <div class="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+                    :class="setupStore.isKbmSessionsComplete ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-gray-400'">
+                    <svg v-if="setupStore.isKbmSessionsComplete" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  </div>
+                  <div class="truncate">
+                    <p class="text-[10px] text-gray-400 uppercase leading-none mb-0.5">Langkah 2</p>
+                    <span class="truncate block">{{ setupStore.kbmOnlySessions.length > 0 ? setupStore.kbmOnlySessions.length + ' Sesi KBM' : 'Sesi Waktu' }}</span>
+                  </div>
+                </router-link>
+
+                <!-- 4. Rombel Kelas -->
+                <router-link
+                  :to="ROUTES.DAFTAR_KELAS"
+                  class="flex items-center gap-2 p-2.5 rounded-xl border transition-all hover:shadow-2xs"
+                  :class="rawStats.totalKelas > 0 ? 'bg-emerald-50/40 border-emerald-200 text-emerald-800' : 'bg-gray-50 border-gray-200 text-gray-500 hover:border-blue-300'"
+                >
+                  <div class="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
                     :class="rawStats.totalKelas > 0 ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-gray-400'">
-                    <svg v-if="rawStats.totalKelas > 0" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                    <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <svg v-if="rawStats.totalKelas > 0" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                   </div>
-                  <span>Rombel Kelas ({{ rawStats.totalKelas }})</span>
-                </div>
+                  <div class="truncate">
+                    <p class="text-[10px] text-gray-400 uppercase leading-none mb-0.5">Master Data</p>
+                    <span class="truncate block">{{ rawStats.totalKelas > 0 ? rawStats.totalKelas + ' Kelas' : 'Daftar Kelas' }}</span>
+                  </div>
+                </router-link>
 
-                <div class="flex items-center gap-2.5 p-2.5 rounded-xl border transition-colors"
-                  :class="rawStats.totalGuru > 0 ? 'bg-emerald-50/40 border-emerald-200 text-emerald-800' : 'bg-gray-50 border-gray-200 text-gray-500'">
-                  <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                <!-- 5. Staf Guru -->
+                <router-link
+                  :to="ROUTES.DAFTAR_GURU"
+                  class="flex items-center gap-2 p-2.5 rounded-xl border transition-all hover:shadow-2xs"
+                  :class="rawStats.totalGuru > 0 ? 'bg-emerald-50/40 border-emerald-200 text-emerald-800' : 'bg-gray-50 border-gray-200 text-gray-500 hover:border-blue-300'"
+                >
+                  <div class="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
                     :class="rawStats.totalGuru > 0 ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-gray-400'">
-                    <svg v-if="rawStats.totalGuru > 0" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                    <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <svg v-if="rawStats.totalGuru > 0" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                   </div>
-                  <span>Staf Guru ({{ rawStats.totalGuru }})</span>
-                </div>
+                  <div class="truncate">
+                    <p class="text-[10px] text-gray-400 uppercase leading-none mb-0.5">Master Data</p>
+                    <span class="truncate block">{{ rawStats.totalGuru > 0 ? rawStats.totalGuru + ' Guru' : 'Daftar Guru' }}</span>
+                  </div>
+                </router-link>
 
-                <div class="flex items-center gap-2.5 p-2.5 rounded-xl border transition-colors"
-                  :class="rawStats.totalMapel > 0 ? 'bg-emerald-50/40 border-emerald-200 text-emerald-800' : 'bg-gray-50 border-gray-200 text-gray-500'">
-                  <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                <!-- 6. Mata Pelajaran -->
+                <router-link
+                  :to="ROUTES.MATA_PELAJARAN"
+                  class="flex items-center gap-2 p-2.5 rounded-xl border transition-all hover:shadow-2xs"
+                  :class="rawStats.totalMapel > 0 ? 'bg-emerald-50/40 border-emerald-200 text-emerald-800' : 'bg-gray-50 border-gray-200 text-gray-500 hover:border-blue-300'"
+                >
+                  <div class="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
                     :class="rawStats.totalMapel > 0 ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-gray-400'">
-                    <svg v-if="rawStats.totalMapel > 0" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                    <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <svg v-if="rawStats.totalMapel > 0" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                   </div>
-                  <span>Mata Pelajaran ({{ rawStats.totalMapel }})</span>
-                </div>
-
-                <div class="flex items-center gap-2.5 p-2.5 rounded-xl border transition-colors"
-                  :class="rawStats.jamMengajar > 0 ? 'bg-emerald-50/40 border-emerald-200 text-emerald-800' : 'bg-gray-50 border-gray-200 text-gray-500'">
-                  <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                    :class="rawStats.jamMengajar > 0 ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-gray-400'">
-                    <svg v-if="rawStats.jamMengajar > 0" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                    <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <div class="truncate">
+                    <p class="text-[10px] text-gray-400 uppercase leading-none mb-0.5">Master Data</p>
+                    <span class="truncate block">{{ rawStats.totalMapel > 0 ? rawStats.totalMapel + ' Mapel' : 'Mata Pelajaran' }}</span>
                   </div>
-                  <span>Jam Pengampu ({{ rawStats.jamMengajar }} JP)</span>
-                </div>
+                </router-link>
               </div>
             </div>
 
@@ -573,6 +755,30 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal Peringatan Penjadwalan Terkunci -->
+    <div v-if="showSchedulingLockWarning" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 backdrop-blur-xs p-4 animate-fade-in" @click.self="showSchedulingLockWarning = false">
+      <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative border-t-8 border-amber-500 text-center">
+        <button @click="showSchedulingLockWarning = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <div class="w-16 h-16 rounded-2xl bg-amber-100 text-amber-600 mx-auto flex items-center justify-center mb-4 shadow-inner">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        <h3 class="text-xl font-black text-gray-900 mb-2">Penjadwalan Belum Siap</h3>
+        <p class="text-xs sm:text-sm text-gray-600 leading-relaxed mb-6 font-medium">
+          Untuk mencegah tabrakan jam guru & kelas, Anda wajib melengkapi data fondasi sekolah (Validasi Lembaga, Hari KBM, Sesi KBM) dan master data (Kelas, Guru, Mapel, Pengampu) terlebih dahulu.
+        </p>
+        <div class="space-y-2">
+          <router-link :to="smartRecommendation.actionRoute" @click="showSchedulingLockWarning = false" class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-colors block shadow-xs">
+            Lengkapi: {{ smartRecommendation.actionLabel }}
+          </router-link>
+          <button @click="showSchedulingLockWarning = false" class="w-full py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs transition-colors cursor-pointer">
+            Tutup
+          </button>
+        </div>
+      </div>
+    </div>
     </main>
   </div>
 </template>
@@ -583,16 +789,19 @@ import { useRouter, useRoute } from 'vue-router'
 import AppLogo from '../components/AppLogo.vue'
 import { realtimeClient } from '../core/realtimeClient.js'
 import { useAuthStore } from '../stores/auth.js'
+import { useSchoolSetupStore } from '../stores/schoolSetup.js'
 import MagicWizard from '../components/MagicWizard.vue'
 import { ROUTES } from '../config/routePaths.js'
 import { getStoredPackages } from '../data/packagesCatalog.js'
 
 const authStore = useAuthStore()
+const setupStore = useSchoolSetupStore()
 const router = useRouter()
 const route = useRoute()
 const profileName = ref('')
 const showWizard = ref(false)
 const isSidebarOpen = ref(false)
+const showSchedulingLockWarning = ref(false)
 
 // State Mesin Dashboard: 'loading' | 'success' | 'empty' | 'error' | 'offline'
 const dashboardState = ref('loading')
@@ -666,10 +875,19 @@ const isMasterDataComplete = computed(() => {
   return rawStats.value.totalGuru > 0 && rawStats.value.totalKelas > 0 && rawStats.value.totalMapel > 0
 })
 
+// Izin menuju penjadwalan (Fondasi harus lengkap + Master Data lengkap)
+const isSchedulingAllowed = computed(() => {
+  return setupStore.isSchedulingReady && isMasterDataComplete.value
+})
+
 // Sapaan Ramah & Dinamis di Banner
 const dynamicGreeting = computed(() => {
+  const currentSchool = setupStore.schoolProfile.schoolName || profileName.value || 'Admin Sekolah'
+  if (!setupStore.isSchedulingReady) {
+    return `Selamat datang di ruang kerja ${currentSchool}. Mari mulai dengan memvalidasi identitas lembaga dan menentukan sesi jam KBM harian.`
+  }
   if (!isMasterDataComplete.value) {
-    return 'Sistem Manajemen Penjadwalan Sekolah. Lengkapi master data (Kelas, Guru, & Mapel) untuk memulai penyusunan jadwal sekolah.'
+    return `Fondasi KBM ${currentSchool} telah siap! Lengkapi master data (Kelas, Guru, & Mapel) untuk memulai penyusunan jadwal sekolah.`
   }
 
   const hour = new Date().getHours()
@@ -681,32 +899,63 @@ const dynamicGreeting = computed(() => {
   return `${greetingTime} untuk memulai kerja kita! Seluruh master data telah siap dan tersinkronisasi untuk penyusunan jadwal sekolah yang optimal.`
 })
 
-// Rekomendasi Terstruktur untuk Asisten Kesiapan
+// Rekomendasi Terstruktur untuk Asisten Kesiapan (Mengutamakan Fondasi)
 const smartRecommendation = computed(() => {
+  // 1. Fondasi: Validasi Lembaga
+  if (!setupStore.isProfileComplete) {
+    return {
+      title: 'Langkah 1: Lengkapi Validasi Identitas Lembaga',
+      desc: 'Legalitas kepala sekolah, tahun pelajaran, dan semester belum diverifikasi. Selesaikan pada form Validasi Lembaga.',
+      actionLabel: 'Validasi Lembaga',
+      actionRoute: ROUTES.VALIDASI_LEMBAGA
+    }
+  }
+  // 2. Fondasi: Hari Pelaksanaan KBM
+  if (!setupStore.isOperatingDaysComplete) {
+    return {
+      title: 'Langkah 1: Tentukan Hari Pelaksanaan KBM',
+      desc: 'Pilih minimal 1 hari aktif pembelajaran di sekolah Anda pada halaman Validasi Lembaga.',
+      actionLabel: 'Atur Hari KBM',
+      actionRoute: ROUTES.VALIDASI_LEMBAGA
+    }
+  }
+  // 3. Fondasi: Sesi & Waktu KBM
+  if (!setupStore.isKbmSessionsComplete) {
+    return {
+      title: 'Langkah 2: Konfigurasi Sesi & Waktu KBM',
+      desc: 'Tentukan jam mulai, jam selesai, dan urutan sesi KBM harian sebelum menginput data jadwal.',
+      actionLabel: 'Atur Sesi KBM',
+      actionRoute: ROUTES.SESI_WAKTU
+    }
+  }
+  // 4. Master Data: Kelas
   if (rawStats.value.totalKelas === 0) {
     return {
-      title: 'Langkah Pertama: Daftarkan Rombongan Belajar',
+      title: 'Langkah Master Data: Daftarkan Rombongan Belajar',
       desc: 'Sekolah belum memiliki data kelas. Silakan tambahkan nama kelas atau unduh template Excel di menu Daftar Kelas.',
       actionLabel: 'Isi Daftar Kelas',
       actionRoute: ROUTES.DAFTAR_KELAS
     }
   }
+  // 5. Master Data: Guru
   if (rawStats.value.totalGuru === 0) {
     return {
-      title: 'Langkah Kedua: Daftarkan Dewan Guru',
+      title: 'Langkah Master Data: Daftarkan Dewan Guru',
       desc: 'Belum ada guru yang terdaftar. Masukkan data guru pengajar beserta kode uniknya di menu Daftar Guru.',
       actionLabel: 'Isi Daftar Guru',
       actionRoute: ROUTES.DAFTAR_GURU
     }
   }
+  // 6. Master Data: Mapel
   if (rawStats.value.totalMapel === 0) {
     return {
-      title: 'Langkah Ketiga: Lengkapi Mata Pelajaran',
+      title: 'Langkah Master Data: Lengkapi Mata Pelajaran',
       desc: 'Masukkan daftar mata pelajaran kurikulum sekolah Anda di menu Mata Pelajaran.',
       actionLabel: 'Isi Mata Pelajaran',
       actionRoute: ROUTES.MATA_PELAJARAN
     }
   }
+  // 7. Distribusi Pengampu
   if (rawStats.value.jamMengajar === 0) {
     return {
       title: 'Master Data Lengkap! Distribusikan Jam Guru',
@@ -716,8 +965,8 @@ const smartRecommendation = computed(() => {
     }
   }
   return {
-    title: 'Semua Data Siap! Terbitkan Jadwal',
-    desc: 'Distribusi jam telah terpetakan. Anda dapat langsung melihat matriks jadwal kelas dan jadwal guru.',
+    title: 'Semua Fondasi & Data Siap! Terbitkan Jadwal',
+    desc: 'Seluruh konfigurasi lengkap dan tervalidasi. Anda dapat langsung melihat matriks jadwal kelas dan jadwal guru.',
     actionLabel: 'Lihat Jadwal Kelas',
     actionRoute: ROUTES.JADWAL_KELAS
   }
@@ -837,47 +1086,29 @@ const fetchDashboardStats = async () => {
   // Hitung Progres Keseluruhan secara Dinamis & Terstruktur (0 - 100%)
   let p = 0
 
-  // 1. Validasi Lembaga (Bobot: 10%)
-  const lembagaData = localStorage.getItem('guruKu_lembaga_data') || localStorage.getItem('guruKu_lembaga_valid')
-  let isLembagaValid = false
-  if (lembagaData) {
-    try {
-      const parsed = typeof lembagaData === 'string' && (lembagaData.startsWith('{') || lembagaData.startsWith('[')) ? JSON.parse(lembagaData) : null
-      if (parsed && (parsed.academic_year || parsed.headmaster_name || parsed.address)) isLembagaValid = true
-      else if (lembagaData === 'true') isLembagaValid = true
-    } catch(e) {
-      if (lembagaData === 'true') isLembagaValid = true
-    }
-  }
-  if (isLembagaValid) p += 10
+  // 1. Validasi Lembaga (Bobot: 15%)
+  const isLembagaValid = setupStore.isProfileComplete || Boolean(localStorage.getItem('guruKu_lembaga_valid') === 'true')
+  if (isLembagaValid) p += 15
 
-  // 2. Daftar Kelas (Bobot: 20%)
-  if (classCount > 0) p += 20
+  // 2. Hari Pelaksanaan KBM (Bobot: 15%)
+  const hasOperatingDays = setupStore.isOperatingDaysComplete || setupStore.activeOperatingDays.length > 0
+  if (hasOperatingDays) p += 15
 
-  // 3. Sesi & Waktu KBM (Bobot: 20%)
-  const savedSesi = localStorage.getItem('guruKu_sesi_kbm')
-  let hasSesi = false
-  if (savedSesi) {
-    try {
-      const parsedSesi = JSON.parse(savedSesi)
-      if (parsedSesi && typeof parsedSesi === 'object') {
-        const days = Object.keys(parsedSesi)
-        if (days.some(d => Array.isArray(parsedSesi[d]) && parsedSesi[d].length > 0)) {
-          hasSesi = true
-        }
-      }
-    } catch (e) {}
-  }
-  if (hasSesi) p += 20
+  // 3. Sesi & Waktu KBM (Bobot: 15%)
+  const hasSesi = setupStore.isKbmSessionsComplete || setupStore.kbmOnlySessions.length > 0
+  if (hasSesi) p += 15
 
-  // 4. Daftar Guru (Bobot: 20%)
-  if (teacherCount > 0) p += 20
+  // 4. Daftar Kelas (Bobot: 15%)
+  if (classCount > 0) p += 15
 
-  // 5. Mata Pelajaran (Bobot: 15%)
+  // 5. Daftar Guru (Bobot: 15%)
+  if (teacherCount > 0) p += 15
+
+  // 6. Mata Pelajaran (Bobot: 15%)
   if (mapelCount > 0) p += 15
 
-  // 6. Pengampu / Jam Mengajar (Bobot: 15%)
-  if (totalJam > 0) p += 15
+  // 7. Pengampu / Jam Mengajar (Bobot: 10%)
+  if (totalJam > 0) p += 10
 
   rawStats.value = {
     totalGuru: teacherCount,
@@ -899,7 +1130,11 @@ const loadDashboard = async () => {
   errorRequestId.value = ''
 
   try {
+    await setupStore.loadSchoolSetup()
     await fetchProfileName()
+    if (setupStore.schoolProfile.schoolName) {
+      profileName.value = setupStore.schoolProfile.schoolName
+    }
     await fetchDashboardStats()
 
     if (rawStats.value.totalGuru === 0 && rawStats.value.totalKelas === 0 && rawStats.value.totalMapel === 0) {

@@ -1,0 +1,161 @@
+{
+  "sheet": "Rombel",
+  "blocks": {
+    "classes": {
+      "headerRow": 61,
+      "dataStartRow": 62,
+      "dataEndRow": 100,
+      "count": 18,
+      "duplicates": [],
+      "placeholderCount": 1,
+      "sampleItems": [
+        {
+          "row": 62,
+          "no": 1,
+          "name": "4 TM",
+          "waliKelas": "Muhammad Fahmi, S.Pd",
+          "isFormula": false,
+          "isPlaceholder": false
+        },
+        {
+          "row": 63,
+          "no": 2,
+          "name": "4 MAPK",
+          "waliKelas": "Kasyaful Khafi, Lc, M.H",
+          "isFormula": false,
+          "isPlaceholder": false
+        },
+        {
+          "row": 64,
+          "no": 3,
+          "name": "4 SAINS",
+          "waliKelas": "Nurlela Nahar, S.Si",
+          "isFormula": false,
+          "isPlaceholder": false
+        },
+        {
+          "row": 65,
+          "no": 4,
+          "name": "4 BHS A",
+          "waliKelas": "Khalila Karolina, S.Pd.I",
+          "isFormula": false,
+          "isPlaceholder": false
+        },
+        {
+          "row": 66,
+          "no": 5,
+          "name": "4 BHS B",
+          "waliKelas": "Wenny Azlina, S.EI",
+          "isFormula": false,
+          "isPlaceholder": false
+        }
+      ]
+    },
+    "teachers": {
+      "headerRow": 61,
+      "dataStartRow": 62,
+      "dataEndRow": 150,
+      "count": 45,
+      "duplicates": [],
+      "placeholderCount": 1,
+      "sampleItems": [
+        {
+          "row": 62,
+          "no": 1,
+          "name": "Marwan Halim, M.Ag",
+          "code": "MH",
+          "isFormula": false,
+          "isPlaceholder": false
+        },
+        {
+          "row": 63,
+          "no": 2,
+          "name": "Prasilo Heri Yudanto, Lc. M.Ag",
+          "code": "PHY",
+          "isFormula": false,
+          "isPlaceholder": false
+        },
+        {
+          "row": 64,
+          "no": 3,
+          "name": "Indra Syah Putra, M.A",
+          "code": "IS",
+          "isFormula": false,
+          "isPlaceholder": false
+        },
+        {
+          "row": 65,
+          "no": 4,
+          "name": "Muhammad Fahmi, S.Pd",
+          "code": "MF",
+          "isFormula": false,
+          "isPlaceholder": false
+        },
+        {
+          "row": 66,
+          "no": 5,
+          "name": "Agus Riyadi, S.Pd.I",
+          "code": "AGR",
+          "isFormula": false,
+          "isPlaceholder": false
+        }
+      ]
+    },
+    "subjects": {
+      "headerRow": 61,
+      "dataStartRow": 62,
+      "dataEndRow": 150,
+      "count": 45,
+      "duplicates": [],
+      "placeholderCount": 0,
+      "sampleItems": [
+        {
+          "row": 62,
+          "no": 1,
+          "name": "Adab",
+          "code": "AD",
+          "isFormula": false,
+          "isPlaceholder": false
+        },
+        {
+          "row": 63,
+          "no": 2,
+          "name": "Akutansi",
+          "code": "AKU",
+          "isFormula": false,
+          "isPlaceholder": false
+        },
+        {
+          "row": 64,
+          "no": 3,
+          "name": "Antropologi",
+          "code": "ATR",
+          "isFormula": false,
+          "isPlaceholder": false
+        },
+        {
+          "row": 65,
+          "no": 4,
+          "name": "Bahasa Arab",
+          "code": "BA",
+          "isFormula": false,
+          "isPlaceholder": false
+        },
+        {
+          "row": 66,
+          "no": 5,
+          "name": "Bahasa Indonesia",
+          "code": "BI",
+          "isFormula": false,
+          "isPlaceholder": false
+        }
+      ]
+    }
+  },
+  "mergedCellsInMasterRange": [
+    {
+      "start": "B113",
+      "end": "D115"
+    }
+  ]
+}

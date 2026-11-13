@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { schoolSetupRepository } from '../core/schoolSetupRepository.js'
 
 // Matrix Izin Peran Sesuai Master Architecture GuruKu
 export const ROLE_PERMISSIONS = {
@@ -87,16 +88,23 @@ export const useAuthStore = defineStore('auth', () => {
     return upper
   }
 
-  // Restore session via HttpOnly Cookie (GET /api/v1/auth/session)
+  // Restore session via HttpOnly Cookie / Authorization Token (GET /api/v1/auth/session)
   async function restoreSession() {
-    console.info('[AuthStore] Memulihkan sesi akun via HttpOnly cookie...')
+    console.info('[AuthStore] Memulihkan sesi akun via HttpOnly cookie / token...')
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), 4500)
 
     try {
+      const savedToken = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('guruku_token')) ||
+                         (typeof localStorage !== 'undefined' && localStorage.getItem('guruku_token')) || ''
+      const headers = { 'Content-Type': 'application/json' }
+      if (savedToken) {
+        headers['Authorization'] = `Bearer ${savedToken}`
+      }
+
       const res = await fetch('/api/v1/auth/session', {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         credentials: 'include', // Mengirim cookie HttpOnly secara otomatis
         signal: controller.signal
       })
@@ -108,6 +116,9 @@ export const useAuthStore = defineStore('auth', () => {
           role.value = normalized
           schoolId.value = data.user.school_id || null
           validUntil.value = data.user.valid_until || null
+          if (savedToken) {
+            token.value = savedToken
+          }
           user.value = {
             id: data.user.id,
             role: normalized,
@@ -214,9 +225,11 @@ export const useAuthStore = defineStore('auth', () => {
         throw new Error(errorMsg)
       }
 
-      // Token JWT disimpan HANYA di memory (RAM), TIDAK DISIMPAN di localStorage
+      // Simpan session token untuk otentikasi API client-side dan persistensi reload
       if (data.token) {
         token.value = data.token
+        sessionStorage.setItem('guruku_token', data.token)
+        localStorage.setItem('guruku_token', data.token)
         const payloadBase64 = data.token.split('.')[1]
         const decodedPayload = JSON.parse(atob(payloadBase64))
         const normalized = normalizeRole(decodedPayload.role)
@@ -230,12 +243,11 @@ export const useAuthStore = defineStore('auth', () => {
           school_id: schoolId.value
         }
 
-        // Simpan hanya preferensi UI non-sensitif (BUKAN TOKEN/JWT)
+        // Simpan preferensi UI non-sensitif
         localStorage.setItem('role', normalized)
         localStorage.setItem('user_role', normalized)
         if (schoolId.value) localStorage.setItem('school_id', schoolId.value)
         if (validUntil.value) localStorage.setItem('valid_until', validUntil.value)
-        localStorage.removeItem('token') // Pastikan bersih dari localStorage
 
         return {
           role: normalized,
@@ -288,11 +300,19 @@ export const useAuthStore = defineStore('auth', () => {
     sessionChecked.value = false
 
     // Hapus data sesi di storage
+    sessionStorage.removeItem('guruku_token')
+    localStorage.removeItem('guruku_token')
     localStorage.removeItem('token')
     localStorage.removeItem('role')
     localStorage.removeItem('user_role')
     localStorage.removeItem('school_id')
+    localStorage.removeItem('tenant_id')
+    localStorage.removeItem('school_name')
+    localStorage.removeItem('license_school_name')
     localStorage.removeItem('valid_until')
+
+    // Bersihkan seluruh cache tenant di repository
+    schoolSetupRepository.clearAllTenantCaches()
   }
 
   return {

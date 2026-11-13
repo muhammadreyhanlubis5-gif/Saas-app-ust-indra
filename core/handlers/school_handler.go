@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
+	"regexp"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -28,14 +29,11 @@ type sqlDateStruct struct {
 	Time *time.Time
 }
 
-// resolveSchoolID extracts school_id from session context or request header
+// resolveSchoolID extracts school_id strictly from authenticated session context
 func resolveSchoolID(c *gin.Context) string {
 	schoolID := c.GetString("school_id")
 	if schoolID == "" {
 		schoolID = c.GetString("tenant_id")
-	}
-	if schoolID == "" {
-		schoolID = c.GetHeader("X-School-ID")
 	}
 	return schoolID
 }
@@ -120,9 +118,12 @@ type UpdateSchoolProfileReq struct {
 // UpdateMySchoolProfile menyimpan konfigurasi profil sekolah
 // PUT /api/v1/school/profile
 func UpdateMySchoolProfile(c *gin.Context) {
+	if !requireDatabase(c) {
+		return
+	}
 	schoolID := resolveSchoolID(c)
 	if schoolID == "" {
-		middleware.RespondError(c, http.StatusBadRequest, "INVALID_SCHOOL_ID", "School ID tidak valid", nil, "VALIDATION_ERROR")
+		middleware.RespondError(c, http.StatusUnauthorized, "AUTH_REQUIRED", "Sesi tidak valid atau telah kedaluwarsa. Silakan login kembali.", nil, "AUTH_ERROR")
 		return
 	}
 
@@ -132,9 +133,16 @@ func UpdateMySchoolProfile(c *gin.Context) {
 		return
 	}
 
-	if database.DB == nil {
-		// Mock/Offline mode: terima update tanpa crash
-		c.JSON(http.StatusOK, gin.H{"message": "Profil sekolah berhasil diperbarui (mode offline)"})
+	// Validasi aturan domain spesifik (Status 422: Unprocessable Entity)
+	if req.AcademicYear != "" {
+		match, _ := regexp.MatchString(`^\d{4}-\d{4}$`, req.AcademicYear)
+		if !match {
+			middleware.RespondError(c, http.StatusUnprocessableEntity, "VALIDATION_FAILED", "Format tahun pelajaran harus YYYY-YYYY (contoh: 2026-2027)", nil, "BUSINESS_RULE_VIOLATION")
+			return
+		}
+	}
+	if len(req.ActiveDays) == 0 {
+		middleware.RespondError(c, http.StatusUnprocessableEntity, "VALIDATION_FAILED", "Minimal 1 hari aktif KBM wajib dipilih", nil, "BUSINESS_RULE_VIOLATION")
 		return
 	}
 
@@ -247,6 +255,9 @@ func GetSchoolSessions(c *gin.Context) {
 // UpdateSchoolSessions menyimpan jadwal sesi KBM
 // PUT /api/v1/school/sessions
 func UpdateSchoolSessions(c *gin.Context) {
+	if !requireDatabase(c) {
+		return
+	}
 	schoolID := resolveSchoolID(c)
 	if schoolID == "" {
 		middleware.RespondError(c, http.StatusBadRequest, "INVALID_SCHOOL_ID", "School ID tidak valid", nil, "VALIDATION_ERROR")
@@ -256,11 +267,6 @@ func UpdateSchoolSessions(c *gin.Context) {
 	var req UpdateSessionsRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		middleware.RespondError(c, http.StatusBadRequest, "INVALID_PAYLOAD", "Format data sesi KBM tidak valid", err, "VALIDATION_ERROR")
-		return
-	}
-
-	if database.DB == nil {
-		c.JSON(http.StatusOK, gin.H{"message": "Sesi KBM berhasil diperbarui (mode offline)"})
 		return
 	}
 
@@ -343,6 +349,9 @@ func GetPengampuMapel(c *gin.Context) {
 // UpdatePengampuMapel menyimpan data pengampu jsonb
 // PUT /api/v1/school/pengampu
 func UpdatePengampuMapel(c *gin.Context) {
+	if !requireDatabase(c) {
+		return
+	}
 	schoolID := resolveSchoolID(c)
 	if schoolID == "" {
 		middleware.RespondError(c, http.StatusBadRequest, "INVALID_SCHOOL_ID", "School ID tidak valid", nil, "VALIDATION_ERROR")
@@ -352,11 +361,6 @@ func UpdatePengampuMapel(c *gin.Context) {
 	rawData, err := c.GetRawData()
 	if err != nil {
 		middleware.RespondError(c, http.StatusBadRequest, "INVALID_JSON", "Payload JSON tidak valid", err, "VALIDATION_ERROR")
-		return
-	}
-
-	if database.DB == nil {
-		c.JSON(http.StatusOK, gin.H{"message": "Data pengampu berhasil disimpan (mode offline)"})
 		return
 	}
 
@@ -409,6 +413,9 @@ func GetTugasTambahan(c *gin.Context) {
 // UpdateTugasTambahan menyimpan data tugas tambahan
 // PUT /api/v1/school/tugas-tambahan
 func UpdateTugasTambahan(c *gin.Context) {
+	if !requireDatabase(c) {
+		return
+	}
 	schoolID := resolveSchoolID(c)
 	if schoolID == "" {
 		middleware.RespondError(c, http.StatusBadRequest, "INVALID_SCHOOL_ID", "School ID tidak valid", nil, "VALIDATION_ERROR")
@@ -421,12 +428,15 @@ func UpdateTugasTambahan(c *gin.Context) {
 		return
 	}
 
-	if database.DB != nil {
-		if middleware.IsValidUUID(schoolID) {
-			_, _ = database.DB.Exec("UPDATE schools SET tugas_tambahan = $1 WHERE id = $2", string(rawData), schoolID)
-		} else {
-			_, _ = database.DB.Exec("UPDATE schools SET tugas_tambahan = $1 WHERE id::text = $2", string(rawData), schoolID)
-		}
+	if middleware.IsValidUUID(schoolID) {
+		_, err = database.DB.Exec("UPDATE schools SET tugas_tambahan = $1 WHERE id = $2", string(rawData), schoolID)
+	} else {
+		_, err = database.DB.Exec("UPDATE schools SET tugas_tambahan = $1 WHERE id::text = $2", string(rawData), schoolID)
+	}
+
+	if err != nil {
+		middleware.RespondError(c, http.StatusInternalServerError, "TUGAS_TAMBAHAN_SAVE_FAILED", "Gagal menyimpan data tugas tambahan", err, "DATABASE_ERROR")
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Data tugas tambahan berhasil disimpan"})
@@ -463,6 +473,9 @@ func GetJamKosong(c *gin.Context) {
 // UpdateJamKosong menyimpan data jam kosong
 // PUT /api/v1/school/jam-kosong
 func UpdateJamKosong(c *gin.Context) {
+	if !requireDatabase(c) {
+		return
+	}
 	schoolID := resolveSchoolID(c)
 	if schoolID == "" {
 		middleware.RespondError(c, http.StatusBadRequest, "INVALID_SCHOOL_ID", "School ID tidak valid", nil, "VALIDATION_ERROR")
@@ -475,12 +488,15 @@ func UpdateJamKosong(c *gin.Context) {
 		return
 	}
 
-	if database.DB != nil {
-		if middleware.IsValidUUID(schoolID) {
-			_, _ = database.DB.Exec("UPDATE schools SET jam_kosong_data = $1 WHERE id = $2", string(rawData), schoolID)
-		} else {
-			_, _ = database.DB.Exec("UPDATE schools SET jam_kosong_data = $1 WHERE id::text = $2", string(rawData), schoolID)
-		}
+	if middleware.IsValidUUID(schoolID) {
+		_, err = database.DB.Exec("UPDATE schools SET jam_kosong_data = $1 WHERE id = $2", string(rawData), schoolID)
+	} else {
+		_, err = database.DB.Exec("UPDATE schools SET jam_kosong_data = $1 WHERE id::text = $2", string(rawData), schoolID)
+	}
+
+	if err != nil {
+		middleware.RespondError(c, http.StatusInternalServerError, "JAM_KOSONG_SAVE_FAILED", "Gagal menyimpan data jam kosong", err, "DATABASE_ERROR")
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Data jam kosong berhasil disimpan"})
@@ -517,6 +533,9 @@ func GetJadwal(c *gin.Context) {
 // UpdateJadwal menyimpan data jadwal
 // PUT /api/v1/school/jadwal
 func UpdateJadwal(c *gin.Context) {
+	if !requireDatabase(c) {
+		return
+	}
 	schoolID := resolveSchoolID(c)
 	if schoolID == "" {
 		middleware.RespondError(c, http.StatusBadRequest, "INVALID_SCHOOL_ID", "School ID tidak valid", nil, "VALIDATION_ERROR")
@@ -529,12 +548,15 @@ func UpdateJadwal(c *gin.Context) {
 		return
 	}
 
-	if database.DB != nil {
-		if middleware.IsValidUUID(schoolID) {
-			_, _ = database.DB.Exec("UPDATE schools SET jadwal_data = $1 WHERE id = $2", string(rawData), schoolID)
-		} else {
-			_, _ = database.DB.Exec("UPDATE schools SET jadwal_data = $1 WHERE id::text = $2", string(rawData), schoolID)
-		}
+	if middleware.IsValidUUID(schoolID) {
+		_, err = database.DB.Exec("UPDATE schools SET jadwal_data = $1 WHERE id = $2", string(rawData), schoolID)
+	} else {
+		_, err = database.DB.Exec("UPDATE schools SET jadwal_data = $1 WHERE id::text = $2", string(rawData), schoolID)
+	}
+
+	if err != nil {
+		middleware.RespondError(c, http.StatusInternalServerError, "JADWAL_SAVE_FAILED", "Gagal menyimpan data jadwal", err, "DATABASE_ERROR")
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Data jadwal berhasil disimpan"})

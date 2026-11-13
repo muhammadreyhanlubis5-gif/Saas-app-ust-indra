@@ -86,6 +86,10 @@ const routes = [
   },
 
   // OTOMATIS ALIHKAN (REDIRECT) SEMUA JALUR LAMA KE URL BERSIMBOL AGAR TIDAK TEBAKAN
+  { path: '/login', redirect: '/' },
+  { path: '/dashboard', redirect: ROUTES.SCHOOL_ADMIN },
+  { path: '/validasi-lembaga', redirect: ROUTES.VALIDASI_LEMBAGA },
+  { path: '/sesi-waktu-kbm', redirect: ROUTES.SESI_WAKTU },
   { path: '/super-admin', redirect: '/' },
   { path: '/expired', redirect: ROUTES.EXPIRED },
   { path: '/checkout', redirect: ROUTES.CHECKOUT },

@@ -1,0 +1,8 @@
+server.exe
+server.exe~
+*.exe
+*.xlsb
+tests/
+docs/
+.env*
+!package.json
