@@ -863,7 +863,13 @@ const handleLogin = async () => {
     const errCode = authStore.error?.code || 'AUTH_FAILED'
     const errMsg = authStore.error?.message || error.message || 'Terjadi kesalahan jaringan saat masuk.'
 
-    if (errCode === 'TENANT_SUSPENDED') {
+    if (errCode === 'SERVER_ERROR') {
+      loginErrorTitle.value = 'Gangguan Server / Database'
+      loginErrorMessage.value = errMsg
+    } else if (errCode === 'RATE_LIMITED') {
+      loginErrorTitle.value = 'Batas Percobaan Terlampaui'
+      loginErrorMessage.value = errMsg
+    } else if (errCode === 'TENANT_SUSPENDED') {
       loginErrorTitle.value = 'Akses Lembaga Ditangguhkan'
       loginErrorMessage.value = errMsg
     } else if (errCode === 'SUBSCRIPTION_EXPIRED') {

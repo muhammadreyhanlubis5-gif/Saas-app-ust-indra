@@ -217,9 +217,25 @@ export const useAuthStore = defineStore('auth', () => {
       const data = await response.json().catch(() => ({}))
 
       if (!response.ok) {
-        const errorMsg = data.error || data.message || 'Username atau password tidak sesuai.'
+        let errorMsg = data.error || data.message
+        let code = data.code
+
+        if (response.status >= 500) {
+          code = code || 'SERVER_ERROR'
+          errorMsg = errorMsg || `Layanan server backend atau basis data sedang mengalami gangguan (HTTP ${response.status}).`
+        } else if (response.status === 403) {
+          code = code || 'ACCESS_FORBIDDEN'
+          errorMsg = errorMsg || 'Akses ditolak.'
+        } else if (response.status === 429) {
+          code = code || 'RATE_LIMITED'
+          errorMsg = errorMsg || 'Terlalu banyak percobaan masuk. Mohon tunggu beberapa detik sebelum mencoba kembali.'
+        } else {
+          code = code || 'INVALID_CREDENTIALS'
+          errorMsg = errorMsg || 'Email atau password tidak sesuai.'
+        }
+
         error.value = {
-          code: data.code || (response.status === 403 ? 'ACCESS_FORBIDDEN' : 'INVALID_CREDENTIALS'),
+          code,
           message: errorMsg
         }
         throw new Error(errorMsg)
